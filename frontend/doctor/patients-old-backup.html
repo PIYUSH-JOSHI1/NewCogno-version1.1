@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="My Patients - Cogno Solution Doctor Portal">
+    <title>My Patients - Cogno Solution</title>
+    
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="../dashboard/doctor-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Patients</li>
+                
+                <li class="sidebar-item active">
+                    <a href="./patients.html" class="sidebar-link">
+                        <i class="fa-solid fa-users"></i>
+                        <span>My Patients</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./live-monitoring.html" class="sidebar-link">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Live Monitoring</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./assessments.html" class="sidebar-link">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>Assessments</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Consultations</li>
+                
+                <li class="sidebar-item">
+                    <a href="./consultations.html" class="sidebar-link">
+                        <i class="fa-solid fa-video"></i>
+                        <span>Video Consultations</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./schedule.html" class="sidebar-link">
+                        <i class="fa-solid fa-calendar"></i>
+                        <span>My Schedule</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./messages.html" class="sidebar-link">
+                        <i class="fa-solid fa-message"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Reports</li>
+                
+                <li class="sidebar-item">
+                    <a href="./reports.html" class="sidebar-link">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        <span>Patient Reports</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./recommendations.html" class="sidebar-link">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>Recommendations</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Account</li>
+                
+                <li class="sidebar-item">
+                    <a href="./profile.html" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../settings/index.html" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+        
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav class="breadcrumb">
+                    <a href="../dashboard/doctor-dashboard.html">Dashboard</a>
+                    <span>/</span>
+                    <span>My Patients</span>
+                </nav>
+            </div>
+            
+            <div class="navbar-right">
+                <button class="btn btn-ghost btn-icon" id="notifications-btn">
+                    <i class="fa-solid fa-bell"></i>
+                </button>
+            </div>
+        </header>
+            
+            <div class="content-area">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-header-content">
+                        <h1><i class="fa-solid fa-users"></i> My Patients</h1>
+                        <p>Manage and monitor your assigned patients</p>
+                    </div>
+                    <button class="btn btn-primary" id="add-patient-btn">
+                        <i class="fa-solid fa-plus"></i> Add Patient
+                    </button>
+                </div>
+                
+                <!-- Filters & Search -->
+                <div class="filters-bar card">
+                    <div class="search-box">
+                        <i class="fa-solid fa-search"></i>
+                        <input type="text" id="patient-search" placeholder="Search by name or condition...">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <select id="condition-filter">
+                            <option value="">All Conditions</option>
+                            <option value="dyslexia">Dyslexia</option>
+                            <option value="dyscalculia">Dyscalculia</option>
+                            <option value="dysgraphia">Dysgraphia</option>
+                            <option value="dyspraxia">Dyspraxia</option>
+                        </select>
+                        
+                        <select id="status-filter">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="new">New</option>
+                        </select>
+                        
+                        <select id="sort-by">
+                            <option value="name">Sort by Name</option>
+                            <option value="recent">Recently Active</option>
+                            <option value="progress">Progress</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Patients Grid - populated by JavaScript -->
+                <div class="patients-grid" id="patients-grid">
+                    <!-- Loading state -->
+                    <div class="empty-state" id="patients-loading">
+                        <i class="fa-solid fa-spinner fa-spin"></i>
+                        <h3>Loading patients...</h3>
+                        <p>Please wait while we fetch your patient list</p>
+                    </div>
+                </div>
+                
+                <!-- Pagination - hidden when no patients -->
+                <div class="pagination" id="pagination" style="display: none;">
+                    <button class="btn btn-ghost" id="prev-page" disabled><i class="fa-solid fa-chevron-left"></i></button>
+                    <span class="page-info" id="page-info">Page 1 of 1</span>
+                    <button class="btn btn-ghost" id="next-page"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Add Patient Modal -->
+    <div class="modal" id="add-patient-modal">
+        <div class="modal-overlay" onclick="closeAddPatientModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Patient</h2>
+                <button class="modal-close" onclick="closeAddPatientModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-patient-form" onsubmit="event.preventDefault(); addPatientByEmail();">
+                    <div class="form-group">
+                        <label>Patient Email</label>
+                        <input type="email" id="patient-email-input" class="form-input" placeholder="Enter patient's registered email" required>
+                    </div>
+                    <p class="form-help">The patient must already have an account. Enter their registered email address.</p>
+                    <div class="form-group">
+                        <label>Notes (optional)</label>
+                        <textarea id="patient-notes-input" class="form-textarea" rows="2" placeholder="Any notes about this patient"></textarea>
+                    </div>
+                    <div id="add-patient-status" style="display: none; padding: 0.75rem; border-radius: 8px; margin-top: 1rem;"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeAddPatientModal()">Cancel</button>
+                <button class="btn btn-primary" id="add-patient-submit-btn" onclick="addPatientByEmail()">
+                    <i class="fa-solid fa-plus"></i> Add Patient
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./doctor.js"></script>
+    
+    <script>
+        // Open Add Patient Modal
+        function openAddPatientModal() {
+            const modal = document.getElementById('add-patient-modal');
+            modal?.classList.add('show');
+            document.getElementById('patient-email-input')?.focus();
+        }
+        
+        // Close Add Patient Modal
+        function closeAddPatientModal() {
+            const modal = document.getElementById('add-patient-modal');
+            modal?.classList.remove('show');
+            // Reset form
+            document.getElementById('add-patient-form')?.reset();
+            const statusDiv = document.getElementById('add-patient-status');
+            if (statusDiv) statusDiv.style.display = 'none';
+        }
+        
+        // Add Patient by Email
+        async function addPatientByEmail() {
+            const email = document.getElementById('patient-email-input')?.value?.trim();
+            const notes = document.getElementById('patient-notes-input')?.value?.trim();
+            const statusDiv = document.getElementById('add-patient-status');
+            const submitBtn = document.getElementById('add-patient-submit-btn');
+            
+            if (!email) {
+                showStatus('Please enter patient email', 'error');
+                return;
+            }
+            
+            // Wait for DoctorPortal to be ready
+            if (!DoctorPortal?.currentDoctor) {
+                showStatus('Please wait, loading...', 'warning');
+                return;
+            }
+            
+            // Show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
+            
+            try {
+                // Find patient by email
+                const { data: patient, error: findError } = await CognoSupabase?.client
+                    ?.from('profiles')
+                    ?.select('id, full_name, email, role')
+                    ?.eq('email', email.toLowerCase())
+                    ?.single();
+                
+                if (findError || !patient) {
+                    showStatus('Patient not found. They must register first with this email.', 'error');
+                    return;
+                }
+                
+                // Check if they're a patient (student/child) or parent role
+                if (patient.role === 'doctor' || patient.role === 'admin') {
+                    showStatus('This email belongs to a doctor/admin, not a patient.', 'error');
+                    return;
+                }
+                
+                // Check if already assigned to this doctor
+                const { data: existing } = await CognoSupabase?.client
+                    ?.from('doctor_patients')
+                    ?.select('id')
+                    ?.eq('doctor_id', DoctorPortal.currentDoctor.id)
+                    ?.eq('patient_id', patient.id)
+                    ?.single();
+                
+                if (existing) {
+                    showStatus('This patient is already in your patient list.', 'warning');
+                    return;
+                }
+                
+                // Add patient to doctor_patients table
+                const { error: insertError } = await CognoSupabase?.client
+                    ?.from('doctor_patients')
+                    ?.insert({
+                        doctor_id: DoctorPortal.currentDoctor.id,
+                        patient_id: patient.id,
+                        status: 'active',
+                        notes: notes || null,
+                        assigned_at: new Date().toISOString()
+                    });
+                
+                if (insertError) {
+                    console.error('Insert error:', insertError);
+                    showStatus('Failed to add patient. Please try again.', 'error');
+                    return;
+                }
+                
+                // Success!
+                showStatus(`Successfully added ${patient.full_name || email}!`, 'success');
+                
+                // Reload patients list
+                if (DoctorPortal?.loadPatients) {
+                    await DoctorPortal.loadPatients();
+                    DoctorPortal.renderPatientsList?.();
+                }
+                
+                // Send notification to patient
+                try {
+                    await CognoSupabase?.client
+                        ?.from('notifications')
+                        ?.insert({
+                            user_id: patient.id,
+                            title: 'New Doctor Connection',
+                            message: `Dr. ${DoctorPortal.doctorProfile?.full_name || 'Your doctor'} has added you as a patient.`,
+                            notification_type: 'info',
+                            action_url: '/consultations/'
+                        });
+                } catch (e) {
+                    console.warn('Could not send notification:', e);
+                }
+                
+                // Close modal after delay
+                setTimeout(() => {
+                    closeAddPatientModal();
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Add patient error:', error);
+                showStatus('An error occurred. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Patient';
+            }
+        }
+        
+        // Show status message
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('add-patient-status');
+            if (!statusDiv) return;
+            
+            const colors = {
+                success: { bg: '#d4edda', border: '#c3e6cb', text: '#155724' },
+                error: { bg: '#f8d7da', border: '#f5c6cb', text: '#721c24' },
+                warning: { bg: '#fff3cd', border: '#ffeeba', text: '#856404' }
+            };
+            
+            const style = colors[type] || colors.error;
+            statusDiv.style.display = 'block';
+            statusDiv.style.background = style.bg;
+            statusDiv.style.border = `1px solid ${style.border}`;
+            statusDiv.style.color = style.text;
+            statusDiv.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'}"></i> ${message}`;
+        }
+        
+        // Wire up add patient button
+        document.addEventListener('DOMContentLoaded', () => {
+            const addBtn = document.getElementById('add-patient-btn');
+            addBtn?.addEventListener('click', openAddPatientModal);
+        });
+    </script>
+    
+    <style>
+        .patients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: var(--space-6);
+            margin-top: var(--space-6);
+        }
+        
+        .patient-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            border: 1px solid var(--color-border);
+            transition: all 0.2s;
+        }
+        
+        .patient-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+        
+        .patient-card.attention {
+            border-color: var(--color-warning);
+            background: linear-gradient(to bottom, rgba(255, 193, 7, 0.05), transparent);
+        }
+        
+        .patient-card-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+        }
+        
+        .patient-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--color-dyslexia);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .patient-basic-info {
+            flex: 1;
+        }
+        
+        .patient-basic-info h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .patient-basic-info p {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .status-badge {
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-badge.active { background: var(--color-success-100); color: var(--color-success); }
+        .status-badge.inactive { background: var(--color-danger-100); color: var(--color-danger); }
+        .status-badge.new { background: var(--color-primary-100); color: var(--color-primary); }
+        
+        .patient-conditions {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-4);
+        }
+        
+        .condition-tag {
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .condition-tag.dyslexia { background: rgba(59, 130, 246, 0.1); color: var(--color-dyslexia); }
+        .condition-tag.dyscalculia { background: rgba(34, 197, 94, 0.1); color: var(--color-dyscalculia); }
+        .condition-tag.dysgraphia { background: rgba(249, 115, 22, 0.1); color: var(--color-dysgraphia); }
+        .condition-tag.dyspraxia { background: rgba(239, 68, 68, 0.1); color: var(--color-dyspraxia); }
+        
+        .patient-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-3);
+            padding: var(--space-4) 0;
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: var(--space-4);
+        }
+        
+        .patient-stats .stat {
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: var(--space-1);
+        }
+        
+        .stat-value {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .progress-mini {
+            height: 4px;
+            background: var(--color-background);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: var(--space-1) 0;
+        }
+        
+        .progress-mini .progress-bar {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+        
+        .patient-card-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .patient-card-actions .btn {
+            flex: 1;
+        }
+        
+        .filters-bar {
+            display: flex;
+            gap: var(--space-4);
+            align-items: center;
+            padding: var(--space-4);
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: var(--space-3);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-text-secondary);
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: var(--space-3) var(--space-3) var(--space-3) var(--space-10);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-background);
+            color: var(--color-text);
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .filter-group select {
+            padding: var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-background);
+            color: var(--color-text);
+            min-width: 150px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-4);
+            margin-top: var(--space-8);
+        }
+        
+        .page-info {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+        }
+        
+        .modal .modal-content {
+            position: relative;
+            background: var(--color-surface, #fff);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalSlideIn 0.2s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--color-border, #e5e7eb);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal .modal-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .modal .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--color-text-secondary, #6b7280);
+        }
+        
+        .modal .modal-close:hover {
+            background: var(--color-bg-secondary, #f3f4f6);
+        }
+        
+        .modal .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--color-border, #e5e7eb);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+        
+        .modal .form-input,
+        .modal .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--color-border, #e5e7eb);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--color-background, #fff);
+            color: var(--color-text, #1f2937);
+        }
+        
+        .modal .form-input:focus,
+        .modal .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary, #3b82f6);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .modal .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .modal .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--color-text, #1f2937);
+        }
+        
+        .modal .form-help {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary, #6b7280);
+            margin: 0.5rem 0 0;
+        }
+    </style>
+</body>
+</html>

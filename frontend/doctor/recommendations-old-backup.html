@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Recommendations - Cogno Solution Doctor Portal">
+    <title>Recommendations - Cogno Solution</title>
+    
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <style>
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .recommendation-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        
+        .recommendation-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .patient-brief {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .patient-brief .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .patient-brief h4 {
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .patient-brief p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .recommendation-body {
+            padding: 1.5rem;
+        }
+        
+        .recommendation-section {
+            margin-bottom: 1.25rem;
+        }
+        
+        .recommendation-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .recommendation-section h5 {
+            margin: 0 0 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .recommendation-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .recommendation-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+        }
+        
+        .recommendation-list li i {
+            color: var(--color-primary);
+            margin-top: 0.2rem;
+        }
+        
+        .recommendation-actions {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .quick-templates {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .template-card {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 1.25rem;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .template-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+        
+        .template-card h4 {
+            margin: 0 0 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .template-card p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .template-card.dyslexia i { color: var(--color-dyslexia); }
+        .template-card.dyscalculia i { color: var(--color-dyscalculia); }
+        .template-card.dysgraphia i { color: var(--color-dysgraphia); }
+        .template-card.dyspraxia i { color: var(--color-dyspraxia); }
+    </style>
+</head>
+<body class="has-sidebar">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+                <span class="sidebar-brand">Cogno Solution</span>
+                <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <a href="../dashboard/doctor-dashboard.html" class="sidebar-link">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Patients</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./patients.html" class="sidebar-link">
+                            <i class="fa-solid fa-users"></i>
+                            <span>My Patients</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./live-monitoring.html" class="sidebar-link">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>Live Monitoring</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./assessments.html" class="sidebar-link">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                            <span>Assessments</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Consultations</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./consultations.html" class="sidebar-link">
+                            <i class="fa-solid fa-video"></i>
+                            <span>Video Consultations</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./schedule.html" class="sidebar-link">
+                            <i class="fa-solid fa-calendar"></i>
+                            <span>My Schedule</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./messages.html" class="sidebar-link">
+                            <i class="fa-solid fa-message"></i>
+                            <span>Messages</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Reports</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./reports.html" class="sidebar-link">
+                            <i class="fa-solid fa-chart-bar"></i>
+                            <span>Patient Reports</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item active">
+                        <a href="./recommendations.html" class="sidebar-link">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span>Recommendations</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Account</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./profile.html" class="sidebar-link">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../settings/index.html" class="sidebar-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="sidebar-link" id="logout-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                
+                <nav class="breadcrumb">
+                    <a href="./">Dashboard</a>
+                    <span>/</span>
+                    <span>Recommendations</span>
+                </nav>
+                
+                <div class="topbar-actions">
+                    <button class="topbar-btn" id="notifications-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge" style="display: none;"></span>
+                    </button>
+                    <div class="user-menu">
+                        <div class="user-avatar" id="user-avatar">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+                        <span id="user-name">Doctor</span>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content-area">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-header-content">
+                        <h1><i class="fa-solid fa-lightbulb"></i> Learning Recommendations</h1>
+                        <p>Create personalized learning plans and activity recommendations for your patients</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showCreateRecommendationModal()">
+                        <i class="fa-solid fa-plus"></i> New Recommendation
+                    </button>
+                </div>
+                
+                <!-- Quick Templates -->
+                <h3 style="margin-bottom: 1rem;">Quick Templates</h3>
+                <div class="quick-templates">
+                    <div class="template-card dyslexia" onclick="useTemplate('dyslexia')">
+                        <h4><i class="fa-solid fa-book-open"></i> Dyslexia Support</h4>
+                        <p>Reading exercises, phonics games, word recognition activities</p>
+                    </div>
+                    <div class="template-card dyscalculia" onclick="useTemplate('dyscalculia')">
+                        <h4><i class="fa-solid fa-calculator"></i> Dyscalculia Support</h4>
+                        <p>Number sense, counting games, math visualization tools</p>
+                    </div>
+                    <div class="template-card dysgraphia" onclick="useTemplate('dysgraphia')">
+                        <h4><i class="fa-solid fa-pen"></i> Dysgraphia Support</h4>
+                        <p>Handwriting practice, letter formation, motor skill exercises</p>
+                    </div>
+                    <div class="template-card dyspraxia" onclick="useTemplate('dyspraxia')">
+                        <h4><i class="fa-solid fa-person-walking"></i> Dyspraxia Support</h4>
+                        <p>Coordination games, movement activities, balance exercises</p>
+                    </div>
+                </div>
+                
+                <!-- Patient Recommendations -->
+                <h3 style="margin: 2rem 0 1rem;">Patient Recommendations</h3>
+                <div class="recommendations-grid" id="recommendations-grid">
+                    <!-- Recommendations will be loaded dynamically -->
+                    <div class="empty-state" style="grid-column: 1 / -1; padding: 3rem; text-align: center;">
+                        <i class="fa-solid fa-lightbulb" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                        <h3>No recommendations yet</h3>
+                        <p>Create personalized recommendations for your patients using the templates above</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Create Recommendation Modal -->
+    <div class="modal" id="create-modal">
+        <div class="modal-overlay" onclick="closeCreateModal()"></div>
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Create Recommendation</h3>
+                <button class="modal-close" onclick="closeCreateModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Select Patient</label>
+                    <select id="rec-patient" class="form-select">
+                        <option value="">Choose a patient...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Condition Focus</label>
+                    <select id="rec-condition" class="form-select">
+                        <option value="">Select condition...</option>
+                        <option value="dyslexia">Dyslexia</option>
+                        <option value="dyscalculia">Dyscalculia</option>
+                        <option value="dysgraphia">Dysgraphia</option>
+                        <option value="dyspraxia">Dyspraxia</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Recommended Activities</label>
+                    <div class="activities-checklist" id="activities-checklist">
+                        <!-- Activities will be populated based on condition -->
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Daily Time Goal (minutes)</label>
+                    <input type="number" id="rec-time" class="form-input" value="30" min="10" max="120">
+                </div>
+                
+                <div class="form-group">
+                    <label>Additional Notes</label>
+                    <textarea id="rec-notes" class="form-textarea" rows="3" 
+                        placeholder="Add specific instructions or goals..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeCreateModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitRecommendation()">
+                    <i class="fa-solid fa-paper-plane"></i> Send Recommendation
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container toast-top-right"></div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./doctor.js"></script>
+    <script>
+        const activityTemplates = {
+            dyslexia: [
+                'Phonics Exercises',
+                'Word Recognition Games',
+                'Reading Comprehension',
+                'Letter Tracing',
+                'Rhyming Activities',
+                'Sight Words Practice'
+            ],
+            dyscalculia: [
+                'Number Sense Activities',
+                'Counting Games',
+                'Math Pop Games',
+                'Number Line Practice',
+                'Addition/Subtraction Drills',
+                'Shape Recognition'
+            ],
+            dysgraphia: [
+                'Letter Formation Practice',
+                'Handwriting Exercises',
+                'Fine Motor Activities',
+                'Tracing Worksheets',
+                'Keyboard Typing Practice',
+                'Drawing Exercises'
+            ],
+            dyspraxia: [
+                'Balance Exercises',
+                'Coordination Games',
+                'Movement Activities',
+                'Catch & Throw Practice',
+                'Pose Matching Games',
+                'Dance & Rhythm Activities'
+            ]
+        };
+        
+        // Populate patient dropdown
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const select = document.getElementById('rec-patient');
+                DoctorPortal.patients.forEach(patient => {
+                    const option = document.createElement('option');
+                    option.value = patient.id;
+                    option.textContent = patient.name;
+                    select.appendChild(option);
+                });
+            }, 1000);
+        });
+        
+        // Update activities checklist when condition changes
+        document.getElementById('rec-condition')?.addEventListener('change', (e) => {
+            const condition = e.target.value;
+            const checklist = document.getElementById('activities-checklist');
+            
+            if (!condition || !activityTemplates[condition]) {
+                checklist.innerHTML = '<p style="color: var(--text-secondary);">Select a condition to see activities</p>';
+                return;
+            }
+            
+            checklist.innerHTML = activityTemplates[condition].map(activity => `
+                <label class="checkbox-label" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0;">
+                    <input type="checkbox" name="activities" value="${activity}" checked>
+                    <span>${activity}</span>
+                </label>
+            `).join('');
+        });
+        
+        function useTemplate(condition) {
+            document.getElementById('rec-condition').value = condition;
+            document.getElementById('rec-condition').dispatchEvent(new Event('change'));
+            showCreateRecommendationModal();
+        }
+        
+        function showCreateRecommendationModal() {
+            document.getElementById('create-modal').classList.add('show');
+        }
+        
+        function closeCreateModal() {
+            document.getElementById('create-modal').classList.remove('show');
+        }
+        
+        async function submitRecommendation() {
+            const patientId = document.getElementById('rec-patient').value;
+            const condition = document.getElementById('rec-condition').value;
+            const timeGoal = document.getElementById('rec-time').value;
+            const notes = document.getElementById('rec-notes').value;
+            
+            const selectedActivities = Array.from(
+                document.querySelectorAll('input[name="activities"]:checked')
+            ).map(cb => cb.value);
+            
+            if (!patientId) {
+                DoctorPortal.showToast('Please select a patient', 'error');
+                return;
+            }
+            
+            if (!condition) {
+                DoctorPortal.showToast('Please select a condition', 'error');
+                return;
+            }
+            
+            if (selectedActivities.length === 0) {
+                DoctorPortal.showToast('Please select at least one activity', 'error');
+                return;
+            }
+            
+            try {
+                const patient = DoctorPortal.patients.find(p => p.id === patientId);
+                
+                // Send notification to patient
+                await CognoSupabase?.client
+                    ?.from('notifications')
+                    ?.insert({
+                        user_id: patientId,
+                        title: 'New Learning Recommendation',
+                        message: `Dr. ${DoctorPortal.doctorProfile?.full_name} has created a personalized learning plan for you with ${selectedActivities.length} activities.`,
+                        notification_type: 'recommendation'
+                    });
+                
+                DoctorPortal.showToast(`Recommendation sent to ${patient?.name}!`, 'success');
+                closeCreateModal();
+                
+                // Add to grid (demo)
+                addRecommendationToGrid(patient, condition, selectedActivities, timeGoal, notes);
+                
+            } catch (error) {
+                console.error('Failed to create recommendation:', error);
+                DoctorPortal.showToast('Failed to create recommendation', 'error');
+            }
+        }
+        
+        function addRecommendationToGrid(patient, condition, activities, timeGoal, notes) {
+            const grid = document.getElementById('recommendations-grid');
+            const emptyState = grid.querySelector('.empty-state');
+            if (emptyState) emptyState.remove();
+            
+            const initials = patient.name?.split(' ').map(n => n[0]).join('') || '?';
+            
+            const card = document.createElement('div');
+            card.className = 'recommendation-card';
+            card.innerHTML = `
+                <div class="recommendation-header">
+                    <div class="patient-brief">
+                        <div class="avatar">${initials}</div>
+                        <div>
+                            <h4>${patient.name}</h4>
+                            <p>${condition} support plan</p>
+                        </div>
+                    </div>
+                    <span class="badge badge-success">Active</span>
+                </div>
+                <div class="recommendation-body">
+                    <div class="recommendation-section">
+                        <h5>Recommended Activities</h5>
+                        <ul class="recommendation-list">
+                            ${activities.slice(0, 4).map(a => `
+                                <li><i class="fa-solid fa-check-circle"></i> ${a}</li>
+                            `).join('')}
+                            ${activities.length > 4 ? `<li><i class="fa-solid fa-ellipsis"></i> +${activities.length - 4} more</li>` : ''}
+                        </ul>
+                    </div>
+                    <div class="recommendation-section">
+                        <h5>Daily Goal</h5>
+                        <p><i class="fa-solid fa-clock"></i> ${timeGoal} minutes per day</p>
+                    </div>
+                </div>
+                <div class="recommendation-actions">
+                    <button class="btn btn-outline btn-sm flex-1">
+                        <i class="fa-solid fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-ghost btn-sm flex-1">
+                        <i class="fa-solid fa-trash"></i> Remove
+                    </button>
+                </div>
+            `;
+            
+            grid.insertBefore(card, grid.firstChild);
+        }
+    </script>
+</body>
+</html>

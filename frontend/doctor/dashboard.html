@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-darker: #1d4ed8;
+            --primary-light: #eff6ff;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --info: #06b6d4;
+            --info-light: #cffafe;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --primary-light: #1e3a5f;
+            --success-light: #064e3b;
+            --warning-light: #451a03;
+            --danger-light: #450a0a;
+            --info-light: #164e63;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 90px;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        /* Topbar */
+        .topbar {
+            background: var(--card);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .topbar-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        .topbar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .topbar-btn {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+        
+        .topbar-btn:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        
+        .topbar-btn .badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            min-width: 18px;
+            height: 18px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.65rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: relative;
+        }
+        
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .profile-btn:hover {
+            background: var(--border);
+        }
+        
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .profile-info {
+            text-align: left;
+        }
+        
+        .profile-info .name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .profile-info .role {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .profile-chevron {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            transition: transform 0.2s;
+        }
+        
+        .profile-dropdown.open .profile-chevron {
+            transform: rotate(180deg);
+        }
+        
+        .profile-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            min-width: 240px;
+            padding: 0.5rem;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .profile-menu.show {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .profile-menu-header {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-menu-header .name {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+        
+        .profile-menu-header .email {
+            font-size: 0.75rem;
+            color: var(--primary);
+        }
+        
+        .profile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+        }
+        
+        .profile-menu-item:hover {
+            background: var(--border);
+        }
+        
+        .profile-menu-item i {
+            width: 20px;
+            color: var(--text-muted);
+        }
+        
+        .profile-menu-item.danger {
+            color: var(--danger);
+        }
+        
+        .profile-menu-item.danger i {
+            color: var(--danger);
+        }
+        
+        .theme-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 0.75rem;
+            border-radius: 8px;
+        }
+        
+        .theme-toggle-row:hover {
+            background: var(--border);
+        }
+        
+        .theme-toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text);
+            font-size: 0.85rem;
+        }
+        
+        .theme-toggle-left i {
+            width: 20px;
+            color: var(--text-muted);
+        }
+        
+        .theme-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .theme-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--border);
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+        
+        .theme-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .theme-slider {
+            background: var(--primary);
+        }
+        
+        input:checked + .theme-slider:before {
+            transform: translateX(20px);
+        }
+        
+        .menu-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0.5rem 0;
+        }
+        
+        /* Notifications Panel */
+        .notifications-panel {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            width: 320px;
+            max-height: 400px;
+            overflow: hidden;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .notifications-panel.show {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+        
+        .notifications-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notifications-header h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        
+        .notifications-header button {
+            font-size: 0.75rem;
+            color: var(--primary);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .notifications-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .notification-item:hover {
+            background: var(--border);
+        }
+        
+        .notification-item.unread {
+            background: var(--primary-light);
+        }
+        
+        .notification-item .title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .notification-item .time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .notifications-empty {
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        /* Main Content */
+        .content {
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Welcome Section */
+        .welcome-section {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--accent) 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            color: white;
+            margin-bottom: 1.25rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        
+        .welcome-greeting {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+        }
+        
+        .welcome-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .welcome-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .welcome-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        
+        .welcome-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .welcome-btn.primary {
+            background: white;
+            color: var(--primary);
+            border: none;
+        }
+        
+        .welcome-btn.primary:hover {
+            background: rgba(255,255,255,0.9);
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+        
+        @media (min-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        .stat-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-card .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .stat-card .icon.primary { background: var(--primary-light); color: var(--primary); }
+        .stat-card .icon.success { background: var(--success-light); color: var(--success); }
+        .stat-card .icon.warning { background: var(--warning-light); color: var(--warning); }
+        .stat-card .icon.info { background: var(--info-light); color: var(--info); }
+        
+        .stat-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-card .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* Section */
+        .section {
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        
+        .section-title i {
+            color: var(--primary);
+        }
+        
+        .section-title .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .section-link {
+            font-size: 0.8rem;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .section-body {
+            padding: 1rem;
+        }
+        
+        /* Live Activity */
+        .live-activity-empty {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+        
+        .live-activity-empty i {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.5;
+        }
+        
+        .live-activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.75rem;
+        }
+        
+        .activity-card {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .activity-card:hover {
+            background: var(--border);
+        }
+        
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            position: relative;
+        }
+        
+        .activity-avatar .status {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            background: var(--success);
+            border: 2px solid var(--card);
+            border-radius: 50%;
+        }
+        
+        .activity-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .activity-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.15rem;
+        }
+        
+        .activity-module {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .activity-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .activity-item:hover {
+            background: var(--border);
+        }
+        
+        .activity-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .activity-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .activity-avatar .status.online {
+            background: #22c55e;
+        }
+        
+        .activity-avatar .status.offline {
+            background: #9ca3af;
+        }
+        
+        /* Schedule List */
+        .schedule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .schedule-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+        
+        .schedule-item:hover {
+            background: var(--border);
+        }
+        
+        .schedule-time {
+            min-width: 60px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .schedule-info {
+            flex: 1;
+        }
+        
+        .schedule-patient {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.15rem;
+        }
+        
+        .schedule-type {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .schedule-action {
+            padding: 0.4rem 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .schedule-action:hover {
+            background: var(--primary-dark);
+        }
+        
+        .schedule-empty {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+        
+        .schedule-empty i {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.5;
+        }
+        
+        /* Messages List */
+        .message-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+        }
+        
+        .message-item:hover {
+            background: var(--border);
+        }
+        
+        .message-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        
+        .message-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+        
+        .message-sender {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .message-preview {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .message-badge {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            padding: 1rem;
+            height: 200px;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.4rem 0.75rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            border-radius: 10px;
+            text-decoration: none;
+            min-width: 50px;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn i {
+            font-size: 1.15rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .nav-btn:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        
+        .nav-btn.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 0.5rem var(--spacing-sm, 0.5rem);
+                gap: 0.5rem;
+                height: 56px;
+            }
+            
+            .topbar-left {
+                gap: 0.5rem;
+                min-width: 0;
+                flex: 1;
+            }
+            
+            .topbar-title {
+                font-size: 0.95rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .topbar-right {
+                gap: 2px;
+            }
+            
+            .topbar-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+
+            .profile-info {
+                display: none;
+            }
+            
+            .welcome-actions {
+                flex-direction: column;
+            }
+            
+            .welcome-btn {
+                justify-content: center;
+            }
+            
+            .topbar-title {
+                font-size: 1rem;
+            }
+            
+            .notifications-panel {
+                width: calc(100vw - 2rem);
+                right: -0.5rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .content {
+                padding: 1.5rem;
+            }
+            
+            .stats-grid {
+                gap: 1rem;
+            }
+            
+            .stat-card {
+                padding: 1.25rem;
+            }
+            
+            .stat-card .value {
+                font-size: 1.75rem;
+            }
+        }
+        
+        /* Overlay for dropdowns */
+        .dropdown-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+        }
+        
+        .dropdown-overlay.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Dropdown Overlay -->
+    <div class="dropdown-overlay" id="dropdown-overlay" onclick="closeAllDropdowns()"></div>
+    
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo">C</div>
+            <span class="topbar-title">Dashboard</span>
+        </div>
+        
+        <div class="topbar-right">
+            <!-- Notifications -->
+            <div style="position: relative;">
+                <button class="topbar-btn" id="notifications-btn" onclick="toggleNotifications()">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notifications-badge" style="display: none;">0</span>
+                </button>
+                
+                <div class="notifications-panel" id="notifications-panel">
+                    <div class="notifications-header">
+                        <h4>Notifications</h4>
+                        <button onclick="markAllRead()">Mark all read</button>
+                    </div>
+                    <div class="notifications-list" id="notifications-list">
+                        <div class="notifications-empty">
+                            <i class="fa-solid fa-bell-slash"></i>
+                            <p>No notifications</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Dropdown -->
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <div class="profile-avatar" id="profile-avatar">D</div>
+                    <div class="profile-info">
+                        <div class="name" id="profile-name">Doctor</div>
+                        <div class="role">Specialist</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down profile-chevron"></i>
+                </button>
+                
+                <div class="profile-menu" id="profile-menu">
+                    <div class="profile-menu-header">
+                        <div class="name" id="menu-name">Doctor</div>
+                        <div class="email" id="menu-email">doctor@example.com</div>
+                    </div>
+                    
+                    <a href="profile.html" class="profile-menu-item">
+                        <i class="fa-solid fa-user"></i>
+                        <span>View Profile</span>
+                    </a>
+                    <a href="profile.html?edit=true" class="profile-menu-item">
+                        <i class="fa-solid fa-pen"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                    <a href="settings.html" class="profile-menu-item">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                    
+                    <div class="theme-toggle-row">
+                        <div class="theme-toggle-left">
+                            <i class="fa-solid fa-moon"></i>
+                            <span>Dark Mode</span>
+                        </div>
+                        <label class="theme-switch">
+                            <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+                            <span class="theme-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="menu-divider"></div>
+                    
+                    <button class="profile-menu-item danger" onclick="logout()">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-greeting">Good morning,</div>
+            <div class="welcome-name" id="welcome-name">Dr. Doctor</div>
+            <div class="welcome-date">
+                <i class="fa-solid fa-calendar"></i>
+                <span id="current-date">February 9, 2026</span>
+            </div>
+            <div class="welcome-actions">
+                <a href="consultations.html" class="welcome-btn primary">
+                    <i class="fa-solid fa-video"></i>
+                    Start Consultation
+                </a>
+                <a href="schedule.html" class="welcome-btn">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    View Schedule
+                </a>
+            </div>
+        </div>
+        
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon primary"><i class="fa-solid fa-users"></i></div>
+                <div class="value" id="total-patients">0</div>
+                <div class="label">Total Patients</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon success"><i class="fa-solid fa-user-check"></i></div>
+                <div class="value" id="active-today">0</div>
+                <div class="label">Active Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon warning"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="value" id="consultations-today">0</div>
+                <div class="label">Consultations</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon info"><i class="fa-solid fa-message"></i></div>
+                <div class="value" id="unread-messages">0</div>
+                <div class="label">Messages</div>
+            </div>
+        </div>
+        
+        <!-- Live Activity -->
+        <div class="section">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <span class="live-dot"></span>
+                    Live Patient Activity
+                </h3>
+                <a href="patients.html" class="section-link">
+                    View All <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="section-body">
+                <div class="live-activity-grid" id="live-activity">
+                    <div class="live-activity-empty">
+                        <i class="fa-solid fa-users"></i>
+                        <p>No patients currently active</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Two Column -->
+        <div class="two-column">
+            <!-- Today's Schedule -->
+            <div class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-calendar-day"></i>
+                        Today's Schedule
+                    </h3>
+                    <a href="schedule.html" class="section-link">
+                        Full Schedule <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="section-body">
+                    <div class="schedule-list" id="schedule-list">
+                        <div class="schedule-empty">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            <p>No consultations scheduled</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Messages -->
+            <div class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-message"></i>
+                        Recent Messages
+                    </h3>
+                    <a href="messages.html" class="section-link">
+                        All Messages <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="section-body" id="messages-list">
+                    <div class="schedule-empty">
+                        <i class="fa-solid fa-inbox"></i>
+                        <p>No recent messages</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Row -->
+        <div class="two-column">
+            <div class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        Patient Distribution
+                    </h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="module-chart"></canvas>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        Weekly Consultations
+                    </h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="consultations-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn active">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a href="patients.html" class="nav-btn">
+            <i class="fa-solid fa-user-group"></i>
+            Patients
+        </a>
+        <a href="schedule.html" class="nav-btn">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="consultations.html" class="nav-btn">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="reports.html" class="nav-btn">
+            <i class="fa-solid fa-chart-bar"></i>
+            Reports
+        </a>
+        <a href="profile.html" class="nav-btn">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/api-client.js"></script>
+    <script>
+        // Theme Management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('cogno_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-toggle').checked = savedTheme === 'dark';
+        }
+        
+        function toggleTheme() {
+            const isDark = document.getElementById('theme-toggle').checked;
+            const theme = isDark ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('cogno_theme', theme);
+        }
+        
+        // Dropdown Management
+        function closeAllDropdowns() {
+            document.getElementById('profile-menu').classList.remove('show');
+            document.getElementById('notifications-panel').classList.remove('show');
+            document.getElementById('profile-dropdown').classList.remove('open');
+            document.getElementById('dropdown-overlay').classList.remove('show');
+        }
+        
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profile-menu');
+            const dropdown = document.getElementById('profile-dropdown');
+            const overlay = document.getElementById('dropdown-overlay');
+            const notifPanel = document.getElementById('notifications-panel');
+            
+            notifPanel.classList.remove('show');
+            
+            if (menu.classList.contains('show')) {
+                closeAllDropdowns();
+            } else {
+                menu.classList.add('show');
+                dropdown.classList.add('open');
+                overlay.classList.add('show');
+            }
+        }
+        
+        function toggleNotifications() {
+            const panel = document.getElementById('notifications-panel');
+            const overlay = document.getElementById('dropdown-overlay');
+            const menu = document.getElementById('profile-menu');
+            const dropdown = document.getElementById('profile-dropdown');
+            
+            menu.classList.remove('show');
+            dropdown.classList.remove('open');
+            
+            if (panel.classList.contains('show')) {
+                closeAllDropdowns();
+            } else {
+                panel.classList.add('show');
+                overlay.classList.add('show');
+            }
+        }
+        
+        function markAllRead() {
+            const badge = document.getElementById('notifications-badge');
+            badge.style.display = 'none';
+            badge.textContent = '0';
+        }
+        
+        // Logout
+        async function logout() {
+            try {
+                await CognoSupabase.signOut();
+                window.location.href = '../auth/login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = '../auth/login.html';
+            }
+        }
+        
+        // Load Dashboard Data
+        async function loadDashboard() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+                
+                // Get doctor profile
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile) {
+                    const name = profile.full_name || user.email.split('@')[0];
+                    const initial = name.charAt(0).toUpperCase();
+                    
+                    document.getElementById('profile-avatar').textContent = initial;
+                    document.getElementById('profile-name').textContent = name;
+                    document.getElementById('menu-name').textContent = name;
+                    document.getElementById('menu-email').textContent = user.email;
+                    document.getElementById('welcome-name').textContent = `Dr. ${name}`;
+                    
+                    // Update greeting based on time
+                    const hour = new Date().getHours();
+                    const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+                    document.querySelector('.welcome-greeting').textContent = greeting + ',';
+                }
+                
+                // Set current date
+                const today = new Date();
+                document.getElementById('current-date').textContent = today.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                // Load stats
+                await loadStats(user.id);
+                
+                // Load live activity
+                await loadLiveActivity(user.id);
+                
+                // Load schedule
+                await loadSchedule(user.id);
+                
+                // Load messages
+                await loadMessages(user.id);
+                
+                // Load charts
+                await loadCharts(user.id);
+                
+                // Subscribe to real-time updates
+                subscribeToUpdates(user.id);
+                
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+        
+        async function loadStats(doctorId) {
+            try {
+                // Get assigned patient IDs first
+                const { data: relationships } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .select('patient_id')
+                    .eq('doctor_id', doctorId)
+                    .eq('status', 'active');
+                
+                const patientIds = relationships ? relationships.map(r => r.patient_id) : [];
+                document.getElementById('total-patients').textContent = patientIds.length;
+                
+                // Get today's range
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                
+                // Get active today count
+                if (patientIds.length > 0) {
+                    const { data: activeToday } = await CognoSupabase.client
+                        .from('activity_log')
+                        .select('user_id')
+                        .in('user_id', patientIds)
+                        .gte('created_at', today.toISOString())
+                        .lt('created_at', tomorrow.toISOString());
+                    
+                    const uniqueActive = new Set(activeToday?.map(a => a.user_id) || []).size;
+                    document.getElementById('active-today').textContent = uniqueActive;
+                } else {
+                    document.getElementById('active-today').textContent = 0;
+                }
+                
+                // Get today's consultations
+                const { count: consultations } = await CognoSupabase.client
+                    .from('consultations')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('doctor_id', doctorId)
+                    .gte('scheduled_at', today.toISOString())
+                    .lt('scheduled_at', tomorrow.toISOString())
+                    .not('status', 'eq', 'cancelled');
+                
+                document.getElementById('consultations-today').textContent = consultations || 0;
+                
+                // Get unread messages
+                const { count: unreadMessages } = await CognoSupabase.client
+                    .from('messages')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('recipient_id', doctorId)
+                    .eq('is_read', false);
+                
+                document.getElementById('unread-messages').textContent = unreadMessages || 0;
+                
+                if (unreadMessages > 0) {
+                    const badge = document.getElementById('notifications-badge');
+                    if (badge) {
+                        badge.style.display = 'flex';
+                        badge.textContent = unreadMessages;
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        
+        async function loadSchedule(doctorId) {
+            try {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                
+                const { data: schedule } = await CognoSupabase.client
+                    .from('consultations')
+                    .select(`
+                        id, scheduled_at, appointment_type, meeting_url,
+                        patient:patient_id(id, full_name, avatar_url)
+                    `)
+                    .eq('doctor_id', doctorId)
+                    .gte('scheduled_at', today.toISOString())
+                    .lt('scheduled_at', tomorrow.toISOString())
+                    .not('status', 'eq', 'cancelled')
+                    .order('scheduled_at', { ascending: true })
+                    .limit(5);
+                
+                const container = document.getElementById('schedule-list');
+                
+                if (schedule && schedule.length > 0) {
+                    container.innerHTML = schedule.map(item => {
+                        const date = new Date(item.scheduled_at);
+                        const time = date.toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                        });
+                        const patientName = item.patient?.full_name || 'Patient';
+                        
+                        return `
+                            <div class="schedule-item">
+                                <div class="schedule-time">${time}</div>
+                                <div class="schedule-info">
+                                    <div class="schedule-patient">${patientName}</div>
+                                    <div class="schedule-type">${item.appointment_type || (item.meeting_url ? 'Video Call' : 'In-Person')}</div>
+                                </div>
+                                <button class="schedule-action" onclick="window.location.href='consultations.html'">
+                                    <i class="fa-solid ${item.meeting_url ? 'fa-video' : 'fa-hospital'}"></i>
+                                    Join
+                                </button>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="schedule-empty">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            <p>No consultations scheduled for today</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading schedule:', error);
+            }
+        }
+
+        
+        async function loadMessages(doctorId) {
+            try {
+                const { data: messages } = await CognoSupabase.client
+                    .from('messages')
+                    .select(`
+                        *,
+                        sender:sender_id(id, full_name, avatar_url)
+                    `)
+                    .eq('recipient_id', doctorId)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+                
+                const container = document.getElementById('messages-list');
+                
+                if (messages && messages.length > 0) {
+                    container.innerHTML = messages.map(msg => {
+                        const senderName = msg.sender?.full_name || 'Unknown';
+                        const initial = senderName.charAt(0).toUpperCase();
+                        const time = new Date(msg.created_at).toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit'
+                        });
+                        
+                        return `
+                            <div class="message-item" onclick="window.location.href='messages.html'">
+                                <div class="message-avatar">${initial}</div>
+                                <div class="message-content">
+                                    <div class="message-header">
+                                        <span class="message-sender">${senderName}</span>
+                                        <span class="message-time">${time}</span>
+                                    </div>
+                                    <div class="message-preview">${msg.content || 'No message'}</div>
+                                </div>
+                                ${!msg.is_read ? '<div class="message-badge"></div>' : ''}
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="schedule-empty">
+                            <i class="fa-solid fa-inbox"></i>
+                            <p>No recent messages</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+        
+        async function loadCharts(doctorId) {
+            try {
+                // Get patients assigned to this doctor
+                const { data: relationships } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .select('patient_id')
+                    .eq('doctor_id', doctorId)
+                    .eq('status', 'active');
+                
+                const patientIds = relationships ? relationships.map(r => r.patient_id) : [];
+
+                // Module Distribution (using student_progress)
+                let moduleData = [0, 0, 0, 0];
+                if (patientIds.length > 0) {
+                    const { data: progress } = await CognoSupabase.client
+                        .from('student_progress')
+                        .select('module_type')
+                        .in('student_id', patientIds);
+
+                    if (progress) {
+                        const counts = { dyslexia: 0, dyscalculia: 0, dysgraphia: 0, dyspraxia: 0 };
+                        progress.forEach(p => {
+                            if (counts[p.module_type] !== undefined) counts[p.module_type]++;
+                        });
+                        moduleData = [counts.dyslexia, counts.dyscalculia, counts.dysgraphia, counts.dyspraxia];
+                    }
+                }
+
+                // Module Distribution Chart
+                const moduleCtx = document.getElementById('module-chart').getContext('2d');
+                if (window.moduleChart) window.moduleChart.destroy();
+                window.moduleChart = new Chart(moduleCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Dyslexia', 'Dyscalculia', 'Dysgraphia', 'Dyspraxia'],
+                        datasets: [{
+                            data: moduleData.every(v => v === 0) ? [1,1,1,1] : moduleData,
+                            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 15,
+                                    font: { size: 11 }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Weekly Consultations Chart
+                const consultCtx = document.getElementById('consultations-chart').getContext('2d');
+                if (window.consultChart) window.consultChart.destroy();
+                window.consultChart = new Chart(consultCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Consultations',
+                            data: [4, 6, 5, 8, 7, 3, 2],
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { display: false }
+                            },
+                            x: {
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading charts:', error);
+            }
+        }
+
+        
+        async function loadLiveActivity(doctorId) {
+            try {
+                // Get patients assigned to this doctor
+                const { data: relationships } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .select('patient_id')
+                    .eq('doctor_id', doctorId)
+                    .eq('status', 'active');
+                
+                if (!relationships || relationships.length === 0) {
+                    return;
+                }
+                
+                const patientIds = relationships.map(r => r.patient_id);
+                
+                // Get recent activity from these patients
+                const { data: activities } = await CognoSupabase.client
+                    .from('activity_log')
+                    .select(`
+                        *,
+                        user:user_id(id, full_name, avatar_url)
+                    `)
+                    .in('user_id', patientIds)
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+                
+                const container = document.getElementById('live-activity');
+                
+                // Also update "Active Today" stat
+                const todayStr = new Date().toISOString().split('T')[0];
+                const activeTodayCount = new Set(
+                    (activities || [])
+                        .filter(a => a.created_at && a.created_at.startsWith(todayStr))
+                        .map(a => a.user_id)
+                ).size;
+                
+                const activeTodayEl = document.getElementById('active-today');
+                if (activeTodayEl) activeTodayEl.textContent = activeTodayCount;
+                
+                if (activities && activities.length > 0) {
+                    container.innerHTML = activities.map(activity => {
+                        const name = activity.user?.full_name || 'Patient';
+                        const initial = name.charAt(0).toUpperCase();
+                        const time = formatTimeAgo(activity.created_at);
+                        const activityType = activity.activity_type || 'Activity';
+                        const moduleName = activity.module_name || '';
+                        
+                        // Determine status based on recency
+                        const minutesAgo = (Date.now() - new Date(activity.created_at)) / 60000;
+                        const isOnline = minutesAgo < 15; // Increased to 15 mins for better visibility
+                        
+                        return `
+                            <div class="activity-item" onclick="window.location.href='patients.html'">
+                                <div class="activity-avatar">
+                                    ${activity.user?.avatar_url 
+                                        ? `<img src="${activity.user.avatar_url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` 
+                                        : initial}
+                                    <span class="status ${isOnline ? 'online' : 'offline'}"></span>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-name">${name}</div>
+                                    <div class="activity-desc">
+                                        ${getActivityDescription(activityType, moduleName)}
+                                    </div>
+                                </div>
+                                <div class="activity-time">${time}</div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="live-activity-empty">
+                            <i class="fa-solid fa-users"></i>
+                            <p>No patients currently active</p>
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Error loading live activity:', error);
+            }
+        }
+
+        
+        function getActivityDescription(type, module) {
+            const descriptions = {
+                'game_started': `Started ${module || 'a learning game'}`,
+                'game_completed': `Completed ${module || 'a learning game'}`,
+                'module_started': `Opened ${module || 'a module'}`,
+                'module_completed': `Finished ${module || 'a module'}`,
+                'exercise_completed': `Completed an exercise in ${module || 'learning'}`,
+                'login': 'Logged in to the platform',
+                'session_started': 'Started a learning session',
+                'session_ended': 'Ended their session'
+            };
+            return descriptions[type] || `${type} ${module ? 'in ' + module : ''}`;
+        }
+        
+        function formatTimeAgo(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            return date.toLocaleDateString();
+        }
+        
+        function subscribeToUpdates(doctorId) {
+            // Subscribe to activity_log changes
+            CognoSupabase.client
+                .channel('dashboard-updates')
+                .on('postgres_changes', {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'activity_log'
+                }, async (payload) => {
+                    loadLiveActivity(doctorId);
+                })
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'student_progress'
+                }, async (payload) => {
+                    // Update charts when progress changes
+                    loadCharts(doctorId);
+                    loadStats(doctorId);
+                })
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'doctor_patients',
+                    filter: `doctor_id=eq.${doctorId}`
+                }, () => {
+                    loadStats(doctorId);
+                    loadCharts(doctorId);
+                    loadLiveActivity(doctorId);
+                })
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'messages',
+                    filter: `recipient_id=eq.${doctorId}`
+                }, () => {
+                    loadMessages(doctorId);
+                    loadStats(doctorId);
+                })
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'consultations',
+                    filter: `doctor_id=eq.${doctorId}`
+                }, () => {
+                    loadSchedule(doctorId);
+                    loadStats(doctorId);
+                })
+                .subscribe();
+
+
+                
+            console.log('📡 Real-time subscriptions active');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadDashboard();
+        });
+    </script>
+</body>
+</html>

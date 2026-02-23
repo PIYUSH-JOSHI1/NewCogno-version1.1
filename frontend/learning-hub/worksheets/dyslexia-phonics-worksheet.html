@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phonemic Awareness Worksheet - Dyslexia Support | Cogno Solution</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Print-optimized styles based on NIMHANS & RCI clinical worksheets */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Lexend', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a2e;
+            background: white;
+            padding: 20px;
+        }
+        
+        @media print {
+            body { padding: 0; }
+            .no-print { display: none !important; }
+            .page-break { page-break-after: always; }
+            .worksheet-page { margin: 0; box-shadow: none; }
+        }
+        
+        .no-print {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+        
+        .no-print h1 { margin-bottom: 10px; }
+        
+        .print-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .print-btn:hover { background: #f0f0f0; }
+        
+        .worksheet-page {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            padding: 40px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 12px;
+        }
+        
+        .worksheet-header {
+            border-bottom: 3px solid #4f46e5;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .worksheet-header h1 {
+            color: #4f46e5;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .worksheet-header .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+        
+        .student-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .student-info label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        
+        .student-info input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #d1d5db;
+            background: transparent;
+            padding: 5px 0;
+            font-size: 1rem;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+        
+        .section-title {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .instructions {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+        
+        .instructions strong {
+            color: #92400e;
+        }
+        
+        /* Sound Blending Exercise */
+        .sound-blend-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .blend-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .blend-item .sounds {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .blend-item .sound-box {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        .blend-item .equals {
+            font-size: 1.5rem;
+            color: #6b7280;
+        }
+        
+        .blend-item .answer-box {
+            flex: 1;
+            border: 2px dashed #9ca3af;
+            border-radius: 8px;
+            padding: 10px 15px;
+            min-height: 50px;
+            background: #fafafa;
+        }
+        
+        /* Rhyming Words */
+        .rhyme-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+        
+        .rhyme-item {
+            text-align: center;
+        }
+        
+        .rhyme-item .target-word {
+            background: #10b981;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+        
+        .rhyme-item .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .rhyme-item .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        
+        .rhyme-item .option .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+        }
+        
+        /* Letter Sound Recognition */
+        .letter-sound-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .letter-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .letter-card .big-letter {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #4f46e5;
+            margin-bottom: 10px;
+        }
+        
+        .letter-card .image-box {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 10px;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+        
+        .letter-card .write-word {
+            border: none;
+            border-bottom: 2px solid #d1d5db;
+            width: 100%;
+            padding: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        /* Syllable Counting */
+        .syllable-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .syllable-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .syllable-item .word {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .syllable-item .clap-boxes {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .syllable-item .clap-box {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        /* Scoring Section */
+        .scoring-box {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .scoring-box h3 {
+            color: #166534;
+            margin-bottom: 15px;
+        }
+        
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-item label {
+            display: block;
+            font-size: 0.85rem;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .score-item input {
+            width: 60px;
+            height: 40px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        /* Clinical Notes */
+        .clinical-notes {
+            background: #fef2f2;
+            border: 2px solid #fca5a5;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .clinical-notes h3 {
+            color: #991b1b;
+            margin-bottom: 10px;
+        }
+        
+        .clinical-notes p {
+            font-size: 0.9rem;
+            color: #7f1d1d;
+            margin-bottom: 15px;
+        }
+        
+        .notes-area {
+            width: 100%;
+            min-height: 100px;
+            border: 2px solid #fca5a5;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        
+        .footer .brand {
+            font-weight: 700;
+            color: #4f46e5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Print Controls -->
+    <div class="no-print">
+        <h1>📖 Phonemic Awareness Worksheet</h1>
+        <p>Based on NIMHANS & RCI protocols for Dyslexia intervention in Indian children</p>
+        <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet</button>
+        <button class="print-btn" onclick="window.history.back()">← Back to Learning Hub</button>
+    </div>
+
+    <!-- Page 1: Sound Blending & Rhyming -->
+    <div class="worksheet-page">
+        <div class="worksheet-header">
+            <h1>📖 Phonemic Awareness Assessment</h1>
+            <p class="subtitle">Level 1 - Sound Recognition & Blending | As per NIMHANS Reading Assessment Protocol</p>
+        </div>
+        
+        <div class="student-info">
+            <div>
+                <label>Child's Name:</label>
+                <input type="text" placeholder="">
+            </div>
+            <div>
+                <label>Age / Class:</label>
+                <input type="text" placeholder="">
+            </div>
+            <div>
+                <label>Date:</label>
+                <input type="text" placeholder="">
+            </div>
+        </div>
+
+        <!-- Section 1: Sound Blending -->
+        <div class="section">
+            <div class="section-title">
+                <span>🔤 Section A: Sound Blending (ध्वनि मिश्रण)</span>
+                <span class="badge">10 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Read each sound separately, then blend them together. Write the word they make.
+                <br><strong>निर्देश:</strong> प्रत्येक ध्वनि को अलग-अलग पढ़ें, फिर उन्हें मिलाकर शब्द बनाएं।
+            </div>
+            
+            <div class="sound-blend-grid">
+                <div class="blend-item">
+                    <div class="sounds">
+                        <span class="sound-box">C</span>
+                        <span class="sound-box">A</span>
+                        <span class="sound-box">T</span>
+                    </div>
+                    <span class="equals">=</span>
+                    <div class="answer-box"></div>
+                </div>
+                <div class="blend-item">
+                    <div class="sounds">
+                        <span class="sound-box">S</span>
+                        <span class="sound-box">U</span>
+                        <span class="sound-box">N</span>
+                    </div>
+                    <span class="equals">=</span>
+                    <div class="answer-box"></div>
+                </div>
+                <div class="blend-item">
+                    <div class="sounds">
+                        <span class="sound-box">M</span>
+                        <span class="sound-box">A</span>
+                        <span class="sound-box">P</span>
+                    </div>
+                    <span class="equals">=</span>
+                    <div class="answer-box"></div>
+                </div>
+                <div class="blend-item">
+                    <div class="sounds">
+                        <span class="sound-box">B</span>
+                        <span class="sound-box">E</span>
+                        <span class="sound-box">D</span>
+                    </div>
+                    <span class="equals">=</span>
+                    <div class="answer-box"></div>
+                </div>
+                <div class="blend-item">
+                    <div class="sounds">
+                        <span class="sound-box">R</span>
+                        <span class="sound-box">U</span>
+                        <span class="sound-box">N</span>
+                    </div>
+                    <span class="equals">=</span>
+                    <div class="answer-box"></div>
+                </div>
+                <div class="blend-item">
+                    <div class="sounds">
+                        <span class="sound-box">P</span>
+                        <span class="sound-box">E</span>
+                        <span class="sound-box">N</span>
+                    </div>
+                    <span class="equals">=</span>
+                    <div class="answer-box"></div>
+                </div>
+                <div class="blend-item">
+                    <div class="sounds">
+                        <span class="sound-box">H</span>
+                        <span class="sound-box">O</span>
+                        <span class="sound-box">T</span>
+                    </div>
+                    <span class="equals">=</span>
+                    <div class="answer-box"></div>
+                </div>
+                <div class="blend-item">
+                    <div class="sounds">
+                        <span class="sound-box">J</span>
+                        <span class="sound-box">U</span>
+                        <span class="sound-box">G</span>
+                    </div>
+                    <span class="equals">=</span>
+                    <div class="answer-box"></div>
+                </div>
+                <div class="blend-item">
+                    <div class="sounds">
+                        <span class="sound-box">F</span>
+                        <span class="sound-box">A</span>
+                        <span class="sound-box">N</span>
+                    </div>
+                    <span class="equals">=</span>
+                    <div class="answer-box"></div>
+                </div>
+                <div class="blend-item">
+                    <div class="sounds">
+                        <span class="sound-box">D</span>
+                        <span class="sound-box">O</span>
+                        <span class="sound-box">G</span>
+                    </div>
+                    <span class="equals">=</span>
+                    <div class="answer-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Rhyming Words -->
+        <div class="section">
+            <div class="section-title">
+                <span>🎵 Section B: Rhyming Words (तुकबंदी शब्द)</span>
+                <span class="badge">6 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Tick (✓) the word that rhymes with the word in the green box.
+                <br><strong>निर्देश:</strong> हरे बॉक्स के शब्द से मिलता-जुलता शब्द चुनें।
+            </div>
+            
+            <div class="rhyme-grid">
+                <div class="rhyme-item">
+                    <div class="target-word">CAT</div>
+                    <div class="options">
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>BAT</span>
+                        </div>
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>CUP</span>
+                        </div>
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>DOG</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rhyme-item">
+                    <div class="target-word">SUN</div>
+                    <div class="options">
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>FUN</span>
+                        </div>
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>SIT</span>
+                        </div>
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>PEN</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rhyme-item">
+                    <div class="target-word">TOP</div>
+                    <div class="options">
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>TIN</span>
+                        </div>
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>HOP</span>
+                        </div>
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>BIG</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rhyme-item">
+                    <div class="target-word">RING</div>
+                    <div class="options">
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>RAN</span>
+                        </div>
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>RED</span>
+                        </div>
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>SING</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rhyme-item">
+                    <div class="target-word">BALL</div>
+                    <div class="options">
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>TALL</span>
+                        </div>
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>BOX</span>
+                        </div>
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>BUS</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="rhyme-item">
+                    <div class="target-word">LAKE</div>
+                    <div class="options">
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>LEG</span>
+                        </div>
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>LAMP</span>
+                        </div>
+                        <div class="option">
+                            <div class="checkbox"></div>
+                            <span>CAKE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Worksheet based on clinical protocols from NIMHANS, Bangalore & RCI Guidelines</p>
+            <p class="brand">Cogno Solution - Supporting Learning Differences</p>
+        </div>
+    </div>
+
+    <!-- Page 2: Letter Sounds & Syllables -->
+    <div class="worksheet-page page-break">
+        <div class="worksheet-header">
+            <h1>📖 Phonemic Awareness Assessment</h1>
+            <p class="subtitle">Level 1 - Letter Sounds & Syllable Awareness | Page 2</p>
+        </div>
+
+        <!-- Section 3: Initial Sound Recognition -->
+        <div class="section">
+            <div class="section-title">
+                <span>🔊 Section C: Initial Sound Recognition (प्रारंभिक ध्वनि पहचान)</span>
+                <span class="badge">8 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Look at the picture. Write the first sound (letter) you hear in the word.
+                <br><strong>निर्देश:</strong> चित्र देखें और शब्द की पहली ध्वनि (अक्षर) लिखें।
+            </div>
+            
+            <div class="letter-sound-grid">
+                <div class="letter-card">
+                    <div class="image-box">🍎</div>
+                    <div class="big-letter">__</div>
+                    <input type="text" class="write-word" placeholder="APPLE">
+                </div>
+                <div class="letter-card">
+                    <div class="image-box">🐕</div>
+                    <div class="big-letter">__</div>
+                    <input type="text" class="write-word" placeholder="DOG">
+                </div>
+                <div class="letter-card">
+                    <div class="image-box">☀️</div>
+                    <div class="big-letter">__</div>
+                    <input type="text" class="write-word" placeholder="SUN">
+                </div>
+                <div class="letter-card">
+                    <div class="image-box">🐱</div>
+                    <div class="big-letter">__</div>
+                    <input type="text" class="write-word" placeholder="CAT">
+                </div>
+                <div class="letter-card">
+                    <div class="image-box">🐘</div>
+                    <div class="big-letter">__</div>
+                    <input type="text" class="write-word" placeholder="ELEPHANT">
+                </div>
+                <div class="letter-card">
+                    <div class="image-box">🌙</div>
+                    <div class="big-letter">__</div>
+                    <input type="text" class="write-word" placeholder="MOON">
+                </div>
+                <div class="letter-card">
+                    <div class="image-box">🎈</div>
+                    <div class="big-letter">__</div>
+                    <input type="text" class="write-word" placeholder="BALLOON">
+                </div>
+                <div class="letter-card">
+                    <div class="image-box">🌈</div>
+                    <div class="big-letter">__</div>
+                    <input type="text" class="write-word" placeholder="RAINBOW">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Syllable Counting -->
+        <div class="section">
+            <div class="section-title">
+                <span>👏 Section D: Syllable Counting (अक्षर गिनती - ताली बजाओ)</span>
+                <span class="badge">8 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Clap for each part (syllable) of the word. Tick the correct number of boxes.
+                <br><strong>निर्देश:</strong> शब्द के प्रत्येक भाग (अक्षर) के लिए ताली बजाएं। सही संख्या में बॉक्स पर टिक करें।
+                <br><em>Example: BA-NA-NA = 3 claps (ताली)</em>
+            </div>
+            
+            <div class="syllable-grid">
+                <div class="syllable-item">
+                    <span class="word">APPLE</span>
+                    <div class="clap-boxes">
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                    </div>
+                </div>
+                <div class="syllable-item">
+                    <span class="word">ELEPHANT</span>
+                    <div class="clap-boxes">
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                    </div>
+                </div>
+                <div class="syllable-item">
+                    <span class="word">CAT</span>
+                    <div class="clap-boxes">
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                    </div>
+                </div>
+                <div class="syllable-item">
+                    <span class="word">BUTTERFLY</span>
+                    <div class="clap-boxes">
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                    </div>
+                </div>
+                <div class="syllable-item">
+                    <span class="word">MANGO</span>
+                    <div class="clap-boxes">
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                    </div>
+                </div>
+                <div class="syllable-item">
+                    <span class="word">COMPUTER</span>
+                    <div class="clap-boxes">
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                    </div>
+                </div>
+                <div class="syllable-item">
+                    <span class="word">TIGER</span>
+                    <div class="clap-boxes">
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                    </div>
+                </div>
+                <div class="syllable-item">
+                    <span class="word">INDIA</span>
+                    <div class="clap-boxes">
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                        <div class="clap-box">👏</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scoring Section -->
+        <div class="scoring-box">
+            <h3>📊 Assessment Score (मूल्यांकन अंक)</h3>
+            <div class="score-grid">
+                <div class="score-item">
+                    <label>Section A<br>(Sound Blending)</label>
+                    <input type="text" placeholder="/10">
+                </div>
+                <div class="score-item">
+                    <label>Section B<br>(Rhyming)</label>
+                    <input type="text" placeholder="/6">
+                </div>
+                <div class="score-item">
+                    <label>Section C<br>(Initial Sounds)</label>
+                    <input type="text" placeholder="/8">
+                </div>
+                <div class="score-item">
+                    <label>Section D<br>(Syllables)</label>
+                    <input type="text" placeholder="/8">
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px; font-weight: 600; font-size: 1.2rem;">
+                Total Score: ______ / 32
+            </div>
+        </div>
+
+        <!-- Clinical Notes -->
+        <div class="clinical-notes">
+            <h3>📝 Therapist / Teacher Notes (चिकित्सक / शिक्षक टिप्पणी)</h3>
+            <p>Document observations about the child's response time, error patterns, and areas needing intervention.</p>
+            <textarea class="notes-area" placeholder="Record observations here..."></textarea>
+        </div>
+
+        <div class="footer">
+            <p>Assessment tool aligned with NIMHANS Reading Assessment & RCI Special Education Guidelines</p>
+            <p class="brand">Cogno Solution - Supporting Learning Differences</p>
+        </div>
+    </div>
+</body>
+</html>

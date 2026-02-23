@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handwriting Practice Worksheet - Dysgraphia Support | Cogno Solution</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Print-optimized styles based on OT Handwriting Intervention */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Lexend', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a2e;
+            background: white;
+            padding: 20px;
+        }
+        
+        @media print {
+            body { padding: 0; }
+            .no-print { display: none !important; }
+            .page-break { page-break-after: always; }
+            .worksheet-page { margin: 0; box-shadow: none; }
+        }
+        
+        .no-print {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+        
+        .no-print h1 { margin-bottom: 10px; }
+        
+        .print-btn {
+            background: white;
+            color: #7c3aed;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .print-btn:hover { background: #f0f0f0; }
+        
+        .worksheet-page {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            padding: 40px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 12px;
+        }
+        
+        .worksheet-header {
+            border-bottom: 3px solid #8b5cf6;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .worksheet-header h1 {
+            color: #7c3aed;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .worksheet-header .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+        
+        .student-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f5f3ff;
+            border-radius: 8px;
+        }
+        
+        .student-info label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        
+        .student-info input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #c4b5fd;
+            background: transparent;
+            padding: 5px 0;
+            font-size: 1rem;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+        
+        .section-title {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .instructions {
+            background: #f5f3ff;
+            border-left: 4px solid #8b5cf6;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+        
+        .instructions strong {
+            color: #5b21b6;
+        }
+        
+        /* Pre-Writing Patterns */
+        .pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .pattern-box {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .pattern-box .label {
+            text-align: center;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .pattern-row {
+            height: 50px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            background: linear-gradient(transparent 49%, #ddd6fe 49%, #ddd6fe 51%, transparent 51%);
+        }
+        
+        .pattern-row.example {
+            background: linear-gradient(transparent 49%, #ddd6fe 49%, #ddd6fe 51%, transparent 51%), #faf5ff;
+        }
+        
+        .pattern-example {
+            color: #7c3aed;
+            font-size: 2rem;
+            letter-spacing: 10px;
+            opacity: 0.5;
+        }
+        
+        /* Lined Writing Areas */
+        .writing-lines {
+            margin-bottom: 20px;
+        }
+        
+        .writing-line {
+            height: 60px;
+            border-bottom: 2px solid #374151;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        
+        .writing-line::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            border-bottom: 1px dashed #c4b5fd;
+        }
+        
+        .writing-line.four-line {
+            height: 80px;
+            background: linear-gradient(
+                transparent 0%,
+                transparent 25%,
+                #c4b5fd 25%,
+                #c4b5fd 26%,
+                transparent 26%,
+                transparent 50%,
+                #c4b5fd 50%,
+                #c4b5fd 51%,
+                transparent 51%,
+                transparent 75%,
+                #c4b5fd 75%,
+                #c4b5fd 76%,
+                transparent 76%
+            );
+        }
+        
+        /* Letter Formation */
+        .letter-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .letter-box {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .letter-box .big-letter {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #7c3aed;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        
+        .letter-box .arrows {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+        
+        .letter-box .practice-area {
+            height: 50px;
+            border: 2px dashed #c4b5fd;
+            border-radius: 8px;
+            background: linear-gradient(transparent 49%, #ddd6fe 49%, #ddd6fe 51%, transparent 51%);
+        }
+        
+        /* Hindi Letter Practice */
+        .hindi-letter-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .hindi-letter-box {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .hindi-letter-box .big-letter {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #7c3aed;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+        
+        .hindi-letter-box .transliteration {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+        
+        .hindi-letter-box .practice-area {
+            height: 50px;
+            border: 2px dashed #c4b5fd;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .hindi-letter-box .practice-area .shirorekha {
+            position: absolute;
+            top: 12px;
+            left: 5px;
+            right: 5px;
+            border-top: 2px solid #c4b5fd;
+        }
+        
+        /* Word Copying */
+        .word-copy-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        .word-copy-item {
+            display: contents;
+        }
+        
+        .word-copy-item .model {
+            background: #f5f3ff;
+            border: 2px solid #c4b5fd;
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #5b21b6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .word-copy-item .practice {
+            border: 2px dashed #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(transparent 49%, #e5e7eb 49%, #e5e7eb 51%, transparent 51%);
+        }
+        
+        /* Spacing Practice */
+        .spacing-exercise {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .spacing-exercise .example {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .spacing-exercise .example .word {
+            background: #f5f3ff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid #c4b5fd;
+        }
+        
+        .spacing-exercise .example .finger-space {
+            color: #7c3aed;
+            font-size: 2rem;
+        }
+        
+        .spacing-exercise .practice-area {
+            height: 60px;
+            border: 2px dashed #c4b5fd;
+            border-radius: 8px;
+            background: linear-gradient(transparent 49%, #e5e7eb 49%, #e5e7eb 51%, transparent 51%);
+        }
+        
+        /* Grip Guide */
+        .grip-guide {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .grip-step {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .grip-step .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .grip-step .step-num {
+            background: #7c3aed;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .grip-step .text {
+            font-size: 0.9rem;
+            color: #374151;
+        }
+        
+        /* Fine Motor Activities */
+        .motor-activities {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .motor-activity {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .motor-activity .icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .motor-activity .title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+        
+        .motor-activity .desc {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        
+        .motor-activity .checkbox {
+            width: 25px;
+            height: 25px;
+            border: 2px solid #c4b5fd;
+            border-radius: 6px;
+            margin: 10px auto 0;
+        }
+        
+        /* Tracing Area */
+        .trace-box {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .trace-box .trace-letter {
+            font-size: 5rem;
+            font-weight: 800;
+            color: #ddd6fe;
+            text-align: center;
+            line-height: 1;
+            letter-spacing: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .trace-box .practice-row {
+            height: 70px;
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            background: linear-gradient(transparent 49%, #e5e7eb 49%, #e5e7eb 51%, transparent 51%);
+        }
+        
+        /* Scoring Section */
+        .scoring-box {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .scoring-box h3 {
+            color: #166534;
+            margin-bottom: 15px;
+        }
+        
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .assessment-row {
+            display: contents;
+        }
+        
+        .assessment-row .criteria {
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .assessment-row .rating {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        
+        .assessment-row.header .rating {
+            background: #f5f3ff;
+            font-weight: 600;
+        }
+        
+        .therapist-notes {
+            margin-top: 20px;
+        }
+        
+        .therapist-notes label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .therapist-notes textarea {
+            width: 100%;
+            height: 100px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            padding: 10px;
+            font-family: inherit;
+            resize: none;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        
+        .footer .brand {
+            font-weight: 700;
+            color: #7c3aed;
+        }
+    </style>
+</head>
+<body>
+    <!-- Print Controls -->
+    <div class="no-print">
+        <h1>✏️ Handwriting Practice Worksheet</h1>
+        <p>Based on Occupational Therapy protocols for Dysgraphia intervention</p>
+        <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet</button>
+        <button class="print-btn" onclick="window.history.back()">← Back to Learning Hub</button>
+    </div>
+
+    <!-- Page 1: Pre-Writing & Pencil Grip -->
+    <div class="worksheet-page">
+        <div class="worksheet-header">
+            <h1>✏️ Handwriting Development</h1>
+            <p class="subtitle">Level 1 - Pre-Writing Skills & Fine Motor | Based on OT Protocols</p>
+        </div>
+        
+        <div class="student-info">
+            <div>
+                <label>Child's Name (बच्चे का नाम):</label>
+                <input type="text" placeholder="">
+            </div>
+            <div>
+                <label>Age / Class (आयु / कक्षा):</label>
+                <input type="text" placeholder="">
+            </div>
+            <div>
+                <label>Date (तारीख):</label>
+                <input type="text" placeholder="">
+            </div>
+        </div>
+
+        <!-- Pencil Grip Guide -->
+        <div class="section">
+            <div class="section-title">
+                <span>✋ Tripod Grip (तीन अंगुल पकड़)</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Before Starting:</strong> Check that the child is using the correct pencil grip.
+                <br><strong>शुरू करने से पहले:</strong> जांचें कि बच्चा सही पेंसिल पकड़ का उपयोग कर रहा है।
+            </div>
+            
+            <div class="grip-guide">
+                <div class="grip-step">
+                    <div class="step-num">1</div>
+                    <div class="icon">👆</div>
+                    <div class="text">Index finger on top<br>तर्जनी ऊपर</div>
+                </div>
+                <div class="grip-step">
+                    <div class="step-num">2</div>
+                    <div class="icon">👍</div>
+                    <div class="text">Thumb opposite<br>अंगूठा विपरीत</div>
+                </div>
+                <div class="grip-step">
+                    <div class="step-num">3</div>
+                    <div class="icon">✌️</div>
+                    <div class="text">Middle finger support<br>मध्यमा सहारा</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pre-Writing Patterns -->
+        <div class="section">
+            <div class="section-title">
+                <span>〰️ Section A: Pre-Writing Patterns (लेखन-पूर्व पैटर्न)</span>
+                <span class="badge">Warm-up</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Trace the grey pattern, then practice on the empty line.
+                <br><strong>निर्देश:</strong> धूसर पैटर्न को ट्रेस करें, फिर खाली लाइन पर अभ्यास करें।
+            </div>
+            
+            <div class="pattern-grid">
+                <div class="pattern-box">
+                    <div class="label">Horizontal Lines (क्षैतिज रेखाएं)</div>
+                    <div class="pattern-row example">
+                        <span class="pattern-example">― ― ― ― ―</span>
+                    </div>
+                    <div class="pattern-row"></div>
+                </div>
+                
+                <div class="pattern-box">
+                    <div class="label">Vertical Lines (खड़ी रेखाएं)</div>
+                    <div class="pattern-row example">
+                        <span class="pattern-example">| | | | | | |</span>
+                    </div>
+                    <div class="pattern-row"></div>
+                </div>
+                
+                <div class="pattern-box">
+                    <div class="label">Circles (गोले)</div>
+                    <div class="pattern-row example">
+                        <span class="pattern-example">○ ○ ○ ○ ○</span>
+                    </div>
+                    <div class="pattern-row"></div>
+                </div>
+                
+                <div class="pattern-box">
+                    <div class="label">Zigzag (तिरछी रेखाएं)</div>
+                    <div class="pattern-row example">
+                        <span class="pattern-example">∧ ∧ ∧ ∧ ∧</span>
+                    </div>
+                    <div class="pattern-row"></div>
+                </div>
+                
+                <div class="pattern-box">
+                    <div class="label">Waves (लहरें)</div>
+                    <div class="pattern-row example">
+                        <span class="pattern-example">∿ ∿ ∿ ∿ ∿</span>
+                    </div>
+                    <div class="pattern-row"></div>
+                </div>
+                
+                <div class="pattern-box">
+                    <div class="label">Spirals (सर्पिल)</div>
+                    <div class="pattern-row example">
+                        <span class="pattern-example">@ @ @ @ @</span>
+                    </div>
+                    <div class="pattern-row"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fine Motor Warm-up -->
+        <div class="section">
+            <div class="section-title">
+                <span>🤲 Section B: Fine Motor Warm-up (सूक्ष्म गतिविधियां)</span>
+                <span class="badge">Daily Practice</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Before Writing:</strong> Do these exercises to warm up your hands. Check ✓ when done.
+                <br><strong>लिखने से पहले:</strong> अपने हाथों को गर्म करने के लिए ये व्यायाम करें। पूरा होने पर ✓ लगाएं।
+            </div>
+            
+            <div class="motor-activities">
+                <div class="motor-activity">
+                    <div class="icon">👐</div>
+                    <div class="title">Finger Stretches</div>
+                    <div class="desc">Open and close fingers 10 times<br>उंगलियां 10 बार खोलें और बंद करें</div>
+                    <div class="checkbox"></div>
+                </div>
+                <div class="motor-activity">
+                    <div class="icon">🤏</div>
+                    <div class="title">Pincer Practice</div>
+                    <div class="desc">Touch thumb to each finger<br>अंगूठे से हर उंगली छुएं</div>
+                    <div class="checkbox"></div>
+                </div>
+                <div class="motor-activity">
+                    <div class="icon">✊</div>
+                    <div class="title">Squeeze & Release</div>
+                    <div class="desc">Make a fist, then release 10 times<br>मुट्ठी बनाएं, फिर खोलें 10 बार</div>
+                    <div class="checkbox"></div>
+                </div>
+                <div class="motor-activity">
+                    <div class="icon">🖐️</div>
+                    <div class="title">Palm Dance</div>
+                    <div class="desc">Roll pencil between palms<br>हथेलियों के बीच पेंसिल घुमाएं</div>
+                    <div class="checkbox"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Based on Sensory Integration & Occupational Therapy protocols</p>
+            <p class="brand">Cogno Solution - Supporting Learning Differences</p>
+        </div>
+    </div>
+
+    <!-- Page 2: English Letter Formation -->
+    <div class="worksheet-page page-break">
+        <div class="worksheet-header">
+            <h1>✏️ Handwriting Development</h1>
+            <p class="subtitle">Level 1 - English Letter Formation | Page 2</p>
+        </div>
+
+        <!-- Letter Tracing -->
+        <div class="section">
+            <div class="section-title">
+                <span>🔤 Section C: Letter Formation (अक्षर निर्माण)</span>
+                <span class="badge">8 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Trace the grey letter, then write it 3 times. Follow the arrows.
+                <br><strong>निर्देश:</strong> धूसर अक्षर को ट्रेस करें, फिर इसे 3 बार लिखें। तीरों का पालन करें।
+            </div>
+            
+            <div class="letter-grid">
+                <div class="letter-box">
+                    <div class="big-letter">A</div>
+                    <div class="arrows">↘ ↙ ↔</div>
+                    <div class="practice-area"></div>
+                </div>
+                <div class="letter-box">
+                    <div class="big-letter">B</div>
+                    <div class="arrows">↓ ↷ ↷</div>
+                    <div class="practice-area"></div>
+                </div>
+                <div class="letter-box">
+                    <div class="big-letter">C</div>
+                    <div class="arrows">↶</div>
+                    <div class="practice-area"></div>
+                </div>
+                <div class="letter-box">
+                    <div class="big-letter">D</div>
+                    <div class="arrows">↓ ↷</div>
+                    <div class="practice-area"></div>
+                </div>
+            </div>
+            
+            <div class="trace-box" style="margin-top: 20px;">
+                <div class="trace-letter">a b c d</div>
+                <div class="practice-row"></div>
+            </div>
+            
+            <div class="letter-grid" style="margin-top: 20px;">
+                <div class="letter-box">
+                    <div class="big-letter">E</div>
+                    <div class="arrows">↓ ← ← ←</div>
+                    <div class="practice-area"></div>
+                </div>
+                <div class="letter-box">
+                    <div class="big-letter">F</div>
+                    <div class="arrows">↓ ← ←</div>
+                    <div class="practice-area"></div>
+                </div>
+                <div class="letter-box">
+                    <div class="big-letter">G</div>
+                    <div class="arrows">↶ ←</div>
+                    <div class="practice-area"></div>
+                </div>
+                <div class="letter-box">
+                    <div class="big-letter">H</div>
+                    <div class="arrows">↓ ↓ ↔</div>
+                    <div class="practice-area"></div>
+                </div>
+            </div>
+            
+            <div class="trace-box" style="margin-top: 20px;">
+                <div class="trace-letter">e f g h</div>
+                <div class="practice-row"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Letter formation based on developmental sequence (Zaner-Bloser method)</p>
+            <p class="brand">Cogno Solution - Supporting Learning Differences</p>
+        </div>
+    </div>
+
+    <!-- Page 3: Hindi Letters & Word Practice -->
+    <div class="worksheet-page page-break">
+        <div class="worksheet-header">
+            <h1>✏️ Handwriting Development</h1>
+            <p class="subtitle">Level 1 - Hindi Script (देवनागरी लिपि) | Page 3</p>
+        </div>
+
+        <!-- Hindi Letter Formation -->
+        <div class="section">
+            <div class="section-title">
+                <span>🔠 Section D: Hindi Letters (हिंदी स्वर)</span>
+                <span class="badge">8 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Notice the Shirorekha (शिरोरेखा) - the top line. Trace and practice.
+                <br><strong>निर्देश:</strong> शिरोरेखा पर ध्यान दें। ट्रेस करें और अभ्यास करें।
+            </div>
+            
+            <div class="hindi-letter-grid">
+                <div class="hindi-letter-box">
+                    <div class="big-letter">अ</div>
+                    <div class="transliteration">a (ah)</div>
+                    <div class="practice-area">
+                        <div class="shirorekha"></div>
+                    </div>
+                </div>
+                <div class="hindi-letter-box">
+                    <div class="big-letter">आ</div>
+                    <div class="transliteration">aa (aah)</div>
+                    <div class="practice-area">
+                        <div class="shirorekha"></div>
+                    </div>
+                </div>
+                <div class="hindi-letter-box">
+                    <div class="big-letter">इ</div>
+                    <div class="transliteration">i (ih)</div>
+                    <div class="practice-area">
+                        <div class="shirorekha"></div>
+                    </div>
+                </div>
+                <div class="hindi-letter-box">
+                    <div class="big-letter">ई</div>
+                    <div class="transliteration">ee (eeh)</div>
+                    <div class="practice-area">
+                        <div class="shirorekha"></div>
+                    </div>
+                </div>
+                <div class="hindi-letter-box">
+                    <div class="big-letter">उ</div>
+                    <div class="transliteration">u (uh)</div>
+                    <div class="practice-area">
+                        <div class="shirorekha"></div>
+                    </div>
+                </div>
+                <div class="hindi-letter-box">
+                    <div class="big-letter">ऊ</div>
+                    <div class="transliteration">oo (ooh)</div>
+                    <div class="practice-area">
+                        <div class="shirorekha"></div>
+                    </div>
+                </div>
+                <div class="hindi-letter-box">
+                    <div class="big-letter">ए</div>
+                    <div class="transliteration">e (eh)</div>
+                    <div class="practice-area">
+                        <div class="shirorekha"></div>
+                    </div>
+                </div>
+                <div class="hindi-letter-box">
+                    <div class="big-letter">ओ</div>
+                    <div class="transliteration">o (oh)</div>
+                    <div class="practice-area">
+                        <div class="shirorekha"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Word Copying -->
+        <div class="section">
+            <div class="section-title">
+                <span>📝 Section E: Word Practice (शब्द अभ्यास)</span>
+                <span class="badge">6 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Look at the word on the left. Copy it in the practice box.
+                <br><strong>निर्देश:</strong> बाईं ओर के शब्द को देखें। अभ्यास बॉक्स में इसे कॉपी करें।
+            </div>
+            
+            <div class="word-copy-grid">
+                <div class="word-copy-item">
+                    <div class="model">cat</div>
+                    <div class="practice"></div>
+                </div>
+                <div class="word-copy-item">
+                    <div class="model">dog</div>
+                    <div class="practice"></div>
+                </div>
+                <div class="word-copy-item">
+                    <div class="model">ball</div>
+                    <div class="practice"></div>
+                </div>
+                <div class="word-copy-item">
+                    <div class="model">माँ</div>
+                    <div class="practice"></div>
+                </div>
+                <div class="word-copy-item">
+                    <div class="model">घर</div>
+                    <div class="practice"></div>
+                </div>
+                <div class="word-copy-item">
+                    <div class="model">नाम</div>
+                    <div class="practice"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spacing Practice -->
+        <div class="section">
+            <div class="section-title">
+                <span>📏 Section F: Finger Spacing (उंगली का फासला)</span>
+                <span class="badge">4 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Leave one finger space between words. Copy the sentence.
+                <br><strong>निर्देश:</strong> शब्दों के बीच एक उंगली का फासला रखें। वाक्य कॉपी करें।
+            </div>
+            
+            <div class="spacing-exercise">
+                <div class="example">
+                    <span class="word">I</span>
+                    <span class="finger-space">☝️</span>
+                    <span class="word">am</span>
+                    <span class="finger-space">☝️</span>
+                    <span class="word">good</span>
+                </div>
+                <div class="practice-area"></div>
+            </div>
+            
+            <div class="spacing-exercise">
+                <div class="example">
+                    <span class="word">मैं</span>
+                    <span class="finger-space">☝️</span>
+                    <span class="word">खेलता</span>
+                    <span class="finger-space">☝️</span>
+                    <span class="word">हूँ</span>
+                </div>
+                <div class="practice-area"></div>
+            </div>
+        </div>
+
+        <!-- Assessment Grid -->
+        <div class="scoring-box">
+            <h3>📊 Handwriting Assessment (लिखावट मूल्यांकन)</h3>
+            
+            <div class="assessment-grid">
+                <div class="assessment-row header">
+                    <div class="criteria">Criteria / मानदंड</div>
+                    <div class="rating">Needs Work<br>सुधार जरूरी</div>
+                    <div class="rating">Developing<br>विकासशील</div>
+                    <div class="rating">Proficient<br>दक्ष</div>
+                </div>
+                <div class="assessment-row">
+                    <div class="criteria">Pencil Grip (पेंसिल पकड़)</div>
+                    <div class="rating">□</div>
+                    <div class="rating">□</div>
+                    <div class="rating">□</div>
+                </div>
+                <div class="assessment-row">
+                    <div class="criteria">Letter Formation (अक्षर निर्माण)</div>
+                    <div class="rating">□</div>
+                    <div class="rating">□</div>
+                    <div class="rating">□</div>
+                </div>
+                <div class="assessment-row">
+                    <div class="criteria">Letter Size (अक्षर आकार)</div>
+                    <div class="rating">□</div>
+                    <div class="rating">□</div>
+                    <div class="rating">□</div>
+                </div>
+                <div class="assessment-row">
+                    <div class="criteria">Spacing (फासला)</div>
+                    <div class="rating">□</div>
+                    <div class="rating">□</div>
+                    <div class="rating">□</div>
+                </div>
+                <div class="assessment-row">
+                    <div class="criteria">Line Alignment (रेखा संरेखण)</div>
+                    <div class="rating">□</div>
+                    <div class="rating">□</div>
+                    <div class="rating">□</div>
+                </div>
+                <div class="assessment-row">
+                    <div class="criteria">Writing Speed (लेखन गति)</div>
+                    <div class="rating">□</div>
+                    <div class="rating">□</div>
+                    <div class="rating">□</div>
+                </div>
+            </div>
+            
+            <div class="therapist-notes">
+                <label>Therapist/Teacher Notes (चिकित्सक/शिक्षक टिप्पणियां):</label>
+                <textarea placeholder="Observations, recommendations, home practice suggestions..."></textarea>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Based on AIOTA (All India Occupational Therapists Association) & HWT (Handwriting Without Tears) protocols</p>
+            <p class="brand">Cogno Solution - Supporting Learning Differences</p>
+        </div>
+    </div>
+</body>
+</html>

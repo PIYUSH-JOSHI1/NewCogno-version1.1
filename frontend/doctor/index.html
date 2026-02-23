@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Doctor Portal - Cogno Solution">
+    <title>Doctor Portal - Cogno Solution</title>
+    
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+</head>
+<body class="has-sidebar">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+                <span class="sidebar-brand">Cogno Solution</span>
+                <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item active">
+                        <a href="../dashboard/doctor-dashboard.html" class="sidebar-link">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Patients</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./patients.html" class="sidebar-link">
+                            <i class="fa-solid fa-users"></i>
+                            <span>My Patients</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./live-monitoring.html" class="sidebar-link">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>Live Monitoring</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./assessments.html" class="sidebar-link">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                            <span>Assessments</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Consultations</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./consultations.html" class="sidebar-link">
+                            <i class="fa-solid fa-video"></i>
+                            <span>Video Consultations</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./schedule.html" class="sidebar-link">
+                            <i class="fa-solid fa-calendar"></i>
+                            <span>My Schedule</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./messages.html" class="sidebar-link">
+                            <i class="fa-solid fa-message"></i>
+                            <span>Messages</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Reports</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./reports.html" class="sidebar-link">
+                            <i class="fa-solid fa-chart-bar"></i>
+                            <span>Patient Reports</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./recommendations.html" class="sidebar-link">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span>Recommendations</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Account</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./profile.html" class="sidebar-link">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../settings/index.html" class="sidebar-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="sidebar-link" id="logout-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                
+                <div class="topbar-search">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" placeholder="Search patients..." id="search-patients">
+                </div>
+                
+                <div class="topbar-actions">
+                    <button class="topbar-btn" id="notifications-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <div class="user-menu">
+                        <div class="avatar" id="user-avatar">
+                            <i class="fa-solid fa-user-md"></i>
+                        </div>
+                        <span class="user-name" id="user-name">Dr. Smith</span>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Content -->
+            <div class="content-area">
+                <!-- Welcome Section -->
+                <section class="welcome-section">
+                    <div class="welcome-text">
+                        <h1>Welcome back, <span id="doctor-name">Doctor</span>!</h1>
+                        <p>Here's your practice overview for today</p>
+                    </div>
+                    <div class="welcome-date">
+                        <i class="fa-solid fa-calendar"></i>
+                        <span id="current-date"></span>
+                    </div>
+                </section>
+                
+                <!-- Quick Stats -->
+                <section class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--color-primary-100); color: var(--color-primary);">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-patients">0</h3>
+                            <p>Total Patients</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--color-success-100); color: var(--color-success);">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="today-appointments">0</h3>
+                            <p>Today's Appointments</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--color-warning-100); color: var(--color-warning);">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="pending-reviews">0</h3>
+                            <p>Pending Reviews</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--color-danger-100); color: var(--color-danger);">
+                            <i class="fa-solid fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="attention-needed">0</h3>
+                            <p>Needs Attention</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Main Content Grid -->
+                <div class="dashboard-grid">
+                    <!-- Today's Schedule -->
+                    <section class="card todays-schedule">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-calendar-day"></i> Today's Schedule</h2>
+                            <a href="./schedule.html" class="btn btn-ghost btn-sm">View All</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="schedule-list" id="schedule-list">
+                                <div class="schedule-item">
+                                    <div class="schedule-time">09:00 AM</div>
+                                    <div class="schedule-info">
+                                        <h4>Alex Johnson</h4>
+                                        <p>Dyslexia Assessment Review</p>
+                                    </div>
+                                    <span class="badge badge-primary">Video Call</span>
+                                </div>
+                                <div class="schedule-item">
+                                    <div class="schedule-time">10:30 AM</div>
+                                    <div class="schedule-info">
+                                        <h4>Emma Wilson</h4>
+                                        <p>Monthly Progress Check</p>
+                                    </div>
+                                    <span class="badge badge-success">In-person</span>
+                                </div>
+                                <div class="schedule-item">
+                                    <div class="schedule-time">02:00 PM</div>
+                                    <div class="schedule-info">
+                                        <h4>Liam Brown</h4>
+                                        <p>Initial Consultation</p>
+                                    </div>
+                                    <span class="badge badge-primary">Video Call</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Recent Patient Activity -->
+                    <section class="card recent-activity">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-activity"></i> Recent Patient Activity</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="activity-feed" id="activity-feed">
+                                <div class="activity-item">
+                                    <div class="activity-avatar" style="background: var(--color-dyslexia);">AJ</div>
+                                    <div class="activity-content">
+                                        <p><strong>Alex Johnson</strong> completed a reading session</p>
+                                        <span class="activity-time">10 minutes ago</span>
+                                    </div>
+                                    <span class="activity-score">Score: 85%</span>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-avatar" style="background: var(--color-dyscalculia);">EW</div>
+                                    <div class="activity-content">
+                                        <p><strong>Emma Wilson</strong> finished math exercises</p>
+                                        <span class="activity-time">25 minutes ago</span>
+                                    </div>
+                                    <span class="activity-score">Score: 92%</span>
+                                </div>
+                                <div class="activity-item">
+                                    <div class="activity-avatar" style="background: var(--color-dysgraphia);">LB</div>
+                                    <div class="activity-content">
+                                        <p><strong>Liam Brown</strong> practiced handwriting</p>
+                                        <span class="activity-time">1 hour ago</span>
+                                    </div>
+                                    <span class="activity-score">Score: 78%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Patients Needing Attention -->
+                    <section class="card attention-section">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-exclamation-circle"></i> Needs Attention</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="attention-list" id="attention-list">
+                                <div class="attention-item">
+                                    <div class="patient-info">
+                                        <div class="avatar" style="background: var(--color-danger-100); color: var(--color-danger);">SM</div>
+                                        <div>
+                                            <h4>Sophie Martinez</h4>
+                                            <p>No activity in 5 days</p>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-outline btn-sm">Contact</button>
+                                </div>
+                                <div class="attention-item">
+                                    <div class="patient-info">
+                                        <div class="avatar" style="background: var(--color-warning-100); color: var(--color-warning);">JT</div>
+                                        <div>
+                                            <h4>James Taylor</h4>
+                                            <p>Declining scores this week</p>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-outline btn-sm">Review</button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Quick Actions -->
+                    <section class="card quick-actions-card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-bolt"></i> Quick Actions</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="quick-actions-grid">
+                                <button class="quick-action-btn" onclick="location.href='../consultations/video.html'">
+                                    <i class="fa-solid fa-video"></i>
+                                    <span>Start Call</span>
+                                </button>
+                                <button class="quick-action-btn" onclick="location.href='./patients.html'">
+                                    <i class="fa-solid fa-user-plus"></i>
+                                    <span>Add Patient</span>
+                                </button>
+                                <button class="quick-action-btn" onclick="location.href='./reports.html'">
+                                    <i class="fa-solid fa-file-alt"></i>
+                                    <span>Generate Report</span>
+                                </button>
+                                <button class="quick-action-btn" onclick="location.href='./schedule.html'">
+                                    <i class="fa-solid fa-calendar-plus"></i>
+                                    <span>Schedule</span>
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/realtime.js"></script>
+    <script src="./doctor.js"></script>
+</body>
+</html>

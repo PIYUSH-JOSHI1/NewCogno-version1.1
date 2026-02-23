@@ -1,0 +1,802 @@
+/* =====================================================
+   COGNO SOLUTION - Dark Mode Styles
+   Eye-Friendly Dark Theme for Reduced Eye Strain
+   ===================================================== */
+
+/* =====================================================
+   DARK MODE VARIABLES
+   ===================================================== */
+body.dark-mode {
+    /* Primary Colors - Adjusted for dark backgrounds */
+    --primary-blue: #60A5FA;
+    --primary-blue-dark: #3B82F6;
+    --primary-blue-light: #93C5FD;
+    --primary-green: #34D399;
+    --primary-green-dark: #10B981;
+    --primary-orange: #FBBF24;
+    --primary-orange-dark: #F59E0B;
+    --primary-red: #F87171;
+    --primary-red-dark: #EF4444;
+    
+    /* Module Colors - Lightened for dark mode */
+    --dyslexia-color: #60A5FA;
+    --dyslexia-bg: rgba(59, 130, 246, 0.15);
+    --dyscalculia-color: #34D399;
+    --dyscalculia-bg: rgba(16, 185, 129, 0.15);
+    --dysgraphia-color: #FBBF24;
+    --dysgraphia-bg: rgba(245, 158, 11, 0.15);
+    --dyspraxia-color: #F87171;
+    --dyspraxia-bg: rgba(239, 68, 68, 0.15);
+    
+    /* Background Colors */
+    --white: #1E1E1E;
+    --bg-primary: #121212;
+    --bg-secondary: #1E1E1E;
+    --bg-tertiary: #2D2D2D;
+    
+    /* Text Colors */
+    --text-primary: #F5F5F5;
+    --text-secondary: #A0A0A0;
+    --text-muted: #6B6B6B;
+    
+    /* Border Colors */
+    --border-color: #333333;
+    --border-dark: #444444;
+    
+    /* Shadows - Lighter for dark mode */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
+    
+    /* Semantic Aliases - Dark Mode Overrides */
+    --color-primary: var(--primary-blue);
+    --color-primary-dark: var(--primary-blue-dark);
+    --color-primary-light: var(--primary-blue-light);
+    --color-primary-100: rgba(59, 130, 246, 0.2);
+    --color-background: var(--bg-primary);
+    --color-surface: var(--bg-secondary);
+    --color-text: var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-border: var(--border-color);
+    --color-success: var(--primary-green);
+    --color-warning: var(--primary-orange);
+    --color-danger: var(--primary-red);
+    
+    /* Module Color Aliases */
+    --color-dyslexia: var(--dyslexia-color);
+    --color-dyscalculia: var(--dyscalculia-color);
+    --color-dysgraphia: var(--dysgraphia-color);
+    --color-dyspraxia: var(--dyspraxia-color);
+    
+    /* Color scheme */
+    color-scheme: dark;
+}
+
+/* =====================================================
+   BASE DARK MODE STYLES
+   ===================================================== */
+body.dark-mode {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+/* =====================================================
+   NAVIGATION - DARK MODE
+   ===================================================== */
+body.dark-mode .navbar {
+    background: var(--bg-secondary);
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .navbar-brand {
+    color: var(--text-primary);
+}
+
+body.dark-mode .navbar-link {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .navbar-link:hover,
+body.dark-mode .navbar-link.active {
+    color: var(--primary-blue);
+    background: var(--dyslexia-bg);
+}
+
+body.dark-mode .navbar-avatar {
+    border-color: var(--border-color);
+}
+
+/* =====================================================
+   SIDEBAR - DARK MODE
+   ===================================================== */
+body.dark-mode .sidebar {
+    background: var(--bg-secondary);
+    border-right-color: var(--border-color);
+}
+
+body.dark-mode .sidebar-header {
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .sidebar-section-title {
+    color: var(--text-muted);
+}
+
+body.dark-mode .sidebar-link {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .sidebar-link:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+body.dark-mode .sidebar-link.active {
+    background: var(--primary-blue);
+    color: var(--white);
+}
+
+/* =====================================================
+   CARDS - DARK MODE
+   ===================================================== */
+body.dark-mode .card {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+body.dark-mode .card-header {
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .card-title {
+    color: var(--text-primary);
+}
+
+body.dark-mode .card-subtitle {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .card-footer {
+    background: var(--bg-tertiary);
+    border-top-color: var(--border-color);
+}
+
+/* Module Cards */
+body.dark-mode .card-dyslexia { border-left-color: var(--dyslexia-color); }
+body.dark-mode .card-dyscalculia { border-left-color: var(--dyscalculia-color); }
+body.dark-mode .card-dysgraphia { border-left-color: var(--dysgraphia-color); }
+body.dark-mode .card-dyspraxia { border-left-color: var(--dyspraxia-color); }
+
+/* Stat Cards */
+body.dark-mode .card-stat-value {
+    color: var(--text-primary);
+}
+
+body.dark-mode .card-stat-label {
+    color: var(--text-secondary);
+}
+
+/* Module Cards */
+body.dark-mode .module-card-title {
+    color: var(--text-primary);
+}
+
+body.dark-mode .module-card-desc {
+    color: var(--text-secondary);
+}
+
+/* =====================================================
+   BUTTONS - DARK MODE
+   ===================================================== */
+body.dark-mode .btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .btn-secondary:hover {
+    background: var(--border-color);
+}
+
+body.dark-mode .btn-outline {
+    border-color: var(--border-dark);
+    color: var(--text-primary);
+}
+
+body.dark-mode .btn-outline:hover {
+    background: var(--bg-tertiary);
+}
+
+body.dark-mode .btn-ghost {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .btn-ghost:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* =====================================================
+   FORMS - DARK MODE
+   ===================================================== */
+body.dark-mode .form-label {
+    color: var(--text-primary);
+}
+
+body.dark-mode .form-input,
+body.dark-mode .form-textarea,
+body.dark-mode .form-select {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+body.dark-mode .form-input:focus,
+body.dark-mode .form-textarea:focus,
+body.dark-mode .form-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+}
+
+body.dark-mode .form-input::placeholder,
+body.dark-mode .form-textarea::placeholder {
+    color: var(--text-muted);
+}
+
+body.dark-mode .form-helper {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .form-check-input {
+    border-color: var(--border-dark);
+    background: var(--bg-tertiary);
+}
+
+body.dark-mode .form-check-label {
+    color: var(--text-primary);
+}
+
+body.dark-mode .input-group-icon {
+    color: var(--text-muted);
+}
+
+/* =====================================================
+   BADGES - DARK MODE
+   ===================================================== */
+body.dark-mode .badge-gray {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+/* =====================================================
+   ALERTS - DARK MODE
+   ===================================================== */
+body.dark-mode .alert-info {
+    background: var(--dyslexia-bg);
+    border-color: rgba(96, 165, 250, 0.3);
+}
+
+body.dark-mode .alert-success {
+    background: var(--dyscalculia-bg);
+    border-color: rgba(52, 211, 153, 0.3);
+}
+
+body.dark-mode .alert-warning {
+    background: var(--dysgraphia-bg);
+    border-color: rgba(251, 191, 36, 0.3);
+}
+
+body.dark-mode .alert-error {
+    background: var(--dyspraxia-bg);
+    border-color: rgba(248, 113, 113, 0.3);
+}
+
+/* =====================================================
+   TOAST - DARK MODE
+   ===================================================== */
+body.dark-mode .toast {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .toast-success { border-left-color: var(--primary-green); }
+body.dark-mode .toast-error { border-left-color: var(--primary-red); }
+body.dark-mode .toast-warning { border-left-color: var(--primary-orange); }
+body.dark-mode .toast-info { border-left-color: var(--primary-blue); }
+
+/* =====================================================
+   PROGRESS - DARK MODE
+   ===================================================== */
+body.dark-mode .progress {
+    background: var(--bg-tertiary);
+}
+
+/* =====================================================
+   MODALS - DARK MODE
+   ===================================================== */
+body.dark-mode .modal-backdrop {
+    background: rgba(0, 0, 0, 0.75);
+}
+
+body.dark-mode .modal {
+    background: var(--bg-secondary);
+}
+
+body.dark-mode .modal-header {
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .modal-title {
+    color: var(--text-primary);
+}
+
+body.dark-mode .modal-close {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .modal-close:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+body.dark-mode .modal-footer {
+    border-top-color: var(--border-color);
+}
+
+/* =====================================================
+   TABLES - DARK MODE
+   ===================================================== */
+body.dark-mode .table th,
+body.dark-mode .table td {
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .table th {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+body.dark-mode .table tbody tr:hover {
+    background: var(--bg-tertiary);
+}
+
+body.dark-mode .table-striped tbody tr:nth-child(even) {
+    background: var(--bg-tertiary);
+}
+
+/* =====================================================
+   AVATARS - DARK MODE
+   ===================================================== */
+body.dark-mode .avatar {
+    border-color: var(--border-color);
+}
+
+body.dark-mode .avatar-group .avatar {
+    border-color: var(--bg-secondary);
+}
+
+/* =====================================================
+   LOADING STATES - DARK MODE
+   ===================================================== */
+body.dark-mode .spinner {
+    border-color: var(--border-color);
+    border-top-color: var(--primary-blue);
+}
+
+body.dark-mode .loading-overlay {
+    background: rgba(18, 18, 18, 0.95);
+}
+
+body.dark-mode .loading-text {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .skeleton {
+    background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--border-color) 50%, var(--bg-tertiary) 75%);
+    background-size: 200% 100%;
+}
+
+/* =====================================================
+   EMPTY STATES - DARK MODE
+   ===================================================== */
+body.dark-mode .empty-state-icon {
+    color: var(--text-muted);
+}
+
+body.dark-mode .empty-state-title {
+    color: var(--text-primary);
+}
+
+body.dark-mode .empty-state-text {
+    color: var(--text-secondary);
+}
+
+/* =====================================================
+   TOOLTIPS - DARK MODE
+   ===================================================== */
+body.dark-mode .tooltip::after {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+/* =====================================================
+   DROPDOWN - DARK MODE
+   ===================================================== */
+body.dark-mode .dropdown-menu {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .dropdown-item {
+    color: var(--text-primary);
+}
+
+body.dark-mode .dropdown-item:hover {
+    background: var(--bg-tertiary);
+}
+
+body.dark-mode .dropdown-item i {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .dropdown-divider {
+    background: var(--border-color);
+}
+
+/* =====================================================
+   TABS - DARK MODE
+   ===================================================== */
+body.dark-mode .tabs {
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .tab {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .tab:hover {
+    color: var(--text-primary);
+}
+
+body.dark-mode .tab.active {
+    color: var(--primary-blue);
+    border-bottom-color: var(--primary-blue);
+}
+
+/* =====================================================
+   HEADINGS - DARK MODE
+   ===================================================== */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: var(--text-primary);
+}
+
+/* =====================================================
+   LINKS - DARK MODE
+   ===================================================== */
+body.dark-mode a {
+    color: var(--primary-blue);
+}
+
+body.dark-mode a:hover {
+    color: var(--primary-blue-light);
+}
+
+/* =====================================================
+   TEXT UTILITIES - DARK MODE
+   ===================================================== */
+body.dark-mode .text-primary {
+    color: var(--text-primary);
+}
+
+body.dark-mode .text-secondary {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .text-muted {
+    color: var(--text-muted);
+}
+
+/* =====================================================
+   BACKGROUND UTILITIES - DARK MODE
+   ===================================================== */
+body.dark-mode .bg-white {
+    background-color: var(--bg-secondary);
+}
+
+body.dark-mode .bg-primary {
+    background-color: var(--bg-primary);
+}
+
+body.dark-mode .bg-secondary {
+    background-color: var(--bg-secondary);
+}
+
+/* =====================================================
+   ACCESSIBILITY PANEL - DARK MODE
+   ===================================================== */
+body.dark-mode .accessibility-panel {
+    background: var(--bg-secondary);
+    border-left-color: var(--border-color);
+}
+
+body.dark-mode .accessibility-section {
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-mode .accessibility-section-title {
+    color: var(--text-primary);
+}
+
+body.dark-mode .accessibility-option-label {
+    color: var(--text-secondary);
+}
+
+body.dark-mode .toggle-slider {
+    background: var(--bg-tertiary);
+}
+
+body.dark-mode .toggle-slider::before {
+    background: var(--text-secondary);
+}
+
+body.dark-mode .toggle-switch input:checked + .toggle-slider::before {
+    background: var(--white);
+}
+
+body.dark-mode .slider-control input[type="range"] {
+    background: var(--bg-tertiary);
+}
+
+body.dark-mode .slider-labels {
+    color: var(--text-muted);
+}
+
+body.dark-mode .color-swatch.white {
+    border-color: var(--border-dark);
+}
+
+/* =====================================================
+   TTS CONTROLS - DARK MODE
+   ===================================================== */
+body.dark-mode .tts-controls {
+    background: var(--bg-tertiary);
+}
+
+body.dark-mode .tts-btn {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+body.dark-mode .tts-btn:hover,
+body.dark-mode .tts-btn.active {
+    background: var(--primary-blue);
+    color: var(--white);
+    border-color: var(--primary-blue);
+}
+
+body.dark-mode .tts-speed-label {
+    color: var(--text-secondary);
+}
+
+/* =====================================================
+   GAME ELEMENTS - DARK MODE
+   ===================================================== */
+body.dark-mode .number-line {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .number-line-item {
+    background: var(--bg-secondary);
+}
+
+body.dark-mode .counting-blocks {
+    background: var(--bg-tertiary);
+}
+
+body.dark-mode .letter-trace-canvas {
+    border-color: var(--dysgraphia-color);
+    background: var(--bg-secondary);
+}
+
+body.dark-mode .writing-lines {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+    background-image: 
+        linear-gradient(var(--border-color) 1px, transparent 1px),
+        linear-gradient(var(--primary-red) 1px, transparent 1px);
+}
+
+body.dark-mode .dotted-letter {
+    -webkit-text-stroke-color: var(--border-dark);
+}
+
+/* =====================================================
+   STEP INDICATOR - DARK MODE
+   ===================================================== */
+body.dark-mode .step-indicator {
+    background: var(--bg-tertiary);
+}
+
+body.dark-mode .step-title {
+    color: var(--text-primary);
+}
+
+body.dark-mode .step-desc {
+    color: var(--text-secondary);
+}
+
+/* =====================================================
+   REWARD ANIMATIONS - DARK MODE
+   ===================================================== */
+body.dark-mode .reward-animation {
+    background: rgba(18, 18, 18, 0.95);
+}
+
+body.dark-mode .reward-title {
+    color: var(--primary-green);
+}
+
+body.dark-mode .reward-message {
+    color: var(--text-secondary);
+}
+
+/* =====================================================
+   SCROLLBARS - DARK MODE
+   ===================================================== */
+body.dark-mode ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: var(--bg-tertiary);
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: var(--border-dark);
+    border-radius: 4px;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Firefox */
+body.dark-mode {
+    scrollbar-color: var(--border-dark) var(--bg-tertiary);
+    scrollbar-width: thin;
+}
+
+/* =====================================================
+   SELECTION - DARK MODE
+   ===================================================== */
+body.dark-mode ::selection {
+    background: var(--primary-blue);
+    color: var(--white);
+}
+
+body.dark-mode ::-moz-selection {
+    background: var(--primary-blue);
+    color: var(--white);
+}
+
+/* =====================================================
+   FOCUS STYLES - DARK MODE
+   ===================================================== */
+body.dark-mode *:focus-visible {
+    outline-color: var(--primary-blue);
+}
+
+/* =====================================================
+   CODE BLOCKS - DARK MODE (if applicable)
+   ===================================================== */
+body.dark-mode pre,
+body.dark-mode code {
+    background: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* =====================================================
+   IMAGES - DARK MODE ADJUSTMENTS
+   ===================================================== */
+body.dark-mode img {
+    opacity: 0.9;
+}
+
+body.dark-mode img:hover {
+    opacity: 1;
+}
+
+/* Invert icons if they are dark by default */
+body.dark-mode .icon-invert {
+    filter: invert(1);
+}
+
+/* =====================================================
+   AUTH PAGES - DARK MODE
+   ===================================================== */
+body.dark-mode .auth-right {
+    background: var(--bg-primary);
+}
+
+body.dark-mode .auth-form-container {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+}
+
+/* =====================================================
+   TRANSITIONS FOR THEME SWITCH
+   ===================================================== */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.card,
+.btn,
+.form-input,
+.form-select,
+.form-textarea,
+.sidebar,
+.navbar,
+.modal,
+.dropdown-menu,
+.toast,
+.alert {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* =====================================================
+   AUTO DARK MODE (SYSTEM PREFERENCE)
+   ===================================================== */
+@media (prefers-color-scheme: dark) {
+    body.auto-theme {
+        /* Apply same dark mode variables */
+        --primary-blue: #60A5FA;
+        --primary-blue-dark: #3B82F6;
+        --primary-blue-light: #93C5FD;
+        --primary-green: #34D399;
+        --primary-green-dark: #10B981;
+        --primary-orange: #FBBF24;
+        --primary-orange-dark: #F59E0B;
+        --primary-red: #F87171;
+        --primary-red-dark: #EF4444;
+        
+        --dyslexia-color: #60A5FA;
+        --dyslexia-bg: rgba(59, 130, 246, 0.15);
+        --dyscalculia-color: #34D399;
+        --dyscalculia-bg: rgba(16, 185, 129, 0.15);
+        --dysgraphia-color: #FBBF24;
+        --dysgraphia-bg: rgba(245, 158, 11, 0.15);
+        --dyspraxia-color: #F87171;
+        --dyspraxia-bg: rgba(239, 68, 68, 0.15);
+        
+        --white: #1E1E1E;
+        --bg-primary: #121212;
+        --bg-secondary: #1E1E1E;
+        --bg-tertiary: #2D2D2D;
+        --text-primary: #F5F5F5;
+        --text-secondary: #A0A0A0;
+        --text-muted: #6B6B6B;
+        --border-color: #333333;
+        --border-dark: #444444;
+        
+        color-scheme: dark;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+    }
+}

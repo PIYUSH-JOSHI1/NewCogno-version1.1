@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Learn - Cogno Solution</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mobile-nav.css">
+    
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f3f4f6;
+            transition: background 0.3s;
+        }
+        
+        .dark-mode body {
+            background: #0f172a;
+        }
+        
+        /* Mobile Layout */
+        .mobile-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .dark-mode .mobile-header {
+            background: #1e293b;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .mobile-content {
+            padding: 1rem;
+            padding-bottom: calc(80px + env(safe-area-inset-bottom));
+        }
+        
+        .search-box {
+            background: white;
+            border-radius: 1rem;
+            padding: 0.875rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.05));
+            border: 1px solid #e5e7eb;
+        }
+        
+        .dark-mode .search-box {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 0.9375rem;
+            background: transparent;
+            color: #1f2937;
+        }
+        
+        .dark-mode .search-box input {
+            color: #f3f4f6;
+        }
+        
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin: 1.5rem 0 1rem;
+            padding-left: 0.25rem;
+        }
+        
+        /* Module Cards */
+        .module-card {
+            background: white;
+            border-radius: 1.25rem;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #f1f5f9;
+            transition: all 0.3s;
+        }
+        
+        .dark-mode .module-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        
+        .module-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .module-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .module-card.dyslexia .module-icon {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+        }
+        
+        .module-card.dyscalculia .module-icon {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .module-card.dysgraphia .module-icon {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+        
+        .module-card.dyspraxia .module-icon {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .module-info {
+            flex: 1;
+            text-align: left;
+        }
+        
+        .module-info h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.25rem 0;
+            line-height: 1.2;
+        }
+        
+        .dark-mode .module-info h3 {
+            color: #f8fafc;
+        }
+        
+        .module-info p {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin: 0 0 0.75rem 0;
+            line-height: 1.4;
+        }
+        
+        .dark-mode .module-info p {
+            color: #94a3b8;
+        }
+        
+        .module-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+        }
+        
+        .module-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+        
+        .module-toggle {
+            color: #cbd5e1;
+            transition: transform 0.3s;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+        
+        .module-card.expanded .module-toggle {
+            transform: rotate(180deg);
+        }
+        
+        /* Activities */
+        .module-activities {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f8fafc;
+        }
+        
+        .dark-mode .module-activities {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        .module-card.expanded .module-activities {
+            max-height: 2000px;
+            border-top: 1px solid #f1f5f9;
+        }
+        
+        .dark-mode .module-card.expanded .module-activities {
+            border-top-color: #334155;
+        }
+        
+        .activity-grid {
+            padding: 1.25rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .activity-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.25rem 1rem;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #f1f5f9;
+        }
+        
+        .dark-mode .activity-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        
+        .activity-card:active {
+            transform: scale(0.96);
+        }
+        
+        .activity-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.2s;
+        }
+        
+        .module-card.dyslexia .activity-icon { background: #eff6ff; color: #3b82f6; }
+        .module-card.dyscalculia .activity-icon { background: #ecfdf5; color: #10b981; }
+        .module-card.dysgraphia .activity-icon { background: #fffbeb; color: #f59e0b; }
+        .module-card.dyspraxia .activity-icon { background: #fef2f2; color: #ef4444; }
+        
+        .activity-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #334155;
+            line-height: 1.2;
+        }
+        
+        .dark-mode .activity-name {
+            color: #f1f5f9;
+        }
+        
+        /* Mobile Specific Tweaks */
+        @media (max-width: 480px) {
+            .module-header {
+                padding: 1.25rem;
+                gap: 1rem;
+            }
+            
+            .module-icon {
+                width: 56px;
+                height: 56px;
+                font-size: 1.5rem;
+            }
+            
+            .module-info h3 {
+                font-size: 1rem;
+            }
+            
+            .module-meta {
+                gap: 0.25rem 0.75rem;
+            }
+            
+            .activity-grid {
+                gap: 0.75rem;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.location.href='../dashboard/child-dashboard.html'">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Learn</h1>
+        <div class="header-actions">
+            <button class="header-action-btn" id="dark-mode-toggle">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Content -->
+    <main class="mobile-content">
+        <div class="mobile-content-inner">
+            <!-- Search -->
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Search activities..." id="search-input">
+            </div>
+            
+            <!-- Learning Modules -->
+            <div class="section-title">Learning Modules</div>
+            
+            <!-- Dyslexia Module -->
+            <div class="module-card dyslexia" id="module-dyslexia">
+                <div class="module-header" onclick="toggleModule('dyslexia')">
+                    <div class="module-icon">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <div class="module-info">
+                        <h3>Reading & Words</h3>
+                        <p>Build reading confidence with fun exercises</p>
+                        <div class="module-meta">
+                            <span><i class="fa-solid fa-gamepad"></i> 12 Activities</span>
+                            <span><i class="fa-solid fa-star"></i> <span id="dyslexia-progress">0</span>% Complete</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down module-toggle"></i>
+                </div>
+                <div class="module-activities">
+                    <div class="activity-grid">
+                        <a href="../modules/dyslexia/index.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-home"></i></div>
+                            <div class="activity-name">Overview</div>
+                        </a>
+                        <a href="../modules/dyslexia/reader.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-book-reader"></i></div>
+                            <div class="activity-name">Reader</div>
+                        </a>
+                        <a href="../modules/dyslexia/reading.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-glasses"></i></div>
+                            <div class="activity-name">Reading Practice</div>
+                        </a>
+                        <a href="../modules/dyslexia/letter-match.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-clone"></i></div>
+                            <div class="activity-name">Letter Match</div>
+                        </a>
+                        <a href="../modules/dyslexia/sight-words.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-eye"></i></div>
+                            <div class="activity-name">Sight Words</div>
+                        </a>
+                        <a href="../modules/dyslexia/spelling.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-spell-check"></i></div>
+                            <div class="activity-name">Spelling</div>
+                        </a>
+                        <a href="../modules/dyslexia/spelling-bee.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-trophy"></i></div>
+                            <div class="activity-name">Spelling Bee</div>
+                        </a>
+                        <a href="../modules/dyslexia/word-builder.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-cubes"></i></div>
+                            <div class="activity-name">Word Builder</div>
+                        </a>
+                        <a href="../modules/dyslexia/word-scramble.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-shuffle"></i></div>
+                            <div class="activity-name">Word Scramble</div>
+                        </a>
+                        <a href="../modules/dyslexia/rhyme-time.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-music"></i></div>
+                            <div class="activity-name">Rhyme Time</div>
+                        </a>
+                        <a href="../modules/dyslexia/simplify.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-compress"></i></div>
+                            <div class="activity-name">Simplify</div>
+                        </a>
+                        <a href="../modules/dyslexia/games.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-gamepad"></i></div>
+                            <div class="activity-name">Games</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dyscalculia Module -->
+            <div class="module-card dyscalculia" id="module-dyscalculia">
+                <div class="module-header" onclick="toggleModule('dyscalculia')">
+                    <div class="module-icon">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <div class="module-info">
+                        <h3>Numbers & Math</h3>
+                        <p>Master numbers with interactive exercises</p>
+                        <div class="module-meta">
+                            <span><i class="fa-solid fa-gamepad"></i> 13 Activities</span>
+                            <span><i class="fa-solid fa-star"></i> <span id="dyscalculia-progress">0</span>% Complete</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down module-toggle"></i>
+                </div>
+                <div class="module-activities">
+                    <div class="activity-grid">
+                        <a href="../modules/dyscalculia/index.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-home"></i></div>
+                            <div class="activity-name">Overview</div>
+                        </a>
+                        <a href="../modules/dyscalculia/number-basics.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-1"></i></div>
+                            <div class="activity-name">Number Basics</div>
+                        </a>
+                        <a href="../modules/dyscalculia/counting.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-list-ol"></i></div>
+                            <div class="activity-name">Counting</div>
+                        </a>
+                        <a href="../modules/dyscalculia/number-line.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-arrows-left-right"></i></div>
+                            <div class="activity-name">Number Line</div>
+                        </a>
+                        <a href="../modules/dyscalculia/number-match.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-clone"></i></div>
+                            <div class="activity-name">Number Match</div>
+                        </a>
+                        <a href="../modules/dyscalculia/number-puzzle.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-puzzle-piece"></i></div>
+                            <div class="activity-name">Number Puzzle</div>
+                        </a>
+                        <a href="../modules/dyscalculia/operations.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-plus-minus"></i></div>
+                            <div class="activity-name">Operations</div>
+                        </a>
+                        <a href="../modules/dyscalculia/addition.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-plus"></i></div>
+                            <div class="activity-name">Addition</div>
+                        </a>
+                        <a href="../modules/dyscalculia/subtraction.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-minus"></i></div>
+                            <div class="activity-name">Subtraction</div>
+                        </a>
+                        <a href="../modules/dyscalculia/multiplication.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-xmark"></i></div>
+                            <div class="activity-name">Multiplication</div>
+                        </a>
+                        <a href="../modules/dyscalculia/division.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-divide"></i></div>
+                            <div class="activity-name">Division</div>
+                        </a>
+                        <a href="../modules/dyscalculia/math-games.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-gamepad"></i></div>
+                            <div class="activity-name">Math Games</div>
+                        </a>
+                        <a href="../modules/dyscalculia/math-pop.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-burst"></i></div>
+                            <div class="activity-name">Math Pop</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dysgraphia Module -->
+            <div class="module-card dysgraphia" id="module-dysgraphia">
+                <div class="module-header" onclick="toggleModule('dysgraphia')">
+                    <div class="module-icon">
+                        <i class="fa-solid fa-pencil"></i>
+                    </div>
+                    <div class="module-info">
+                        <h3>Writing Practice</h3>
+                        <p>Improve handwriting and motor skills</p>
+                        <div class="module-meta">
+                            <span><i class="fa-solid fa-gamepad"></i> 13 Activities</span>
+                            <span><i class="fa-solid fa-star"></i> <span id="dysgraphia-progress">0</span>% Complete</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down module-toggle"></i>
+                </div>
+                <div class="module-activities">
+                    <div class="activity-grid">
+                        <a href="../modules/dysgraphia/index.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-home"></i></div>
+                            <div class="activity-name">Overview</div>
+                        </a>
+                        <a href="../modules/dysgraphia/letter-formation.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-font"></i></div>
+                            <div class="activity-name">Letter Formation</div>
+                        </a>
+                        <a href="../modules/dysgraphia/letter-practice.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-a"></i></div>
+                            <div class="activity-name">Letter Practice</div>
+                        </a>
+                        <a href="../modules/dysgraphia/letter-tracing.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                            <div class="activity-name">Letter Tracing</div>
+                        </a>
+                        <a href="../modules/dysgraphia/alphabet-practice.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-language"></i></div>
+                            <div class="activity-name">Alphabet Practice</div>
+                        </a>
+                        <a href="../modules/dysgraphia/word-tracing.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-signature"></i></div>
+                            <div class="activity-name">Word Tracing</div>
+                        </a>
+                        <a href="../modules/dysgraphia/word-writing.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-pen"></i></div>
+                            <div class="activity-name">Word Writing</div>
+                        </a>
+                        <a href="../modules/dysgraphia/sentence-write.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-paragraph"></i></div>
+                            <div class="activity-name">Sentence Writing</div>
+                        </a>
+                        <a href="../modules/dysgraphia/spelling-write.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-spell-check"></i></div>
+                            <div class="activity-name">Spelling Write</div>
+                        </a>
+                        <a href="../modules/dysgraphia/copy-practice.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-copy"></i></div>
+                            <div class="activity-name">Copy Practice</div>
+                        </a>
+                        <a href="../modules/dysgraphia/shape-tracing.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-shapes"></i></div>
+                            <div class="activity-name">Shape Tracing</div>
+                        </a>
+                        <a href="../modules/dysgraphia/drawing.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-palette"></i></div>
+                            <div class="activity-name">Drawing</div>
+                        </a>
+                        <a href="../modules/dysgraphia/free-draw.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-paintbrush"></i></div>
+                            <div class="activity-name">Free Draw</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dyspraxia Module -->
+            <div class="module-card dyspraxia" id="module-dyspraxia">
+                <div class="module-header" onclick="toggleModule('dyspraxia')">
+                    <div class="module-icon">
+                        <i class="fa-solid fa-person-running"></i>
+                    </div>
+                    <div class="module-info">
+                        <h3>Movement Games</h3>
+                        <p>Fun exercises for coordination & motor skills</p>
+                        <div class="module-meta">
+                            <span><i class="fa-solid fa-gamepad"></i> 21 Activities</span>
+                            <span><i class="fa-solid fa-star"></i> <span id="dyspraxia-progress">0</span>% Complete</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down module-toggle"></i>
+                </div>
+                <div class="module-activities">
+                    <div class="activity-grid">
+                        <a href="../modules/dyspraxia/index.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-home"></i></div>
+                            <div class="activity-name">Overview</div>
+                        </a>
+                        <a href="../modules/dyspraxia/balance-beam.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                            <div class="activity-name">Balance Beam</div>
+                        </a>
+                        <a href="../modules/dyspraxia/balance.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-person"></i></div>
+                            <div class="activity-name">Balance</div>
+                        </a>
+                        <a href="../modules/dyspraxia/balloon-pop.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-burst"></i></div>
+                            <div class="activity-name">Balloon Pop</div>
+                        </a>
+                        <a href="../modules/dyspraxia/body-movement.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-child-reaching"></i></div>
+                            <div class="activity-name">Body Movement</div>
+                        </a>
+                        <a href="../modules/dyspraxia/catch-objects.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-hand"></i></div>
+                            <div class="activity-name">Catch Objects</div>
+                        </a>
+                        <a href="../modules/dyspraxia/catch-star.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-star"></i></div>
+                            <div class="activity-name">Catch Star</div>
+                        </a>
+                        <a href="../modules/dyspraxia/catch-stars.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-stars"></i></div>
+                            <div class="activity-name">Catch Stars</div>
+                        </a>
+                        <a href="../modules/dyspraxia/click-sequence.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-arrow-pointer"></i></div>
+                            <div class="activity-name">Click Sequence</div>
+                        </a>
+                        <a href="../modules/dyspraxia/drag-drop.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-up-down-left-right"></i></div>
+                            <div class="activity-name">Drag & Drop</div>
+                        </a>
+                        <a href="../modules/dyspraxia/drag-targets.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-bullseye"></i></div>
+                            <div class="activity-name">Drag Targets</div>
+                        </a>
+                        <a href="../modules/dyspraxia/finger-tap.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-hand-pointer"></i></div>
+                            <div class="activity-name">Finger Tap</div>
+                        </a>
+                        <a href="../modules/dyspraxia/freeze-dance.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-snowflake"></i></div>
+                            <div class="activity-name">Freeze Dance</div>
+                        </a>
+                        <a href="../modules/dyspraxia/hand-exercises.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-hands"></i></div>
+                            <div class="activity-name">Hand Exercises</div>
+                        </a>
+                        <a href="../modules/dyspraxia/mirror-me.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-people-arrows"></i></div>
+                            <div class="activity-name">Mirror Me</div>
+                        </a>
+                        <a href="../modules/dyspraxia/mirror-moves.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-rotate"></i></div>
+                            <div class="activity-name">Mirror Moves</div>
+                        </a>
+                        <a href="../modules/dyspraxia/obstacle-course.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-road-barrier"></i></div>
+                            <div class="activity-name">Obstacle Course</div>
+                        </a>
+                        <a href="../modules/dyspraxia/rhythm-tap.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-drum"></i></div>
+                            <div class="activity-name">Rhythm Tap</div>
+                        </a>
+                        <a href="../modules/dyspraxia/tapping-sequence.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-hand-dots"></i></div>
+                            <div class="activity-name">Tapping Sequence</div>
+                        </a>
+                        <a href="../modules/dyspraxia/tightrope-walk.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-route"></i></div>
+                            <div class="activity-name">Tightrope Walk</div>
+                        </a>
+                        <a href="../modules/dyspraxia/track-path.html" class="activity-card">
+                            <div class="activity-icon"><i class="fa-solid fa-bezier-curve"></i></div>
+                            <div class="activity-name">Track Path</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    
+    <script>
+        // Toggle module expansion
+        function toggleModule(moduleId) {
+            const card = document.getElementById('module-' + moduleId);
+            card.classList.toggle('expanded');
+        }
+        
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            
+            document.querySelectorAll('.activity-card').forEach(card => {
+                const name = card.querySelector('.activity-name').textContent.toLowerCase();
+                const parent = card.closest('.module-card');
+                
+                if (query) {
+                    if (name.includes(query)) {
+                        card.style.display = '';
+                        parent.classList.add('expanded');
+                    } else {
+                        card.style.display = 'none';
+                    }
+                } else {
+                    card.style.display = '';
+                }
+            });
+            
+            // Show/hide empty modules
+            document.querySelectorAll('.module-card').forEach(module => {
+                const visibleCards = module.querySelectorAll('.activity-card[style=""]').length +
+                                   module.querySelectorAll('.activity-card:not([style])').length;
+                
+                if (query && visibleCards === 0) {
+                    module.style.display = 'none';
+                } else {
+                    module.style.display = '';
+                }
+            });
+        });
+        
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        
+        if (localStorage.getItem('cogno-theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            darkModeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+        }
+        
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('cogno-theme', isDark ? 'dark' : 'light');
+            darkModeToggle.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+        });
+        
+        // Load progress from database
+        async function loadProgress() {
+            try {
+                const { session } = await CognoSupabase.getSession();
+                if (!session) return;
+                
+                const userId = session.user.id;
+                
+                // Get activity progress
+                const { data: progress } = await CognoSupabase.client
+                    .from('activity_progress')
+                    .select('module_type, activity_id, completed, score')
+                    .eq('user_id', userId);
+                
+                if (!progress) return;
+                
+                // Calculate per-module progress
+                const modules = {
+                    dyslexia: { total: 12, completed: 0 },
+                    dyscalculia: { total: 13, completed: 0 },
+                    dysgraphia: { total: 13, completed: 0 },
+                    dyspraxia: { total: 21, completed: 0 }
+                };
+                
+                progress.forEach(p => {
+                    if (p.completed && modules[p.module_type]) {
+                        modules[p.module_type].completed++;
+                    }
+                });
+                
+                // Update UI
+                Object.keys(modules).forEach(modType => {
+                    const pct = Math.round((modules[modType].completed / modules[modType].total) * 100);
+                    const el = document.getElementById(modType + '-progress');
+                    if (el) el.textContent = pct;
+                });
+                
+            } catch (err) {
+                console.error('Failed to load progress:', err);
+            }
+        }
+        
+        loadProgress();
+    </script>
+</body>
+</html>

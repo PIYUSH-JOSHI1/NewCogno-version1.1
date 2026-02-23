@@ -1,0 +1,2854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Patients - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-darker: #1d4ed8;
+            --primary-light: #eff6ff;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --primary-light: #1e3a5f;
+            --success-light: #064e3b;
+            --warning-light: #451a03;
+            --danger-light: #450a0a;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 90px;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        /* Topbar */
+        .topbar {
+            background: var(--card);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .topbar-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        .topbar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .topbar-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+        
+        .topbar-btn:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        
+        /* Main Content */
+        .content {
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Search & Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--card);
+            color: var(--text);
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--card);
+            color: var(--text);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        /* Stats Summary */
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mini-stat {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .mini-stat .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .mini-stat .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+        
+        .mini-stat.success .value { color: var(--success); }
+        .mini-stat.warning .value { color: var(--warning); }
+        .mini-stat.danger .value { color: var(--danger); }
+        
+        /* Patients Grid */
+        .patients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        
+        /* Patient Card */
+        .patient-card {
+            background: var(--card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .patient-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+        
+        .patient-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent) 100%);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+        
+        .patient-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
+            border: 3px solid rgba(255,255,255,0.3);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .patient-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .patient-info {
+            flex: 1;
+            color: white;
+        }
+        
+        .patient-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .patient-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        .patient-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-active {
+            background: var(--success);
+            color: white;
+        }
+        
+        .status-inactive {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .status-online {
+            background: #00ff88;
+            color: #0a3622;
+        }
+        
+        /* Patient Body */
+        .patient-body {
+            padding: 1.25rem;
+        }
+        
+        .patient-condition {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .condition-tag {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .tag-dyslexia {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .tag-dyscalculia {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .tag-dysgraphia {
+            background: #f3e8ff;
+            color: #6b21a8;
+        }
+        
+        .tag-dyspraxia {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        [data-theme="dark"] .tag-dyslexia {
+            background: #451a03;
+            color: #fcd34d;
+        }
+        
+        [data-theme="dark"] .tag-dyscalculia {
+            background: #1e3a5f;
+            color: #93c5fd;
+        }
+        
+        [data-theme="dark"] .tag-dysgraphia {
+            background: #2e1065;
+            color: #c4b5fd;
+        }
+        
+        [data-theme="dark"] .tag-dyspraxia {
+            background: #064e3b;
+            color: #6ee7b7;
+        }
+        
+        /* Progress Section */
+        .progress-section {
+            margin-bottom: 1rem;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .progress-percent {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        /* Activity Stats */
+        .activity-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-radius: 10px;
+        }
+        
+        .activity-stat {
+            text-align: center;
+        }
+        
+        .activity-stat .value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        
+        .activity-stat .label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        
+        /* Last Active */
+        .last-active {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        
+        .last-active i {
+            color: var(--success);
+        }
+        
+        /* Card Actions */
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 0.65rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        
+        .action-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .action-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .action-btn.secondary {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .action-btn.secondary:hover {
+            background: var(--border);
+        }
+        
+        .action-btn.ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        
+        .action-btn.ghost:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        
+        /* Loading */
+        .loading-card {
+            background: var(--card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+        }
+        
+        .skeleton {
+            background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Patient Detail Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: var(--card);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent) 100%);
+            padding: 1.5rem;
+            color: white;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .modal-patient-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .modal-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            border: 3px solid rgba(255,255,255,0.3);
+            overflow: hidden;
+        }
+        
+        .modal-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .modal-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .modal-meta {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+            max-height: calc(90vh - 200px);
+            overflow-y: auto;
+        }
+        
+        .detail-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .detail-section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .detail-section-title i {
+            color: var(--primary);
+        }
+        
+        /* Activity Progress List */
+        .activity-progress-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-radius: 10px;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .activity-icon.reading { background: var(--warning); }
+        .activity-icon.math { background: var(--primary); }
+        .activity-icon.writing { background: #8b5cf6; }
+        .activity-icon.motor { background: var(--success); }
+        
+        .activity-details {
+            flex: 1;
+        }
+        
+        .activity-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .activity-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.25rem;
+        }
+        
+        .activity-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            background: var(--primary);
+        }
+        
+        .reading .activity-fill, .activity-icon.reading + .activity-details .activity-fill { background: var(--warning); }
+        .math .activity-fill, .activity-icon.math + .activity-details .activity-fill { background: var(--primary); }
+        .writing .activity-fill, .activity-icon.writing + .activity-details .activity-fill { background: #8b5cf6; }
+        .motor .activity-fill, .activity-icon.motor + .activity-details .activity-fill { background: var(--success); }
+        
+        .activity-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .activity-progress-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .activity-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .activity-progress-fill.reading { background: var(--warning); }
+        .activity-progress-fill.math { background: var(--primary); }
+        .activity-progress-fill.writing { background: #8b5cf6; }
+        .activity-progress-fill.motor { background: var(--success); }
+        
+        .activity-percent {
+            font-weight: 700;
+            font-size: 0.9rem;
+            min-width: 45px;
+            text-align: right;
+        }
+        
+        .activity-percent.good { color: var(--success); }
+        .activity-percent.medium { color: var(--warning); }
+        .activity-percent.low { color: var(--text-muted); }
+        
+        /* Patient Info Grid */
+        .patient-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg);
+            border-radius: 8px;
+        }
+        
+        .info-item i {
+            color: var(--primary);
+            width: 20px;
+            text-align: center;
+        }
+        
+        .info-item .info-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        
+        .info-item .info-value {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        /* Recent Activities List */
+        .recent-activities-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .recent-activity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem;
+            background: var(--bg);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .recent-activity-item:hover {
+            background: var(--border);
+        }
+        
+        .recent-activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: white;
+        }
+        
+        .recent-activity-icon.dyslexia { background: var(--warning); }
+        .recent-activity-icon.dyscalculia { background: var(--primary); }
+        .recent-activity-icon.dysgraphia { background: #8b5cf6; }
+        .recent-activity-icon.dyspraxia { background: var(--success); }
+        
+        .recent-activity-details {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .recent-activity-name {
+            font-weight: 500;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .recent-activity-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .recent-activity-score {
+            text-align: right;
+        }
+        
+        .recent-activity-score .score {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        
+        .recent-activity-score .score.high { color: var(--success); }
+        .recent-activity-score .score.medium { color: var(--warning); }
+        .recent-activity-score .score.low { color: var(--danger); }
+        
+        .recent-activity-score .date {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        /* Achievements Grid */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.75rem;
+        }
+        
+        .achievement-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .achievement-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .achievement-badge .badge-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .achievement-badge .badge-name {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        .achievement-badge .badge-date {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+        
+        .achievement-badge.locked {
+            opacity: 0.4;
+            filter: grayscale(1);
+        }
+        
+        .no-achievements {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        /* Doctor Notes */
+        .doctor-notes {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .doctor-notes textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .doctor-notes textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .save-notes-btn {
+            align-self: flex-end;
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        
+        .save-notes-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Condition Tags with Severity */
+        .condition-tag-detailed {
+            display: inline-flex;
+            flex-direction: column;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .condition-tag-detailed .condition-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .condition-tag-detailed .condition-severity {
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+        
+        .condition-tag-detailed.dyslexia { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .condition-tag-detailed.dyscalculia { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
+        .condition-tag-detailed.dysgraphia { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+        .condition-tag-detailed.dyspraxia { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        
+        /* Activity Stats Grid - Updated */
+        .activity-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+        
+        @media (max-width: 400px) {
+            .activity-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* Modal Actions */
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 0.85rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        
+        .modal-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .modal-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .modal-btn.secondary {
+            background: var(--success);
+            color: white;
+        }
+        
+        .modal-btn.secondary:hover {
+            background: #059669;
+        }
+        
+        .modal-btn.ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        
+        .modal-btn.ghost:hover {
+            background: var(--border);
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 0.5rem 0.5rem;
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.4rem 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.6rem;
+            border-radius: 10px;
+            text-decoration: none;
+            min-width: 45px;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn i {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .nav-btn:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        
+        .nav-btn.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card);
+            color: var(--text);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1100;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .toast.success { border-left: 4px solid var(--success); }
+        .toast.error { border-left: 4px solid var(--danger); }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .patients-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-bar {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .nav-btn {
+                font-size: 0.55rem;
+                min-width: 40px;
+                padding: 0.35rem;
+            }
+            
+            .nav-btn i {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: relative;
+        }
+        
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .profile-btn:hover {
+            background: var(--border);
+        }
+        
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .profile-info {
+            text-align: left;
+        }
+        
+        .profile-info .name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .profile-info .role {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .profile-chevron {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            transition: transform 0.2s;
+        }
+        
+        .profile-dropdown.open .profile-chevron {
+            transform: rotate(180deg);
+        }
+        
+        .profile-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            min-width: 240px;
+            padding: 0.5rem;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .profile-menu.show {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .profile-menu-header {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-menu-header .name {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+        
+        .profile-menu-header .email {
+            font-size: 0.75rem;
+            color: var(--primary);
+        }
+        
+        .profile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+        }
+        
+        .profile-menu-item:hover {
+            background: var(--border);
+        }
+        
+        .profile-menu-item i {
+            width: 20px;
+            color: var(--text-muted);
+        }
+        
+        .profile-menu-item.danger {
+            color: var(--danger);
+        }
+        
+        .profile-menu-item.danger i {
+            color: var(--danger);
+        }
+        
+        .theme-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 0.75rem;
+            border-radius: 8px;
+        }
+        
+        .theme-toggle-row:hover {
+            background: var(--border);
+        }
+        
+        .theme-toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text);
+            font-size: 0.85rem;
+        }
+        
+        .theme-toggle-left i {
+            width: 20px;
+            color: var(--text-muted);
+        }
+        
+        .theme-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .theme-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--border);
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+        
+        .theme-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .theme-slider {
+            background: var(--primary);
+        }
+        
+        input:checked + .theme-slider:before {
+            transform: translateX(20px);
+        }
+        
+        .menu-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0.5rem 0;
+        }
+        
+        .dropdown-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 999;
+            display: none;
+        }
+        
+        .dropdown-overlay.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Dropdown Overlay -->
+    <div class="dropdown-overlay" id="dropdown-overlay" onclick="closeAllDropdowns()"></div>
+    
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo">C</div>
+            <span class="topbar-title">My Patients</span>
+        </div>
+        
+        <div class="topbar-right">
+            <button class="topbar-btn" onclick="window.location.href='messages.html'">
+                <i class="fa-solid fa-bell"></i>
+            </button>
+            
+            <!-- Profile Dropdown -->
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <div class="profile-avatar" id="profile-avatar">D</div>
+                    <div class="profile-info">
+                        <div class="name" id="profile-name">Doctor</div>
+                        <div class="role">Specialist</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down profile-chevron"></i>
+                </button>
+                
+                <div class="profile-menu" id="profile-menu">
+                    <div class="profile-menu-header">
+                        <div class="name" id="menu-name">Doctor</div>
+                        <div class="email" id="menu-email">doctor@example.com</div>
+                    </div>
+                    
+                    <a href="profile.html" class="profile-menu-item">
+                        <i class="fa-solid fa-user"></i>
+                        <span>View Profile</span>
+                    </a>
+                    <a href="profile.html?edit=true" class="profile-menu-item">
+                        <i class="fa-solid fa-pen"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                    <a href="settings.html" class="profile-menu-item">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                    
+                    <div class="theme-toggle-row">
+                        <div class="theme-toggle-left">
+                            <i class="fa-solid fa-moon"></i>
+                            <span>Dark Mode</span>
+                        </div>
+                        <label class="theme-switch">
+                            <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+                            <span class="theme-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="menu-divider"></div>
+                    
+                    <button class="profile-menu-item danger" onclick="logout()">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Stats Summary -->
+        <div class="stats-summary">
+            <div class="mini-stat">
+                <div class="value" id="total-patients">0</div>
+                <div class="label">Total</div>
+            </div>
+            <div class="mini-stat success">
+                <div class="value" id="active-patients">0</div>
+                <div class="label">Active</div>
+            </div>
+            <div class="mini-stat warning">
+                <div class="value" id="online-patients">0</div>
+                <div class="label">Online</div>
+            </div>
+            <div class="mini-stat danger">
+                <div class="value" id="need-attention">0</div>
+                <div class="label">Need Attention</div>
+            </div>
+        </div>
+        
+        <!-- Search & Filter -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search patients...">
+            </div>
+            <select class="filter-select" id="filter-condition">
+                <option value="">All Conditions</option>
+                <option value="dyslexia">Dyslexia</option>
+                <option value="dyscalculia">Dyscalculia</option>
+                <option value="dysgraphia">Dysgraphia</option>
+                <option value="dyspraxia">Dyspraxia</option>
+            </select>
+            <select class="filter-select" id="filter-status">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="online">Online Now</option>
+            </select>
+        </div>
+        
+        <!-- Patients Grid -->
+        <div class="patients-grid" id="patients-grid">
+            <!-- Loading State -->
+            <div class="loading-card">
+                <div class="skeleton" style="height: 80px; margin-bottom: 1rem;"></div>
+                <div class="skeleton" style="height: 20px; width: 60%; margin-bottom: 0.5rem;"></div>
+                <div class="skeleton" style="height: 16px; width: 40%;"></div>
+            </div>
+            <div class="loading-card">
+                <div class="skeleton" style="height: 80px; margin-bottom: 1rem;"></div>
+                <div class="skeleton" style="height: 20px; width: 60%; margin-bottom: 0.5rem;"></div>
+                <div class="skeleton" style="height: 16px; width: 40%;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Patient Detail Modal -->
+    <div class="modal-overlay" id="patient-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+                <div class="modal-patient-info">
+                    <div class="modal-avatar" id="modal-avatar">A</div>
+                    <div>
+                        <div class="modal-name" id="modal-name">Patient Name</div>
+                        <div class="modal-meta" id="modal-meta">Age 8 • Patient since Jan 2026</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- Contact & Basic Info -->
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        <i class="fa-solid fa-user-circle"></i>
+                        Patient Details
+                    </div>
+                    <div class="patient-info-grid" id="modal-patient-details">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Conditions with Severity -->
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        <i class="fa-solid fa-brain"></i>
+                        Learning Conditions
+                    </div>
+                    <div class="patient-condition" id="modal-conditions">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        Performance Overview
+                    </div>
+                    <div class="activity-stats" id="modal-stats">
+                        <div class="activity-stat">
+                            <div class="value" id="modal-sessions">0</div>
+                            <div class="label">Sessions</div>
+                        </div>
+                        <div class="activity-stat">
+                            <div class="value" id="modal-time">0h</div>
+                            <div class="label">Time Spent</div>
+                        </div>
+                        <div class="activity-stat">
+                            <div class="value" id="modal-streak">0</div>
+                            <div class="label">Day Streak</div>
+                        </div>
+                        <div class="activity-stat">
+                            <div class="value" id="modal-level">1</div>
+                            <div class="label">Level</div>
+                        </div>
+                        <div class="activity-stat">
+                            <div class="value" id="modal-xp">0</div>
+                            <div class="label">Total XP</div>
+                        </div>
+                        <div class="activity-stat">
+                            <div class="value" id="modal-accuracy">0%</div>
+                            <div class="label">Avg Accuracy</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Module Progress -->
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Module Progress
+                    </div>
+                    <div class="activity-progress-list" id="modal-activities">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Recent Activities -->
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        Recent Activities
+                    </div>
+                    <div class="recent-activities-list" id="modal-recent-activities">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Achievements -->
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        <i class="fa-solid fa-trophy"></i>
+                        Achievements
+                    </div>
+                    <div class="achievements-grid" id="modal-achievements">
+                        <!-- Filled dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Doctor Notes -->
+                <div class="detail-section">
+                    <div class="detail-section-title">
+                        <i class="fa-solid fa-note-sticky"></i>
+                        Doctor Notes
+                    </div>
+                    <div class="doctor-notes">
+                        <textarea id="modal-notes" placeholder="Add notes about this patient..." rows="3"></textarea>
+                        <button class="save-notes-btn" onclick="savePatientNotes()">
+                            <i class="fa-solid fa-save"></i> Save Notes
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Assignments -->
+                <div class="detail-section">
+                    <div class="detail-section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <i class="fa-solid fa-clipboard-list"></i>
+                            Active Assignments
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="openAssignModal()">
+                            <i class="fa-solid fa-plus"></i> New Assignment
+                        </button>
+                    </div>
+                    <div class="assignments-list" id="modal-assignments">
+                        <!-- Filled dynamically -->
+                        <div class="loading-inline">Loading assignments...</div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn ghost" onclick="closeModal()">
+                    <i class="fa-solid fa-times"></i>
+                    Close
+                </button>
+                <button class="modal-btn" style="background: var(--warning); color: white;" onclick="messagePatient()">
+                    <i class="fa-solid fa-message"></i>
+                    Message
+                </button>
+                <button class="modal-btn primary" onclick="startConsultation()">
+                    <i class="fa-solid fa-video"></i>
+                    Consult
+                </button>
+                <button class="modal-btn secondary" onclick="downloadReport()">
+                    <i class="fa-solid fa-download"></i>
+                    Report
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a href="patients.html" class="nav-btn active">
+            <i class="fa-solid fa-user-group"></i>
+            Patients
+        </a>
+        <a href="schedule.html" class="nav-btn">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="consultations.html" class="nav-btn">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="reports.html" class="nav-btn">
+            <i class="fa-solid fa-chart-bar"></i>
+            Reports
+        </a>
+        <a href="profile.html" class="nav-btn">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- PDF Generation Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <script src="../js/supabase-client.js"></script>
+    <script>
+        let currentDoctor = null;
+        let patients = [];
+        let selectedPatient = null;
+        
+        // Theme
+        function initTheme() {
+            const savedTheme = localStorage.getItem('cogno_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const toggle = document.getElementById('theme-toggle');
+            if (toggle) toggle.checked = savedTheme === 'dark';
+        }
+        
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('cogno_theme', newTheme);
+        }
+        
+        // Profile Dropdown
+        function closeAllDropdowns() {
+            document.getElementById('profile-menu')?.classList.remove('show');
+            document.getElementById('profile-dropdown')?.classList.remove('open');
+            document.getElementById('dropdown-overlay')?.classList.remove('show');
+        }
+        
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profile-menu');
+            const dropdown = document.getElementById('profile-dropdown');
+            const overlay = document.getElementById('dropdown-overlay');
+            
+            if (menu.classList.contains('show')) {
+                closeAllDropdowns();
+            } else {
+                menu.classList.add('show');
+                dropdown.classList.add('open');
+                overlay.classList.add('show');
+            }
+        }
+        
+        // Logout
+        async function logout() {
+            try {
+                await CognoSupabase.signOut();
+                window.location.href = '../auth/login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = '../auth/login.html';
+            }
+        }
+        
+        // Update profile info in dropdown
+        function updateProfileDropdown(profile) {
+            if (!profile) return;
+            const name = profile.full_name || 'Doctor';
+            const initial = name.charAt(0).toUpperCase();
+            
+            document.getElementById('profile-avatar').textContent = initial;
+            document.getElementById('profile-name').textContent = name;
+            document.getElementById('menu-name').textContent = name;
+            document.getElementById('menu-email').textContent = profile.email || '';
+        }
+        
+        // Toast
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                ${message}
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        // Load Patients
+        async function loadPatients() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+                currentDoctor = user;
+                
+                // Get doctor profile for dropdown
+                const { data: doctorProfile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('full_name, email, specialization')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (doctorProfile) {
+                    updateProfileDropdown({ ...doctorProfile, email: user.email });
+                }
+                
+                // Get doctor-patient relationships
+                const { data: relationships, error: relError } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .select(`
+                        *,
+                        patient:profiles!doctor_patients_patient_id_fkey(
+                            id, full_name, avatar_url, date_of_birth, email, role
+                        )
+                    `)
+                    .eq('doctor_id', user.id);
+                
+                if (relError) {
+                    console.error('Error loading relationships:', relError);
+                    // Try alternate query without nested select
+                    await loadPatientsAlternate(user.id);
+                    return;
+                }
+                
+                if (relationships && relationships.length > 0) {
+                    patients = relationships.map(r => ({
+                        ...r.patient,
+                        relationship_status: r.status,
+                        assigned_date: r.assigned_at
+                    }));
+                    
+                    await enrichPatientData(patients);
+                    renderPatients(patients);
+                    updateStats(patients);
+                } else {
+                    // No patients found
+                    renderEmptyState();
+                    updateStats([]);
+                }
+                
+            } catch (error) {
+                console.error('Error loading patients:', error);
+                renderEmptyState();
+            }
+        }
+        
+        // Alternate loading method
+        async function loadPatientsAlternate(doctorId) {
+            try {
+                const { data: relationships } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .select('patient_id, status, assigned_at')
+                    .eq('doctor_id', doctorId);
+                
+                if (!relationships || relationships.length === 0) {
+                    renderEmptyState();
+                    updateStats([]);
+                    return;
+                }
+                
+                const patientIds = relationships.map(r => r.patient_id);
+                
+                const { data: patientProfiles } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('*')
+                    .in('id', patientIds);
+                
+                if (patientProfiles) {
+                    patients = patientProfiles.map(p => {
+                        const rel = relationships.find(r => r.patient_id === p.id);
+                        return {
+                            ...p,
+                            relationship_status: rel?.status || 'active',
+                            assigned_date: rel?.assigned_at
+                        };
+                    });
+                    
+                    await enrichPatientData(patients);
+                    renderPatients(patients);
+                    updateStats(patients);
+                } else {
+                    renderEmptyState();
+                }
+                
+            } catch (error) {
+                console.error('Error in alternate load:', error);
+                renderEmptyState();
+            }
+        }
+        
+        // Enrich patient data with activity progress and conditions
+        async function enrichPatientData(patientList) {
+            for (let patient of patientList) {
+                try {
+                    // Get student conditions from student_conditions table
+                    const { data: conditions } = await CognoSupabase.client
+                        .from('student_conditions')
+                        .select('condition, severity, is_primary')
+                        .eq('student_id', patient.id);
+                    
+                    patient.learning_conditions = conditions ? conditions.map(c => c.condition) : [];
+                    patient.conditions_detail = conditions || [];
+                    
+                    // Get activity progress from student_progress table (where CognoTracker saves data)
+                    let progress = null;
+                    
+                    // Try student_progress first (this is where CognoTracker.saveActivity writes)
+                    const { data: spData, error: spError } = await CognoSupabase.client
+                        .from('student_progress')
+                        .select('id, activity_type, activity_id, module_type, score, max_score, accuracy, time_spent_seconds, completed, difficulty_level, data, updated_at, created_at')
+                        .eq('student_id', patient.id)
+                        .order('updated_at', { ascending: false });
+                    
+                    if (!spError && spData && spData.length > 0) {
+                        // Map student_progress columns to a consistent format
+                        progress = spData.map(p => ({
+                            id: p.id,
+                            activity_name: p.activity_type || p.activity_id,
+                            activity_id: p.activity_id,
+                            module_name: p.module_type,
+                            score: p.score,
+                            max_score: p.max_score,
+                            accuracy_percent: p.accuracy || (p.max_score > 0 ? Math.round((p.score / p.max_score) * 100) : 0),
+                            time_spent_seconds: p.time_spent_seconds,
+                            attempt_number: 1,
+                            completed: p.completed,
+                            completed_at: p.completed ? p.updated_at : null,
+                            difficulty_level: p.difficulty_level || p.data?.difficulty_level || null,
+                            items_completed: null,
+                            items_total: null,
+                            created_at: p.created_at || p.updated_at
+                        }));
+                    } else {
+                        // Fallback: try activity_progress table as well
+                        const { data: apData } = await CognoSupabase.client
+                            .from('activity_progress')
+                            .select('id, activity_name, activity_id, module_name, score, max_score, accuracy_percent, time_spent_seconds, attempt_number, completed, completed_at, difficulty_level, items_completed, items_total, created_at')
+                            .eq('user_id', patient.id)
+                            .order('created_at', { ascending: false });
+                        
+                        progress = apData || [];
+                    }
+                    
+                    patient.activities = progress || [];
+                    patient.recent_activities = (progress || []).slice(0, 10); // Last 10 activities
+                    
+                    // Calculate module-level progress
+                    patient.module_progress = {};
+                    const modules = ['dyslexia', 'dyscalculia', 'dysgraphia', 'dyspraxia'];
+                    
+                    modules.forEach(mod => {
+                        const modActivities = (progress || []).filter(p => p.module_name === mod);
+                        const completed = modActivities.filter(p => p.completed).length;
+                        const avgAccuracy = modActivities.length > 0
+                            ? modActivities.reduce((sum, p) => sum + (p.accuracy_percent || 0), 0) / modActivities.length
+                            : 0;
+                        const avgScore = modActivities.length > 0
+                            ? modActivities.reduce((sum, p) => sum + (p.score || 0), 0) / modActivities.length
+                            : 0;
+                        const totalTime = modActivities.reduce((sum, p) => sum + (p.time_spent_seconds || 0), 0);
+                        
+                        patient.module_progress[mod] = {
+                            total: modActivities.length,
+                            completed,
+                            avgAccuracy: Math.round(avgAccuracy),
+                            avgScore: Math.round(avgScore),
+                            totalTime,
+                            sessions: new Set(modActivities.map(p => p.activity_id)).size
+                        };
+                    });
+                    
+                    // Calculate overall progress and average accuracy
+                    if (progress && progress.length > 0) {
+                        const completedCount = progress.filter(p => p.completed).length;
+                        patient.overall_progress = Math.round((completedCount / progress.length) * 100);
+                        patient.total_sessions = progress.length;
+                        patient.total_time = Math.round(progress.reduce((sum, p) => sum + (p.time_spent_seconds || 0), 0) / 60); // Convert to minutes
+                        patient.avg_accuracy = Math.round(progress.reduce((sum, p) => sum + (p.accuracy_percent || 0), 0) / progress.length);
+                    } else {
+                        patient.overall_progress = 0;
+                        patient.total_sessions = 0;
+                        patient.total_time = 0;
+                        patient.avg_accuracy = 0;
+                    }
+                    
+                    // Get student stats for streak
+                    const { data: stats } = await CognoSupabase.client
+                        .from('student_stats')
+                        .select('current_streak, longest_streak, total_xp, current_level')
+                        .eq('student_id', patient.id)
+                        .single();
+                    
+                    patient.day_streak = stats?.current_streak || 0;
+                    patient.longest_streak = stats?.longest_streak || 0;
+                    patient.total_xp = stats?.total_xp || 0;
+                    patient.current_level = stats?.current_level || 1;
+                    
+                    // If no stats table, calculate streak from progress data
+                    if (!stats && progress && progress.length > 0) {
+                        const activityDates = [...new Set(progress.map(p => 
+                            new Date(p.created_at).toDateString()
+                        ))].sort((a, b) => new Date(b) - new Date(a));
+                        
+                        let streak = 0;
+                        const today = new Date().toDateString();
+                        const yesterday = new Date(Date.now() - 86400000).toDateString();
+                        
+                        if (activityDates[0] === today || activityDates[0] === yesterday) {
+                            streak = 1;
+                            let checkDate = activityDates[0] === today ? new Date() : new Date(Date.now() - 86400000);
+                            for (let i = 1; i < activityDates.length; i++) {
+                                checkDate.setDate(checkDate.getDate() - 1);
+                                if (activityDates.includes(checkDate.toDateString())) streak++;
+                                else break;
+                            }
+                        }
+                        
+                        patient.day_streak = streak;
+                    }
+                    
+                    // Get achievements
+                    let achievements = [];
+                    
+                    // Try patient_achievements first
+                    const { data: patAch, error: patAchErr } = await CognoSupabase.client
+                        .from('patient_achievements')
+                        .select('achievement_type, achievement_name, description, badge_icon, unlocked_at')
+                        .eq('user_id', patient.id)
+                        .eq('unlocked', true)
+                        .order('unlocked_at', { ascending: false });
+                    
+                    if (!patAchErr && patAch) {
+                        achievements = patAch;
+                    } else {
+                        // Fallback: try user_achievements table
+                        const { data: userAch } = await CognoSupabase.client
+                            .from('user_achievements')
+                            .select('achievement_type, title, description, icon, unlocked_at')
+                            .eq('user_id', patient.id);
+                        
+                        if (userAch) {
+                            achievements = userAch.map(a => ({
+                                achievement_type: a.achievement_type,
+                                achievement_name: a.title,
+                                description: a.description,
+                                badge_icon: a.icon,
+                                unlocked_at: a.unlocked_at
+                            }));
+                        }
+                    }
+                    
+                    patient.achievements = achievements;
+                    
+                    // Get doctor notes for this patient
+                    const { data: notes } = await CognoSupabase.client
+                        .from('doctor_patients')
+                        .select('notes')
+                        .eq('doctor_id', currentDoctor.id)
+                        .eq('patient_id', patient.id)
+                        .single();
+                    
+                    patient.doctor_notes = notes?.notes || '';
+                    
+                    // Get last activity
+                    patient.last_active = progress?.[0]?.created_at || null;
+                    patient.last_activity_name = progress?.[0]?.activity_name || null;
+                    patient.is_online = patient.last_active && 
+                        (new Date() - new Date(patient.last_active)) < 5 * 60 * 1000; // Online if active in last 5 mins
+                    
+                } catch (e) {
+                    console.error('Error enriching patient:', e);
+                    patient.learning_conditions = [];
+                    patient.conditions_detail = [];
+                    patient.module_progress = {};
+                    patient.overall_progress = 0;
+                    patient.total_sessions = 0;
+                    patient.total_time = 0;
+                    patient.day_streak = 0;
+                    patient.achievements = [];
+                    patient.avg_accuracy = 0;
+                }
+            }
+        }
+        
+        // Render Patients
+        function renderPatients(patientList) {
+            const grid = document.getElementById('patients-grid');
+            
+            if (patientList.length === 0) {
+                renderEmptyState();
+                return;
+            }
+            
+            grid.innerHTML = patientList.map(patient => {
+                const name = patient.full_name || 'Unknown';
+                const initial = name.charAt(0).toUpperCase();
+                const age = patient.date_of_birth ? calculateAge(patient.date_of_birth) : '?';
+                const conditions = patient.learning_conditions || [];
+                const lastActive = patient.last_active ? formatLastActive(patient.last_active) : 'Never';
+                
+                return `
+                    <div class="patient-card" data-id="${patient.id}">
+                        <div class="patient-header">
+                            <div class="patient-avatar">
+                                ${patient.avatar_url 
+                                    ? `<img src="${patient.avatar_url}" alt="${name}">`
+                                    : initial}
+                            </div>
+                            <div class="patient-info">
+                                <div class="patient-name">${name}</div>
+                                <div class="patient-meta">
+                                    <span><i class="fa-solid fa-cake-candles"></i> ${age} years</span>
+                                    <span><i class="fa-solid fa-chart-line"></i> ${patient.total_sessions || 0} sessions</span>
+                                </div>
+                            </div>
+                            <span class="patient-status ${patient.is_online ? 'status-online' : patient.relationship_status === 'active' ? 'status-active' : 'status-inactive'}">
+                                ${patient.is_online ? 'Online' : patient.relationship_status || 'Active'}
+                            </span>
+                        </div>
+                        <div class="patient-body">
+                            <div class="patient-condition">
+                                ${conditions.map(c => `<span class="condition-tag tag-${c}">${capitalizeFirst(c)}</span>`).join('')}
+                                ${conditions.length === 0 ? '<span class="condition-tag" style="background: var(--border); color: var(--text-muted);">No conditions set</span>' : ''}
+                            </div>
+                            
+                            <div class="progress-section">
+                                <div class="progress-header">
+                                    <span class="progress-title">Overall Progress</span>
+                                    <span class="progress-percent">${patient.overall_progress || 0}%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${patient.overall_progress || 0}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="activity-stats">
+                                <div class="activity-stat">
+                                    <div class="value">${patient.total_sessions || 0}</div>
+                                    <div class="label">Sessions</div>
+                                </div>
+                                <div class="activity-stat">
+                                    <div class="value">${formatTime(patient.total_time || 0)}</div>
+                                    <div class="label">Time</div>
+                                </div>
+                                <div class="activity-stat">
+                                    <div class="value">${patient.overall_progress || 0}%</div>
+                                    <div class="label">Progress</div>
+                                </div>
+                            </div>
+                            
+                            <div class="last-active">
+                                <i class="fa-solid fa-clock"></i>
+                                Last active: ${lastActive}
+                            </div>
+                            
+                            <div class="card-actions">
+                                <button class="action-btn primary" onclick="viewPatient('${patient.id}')">
+                                    <i class="fa-solid fa-eye"></i>
+                                    View
+                                </button>
+                                <button class="action-btn secondary" onclick="downloadPatientReport('${patient.id}')">
+                                    <i class="fa-solid fa-download"></i>
+                                </button>
+                                <button class="action-btn ghost" onclick="messagePatient('${patient.id}')">
+                                    <i class="fa-solid fa-message"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Render Empty State
+        function renderEmptyState() {
+            const grid = document.getElementById('patients-grid');
+            grid.innerHTML = `
+                <div class="empty-state" style="grid-column: 1/-1;">
+                    <i class="fa-solid fa-user-group"></i>
+                    <h3>No Patients Yet</h3>
+                    <p>You don't have any patients assigned to you yet.</p>
+                </div>
+            `;
+        }
+        
+        // Update Stats
+        function updateStats(patientList) {
+            document.getElementById('total-patients').textContent = patientList.length;
+            document.getElementById('active-patients').textContent = 
+                patientList.filter(p => p.relationship_status === 'active').length;
+            document.getElementById('online-patients').textContent = 
+                patientList.filter(p => p.is_online).length;
+            document.getElementById('need-attention').textContent = 
+                patientList.filter(p => (p.overall_progress || 0) < 30).length;
+        }
+        
+        // View Patient Details
+        let currentDetailPatientId = null;
+
+        function viewPatient(patientId) {
+            const patient = patients.find(p => p.id === patientId);
+            if (!patient) return;
+            
+            selectedPatient = patient;
+            currentDetailPatientId = patientId;
+            
+            // Load assignments for this patient
+            loadPatientAssignments(patientId);
+
+            
+            const name = patient.full_name || 'Unknown';
+            const initial = name.charAt(0).toUpperCase();
+            const age = patient.date_of_birth ? calculateAge(patient.date_of_birth) : '?';
+            
+            // Update modal header
+            document.getElementById('modal-avatar').innerHTML = patient.avatar_url 
+                ? `<img src="${patient.avatar_url}" alt="${name}">`
+                : initial;
+            document.getElementById('modal-name').textContent = name;
+            document.getElementById('modal-meta').textContent = `Age ${age} • Patient since ${formatDate(patient.assigned_date)}`;
+            
+            // Update patient details grid
+            document.getElementById('modal-patient-details').innerHTML = `
+                <div class="info-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    <div>
+                        <div class="info-label">Email</div>
+                        <div class="info-value">${patient.email || 'Not provided'}</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-cake-candles"></i>
+                    <div>
+                        <div class="info-label">Date of Birth</div>
+                        <div class="info-value">${patient.date_of_birth ? new Date(patient.date_of_birth).toLocaleDateString() : 'Not set'}</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-clock"></i>
+                    <div>
+                        <div class="info-label">Last Active</div>
+                        <div class="info-value">${patient.last_active ? formatLastActive(patient.last_active) : 'Never'}</div>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fa-solid fa-gamepad"></i>
+                    <div>
+                        <div class="info-label">Last Activity</div>
+                        <div class="info-value">${patient.last_activity_name || 'None'}</div>
+                    </div>
+                </div>
+            `;
+            
+            // Update conditions with severity
+            const conditionsDetail = patient.conditions_detail || [];
+            document.getElementById('modal-conditions').innerHTML = conditionsDetail.length > 0
+                ? conditionsDetail.map(c => `
+                    <div class="condition-tag-detailed ${c.condition}">
+                        <span class="condition-name">${capitalizeFirst(c.condition)}</span>
+                        <span class="condition-severity">${c.severity ? capitalizeFirst(c.severity) : 'Unspecified'} ${c.is_primary ? '• Primary' : ''}</span>
+                    </div>
+                `).join('')
+                : '<span class="condition-tag" style="background: var(--border); color: var(--text-muted);">No conditions set</span>';
+            
+            // Update stats
+            document.getElementById('modal-sessions').textContent = patient.total_sessions || 0;
+            document.getElementById('modal-time').textContent = formatTime(patient.total_time || 0);
+            document.getElementById('modal-streak').textContent = patient.day_streak || 0;
+            document.getElementById('modal-level').textContent = patient.current_level || 1;
+            document.getElementById('modal-xp').textContent = formatNumber(patient.total_xp || 0);
+            document.getElementById('modal-accuracy').textContent = (patient.avg_accuracy || 0) + '%';
+            
+            // Update module progress
+            document.getElementById('modal-activities').innerHTML = generateActivityProgress(patient);
+            
+            // Update recent activities
+            document.getElementById('modal-recent-activities').innerHTML = generateRecentActivities(patient);
+            
+            // Update achievements
+            document.getElementById('modal-achievements').innerHTML = generateAchievements(patient);
+            
+            // Update doctor notes
+            document.getElementById('modal-notes').value = patient.doctor_notes || '';
+            
+            // Show modal
+            document.getElementById('patient-modal').classList.add('active');
+        }
+        
+        function generateRecentActivities(patient) {
+            const recentActivities = patient.recent_activities || [];
+            
+            if (recentActivities.length === 0) {
+                return '<div class="no-achievements">No recent activities</div>';
+            }
+            
+            const moduleIcons = {
+                'dyslexia': 'fa-book',
+                'dyscalculia': 'fa-calculator',
+                'dysgraphia': 'fa-pen',
+                'dyspraxia': 'fa-running'
+            };
+            
+            return recentActivities.map(act => {
+                const accuracy = act.accuracy_percent || 0;
+                const scoreClass = accuracy >= 70 ? 'high' : accuracy >= 40 ? 'medium' : 'low';
+                const icon = moduleIcons[act.module_name] || 'fa-star';
+                
+                return `
+                    <div class="recent-activity-item">
+                        <div class="recent-activity-icon ${act.module_name}">
+                            <i class="fa-solid ${icon}"></i>
+                        </div>
+                        <div class="recent-activity-details">
+                            <div class="recent-activity-name">${act.activity_name}</div>
+                            <div class="recent-activity-meta">
+                                ${capitalizeFirst(act.module_name)} • ${act.difficulty_level || 'Standard'} • ${formatDuration(act.time_spent_seconds)}
+                            </div>
+                        </div>
+                        <div class="recent-activity-score">
+                            <div class="score ${scoreClass}">${accuracy}%</div>
+                            <div class="date">${formatShortDate(act.created_at)}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function generateAchievements(patient) {
+            const achievements = patient.achievements || [];
+            
+            if (achievements.length === 0) {
+                return '<div class="no-achievements"><i class="fa-solid fa-trophy" style="font-size: 2rem; opacity: 0.3; display: block; margin-bottom: 0.5rem;"></i>No achievements yet</div>';
+            }
+            
+            const defaultBadges = {
+                'module_completed': '🎓',
+                'activity_milestone': '⭐',
+                'streak': '🔥',
+                'high_score': '🏆',
+                'first_activity': '🚀',
+                'perfect_score': '💯'
+            };
+            
+            return achievements.slice(0, 8).map(ach => `
+                <div class="achievement-badge">
+                    <div class="badge-icon">${ach.badge_icon || defaultBadges[ach.achievement_type] || '🏅'}</div>
+                    <div class="badge-name">${ach.achievement_name}</div>
+                    <div class="badge-date">${formatShortDate(ach.unlocked_at)}</div>
+                </div>
+            `).join('');
+        }
+        
+        async function savePatientNotes() {
+            if (!selectedPatient) return;
+            
+            const notes = document.getElementById('modal-notes').value;
+            
+            try {
+                const { error } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .update({ notes })
+                    .eq('doctor_id', currentDoctor.id)
+                    .eq('patient_id', selectedPatient.id);
+                
+                if (error) throw error;
+                
+                selectedPatient.doctor_notes = notes;
+                showToast('Notes saved successfully!', 'success');
+            } catch (e) {
+                console.error('Error saving notes:', e);
+                showToast('Failed to save notes', 'error');
+            }
+        }
+        
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+        
+        function formatDuration(seconds) {
+            if (!seconds) return '0s';
+            if (seconds < 60) return seconds + 's';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
+            return Math.floor(seconds / 3600) + 'h ' + Math.floor((seconds % 3600) / 60) + 'm';
+        }
+        
+        function formatShortDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const today = new Date();
+            const diff = today - date;
+            
+            if (diff < 86400000) return 'Today';
+            if (diff < 172800000) return 'Yesterday';
+            if (diff < 604800000) return Math.floor(diff / 86400000) + 'd ago';
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        function generateActivityProgress(patient) {
+            const moduleMap = {
+                'dyslexia': { name: 'Reading & Words', icon: 'book', class: 'reading' },
+                'dyscalculia': { name: 'Numbers & Math', icon: 'calculator', class: 'math' },
+                'dysgraphia': { name: 'Writing Practice', icon: 'pen', class: 'writing' },
+                'dyspraxia': { name: 'Motor Skills', icon: 'running', class: 'motor' }
+            };
+            
+            const activities = Object.entries(moduleMap).map(([key, config]) => {
+                const modData = patient.module_progress?.[key] || { total: 0, completed: 0, avgAccuracy: 0 };
+                // Calculate progress: if they have completed activities, use accuracy; otherwise 0
+                const progress = modData.total > 0 ? modData.avgAccuracy : 0;
+                
+                return {
+                    ...config,
+                    module: key,
+                    progress,
+                    completed: modData.completed,
+                    total: modData.total,
+                    sessions: modData.sessions || 0
+                };
+            });
+            
+            return activities.map(act => {
+                const barColors = {
+                    'reading': 'var(--warning)',
+                    'math': 'var(--primary)',
+                    'writing': '#8b5cf6',
+                    'motor': 'var(--success)'
+                };
+                const barColor = barColors[act.class] || 'var(--primary)';
+                
+                return `
+                <div class="activity-item">
+                    <div class="activity-icon ${act.class}">
+                        <i class="fa-solid fa-${act.icon}"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-name">${act.name}</div>
+                        <div class="activity-bar">
+                            <div class="activity-fill" style="width: ${act.progress}%; background: ${barColor}"></div>
+                        </div>
+                        <div class="activity-meta">${act.completed}/${act.total} activities • ${act.sessions} sessions</div>
+                    </div>
+                    <div class="activity-percent ${act.progress >= 70 ? 'good' : act.progress >= 40 ? 'medium' : 'low'}">${act.progress}%</div>
+                </div>
+            `}).join('');
+        }
+        
+        function closeModal() {
+            document.getElementById('patient-modal').classList.remove('active');
+            selectedPatient = null;
+        }
+        
+        // Actions
+        function startConsultation() {
+            if (selectedPatient) {
+                window.location.href = `consultations.html?patient=${selectedPatient.id}`;
+            }
+        }
+        
+        function downloadReport() {
+            if (selectedPatient) {
+                downloadPatientReport(selectedPatient.id);
+            }
+        }
+        
+        async function downloadPatientReport(patientId) {
+            const patient = patients.find(p => p.id === patientId);
+            if (!patient) return;
+            
+            showToast('Generating PDF report...', 'success');
+            
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Colors
+                const primaryColor = [59, 130, 246]; // #3b82f6
+                const textColor = [31, 41, 55];
+                const mutedColor = [107, 114, 128];
+                
+                // Header
+                doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+                doc.rect(0, 0, 210, 40, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(24);
+                doc.setFont('helvetica', 'bold');
+                doc.text('PATIENT PROGRESS REPORT', 105, 20, { align: 'center' });
+                
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Cogno Solution - Empowering Learning Path', 105, 30, { align: 'center' });
+                
+                // Patient Info Section
+                doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+                doc.setFontSize(16);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Patient Information', 20, 55);
+                
+                doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+                doc.setLineWidth(0.5);
+                doc.line(20, 58, 65, 58);
+                
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                
+                const patientInfo = [
+                    ['Name:', patient.full_name || 'Unknown'],
+                    ['Age:', (patient.date_of_birth ? calculateAge(patient.date_of_birth) : 'Unknown') + ' years'],
+                    ['Report Date:', new Date().toLocaleDateString()],
+                    ['Patient Since:', formatDate(patient.assigned_date)],
+                    ['Conditions:', (patient.learning_conditions || []).map(capitalizeFirst).join(', ') || 'None specified']
+                ];
+                
+                doc.autoTable({
+                    startY: 65,
+                    body: patientInfo,
+                    theme: 'plain',
+                    styles: { fontSize: 10, cellPadding: 2 },
+                    columnStyles: { 0: { fontStyle: 'bold', minCellWidth: 40 } }
+                });
+                
+                // Stats Section
+                let currentY = doc.lastAutoTable.finalY + 15;
+                doc.setFontSize(16);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Overall Statistics', 20, currentY);
+                doc.line(20, currentY + 3, 65, currentY + 3);
+                
+                const stats = [
+                    ['Overall Progress', (patient.overall_progress || 0) + '%'],
+                    ['Total Sessions', patient.total_sessions || 0],
+                    ['Total Time Spent', formatTime(patient.total_time || 0)],
+                    ['Current Level', patient.current_level || 1],
+                    ['Current Streak', (patient.day_streak || 0) + ' days'],
+                    ['Avg Accuracy', (patient.avg_accuracy || 0) + '%']
+                ];
+                
+                doc.autoTable({
+                    startY: currentY + 8,
+                    body: stats,
+                    theme: 'striped',
+                    headStyles: { fillColor: primaryColor },
+                    styles: { fontSize: 10 }
+                });
+                
+                // Module Breakdown
+                currentY = doc.lastAutoTable.finalY + 15;
+                doc.setFontSize(16);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Module Breakdown', 20, currentY);
+                doc.line(20, currentY + 3, 65, currentY + 3);
+                
+                const moduleData = Object.entries(patient.module_progress || {}).map(([key, data]) => [
+                    capitalizeFirst(key),
+                    `${data.completed}/${data.total}`,
+                    `${data.avgAccuracy}%`,
+                    data.sessions,
+                    formatTime(Math.round(data.totalTime / 60))
+                ]);
+                
+                doc.autoTable({
+                    startY: currentY + 8,
+                    head: [['Module', 'Completed', 'Accuracy', 'Sessions', 'Time']],
+                    body: moduleData.length > 0 ? moduleData : [[' No activity data available', '', '', '', '']],
+                    theme: 'grid',
+                    headStyles: { fillColor: primaryColor }
+                });
+                
+                // Footer
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(8);
+                    doc.setTextColor(mutedColor[0], mutedColor[1], mutedColor[2]);
+                    doc.text(`Page ${i} of ${pageCount} | Generated by Cogno Solution`, 105, 285, { align: 'center' });
+                }
+                
+                doc.save(`${patient.full_name || 'patient'}_report_${new Date().toISOString().split('T')[0]}.pdf`);
+                showToast('PDF report downloaded!', 'success');
+                
+            } catch (err) {
+                console.error('PDF generation error:', err);
+                showToast('Failed to generate PDF. Downloading text version instead.', 'warning');
+                
+                // Fallback to text download
+                const reportText = `PATIENT PROGRESS REPORT\nName: ${patient.full_name}\nProgress: ${patient.overall_progress}%`;
+                const blob = new Blob([reportText], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${patient.full_name || 'patient'}_report.txt`;
+                a.click();
+            }
+        }
+
+
+        function messagePatient(patientId) {
+            const id = patientId || selectedPatient?.id;
+            if (id) {
+                window.location.href = `messages.html?patient=${id}`;
+            }
+        }
+        
+        // Search & Filter
+        function setupFilters() {
+            const searchInput = document.getElementById('search-input');
+            const conditionFilter = document.getElementById('filter-condition');
+            const statusFilter = document.getElementById('filter-status');
+            
+            const applyFilters = () => {
+                const search = searchInput.value.toLowerCase();
+                const condition = conditionFilter.value;
+                const status = statusFilter.value;
+                
+                let filtered = patients.filter(p => {
+                    const matchesSearch = !search || 
+                        (p.full_name || '').toLowerCase().includes(search);
+                    
+                    const matchesCondition = !condition || 
+                        (p.learning_conditions || []).includes(condition);
+                    
+                    let matchesStatus = true;
+                    if (status === 'active') matchesStatus = p.relationship_status === 'active';
+                    if (status === 'inactive') matchesStatus = p.relationship_status !== 'active';
+                    if (status === 'online') matchesStatus = p.is_online;
+                    
+                    return matchesSearch && matchesCondition && matchesStatus;
+                });
+                
+                renderPatients(filtered);
+            };
+            
+            searchInput.addEventListener('input', applyFilters);
+            conditionFilter.addEventListener('change', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+        }
+        
+        // Helpers
+        function calculateAge(dateOfBirth) {
+            const today = new Date();
+            const birth = new Date(dateOfBirth);
+            let age = today.getFullYear() - birth.getFullYear();
+            const m = today.getMonth() - birth.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+            return age;
+        }
+        
+        function formatTime(minutes) {
+            if (minutes < 60) return `${minutes}m`;
+            const hours = Math.floor(minutes / 60);
+            return `${hours}h`;
+        }
+        
+        function formatLastActive(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+            
+            if (diffMins < 5) return 'Just now';
+            if (diffMins < 60) return `${diffMins} mins ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            return date.toLocaleDateString();
+        }
+        
+        function formatDate(dateStr) {
+            if (!dateStr) return 'Unknown';
+            return new Date(dateStr).toLocaleDateString('en-US', { 
+                month: 'short', 
+                year: 'numeric' 
+            });
+        }
+        
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+        
+        // Real-time subscription
+        function subscribeToUpdates() {
+            CognoSupabase.client
+                .channel('patient-activity')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'activity_log'
+                }, (payload) => {
+                    // Refresh patient data when activity changes
+                    const patientId = payload.new?.user_id;
+                    if (patientId && patients.some(p => p.id === patientId)) {
+                        loadPatients(); // Reload to get fresh data
+                    }
+                })
+                .subscribe();
+        }
+        
+        // Close modal on overlay click
+        document.getElementById('patient-modal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeModal();
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadPatients();
+            setupFilters();
+            subscribeToUpdates();
+        });
+        let currentSelectedPatientId = null;
+
+        function openAssignModal() {
+            // Use currentDetailPatientId which is set in viewPatient
+            const patient = patients.find(p => p.id === currentDetailPatientId);
+            if (!patient) {
+                console.error('No patient selected for assignment');
+                return;
+            }
+
+            currentSelectedPatientId = patient.id;
+            document.getElementById('assign-patient-name').textContent = `Patient: ${patient.full_name}`;
+            
+            // Set default date to 3 days from now
+            const threeDaysFromNow = new Date();
+            threeDaysFromNow.setDate(threeDaysFromNow.getDate() + 3);
+            document.getElementById('assign-due-date').value = threeDaysFromNow.toISOString().split('T')[0];
+            
+            document.getElementById('assign-modal').style.display = 'flex';
+        }
+
+        function closeAssignModal() {
+            document.getElementById('assign-modal').style.display = 'none';
+        }
+
+        async function saveAssignment() {
+            const title = document.getElementById('assign-title').value;
+            const activityType = document.getElementById('assign-activity').value;
+            const dueDate = document.getElementById('assign-due-date').value;
+            const notes = document.getElementById('assign-notes').value;
+
+            if (!title) {
+                alert('Please enter a title for the assignment');
+                return;
+            }
+
+            if (!currentSelectedPatientId) {
+                alert('Err: No patient selected');
+                return;
+            }
+
+            try {
+                const { error } = await CognoSupabase.client
+                    .from('student_assignments')
+                    .insert({
+                        patient_id: currentSelectedPatientId,
+                        doctor_id: currentDoctor.id,
+                        title: title,
+                        description: notes,
+                        module_type: activityType,
+                        due_date: dueDate,
+                        status: 'pending',
+                        created_at: new Date().toISOString()
+                    });
+
+                if (error) throw error;
+
+                showToast('Assignment sent successfully!', 'success');
+                closeAssignModal();
+                loadPatientAssignments(currentSelectedPatientId); // Refresh list
+            } catch (err) {
+                console.error('Error saving assignment:', err);
+                alert('Failed to save assignment: ' + (err.message || 'Unknown error'));
+            }
+        }
+
+        async function loadPatientAssignments(patientId) {
+            const container = document.getElementById('modal-assignments');
+            if (!container) return;
+
+            try {
+                const { data: assignments, error } = await CognoSupabase.client
+                    .from('student_assignments')
+                    .select('*')
+                    .eq('patient_id', patientId)
+                    .order('created_at', { ascending: false });
+
+                if (error || !assignments || assignments.length === 0) {
+                    container.innerHTML = '<div class="empty-state" style="padding: 1rem; text-align: center; color: var(--text-muted);">No active assignments</div>';
+                    return;
+                }
+
+                container.innerHTML = assignments.map(a => {
+                    const statusClass = a.status === 'completed' ? 'success' : 'warning';
+                    return `
+                        <div class="assignment-item" style="padding: 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 600;">${a.title}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">${a.description || ''}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">Due: ${new Date(a.due_date).toLocaleDateString()}</div>
+                            </div>
+                            <span class="badge badge-${statusClass}" style="padding: 4px 8px; border-radius: 12px; font-size: 0.75rem;">${a.status}</span>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('Error loading assignments:', err);
+                container.innerHTML = '<div class="error" style="padding: 1rem; color: var(--danger);">Failed to load assignments</div>';
+            }
+        }
+
+    </script>
+
+    <!-- Assign Activity Modal -->
+    <div class="modal-overlay" id="assign-modal" style="display: none; z-index: 2000;">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <div>
+                    <h3>Assign New Activity</h3>
+                    <p id="assign-patient-name" style="font-size: 0.85rem; color: var(--text-secondary);">Patient: </p>
+                </div>
+                <button class="modal-close" onclick="closeAssignModal()">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Task Title</label>
+                    <input type="text" id="assign-title" placeholder="e.g., Reading Practice Level 2" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Select Activity Type</label>
+                    <select id="assign-activity" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
+                        <option value="dyslexia">Dyslexia - Reading Games</option>
+                        <option value="dyscalculia">Dyscalculia - Math Games</option>
+                        <option value="dysgraphia">Dysgraphia - Writing Practice</option>
+                        <option value="dyspraxia">Dyspraxia - Movement Games</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Due Date</label>
+                    <input type="date" id="assign-due-date" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);">
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Notes for Patient</label>
+                    <textarea id="assign-notes" placeholder="Any specific instructions..." rows="3" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--text);"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem; border-top: 1px solid var(--border);">
+                <button class="btn btn-ghost" onclick="closeAssignModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveAssignment()">
+                    <i class="fa-solid fa-paper-plane" style="margin-right: 0.5rem;"></i>
+                    Send Assignment
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

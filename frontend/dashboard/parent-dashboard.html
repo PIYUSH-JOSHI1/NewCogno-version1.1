@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Parent Dashboard - Cogno Solution">
+    <title>Parent Dashboard - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/cognitive-friendly.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item active">
+                    <a href="parent-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">My Children</li>
+                
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" id="children-menu">
+                        <i class="fa-solid fa-children"></i>
+                        <span>Children</span>
+                        <i class="fa-solid fa-chevron-down sidebar-chevron"></i>
+                    </a>
+                    <ul class="sidebar-submenu" id="children-submenu">
+                        <!-- Populated by JS -->
+                    </ul>
+                </li>
+                
+                <li class="sidebar-section">Reports</li>
+                
+                <li class="sidebar-item">
+                    <a href="../reports/progress/" class="sidebar-link">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Progress Reports</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../reports/activity/" class="sidebar-link">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Activity Logs</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../reports/assessments/" class="sidebar-link">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>Assessments</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Support</li>
+                
+                <li class="sidebar-item">
+                    <a href="../consultations/" class="sidebar-link">
+                        <i class="fa-solid fa-video"></i>
+                        <span>Consultations</span>
+                        <span class="sidebar-badge" id="consultation-badge" style="display: none;">1</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../messages/" class="sidebar-link">
+                        <i class="fa-solid fa-message"></i>
+                        <span>Messages</span>
+                        <span class="sidebar-badge" id="message-badge" style="display: none;">0</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../doctors/" class="sidebar-link">
+                        <i class="fa-solid fa-user-doctor"></i>
+                        <span>Find a Doctor</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Account</li>
+                
+                <li class="sidebar-item">
+                    <a href="../profile/" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../settings/" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1 class="page-title">Parent Dashboard</h1>
+            </div>
+            
+            <div class="navbar-right">
+                <!-- Dark Mode Toggle -->
+                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle" aria-label="Toggle dark mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-ghost btn-icon notification-btn" id="notification-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </button>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="user-menu-btn" id="user-menu-btn">
+                        <div class="avatar avatar-sm" id="user-avatar">
+                            <img src="../assets/images/avatars/default.svg" alt="User avatar" id="user-avatar-img">
+                        </div>
+                        <span class="user-name" id="user-name">Loading...</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <a href="../profile/" class="dropdown-item">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="../settings/" class="dropdown-item">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="dropdown-logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Dashboard Content -->
+        <div class="content-area">
+            <!-- Overview Stats -->
+            <section class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--color-primary-100); color: var(--color-primary);">
+                        <i class="fa-solid fa-children"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="total-children">0</span>
+                        <span class="stat-label">Children</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--color-success-100); color: var(--color-success);">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="avg-progress">0%</span>
+                        <span class="stat-label">Avg. Progress</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--color-warning-100); color: var(--color-warning);">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="total-time">0h</span>
+                        <span class="stat-label">Total Time This Week</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--color-info-100); color: var(--color-info);">
+                        <i class="fa-solid fa-video"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="upcoming-consultations">0</span>
+                        <span class="stat-label">Upcoming Consultations</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Children Overview -->
+            <section class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-children"></i>
+                        My Children
+                    </h3>
+                    <button class="btn btn-primary btn-sm" id="add-child-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Link Child</span>
+                    </button>
+                </div>
+                
+                <div class="children-grid" id="children-grid">
+                    <!-- Populated by JS -->
+                    <div class="empty-state" id="no-children">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <h4>No Children Linked</h4>
+                        <p>Link your child's account to monitor their progress</p>
+                        <button class="btn btn-primary" id="link-child-empty">
+                            <i class="fa-solid fa-link"></i>
+                            <span>Link Child Account</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <!-- Weekly Activity -->
+                <section class="section section-chart">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-chart-area"></i>
+                            Weekly Activity
+                        </h3>
+                        <select class="form-select form-select-sm" id="chart-child-select">
+                            <option value="all">All Children</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="weekly-activity-chart"></canvas>
+                    </div>
+                </section>
+                
+                <!-- Module Distribution -->
+                <section class="section section-chart">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            Module Focus
+                        </h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="module-distribution-chart"></canvas>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Recent Activity & Upcoming -->
+            <div class="two-column">
+                <!-- Recent Activity -->
+                <section class="section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            Recent Activity
+                        </h3>
+                        <a href="../reports/activity/" class="btn btn-ghost btn-sm">View All</a>
+                    </div>
+                    <div class="activity-feed" id="activity-feed">
+                        <!-- Populated by JS -->
+                        <div class="activity-empty">
+                            <i class="fa-solid fa-clock"></i>
+                            <p>No recent activity</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Upcoming Consultations -->
+                <section class="section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-calendar"></i>
+                            Upcoming Consultations
+                        </h3>
+                        <a href="../consultations/" class="btn btn-ghost btn-sm">View All</a>
+                    </div>
+                    <div class="consultations-list" id="consultations-list">
+                        <!-- Populated by JS -->
+                        <div class="consultation-empty" id="no-consultations">
+                            <i class="fa-solid fa-calendar-plus"></i>
+                            <p>No upcoming consultations</p>
+                            <a href="../doctors/" class="btn btn-primary btn-sm">
+                                <i class="fa-solid fa-user-doctor"></i>
+                                <span>Book Consultation</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Doctor Recommendations -->
+            <section class="section" id="recommendations-section" style="display: none;">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        Doctor Recommendations
+                    </h3>
+                </div>
+                <div class="recommendations-list" id="recommendations-list">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Link Child Modal -->
+    <div class="modal" id="link-child-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Link Child Account</h3>
+                <button class="modal-close" aria-label="Close modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-4">Enter your child's email address or account code to link their account to yours.</p>
+                
+                <div class="tabs">
+                    <button class="tab active" data-tab="email">By Email</button>
+                    <button class="tab" data-tab="code">By Code</button>
+                </div>
+                
+                <div class="tab-content active" id="tab-email">
+                    <form id="link-email-form">
+                        <div class="form-group">
+                            <label class="form-label" for="child-email">Child's Email</label>
+                            <input type="email" id="child-email" class="form-input" placeholder="child@example.com" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Send Link Request</span>
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="tab-content" id="tab-code">
+                    <form id="link-code-form">
+                        <div class="form-group">
+                            <label class="form-label" for="child-code">Link Code</label>
+                            <input type="text" id="child-code" class="form-input" placeholder="XXXX-XXXX" maxlength="9" required>
+                            <span class="form-hint">Ask your child to generate a code from their profile</span>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full">
+                            <i class="fa-solid fa-link"></i>
+                            <span>Link Account</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notification-panel">
+        <div class="notification-panel-header">
+            <h4>Notifications</h4>
+            <button class="btn btn-ghost btn-sm" id="mark-all-read">Mark all read</button>
+        </div>
+        <div class="notification-list" id="notification-list">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/api-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/realtime.js"></script>
+    <script src="../js/charts.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./dashboard.js"></script>
+    
+    <script>
+        // Initialize parent dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoDashboard.init('parent');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cogno Solution - The interactive AI-powered platform helping children with Dyslexia, Dyscalculia, Dysgraphia, and Dyspraxia through gamified learning and specialist support.">
+    <meta name="keywords" content="dyslexia support, dyscalculia games, dysgraphia tools, dyspraxia exercises, learning disability platform, AI cognitive support, Cogno Solution">
+    <meta name="author" content="Cogno Solution Team">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Primary Meta Tags -->
+    <title>Cogno Solution | AI-Powered Learning Support for Children</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://cogno-solution.netlify.app/">
+    <meta property="og:title" content="Cogno Solution | AI-Powered Learning Support for Children">
+    <meta property="og:description" content="Interactive AI platform for children with learning differences. Gamified modules for Dyslexia, Dyscalculia, and more.">
+    <meta property="og:image" content="https://cogno-solution.netlify.app/assets/images/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://cogno-solution.netlify.app/">
+    <meta property="twitter:title" content="Cogno Solution | AI-Powered Learning Support for Children">
+    <meta property="twitter:description" content="Empowering children with learning differences through AI and gamification.">
+    <meta property="twitter:image" content="https://cogno-solution.netlify.app/assets/images/og-image.jpg">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://cogno-solution.netlify.app/">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Cogno Solution",
+      "url": "https://cogno-solution.netlify.app/",
+      "description": "AI-Powered platform for children with learning differences including Dyslexia, Dyscalculia, Dysgraphia, and Dyspraxia.",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web",
+      "author": {
+        "@type": "Organization",
+        "name": "Cogno Solution"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="./assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/dark-mode.css">
+    
+    <style>
+        /* Landing Page Specific Styles */
+        :root {
+            --hero-gradient: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 50%, var(--color-primary-light) 100%);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --tab-bg: rgba(255, 255, 255, 0.9);
+        }
+        
+        .dark-mode:root {
+            --glass-bg: rgba(26, 26, 26, 0.8);
+            --tab-bg: rgba(30, 41, 59, 0.9);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+        
+        /* Navigation */
+        .landing-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: var(--space-4) var(--space-12);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .landing-nav.scrolled {
+            padding: var(--space-3) var(--space-12);
+            background: var(--glass-bg);
+            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.1);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .dark-mode .landing-nav {
+            background: rgba(26, 26, 26, 0.85);
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+            z-index: 1002;
+            white-space: nowrap;
+        }
+        
+        .nav-logo i {
+            font-size: 1.8rem;
+        }
+        
+        .nav-logo img {
+            height: 40px;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: var(--space-6);
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--color-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--color-primary);
+        }
+        
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .hide-mobile {
+            display: flex;
+        }
+        
+        .nav-actions-mobile {
+            display: none;
+            width: 100%;
+        }
+
+        .mobile-tab-bar {
+            position: fixed;
+            bottom: var(--space-6);
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - var(--space-12));
+            max-width: 500px;
+            background: var(--tab-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: none;
+            justify-content: space-around;
+            align-items: center;
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 100px;
+            z-index: 1000;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--color-text-tertiary);
+            font-size: 0.65rem;
+            font-weight: 600;
+            gap: 2px;
+            flex: 1;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-item i {
+            font-size: 1.125rem;
+            transition: transform 0.3s ease;
+        }
+
+        .tab-item.active, .tab-item:hover {
+            color: var(--color-primary);
+        }
+
+        .tab-item.active i {
+            transform: translateY(-2px);
+        }
+
+        /* Hero Action Tab (Center) */
+        .tab-item.tab-primary {
+            background: var(--color-primary);
+            color: white !important;
+            padding: var(--space-3);
+            border-radius: 50%;
+            margin-top: -30px;
+            flex: 0 0 54px;
+            height: 54px;
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+            border: 4px solid var(--color-bg);
+        }
+
+        .tab-item.tab-primary i {
+            font-size: 1.25rem;
+        }
+        
+        .tab-item.tab-primary span {
+            display: none;
+        }
+
+        @media (max-width: 991px) {
+            .nav-links, .hide-mobile, .mobile-menu-btn {
+                display: none !important;
+            }
+            .mobile-tab-bar {
+                display: flex;
+            }
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--color-text);
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: calc(80px + var(--space-16)) var(--space-8) var(--space-16);
+            background: linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 50%, #f8fbff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dark-mode .hero {
+            background: linear-gradient(135deg, #0a1a2e 0%, #0d2240 50%, #0a1a2e 100%);
+        }
+        
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-16);
+            align-items: center;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: var(--space-6);
+            background: var(--hero-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-8);
+            max-width: 500px;
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: var(--space-4);
+            margin-bottom: var(--space-8);
+        }
+        
+        .btn-hero {
+            padding: var(--space-4) var(--space-8);
+            font-size: 1.125rem;
+            border-radius: var(--radius-lg);
+        }
+        
+        .hero-stats {
+            display: flex;
+            gap: var(--space-8);
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .hero-visual {
+            position: relative;
+        }
+        
+        .hero-image {
+            width: 100%;
+            max-width: 600px;
+            border-radius: var(--radius-2xl);
+            box-shadow: 0 40px 80px rgba(0, 102, 204, 0.15);
+        }
+        
+        .floating-card {
+            position: absolute;
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            box-shadow: var(--shadow-xl);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .dark-mode .floating-card {
+            background: var(--color-surface);
+        }
+        
+        .floating-card.card-1 {
+            top: 10%;
+            right: -20px;
+            animation-delay: 0s;
+        }
+        
+        .floating-card.card-2 {
+            bottom: 20%;
+            left: -30px;
+            animation-delay: 1s;
+        }
+        
+        .floating-card.card-3 {
+            bottom: 10%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Modules Section */
+        .modules-section {
+            padding: var(--space-20) var(--space-8);
+            background: var(--color-surface);
+        }
+        
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto var(--space-16);
+        }
+        
+        .section-badge {
+            display: inline-block;
+            padding: var(--space-2) var(--space-4);
+            background: var(--color-primary-100);
+            color: var(--color-primary);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: var(--space-4);
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-4);
+        }
+        
+        .section-header p {
+            color: var(--color-text-secondary);
+            font-size: 1.125rem;
+        }
+        
+        .modules-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-6);
+        }
+        
+        .module-card {
+            background: var(--color-background);
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .module-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .module-card.dyslexia { border-color: var(--color-dyslexia); }
+        .module-card.dyscalculia { border-color: var(--color-dyscalculia); }
+        .module-card.dysgraphia { border-color: var(--color-dysgraphia); }
+        .module-card.dyspraxia { border-color: var(--color-dyspraxia); }
+        
+        .module-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto var(--space-6);
+            color: white;
+        }
+        
+        .module-card.dyslexia .module-icon { background: var(--color-dyslexia); }
+        .module-card.dyscalculia .module-icon { background: var(--color-dyscalculia); }
+        .module-card.dysgraphia .module-icon { background: var(--color-dysgraphia); }
+        .module-card.dyspraxia .module-icon { background: var(--color-dyspraxia); }
+        
+        .module-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--space-3);
+        }
+        
+        .module-card p {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: var(--space-4);
+        }
+        
+        .module-features {
+            list-style: none;
+            text-align: left;
+        }
+        
+        .module-features li {
+            padding: var(--space-2) 0;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .module-features li i {
+            color: var(--color-success);
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            padding: var(--space-20) var(--space-8);
+            background: var(--color-background);
+        }
+        
+        .steps-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+        
+        .steps-container::before {
+            content: '';
+            position: absolute;
+            top: 50px;
+            left: 100px;
+            right: 100px;
+            height: 4px;
+            background: var(--color-border);
+        }
+        
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+        
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto var(--space-6);
+        }
+        
+        .step h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+        }
+        
+        .step p {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        
+        /* Features Section */
+        .features-section {
+            padding: var(--space-20) var(--space-8);
+            background: var(--color-surface);
+        }
+        
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-8);
+        }
+        
+        .feature-card {
+            background: var(--color-background);
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--color-primary-100);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+        }
+        
+        .feature-card p {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        /* Testimonials */
+        .testimonials-section {
+            padding: var(--space-20) var(--space-8);
+            background: var(--hero-gradient);
+            color: white;
+        }
+        
+        .testimonials-section .section-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .testimonials-section .section-header h2 {
+            color: white;
+        }
+        
+        .testimonials-section .section-header p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .testimonials-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-6);
+        }
+        
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .testimonial-stars {
+            color: #ffc107;
+            margin-bottom: var(--space-4);
+        }
+        
+        .testimonial-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: var(--space-6);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .author-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .author-info h4 {
+            font-weight: 600;
+        }
+        
+        .author-info p {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Pricing Section */
+        .pricing-section {
+            padding: var(--space-20) var(--space-8);
+            background: var(--color-background);
+        }
+        
+        .pricing-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-6);
+        }
+        
+        .pricing-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            border: 2px solid var(--color-border);
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .pricing-card.featured {
+            border-color: var(--color-primary);
+            transform: scale(1.05);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .pricing-badge {
+            display: inline-block;
+            padding: var(--space-1) var(--space-3);
+            background: var(--color-primary);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: var(--space-4);
+        }
+        
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+        }
+        
+        .pricing-card .price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        
+        .pricing-card .price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--color-text-secondary);
+        }
+        
+        .pricing-card .description {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: var(--space-6);
+        }
+        
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: var(--space-8);
+        }
+        
+        .pricing-features li {
+            padding: var(--space-2) 0;
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .pricing-features li i {
+            color: var(--color-success);
+        }
+        
+        .pricing-features li.disabled {
+            color: var(--color-text-secondary);
+        }
+        
+        .pricing-features li.disabled i {
+            color: var(--color-text-secondary);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: var(--space-20) var(--space-8);
+            background: var(--color-surface);
+            text-align: center;
+        }
+        
+        .cta-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .cta-container h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-4);
+        }
+        
+        .cta-container p {
+            color: var(--color-text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: var(--space-8);
+        }
+        
+        /* Footer */
+        .footer {
+            background: #1a1a1a;
+            color: white;
+            padding: var(--space-16) var(--space-8) var(--space-8);
+        }
+        
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: var(--space-8);
+            margin-bottom: var(--space-12);
+        }
+        
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: var(--space-4) auto;
+            max-width: 500px;
+        }
+        
+        .footer-social {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .footer-social a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.2s;
+        }
+        
+        .footer-social a:hover {
+            background: var(--color-primary);
+        }
+        
+        .footer-column h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: var(--space-4);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: var(--space-2);
+        }
+        
+        .footer-column ul a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+        
+        .footer-column ul a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: var(--space-8);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-bottom p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.875rem;
+        }
+        
+        .footer-legal {
+            display: flex;
+            gap: var(--space-4);
+        }
+        
+        .footer-legal a {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.875rem;
+            text-decoration: none;
+        }
+        
+        .footer-legal a:hover {
+            color: white;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: var(--space-12);
+            }
+            
+            .hero-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-content p {
+                margin: 0 auto var(--space-8);
+            }
+            
+            .hero-cta {
+                justify-content: center;
+            }
+            
+            .hero-stats {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .hero-visual {
+                display: flex;
+                justify-content: center;
+                max-width: 600px;
+                margin: var(--space-8) auto 0;
+            }
+            
+            .floating-card {
+                display: none; /* Hide floating cards on mobile for cleaner look */
+            }
+
+            .stat-item {
+                flex: 1 1 120px;
+            }
+
+            .modules-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+            
+            .pricing-card.featured {
+                transform: none;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 991px) {
+            .landing-nav {
+                padding: var(--space-3) var(--space-4);
+                top: 0;
+                bottom: auto;
+                border-top: none;
+                border-bottom: 1px solid var(--color-border);
+                justify-content: center; /* Center logo on mobile */
+            }
+
+            .hero {
+                padding: calc(60px + var(--space-12)) var(--space-4) calc(80px + var(--space-16));
+            }
+
+            .nav-logo {
+                font-size: 1.125rem;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                z-index: 1002;
+            }
+
+            .nav-links {
+                display: flex; /* Always flex but hidden */
+                flex-direction: column;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 100vh;
+                background: white;
+                padding: calc(80px + var(--space-12)) var(--space-8) var(--space-8);
+                gap: var(--space-6);
+                text-align: center;
+                z-index: 1001;
+                overflow-y: auto;
+                transform: translateY(100%);
+                visibility: hidden;
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+                visibility: visible;
+            }
+
+            .nav-links li a {
+                font-size: 1.5rem;
+                font-weight: 600;
+            }
+
+            .nav-actions {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                margin-top: var(--space-8);
+                gap: var(--space-4);
+            }
+
+            .nav-links .nav-actions {
+                display: flex;
+            }
+
+            .dark-mode .nav-links {
+                background: var(--color-background);
+            }
+            
+            .nav-logo {
+                font-size: 1.25rem;
+            }
+            
+            .hero-content h1 {
+                font-size: 2rem;
+                padding: 0;
+            }
+
+            .hero-content p {
+                font-size: 1rem;
+                padding: 0;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                padding: 0;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr;
+                padding: 0 var(--space-4);
+            }
+            
+            .steps-container {
+                flex-direction: column;
+                gap: var(--space-8);
+            }
+            
+            .steps-container::before {
+                display: none;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                padding: 0 var(--space-4);
+            }
+
+            .pricing-grid {
+                padding: 0 var(--space-4);
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: var(--space-8);
+            }
+            
+            .footer-brand {
+                margin: 0 auto;
+            }
+            
+            .footer-social {
+                justify-content: center;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                gap: var(--space-4);
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="landing-nav">
+        <a href="./index.html" class="nav-logo">
+            <i class="fa-solid fa-brain"></i>
+            <span>Cogno Solution</span>
+        </a>
+        
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#modules">Modules</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#testimonials">Testimonials</a></li>
+            <!-- Only shown in mobile menu -->
+            <li class="nav-actions-mobile">
+                <div class="nav-actions">
+                    <a href="./auth/login.html" class="btn btn-ghost">Sign In</a>
+                    <a href="./auth/register.html" class="btn btn-primary">Get Started</a>
+                </div>
+            </li>
+        </ul>
+        
+        <div class="nav-actions hide-mobile">
+            <a href="./auth/login.html" class="btn btn-ghost">Sign In</a>
+            <a href="./auth/register.html" class="btn btn-primary">Get Started</a>
+        </div>
+        
+        <button class="mobile-menu-btn" id="mobile-menu-btn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Empowering Every Child to Learn & Thrive</h1>
+                <p>AI-powered cognitive support platform designed specifically for children with dyslexia, dyscalculia, dysgraphia, and dyspraxia. Fun, engaging, and scientifically proven.</p>
+                
+                <div class="hero-cta">
+                    <a href="./auth/register.html" class="btn btn-primary btn-hero">
+                        <i class="fa-solid fa-rocket"></i>
+                        Start Free Trial
+                    </a>
+                    <a href="#demo" class="btn btn-outline btn-hero">
+                        <i class="fa-solid fa-play"></i>
+                        Watch Demo
+                    </a>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Active Learners</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Expert Doctors</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">95%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-visual">
+                <img src="./assets/images/logo.png" alt="Children learning with Cogno" class="hero-image" onerror="this.style.background='linear-gradient(135deg, #e8f4ff 0%, #f0f7ff 100%)'; this.style.height='400px';">
+                
+                <div class="floating-card card-1">
+                    <i class="fa-solid fa-star" style="color: #ffc107;"></i>
+                    +50 XP Earned!
+                </div>
+                
+                <div class="floating-card card-2">
+                    <i class="fa-solid fa-fire" style="color: var(--color-danger);"></i>
+                    7 Day Streak!
+                </div>
+                
+                <div class="floating-card card-3">
+                    <i class="fa-solid fa-trophy" style="color: var(--color-warning);"></i>
+                    New Achievement!
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Modules Section -->
+    <section class="modules-section" id="modules">
+        <div class="section-header">
+            <span class="section-badge">Specialized Modules</span>
+            <h2>Four Learning Modules, One Platform</h2>
+            <p>Each module is carefully designed with input from educational psychologists and specialists to address specific learning differences.</p>
+        </div>
+        
+        <div class="modules-grid">
+            <a href="./modules/dyslexia/index.html" class="module-card dyslexia">
+                <div class="module-icon">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <h3>Dyslexia</h3>
+                <p>Reading & language support with AI-powered text simplification</p>
+                <ul class="module-features">
+                    <li><i class="fa-solid fa-check"></i> Text-to-Speech Reading</li>
+                    <li><i class="fa-solid fa-check"></i> Word Recognition Games</li>
+                    <li><i class="fa-solid fa-check"></i> Phonics Practice</li>
+                </ul>
+            </a>
+            
+            <a href="./modules/dyscalculia/index.html" class="module-card dyscalculia">
+                <div class="module-icon">
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+                <h3>Dyscalculia</h3>
+                <p>Math concepts made visual and interactive</p>
+                <ul class="module-features">
+                    <li><i class="fa-solid fa-check"></i> Number Line Activities</li>
+                    <li><i class="fa-solid fa-check"></i> Visual Math Games</li>
+                    <li><i class="fa-solid fa-check"></i> Step-by-Step Problems</li>
+                </ul>
+            </a>
+            
+            <a href="./modules/dysgraphia/index.html" class="module-card dysgraphia">
+                <div class="module-icon">
+                    <i class="fa-solid fa-pen-fancy"></i>
+                </div>
+                <h3>Dysgraphia</h3>
+                <p>Handwriting and fine motor skill development</p>
+                <ul class="module-features">
+                    <li><i class="fa-solid fa-check"></i> Letter Tracing</li>
+                    <li><i class="fa-solid fa-check"></i> Writing Practice</li>
+                    <li><i class="fa-solid fa-check"></i> AI Analysis</li>
+                </ul>
+            </a>
+            
+            <a href="./modules/dyspraxia/index.html" class="module-card dyspraxia">
+                <div class="module-icon">
+                    <i class="fa-solid fa-person-running"></i>
+                </div>
+                <h3>Dyspraxia</h3>
+                <p>Motor coordination exercises with camera tracking</p>
+                <ul class="module-features">
+                    <li><i class="fa-solid fa-check"></i> Movement Exercises</li>
+                    <li><i class="fa-solid fa-check"></i> Balance Training</li>
+                    <li><i class="fa-solid fa-check"></i> Real-time Feedback</li>
+                </ul>
+            </a>
+        </div>
+    </section>
+    
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="section-header">
+            <span class="section-badge">Simple Process</span>
+            <h2>How Cogno Works</h2>
+            <p>Get started in minutes with our simple onboarding process</p>
+        </div>
+        
+        <div class="steps-container">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Create Account</h3>
+                <p>Sign up and complete the initial assessment</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Get Matched</h3>
+                <p>Connect with specialized doctors and educators</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Start Learning</h3>
+                <p>Access personalized activities and track progress</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3>See Results</h3>
+                <p>Monitor improvements with detailed analytics</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="section-header">
+            <span class="section-badge">Platform Features</span>
+            <h2>Everything You Need</h2>
+            <p>Comprehensive tools for children, parents, and healthcare professionals</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <h3>AI-Powered Learning</h3>
+                <p>Adaptive algorithms personalize activities based on each child's progress and learning style.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fa-solid fa-video"></i>
+                </div>
+                <h3>Video Consultations</h3>
+                <p>Connect with specialists through secure video calls for assessments and guidance.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <h3>Progress Tracking</h3>
+                <p>Real-time dashboards show detailed progress with actionable insights for improvement.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fa-solid fa-gamepad"></i>
+                </div>
+                <h3>Gamified Learning</h3>
+                <p>Points, streaks, and achievements make learning fun and keep children motivated.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fa-solid fa-universal-access"></i>
+                </div>
+                <h3>Accessibility First</h3>
+                <p>OpenDyslexic font, high contrast mode, and cognitive-friendly design for all users.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h3>HIPAA Compliant</h3>
+                <p>Enterprise-grade security ensuring all data is protected and private.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials -->
+    <section class="testimonials-section" id="testimonials">
+        <div class="section-header">
+            <span class="section-badge">Success Stories</span>
+            <h2>Most Recommended by Indian Parents & Doctors</h2>
+            <p>See how Cogno is making a difference in children's lives across the country</p>
+        </div>
+        
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <p class="testimonial-text">"My son Aarav has dyslexia and was struggling in school. After just 3 months with Cogno Solution, his reading improved dramatically. The games are culturally relevant and keep him engaged!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">AS</div>
+                    <div class="author-info">
+                        <h4>Aarav Sharma</h4>
+                        <p>Parent, New Delhi</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card">
+                <div class="testimonial-stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <p class="testimonial-text">"As a pediatric specialist in Mumbai, I recommend Cogno to all my patients. The platform's approach is scientifically sound and perfect for the Indian educational context."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">PP</div>
+                    <div class="author-info">
+                        <h4>Dr. Priya Patel</h4>
+                        <p>Pediatric Neurologist</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card">
+                <div class="testimonial-stars">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <p class="testimonial-text">"The dyspraxia module with camera tracking is incredible. My daughter's coordination has improved so much. This is a game-changer for digital health in India."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">VS</div>
+                    <div class="author-info">
+                        <h4>Vikram Singh</h4>
+                        <p>Parent, Bangalore</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pricing Section -->
+    <section class="pricing-section" id="pricing">
+        <div class="section-header">
+            <span class="section-badge">Pricing</span>
+            <h2>Simple, Transparent Pricing</h2>
+            <p>Choose the plan that works best for your family</p>
+        </div>
+        
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Free</h3>
+                <div class="price">₹0<span>/month</span></div>
+                <p class="description">Get started with basic features</p>
+                <ul class="pricing-features">
+                    <li><i class="fa-solid fa-check"></i> 1 Child Profile</li>
+                    <li><i class="fa-solid fa-check"></i> Basic Activities</li>
+                    <li><i class="fa-solid fa-check"></i> Progress Tracking</li>
+                    <li class="disabled"><i class="fa-solid fa-xmark"></i> Video Consultations</li>
+                    <li class="disabled"><i class="fa-solid fa-xmark"></i> AI Features</li>
+                </ul>
+                <a href="./auth/register.html" class="btn btn-outline btn-block">Get Started</a>
+            </div>
+            
+            <div class="pricing-card featured">
+                <span class="pricing-badge">Most Popular</span>
+                <h3>Family</h3>
+                <div class="price">₹100<span>/month</span></div>
+                <p class="description">Everything for growing families</p>
+                <ul class="pricing-features">
+                    <li><i class="fa-solid fa-check"></i> Up to 3 Children</li>
+                    <li><i class="fa-solid fa-check"></i> All Activities</li>
+                    <li><i class="fa-solid fa-check"></i> Advanced Analytics</li>
+                    <li><i class="fa-solid fa-check"></i> Video Consultations</li>
+                    <li><i class="fa-solid fa-check"></i> AI Features</li>
+                </ul>
+                <a href="./auth/register.html" class="btn btn-primary btn-block">Start Free Trial</a>
+            </div>
+            
+            <div class="pricing-card">
+                <h3>Professional</h3>
+                <div class="price">₹300<span>/month</span></div>
+                <p class="description">For healthcare professionals</p>
+                <ul class="pricing-features">
+                    <li><i class="fa-solid fa-check"></i> Unlimited Patients</li>
+                    <li><i class="fa-solid fa-check"></i> Clinical Dashboard</li>
+                    <li><i class="fa-solid fa-check"></i> Report Generation</li>
+                    <li><i class="fa-solid fa-check"></i> Team Collaboration</li>
+                    <li><i class="fa-solid fa-check"></i> API Access</li>
+                </ul>
+                <a href="./auth/register.html?role=doctor" class="btn btn-outline btn-block">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2>Ready to Help Your Child Thrive?</h2>
+            <p>Join thousands of families who have transformed their children's learning journey with Cogno Solution.</p>
+            <a href="./auth/register.html" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-rocket"></i>
+                Start Your Free Trial
+            </a>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="./index.html" class="nav-logo" style="color: white; justify-content: center;">
+                    <i class="fa-solid fa-brain"></i>
+                    Cogno Solution
+                </a>
+                <p>AI-powered cognitive support platform empowering children with learning differences to reach their full potential.</p>
+                <div class="footer-social" style="justify-content: center;">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 Cogno Solution. All rights reserved.</p>
+            <div class="footer-legal">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">HIPAA Compliance</a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Mobile Bottom Tab Bar -->
+    <nav class="mobile-tab-bar">
+        <a href="#modules" class="tab-item">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>Modules</span>
+        </a>
+        <a href="#features" class="tab-item">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>Features</span>
+        </a>
+        <a href="./auth/register.html" class="tab-item tab-primary">
+            <i class="fa-solid fa-rocket"></i>
+            <span>Start</span>
+        </a>
+        <a href="#pricing" class="tab-item">
+            <i class="fa-solid fa-tags"></i>
+            <span>Pricing</span>
+        </a>
+        <a href="./auth/login.html" class="tab-item">
+            <i class="fa-solid fa-user-astronaut"></i>
+            <span>Login</span>
+        </a>
+    </nav>
+
+    <!-- Scripts -->
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.landing-nav');
+            const tabItems = document.querySelectorAll('.tab-item');
+            const sections = document.querySelectorAll('section[id]');
+            
+            // Desktop nav scroll
+            if (window.scrollY > 20) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+
+            // Mobile tab bar active state on scroll
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            tabItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

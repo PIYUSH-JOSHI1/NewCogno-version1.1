@@ -1,0 +1,748 @@
+/**
+ * COGNO SOLUTION - Mobile Navigation CSS
+ * Shared styles for mobile-first navigation with bottom nav
+ */
+
+/* ============================================================
+   CSS VARIABLES
+   ============================================================ */
+:root {
+    --mobile-header-height: 56px;
+    --mobile-nav-height: 64px;
+    --mobile-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+
+    /* Colors */
+    --nav-bg: #ffffff;
+    --nav-border: #e5e7eb;
+    --nav-text: #6b7280;
+    --nav-active: #3b82f6;
+    --nav-active-bg: rgba(59, 130, 246, 0.1);
+
+    /* Dark mode colors */
+    --dark-nav-bg: #1f2937;
+    --dark-nav-border: #374151;
+    --dark-nav-text: #9ca3af;
+}
+
+/* ============================================================
+   MOBILE HEADER
+   ============================================================ */
+.mobile-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--mobile-header-height);
+    background: var(--nav-bg);
+    border-bottom: 1px solid var(--nav-border);
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    gap: 0.75rem;
+    z-index: 100;
+}
+
+.dark-mode .mobile-header {
+    background: var(--dark-nav-bg);
+    border-color: var(--dark-nav-border);
+}
+
+.mobile-header .back-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--nav-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: background 0.2s;
+}
+
+.mobile-header .back-btn:hover {
+    background: var(--nav-active-bg);
+    color: var(--nav-active);
+}
+
+.dark-mode .mobile-header .back-btn {
+    color: var(--dark-nav-text);
+}
+
+.mobile-header .page-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+.dark-mode .mobile-header .page-title {
+    color: #f3f4f6;
+}
+
+.mobile-header .header-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.mobile-header .header-action-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--nav-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    position: relative;
+}
+
+.mobile-header .header-action-btn:hover {
+    background: var(--nav-active-bg);
+    color: var(--nav-active);
+}
+
+.mobile-header .badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 18px;
+    height: 18px;
+    background: #ef4444;
+    color: white;
+    border-radius: 9px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+
+/* Breadcrumb in mobile header (optional use) */
+.mobile-header .breadcrumb {
+    font-size: 0.85rem;
+    color: var(--nav-text);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.mobile-header .breadcrumb span {
+    opacity: 0.5;
+}
+
+/* ============================================================
+   MOBILE CONTENT AREA
+   ============================================================ */
+.mobile-content {
+    padding-top: var(--mobile-header-height);
+    padding-bottom: calc(var(--mobile-nav-height) + var(--mobile-safe-area-bottom) + 16px);
+    min-height: 100vh;
+    background: #f3f4f6;
+}
+
+.dark-mode .mobile-content {
+    background: #111827;
+}
+
+.mobile-content-inner {
+    padding: 1rem;
+    max-width: 768px;
+    margin: 0 auto;
+}
+
+/* ============================================================
+   BOTTOM NAVIGATION
+   ============================================================ */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(var(--mobile-nav-height) + var(--mobile-safe-area-bottom));
+    padding-bottom: var(--mobile-safe-area-bottom);
+    background: var(--nav-bg);
+    border-top: 1px solid var(--nav-border);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+}
+
+.dark-mode .bottom-nav {
+    background: var(--dark-nav-bg);
+    border-color: var(--dark-nav-border);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: var(--nav-text);
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    gap: 0.25rem;
+    min-width: 60px;
+    position: relative;
+}
+
+.nav-item i {
+    font-size: 1.25rem;
+}
+
+.nav-item.active {
+    color: var(--nav-active);
+}
+
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 3px;
+    background: var(--nav-active);
+    border-radius: 0 0 3px 3px;
+}
+
+.nav-item:hover:not(.active) {
+    background: var(--nav-active-bg);
+}
+
+.dark-mode .nav-item {
+    color: var(--dark-nav-text);
+}
+
+.dark-mode .nav-item.active {
+    color: var(--nav-active);
+}
+
+.nav-item .nav-badge {
+    position: absolute;
+    top: 2px;
+    right: 8px;
+    min-width: 16px;
+    height: 16px;
+    background: #ef4444;
+    color: white;
+    border-radius: 8px;
+    font-size: 0.625rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+}
+
+/* ============================================================
+   SECTION CARDS
+   ============================================================ */
+.section-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .section-card {
+    background: #1f2937;
+}
+
+.section-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.section-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dark-mode .section-card-title {
+    color: #f3f4f6;
+}
+
+.section-card-title i {
+    color: var(--nav-active);
+}
+
+.section-card-action {
+    font-size: 0.875rem;
+    color: var(--nav-active);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* ============================================================
+   CATEGORY CARDS (for Learn page)
+   ============================================================ */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+@media (min-width: 640px) {
+    .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.category-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+}
+
+.category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dark-mode .category-card {
+    background: #1f2937;
+}
+
+.category-card.dyslexia {
+    border-color: #3b82f6;
+}
+
+.category-card.dyscalculia {
+    border-color: #10b981;
+}
+
+.category-card.dysgraphia {
+    border-color: #f59e0b;
+}
+
+.category-card.dyspraxia {
+    border-color: #ef4444;
+}
+
+.category-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.category-card.dyslexia .category-icon {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.category-card.dyscalculia .category-icon {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.category-card.dysgraphia .category-icon {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.category-card.dyspraxia .category-icon {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.category-info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.dark-mode .category-info h3 {
+    color: #f3f4f6;
+}
+
+.category-info p {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.category-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.category-meta .activity-count {
+    background: #f3f4f6;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.dark-mode .category-meta .activity-count {
+    background: #374151;
+}
+
+/* ============================================================
+   ACTIVITY LIST
+   ============================================================ */
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: background 0.2s;
+}
+
+.activity-item:hover {
+    background: #f9fafb;
+}
+
+.dark-mode .activity-item {
+    background: #1f2937;
+}
+
+.dark-mode .activity-item:hover {
+    background: #374151;
+}
+
+.activity-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.activity-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-info h4 {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 0.125rem;
+}
+
+.dark-mode .activity-info h4 {
+    color: #f3f4f6;
+}
+
+.activity-info p {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.activity-arrow {
+    color: #9ca3af;
+    font-size: 0.875rem;
+}
+
+/* ============================================================
+   MENU LIST (for profile, doctors hub)
+   ============================================================ */
+.menu-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    text-decoration: none;
+    color: #1f2937;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.2s;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-item:hover {
+    background: #f9fafb;
+}
+
+.dark-mode .menu-item {
+    color: #f3f4f6;
+    border-color: #374151;
+}
+
+.dark-mode .menu-item:hover {
+    background: #374151;
+}
+
+.menu-item .menu-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.dark-mode .menu-item .menu-icon {
+    background: #374151;
+    color: #9ca3af;
+}
+
+.menu-item .menu-icon.primary {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.menu-item .menu-icon.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.menu-item .menu-icon.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.menu-item .menu-icon.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.menu-item .menu-text {
+    flex: 1;
+}
+
+.menu-item .menu-text h4 {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    margin-bottom: 0.125rem;
+}
+
+.menu-item .menu-text p {
+    font-size: 0.8125rem;
+    color: #6b7280;
+}
+
+.menu-item .menu-badge {
+    background: #ef4444;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.menu-item .menu-arrow {
+    color: #9ca3af;
+}
+
+/* ============================================================
+   STATS CARDS (for dashboard/progress)
+   ============================================================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .stat-card {
+    background: #1f2937;
+}
+
+.stat-card .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    margin: 0 auto 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.stat-card .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.dark-mode .stat-card .stat-value {
+    color: #f3f4f6;
+}
+
+.stat-card .stat-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* ============================================================
+   LOADING STATE
+   ============================================================ */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: #6b7280;
+}
+
+.loading-state i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    text-align: center;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    color: #d1d5db;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    font-size: 1.125rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    font-size: 0.875rem;
+    color: #9ca3af;
+}
+
+/* ============================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================ */
+@media (min-width: 768px) {
+    .mobile-content-inner {
+        padding: 1.5rem;
+    }
+
+    .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+
+    /* Bottom nav is now VISIBLE on desktop — enhanced styling */
+    .bottom-nav {
+        display: flex;
+        height: 64px;
+        max-width: 100%;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0 2rem;
+    }
+
+    .bottom-nav .nav-item {
+        flex-direction: row;
+        gap: 0.5rem;
+        padding: 0.5rem 1.25rem;
+        border-radius: 0.75rem;
+        font-size: 0.8125rem;
+        min-width: auto;
+    }
+
+    .bottom-nav .nav-item i {
+        font-size: 1.125rem;
+    }
+
+    .bottom-nav .nav-item.active::before {
+        width: 40px;
+    }
+
+    /* Mobile header can still be hidden on desktop if not needed */
+    /* .mobile-header { display: none; } */
+
+    .mobile-content {
+        padding-top: 0;
+        padding-bottom: calc(64px + 16px);
+    }
+}

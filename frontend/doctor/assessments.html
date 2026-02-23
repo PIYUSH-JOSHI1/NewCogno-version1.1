@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Patient Assessments - Cogno Solution Doctor Portal">
+    <title>Assessments - Cogno Solution</title>
+    
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <style>
+        /* Topbar Fix */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+        
+        .sidebar-toggle:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        
+        .breadcrumb span {
+            color: var(--text-secondary);
+        }
+        
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .topbar-btn {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 6px;
+            position: relative;
+        }
+        
+        .topbar-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .user-menu:hover {
+            border-color: var(--color-primary);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .content-area {
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Page Header - Simple */
+        .page-title {
+            margin: 0 0 0.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            margin: 0 0 1.5rem;
+        }
+        
+        /* Stats - Simple Row */
+        .stats-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 140px;
+        }
+        
+        .stat-box i {
+            font-size: 1.25rem;
+            opacity: 0.7;
+        }
+        
+        .stat-box .number {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-box .label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Disease Category Sections */
+        .disease-section {
+            margin-bottom: 2rem;
+        }
+        
+        .disease-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .disease-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+        }
+        
+        .disease-icon.dyslexia { background: linear-gradient(135deg, #f472b6, #ec4899); }
+        .disease-icon.dyscalculia { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+        .disease-icon.dysgraphia { background: linear-gradient(135deg, #34d399, #10b981); }
+        .disease-icon.dyspraxia { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
+        
+        .disease-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        
+        .disease-header .badge {
+            margin-left: auto;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            background: var(--bg-hover);
+            color: var(--text-secondary);
+        }
+        
+        /* Template Cards - Horizontal List */
+        .templates-row {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        
+        .template-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            min-width: 280px;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .template-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .template-name {
+            font-weight: 600;
+            margin: 0 0 0.25rem;
+        }
+        
+        .template-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin: 0 0 0.75rem;
+        }
+        
+        .template-stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .template-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .template-btn {
+            width: 100%;
+            padding: 0.5rem;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+        }
+        
+        .template-btn:hover {
+            background: var(--color-primary-dark, #4f46e5);
+        }
+        
+        /* Assigned Section */
+        .section-title {
+            font-size: 1.1rem;
+            margin: 0 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .assigned-table {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .assigned-row {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr 1fr 100px;
+            padding: 0.875rem 1rem;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .assigned-row:last-child {
+            border-bottom: none;
+        }
+        
+        .assigned-row.header {
+            background: var(--bg-hover);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+        
+        .assigned-row:not(.header):hover {
+            background: var(--bg-hover);
+        }
+        
+        .patient-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .patient-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .badge-pending { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .badge-completed { background: rgba(34,197,94,0.15); color: #22c55e; }
+        .badge-high { background: rgba(239,68,68,0.15); color: #ef4444; }
+        
+        .view-btn {
+            padding: 0.35rem 0.75rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .view-btn:hover {
+            background: var(--bg-hover);
+        }
+        
+        /* Assign Modal - Clean & Simple */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal-box {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.25rem;
+        }
+        
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+        
+        .modal-body {
+            padding: 1.25rem;
+            overflow-y: auto;
+        }
+        
+        /* Template Preview in Modal */
+        .preview-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .preview-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .preview-title {
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .preview-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        .preview-details {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .preview-details span {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        /* Form Fields */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 80px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1.25rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+        }
+        
+        .btn-cancel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--color-primary-dark, #4f46e5);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.5;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .assigned-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            
+            .assigned-row.header {
+                display: none;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="has-sidebar">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+                <span class="sidebar-brand">Cogno Solution</span>
+                <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <a href="../dashboard/doctor-dashboard.html" class="sidebar-link">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Patients</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./patients.html" class="sidebar-link">
+                            <i class="fa-solid fa-users"></i>
+                            <span>My Patients</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./live-monitoring.html" class="sidebar-link">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>Live Monitoring</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item active">
+                        <a href="./assessments.html" class="sidebar-link">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                            <span>Assessments</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Consultations</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./consultations.html" class="sidebar-link">
+                            <i class="fa-solid fa-video"></i>
+                            <span>Video Consultations</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./schedule.html" class="sidebar-link">
+                            <i class="fa-solid fa-calendar"></i>
+                            <span>My Schedule</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./messages.html" class="sidebar-link">
+                            <i class="fa-solid fa-message"></i>
+                            <span>Messages</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Reports</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./reports.html" class="sidebar-link">
+                            <i class="fa-solid fa-chart-bar"></i>
+                            <span>Patient Reports</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./recommendations.html" class="sidebar-link">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span>Recommendations</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Account</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./profile.html" class="sidebar-link">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../settings/index.html" class="sidebar-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="sidebar-link" id="logout-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="sidebar-toggle" id="sidebar-toggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <nav class="breadcrumb">
+                        <a href="./">Dashboard</a>
+                        <span>/</span>
+                        <span>Assessments</span>
+                    </nav>
+                </div>
+                
+                <div class="topbar-actions">
+                    <button class="topbar-btn" id="notifications-btn">
+                        <i class="fa-solid fa-bell"></i>
+                    </button>
+                    <div class="user-menu">
+                        <div class="user-avatar" id="user-avatar">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+                        <div class="user-info">
+                            <span class="user-name" id="doctor-name">Loading...</span>
+                            <span class="user-role">Doctor</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content-area">
+                <!-- Simple Header -->
+                <h1 class="page-title"><i class="fa-solid fa-clipboard-check"></i> Patient Assessments</h1>
+                <p class="page-subtitle">Select a template and assign to your patients</p>
+                
+                <!-- Stats Row -->
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <i class="fa-solid fa-clock" style="color: #f59e0b;"></i>
+                        <div>
+                            <div class="number" id="stat-pending">0</div>
+                            <div class="label">Pending</div>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-solid fa-check-circle" style="color: #22c55e;"></i>
+                        <div>
+                            <div class="number" id="stat-completed">0</div>
+                            <div class="label">Completed</div>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-solid fa-list" style="color: #6366f1;"></i>
+                        <div>
+                            <div class="number" id="stat-total">0</div>
+                            <div class="label">Total</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- DYSLEXIA Section -->
+                <div class="disease-section">
+                    <div class="disease-header">
+                        <div class="disease-icon dyslexia"><i class="fa-solid fa-book-open"></i></div>
+                        <h3>Dyslexia Assessments</h3>
+                        <span class="badge">Reading & Language</span>
+                    </div>
+                    <div class="templates-row">
+                        <div class="template-card" onclick="openAssignModal('dyslexia-screening')">
+                            <h4 class="template-name">Dyslexia Screening</h4>
+                            <p class="template-desc">Basic reading and phonological awareness test</p>
+                            <div class="template-stats">
+                                <span><i class="fa-solid fa-question-circle"></i> 15 Questions</span>
+                                <span><i class="fa-solid fa-clock"></i> 20 min</span>
+                                <span><i class="fa-solid fa-user"></i> 8+ yrs</span>
+                            </div>
+                            <button class="template-btn">
+                                <i class="fa-solid fa-paper-plane"></i> Assign to Patient
+                            </button>
+                        </div>
+                        <div class="template-card" onclick="openAssignModal('dyslexia-comprehensive')">
+                            <h4 class="template-name">Comprehensive Reading</h4>
+                            <p class="template-desc">In-depth reading comprehension assessment</p>
+                            <div class="template-stats">
+                                <span><i class="fa-solid fa-question-circle"></i> 25 Questions</span>
+                                <span><i class="fa-solid fa-clock"></i> 35 min</span>
+                                <span><i class="fa-solid fa-user"></i> 10+ yrs</span>
+                            </div>
+                            <button class="template-btn">
+                                <i class="fa-solid fa-paper-plane"></i> Assign to Patient
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- DYSCALCULIA Section -->
+                <div class="disease-section">
+                    <div class="disease-header">
+                        <div class="disease-icon dyscalculia"><i class="fa-solid fa-calculator"></i></div>
+                        <h3>Dyscalculia Assessments</h3>
+                        <span class="badge">Mathematics</span>
+                    </div>
+                    <div class="templates-row">
+                        <div class="template-card" onclick="openAssignModal('dyscalculia-screening')">
+                            <h4 class="template-name">Dyscalculia Screening</h4>
+                            <p class="template-desc">Number sense and basic math operations</p>
+                            <div class="template-stats">
+                                <span><i class="fa-solid fa-question-circle"></i> 20 Questions</span>
+                                <span><i class="fa-solid fa-clock"></i> 25 min</span>
+                                <span><i class="fa-solid fa-user"></i> 6+ yrs</span>
+                            </div>
+                            <button class="template-btn">
+                                <i class="fa-solid fa-paper-plane"></i> Assign to Patient
+                            </button>
+                        </div>
+                        <div class="template-card" onclick="openAssignModal('dyscalculia-advanced')">
+                            <h4 class="template-name">Advanced Math Skills</h4>
+                            <p class="template-desc">Problem solving and mathematical reasoning</p>
+                            <div class="template-stats">
+                                <span><i class="fa-solid fa-question-circle"></i> 18 Questions</span>
+                                <span><i class="fa-solid fa-clock"></i> 30 min</span>
+                                <span><i class="fa-solid fa-user"></i> 10+ yrs</span>
+                            </div>
+                            <button class="template-btn">
+                                <i class="fa-solid fa-paper-plane"></i> Assign to Patient
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- DYSGRAPHIA Section -->
+                <div class="disease-section">
+                    <div class="disease-header">
+                        <div class="disease-icon dysgraphia"><i class="fa-solid fa-pen"></i></div>
+                        <h3>Dysgraphia Assessments</h3>
+                        <span class="badge">Writing & Motor</span>
+                    </div>
+                    <div class="templates-row">
+                        <div class="template-card" onclick="openAssignModal('dysgraphia-screening')">
+                            <h4 class="template-name">Dysgraphia Screening</h4>
+                            <p class="template-desc">Handwriting and fine motor skills evaluation</p>
+                            <div class="template-stats">
+                                <span><i class="fa-solid fa-tasks"></i> 12 Tasks</span>
+                                <span><i class="fa-solid fa-clock"></i> 30 min</span>
+                                <span><i class="fa-solid fa-user"></i> 5+ yrs</span>
+                            </div>
+                            <button class="template-btn">
+                                <i class="fa-solid fa-paper-plane"></i> Assign to Patient
+                            </button>
+                        </div>
+                        <div class="template-card" onclick="openAssignModal('dysgraphia-writing')">
+                            <h4 class="template-name">Writing Expression</h4>
+                            <p class="template-desc">Written expression and composition skills</p>
+                            <div class="template-stats">
+                                <span><i class="fa-solid fa-tasks"></i> 10 Tasks</span>
+                                <span><i class="fa-solid fa-clock"></i> 25 min</span>
+                                <span><i class="fa-solid fa-user"></i> 8+ yrs</span>
+                            </div>
+                            <button class="template-btn">
+                                <i class="fa-solid fa-paper-plane"></i> Assign to Patient
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- DYSPRAXIA Section -->
+                <div class="disease-section">
+                    <div class="disease-header">
+                        <div class="disease-icon dyspraxia"><i class="fa-solid fa-person-walking"></i></div>
+                        <h3>Dyspraxia Assessments</h3>
+                        <span class="badge">Motor Coordination</span>
+                    </div>
+                    <div class="templates-row">
+                        <div class="template-card" onclick="openAssignModal('dyspraxia-screening')">
+                            <h4 class="template-name">Dyspraxia Screening</h4>
+                            <p class="template-desc">Gross and fine motor coordination assessment</p>
+                            <div class="template-stats">
+                                <span><i class="fa-solid fa-tasks"></i> 18 Tasks</span>
+                                <span><i class="fa-solid fa-clock"></i> 35 min</span>
+                                <span><i class="fa-solid fa-user"></i> 4+ yrs</span>
+                            </div>
+                            <button class="template-btn">
+                                <i class="fa-solid fa-paper-plane"></i> Assign to Patient
+                            </button>
+                        </div>
+                        <div class="template-card" onclick="openAssignModal('dyspraxia-daily')">
+                            <h4 class="template-name">Daily Living Skills</h4>
+                            <p class="template-desc">Practical coordination for everyday tasks</p>
+                            <div class="template-stats">
+                                <span><i class="fa-solid fa-tasks"></i> 15 Tasks</span>
+                                <span><i class="fa-solid fa-clock"></i> 30 min</span>
+                                <span><i class="fa-solid fa-user"></i> 6+ yrs</span>
+                            </div>
+                            <button class="template-btn">
+                                <i class="fa-solid fa-paper-plane"></i> Assign to Patient
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Assigned Assessments Section -->
+                <div style="margin-top: 2rem;">
+                    <h3 class="section-title"><i class="fa-solid fa-paper-plane"></i> Assigned Assessments</h3>
+                    <div class="assigned-table" id="assigned-list">
+                        <div class="assigned-row header">
+                            <div>Patient</div>
+                            <div>Assessment</div>
+                            <div>Due Date</div>
+                            <div>Status</div>
+                            <div>Action</div>
+                        </div>
+                        <!-- Rows will be loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Single Clean Assign Modal -->
+    <div class="modal-overlay" id="assign-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-paper-plane"></i> Assign Assessment</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Template Preview -->
+                <div class="preview-box">
+                    <div class="preview-header">
+                        <div class="preview-icon" id="preview-icon">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <div>
+                            <h4 class="preview-title" id="preview-title">Dyslexia Screening</h4>
+                            <p class="preview-subtitle" id="preview-subtitle">Reading & phonological awareness</p>
+                        </div>
+                    </div>
+                    <div class="preview-details">
+                        <span><i class="fa-solid fa-question-circle"></i> <span id="preview-questions">15</span> Questions</span>
+                        <span><i class="fa-solid fa-clock"></i> <span id="preview-time">20</span> min</span>
+                        <span><i class="fa-solid fa-user"></i> <span id="preview-age">8+</span> yrs</span>
+                    </div>
+                </div>
+                
+                <!-- Assignment Form -->
+                <div class="form-group">
+                    <label class="form-label">Select Patient *</label>
+                    <select class="form-input" id="assign-patient">
+                        <option value="">Choose a patient...</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Due Date</label>
+                        <input type="date" class="form-input" id="assign-due">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select class="form-input" id="assign-priority">
+                            <option value="normal">Normal</option>
+                            <option value="high">High</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Instructions (Optional)</label>
+                    <textarea class="form-textarea" id="assign-instructions" placeholder="Add any special instructions for the patient..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="submitAssignment()">
+                    <i class="fa-solid fa-paper-plane"></i> Send Assignment
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../js/supabase-client.js"></script>
+    <script src="./doctor.js"></script>
+    <script>
+        let selectedTemplate = null;
+        
+        // Template data
+        const templates = {
+            'dyslexia-screening': {
+                type: 'dyslexia',
+                title: 'Dyslexia Screening',
+                subtitle: 'Reading & phonological awareness',
+                questions: 15,
+                time: 20,
+                age: '8+',
+                icon: 'fa-book-open',
+                color: 'linear-gradient(135deg, #f472b6, #ec4899)'
+            },
+            'dyslexia-comprehensive': {
+                type: 'dyslexia',
+                title: 'Comprehensive Reading Assessment',
+                subtitle: 'In-depth reading comprehension',
+                questions: 25,
+                time: 35,
+                age: '10+',
+                icon: 'fa-book-open',
+                color: 'linear-gradient(135deg, #f472b6, #ec4899)'
+            },
+            'dyscalculia-screening': {
+                type: 'dyscalculia',
+                title: 'Dyscalculia Screening',
+                subtitle: 'Number sense and basic math',
+                questions: 20,
+                time: 25,
+                age: '6+',
+                icon: 'fa-calculator',
+                color: 'linear-gradient(135deg, #60a5fa, #3b82f6)'
+            },
+            'dyscalculia-advanced': {
+                type: 'dyscalculia',
+                title: 'Advanced Math Skills',
+                subtitle: 'Problem solving & reasoning',
+                questions: 18,
+                time: 30,
+                age: '10+',
+                icon: 'fa-calculator',
+                color: 'linear-gradient(135deg, #60a5fa, #3b82f6)'
+            },
+            'dysgraphia-screening': {
+                type: 'dysgraphia',
+                title: 'Dysgraphia Screening',
+                subtitle: 'Handwriting & fine motor skills',
+                questions: 12,
+                time: 30,
+                age: '5+',
+                icon: 'fa-pen',
+                color: 'linear-gradient(135deg, #34d399, #10b981)'
+            },
+            'dysgraphia-writing': {
+                type: 'dysgraphia',
+                title: 'Writing Expression',
+                subtitle: 'Written expression & composition',
+                questions: 10,
+                time: 25,
+                age: '8+',
+                icon: 'fa-pen',
+                color: 'linear-gradient(135deg, #34d399, #10b981)'
+            },
+            'dyspraxia-screening': {
+                type: 'dyspraxia',
+                title: 'Dyspraxia Screening',
+                subtitle: 'Motor coordination assessment',
+                questions: 18,
+                time: 35,
+                age: '4+',
+                icon: 'fa-person-walking',
+                color: 'linear-gradient(135deg, #a78bfa, #8b5cf6)'
+            },
+            'dyspraxia-daily': {
+                type: 'dyspraxia',
+                title: 'Daily Living Skills',
+                subtitle: 'Practical coordination tasks',
+                questions: 15,
+                time: 30,
+                age: '6+',
+                icon: 'fa-person-walking',
+                color: 'linear-gradient(135deg, #a78bfa, #8b5cf6)'
+            }
+        };
+        
+        // Init - Wait for Supabase and load data
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Wait a bit for Supabase client to initialize
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Load all data in parallel
+            await Promise.all([
+                loadPatients(),
+                loadAssignedAssessments(),
+                updateDoctorInfo()
+            ]);
+        });
+        
+        // Update doctor info in topbar - load directly from Supabase
+        async function updateDoctorInfo() {
+            const nameEl = document.getElementById('doctor-name');
+            const avatarEl = document.getElementById('user-avatar');
+            
+            // First try DoctorPortal
+            if (DoctorPortal?.doctorProfile) {
+                const name = DoctorPortal.doctorProfile.display_name || DoctorPortal.doctorProfile.full_name || 'Doctor';
+                const displayName = name.startsWith('Dr.') ? name : 'Dr. ' + name;
+                nameEl.textContent = displayName;
+                
+                const cleanName = name.replace('Dr. ', '').replace('Dr.', '');
+                const initials = cleanName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+                avatarEl.innerHTML = `<span style="font-size: 0.85rem;">${initials}</span>`;
+                return;
+            }
+            
+            // Fallback: Load directly from Supabase
+            try {
+                if (!CognoSupabase?.client) return;
+                
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) {
+                    nameEl.textContent = 'Doctor';
+                    return;
+                }
+                
+                const { data: profile, error } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('full_name, display_name, avatar_url')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (error || !profile) {
+                    nameEl.textContent = 'Doctor';
+                    return;
+                }
+                
+                const name = profile.display_name || profile.full_name || 'Doctor';
+                const displayName = name.startsWith('Dr.') ? name : 'Dr. ' + name;
+                nameEl.textContent = displayName;
+                
+                const cleanName = name.replace('Dr. ', '').replace('Dr.', '');
+                const initials = cleanName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+                avatarEl.innerHTML = `<span style="font-size: 0.85rem;">${initials}</span>`;
+                
+            } catch (err) {
+                console.error('Failed to load doctor info:', err);
+                nameEl.textContent = 'Doctor';
+            }
+        }
+        
+        // Load patients into dropdown - always loads directly from database
+        async function loadPatients() {
+            const select = document.getElementById('assign-patient');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">Choose a patient...</option>';
+            
+            // Wait for Supabase client
+            if (!CognoSupabase?.client) {
+                console.error('Supabase client not available');
+                return;
+            }
+            
+            try {
+                // Get current doctor ID
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) {
+                    console.error('No authenticated user');
+                    return;
+                }
+                
+                console.log('Loading patients for doctor:', user.id);
+                
+                // Load assigned patients from doctor_patients table
+                const { data: assignedPatients, error: err1 } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .select(`
+                        id,
+                        status,
+                        patient:patient_id (
+                            id,
+                            full_name,
+                            display_name,
+                            email
+                        )
+                    `)
+                    .eq('doctor_id', user.id)
+                    .eq('status', 'active');
+                
+                if (err1) {
+                    console.error('Error loading doctor_patients:', err1);
+                }
+                
+                if (assignedPatients && assignedPatients.length > 0) {
+                    console.log('Found', assignedPatients.length, 'assigned patients');
+                    assignedPatients.forEach(dp => {
+                        if (dp.patient?.id) {
+                            const option = document.createElement('option');
+                            option.value = dp.patient.id;
+                            option.textContent = dp.patient.display_name || dp.patient.full_name || dp.patient.email || 'Patient';
+                            select.appendChild(option);
+                        }
+                    });
+                    return;
+                }
+                
+                // No assigned patients found - try loading all students
+                console.log('No assigned patients, loading all students...');
+                const { data: allStudents, error: err2 } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('id, full_name, display_name, email')
+                    .eq('role', 'student')
+                    .order('full_name');
+                
+                if (err2) {
+                    console.error('Error loading students:', err2);
+                }
+                
+                if (allStudents && allStudents.length > 0) {
+                    console.log('Found', allStudents.length, 'students');
+                    allStudents.forEach(student => {
+                        const option = document.createElement('option');
+                        option.value = student.id;
+                        option.textContent = student.display_name || student.full_name || student.email || 'Student';
+                        select.appendChild(option);
+                    });
+                } else {
+                    console.log('No students found in database');
+                    select.innerHTML += '<option disabled>No patients available</option>';
+                }
+                
+            } catch (err) {
+                console.error('Failed to load patients:', err);
+            }
+        }
+        
+        // Open assign modal
+        function openAssignModal(templateId) {
+            selectedTemplate = templates[templateId];
+            if (!selectedTemplate) return;
+            
+            // Update preview
+            const icon = document.getElementById('preview-icon');
+            icon.style.background = selectedTemplate.color;
+            icon.innerHTML = `<i class="fa-solid ${selectedTemplate.icon}"></i>`;
+            
+            document.getElementById('preview-title').textContent = selectedTemplate.title;
+            document.getElementById('preview-subtitle').textContent = selectedTemplate.subtitle;
+            document.getElementById('preview-questions').textContent = selectedTemplate.questions;
+            document.getElementById('preview-time').textContent = selectedTemplate.time;
+            document.getElementById('preview-age').textContent = selectedTemplate.age;
+            
+            // Clear form
+            document.getElementById('assign-patient').value = '';
+            document.getElementById('assign-due').value = '';
+            document.getElementById('assign-priority').value = 'normal';
+            document.getElementById('assign-instructions').value = '';
+            
+            document.getElementById('assign-modal').classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('assign-modal').classList.remove('show');
+            selectedTemplate = null;
+        }
+        
+        // Submit assignment
+        async function submitAssignment() {
+            const patientId = document.getElementById('assign-patient').value;
+            const dueDate = document.getElementById('assign-due').value;
+            const priority = document.getElementById('assign-priority').value;
+            const instructions = document.getElementById('assign-instructions').value;
+            
+            if (!patientId) {
+                alert('Please select a patient');
+                return;
+            }
+            
+            if (!selectedTemplate) return;
+            
+            try {
+                // Get doctor info from auth
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) throw new Error('Not authenticated');
+                
+                const doctorId = user.id;
+                
+                // Get doctor name from profiles
+                const { data: doctorProfile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('full_name, display_name')
+                    .eq('id', doctorId)
+                    .single();
+                
+                const doctorName = doctorProfile?.display_name || doctorProfile?.full_name || 'Your Doctor';
+                
+                // Get patient name from the dropdown
+                const patientSelect = document.getElementById('assign-patient');
+                const patientName = patientSelect.options[patientSelect.selectedIndex]?.text || 'Patient';
+                
+                // Insert assessment
+                const { error } = await CognoSupabase.client
+                    .from('patient_assessments')
+                    .insert({
+                        patient_id: patientId,
+                        doctor_id: doctorId,
+                        assessment_type: selectedTemplate.type,
+                        title: selectedTemplate.title,
+                        description: selectedTemplate.subtitle,
+                        instructions: instructions || 'Please complete this assessment.',
+                        due_date: dueDate || null,
+                        status: 'pending',
+                        priority: priority
+                    });
+                
+                if (error) throw error;
+                
+                // Send notification to patient
+                await CognoSupabase.client.from('notifications').insert({
+                    user_id: patientId,
+                    title: 'New Assessment Assigned',
+                    message: `Dr. ${doctorName} assigned: ${selectedTemplate.title}`,
+                    notification_type: 'assessment',
+                    action_url: '/dashboard/'
+                });
+                
+                alert(`Assessment "${selectedTemplate.title}" sent to ${patientName}!`);
+                closeModal();
+                loadAssignedAssessments();
+                
+            } catch (err) {
+                console.error('Assignment failed:', err);
+                alert('Failed to assign: ' + err.message);
+            }
+        }
+        
+        // Load assigned
+        async function loadAssignedAssessments() {
+            const container = document.getElementById('assigned-list');
+            if (!container || !CognoSupabase?.client) return;
+            
+            try {
+                // Get doctor ID from DoctorPortal or directly from auth
+                let doctorId = DoctorPortal?.currentDoctor?.id;
+                if (!doctorId) {
+                    const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                    doctorId = user?.id;
+                }
+                
+                if (!doctorId) {
+                    console.error('No doctor ID available');
+                    return;
+                }
+                
+                const { data, error } = await CognoSupabase.client
+                    .from('patient_assessments')
+                    .select('*, patient:profiles!patient_assessments_patient_id_fkey(full_name, display_name)')
+                    .eq('doctor_id', doctorId)
+                    .order('created_at', { ascending: false })
+                    .limit(20);
+                
+                if (error) throw error;
+                
+                // Keep header
+                let html = `
+                    <div class="assigned-row header">
+                        <div>Patient</div>
+                        <div>Assessment</div>
+                        <div>Due Date</div>
+                        <div>Status</div>
+                        <div>Action</div>
+                    </div>
+                `;
+                
+                if (!data || data.length === 0) {
+                    html += `
+                        <div class="empty-state">
+                            <i class="fa-solid fa-clipboard-list"></i>
+                            <p>No assessments assigned yet</p>
+                        </div>
+                    `;
+                } else {
+                    data.forEach(a => {
+                        const name = a.patient?.display_name || a.patient?.full_name || 'Unknown';
+                        const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+                        const due = a.due_date ? new Date(a.due_date).toLocaleDateString() : '-';
+                        const statusClass = a.status === 'completed' ? 'completed' : a.status === 'pending' ? 'pending' : '';
+                        
+                        html += `
+                            <div class="assigned-row">
+                                <div class="patient-info">
+                                    <div class="patient-avatar">${initials}</div>
+                                    <span>${name}</span>
+                                </div>
+                                <div>${a.title}</div>
+                                <div>${due}</div>
+                                <div><span class="badge badge-${statusClass}">${a.status}</span></div>
+                                <div><button class="view-btn">View</button></div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                container.innerHTML = html;
+                
+                // Update stats
+                document.getElementById('stat-total').textContent = data?.length || 0;
+                document.getElementById('stat-pending').textContent = data?.filter(a => a.status === 'pending').length || 0;
+                document.getElementById('stat-completed').textContent = data?.filter(a => a.status === 'completed').length || 0;
+                
+            } catch (err) {
+                console.error('Load failed:', err);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Child Dashboard - Cogno Solution">
+    <title>My Dashboard - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/cognitive-friendly.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <link rel="stylesheet" href="../css/mobile-nav.css">
+    
+    <style>
+        /* Dashboard bottom nav spacing */
+        body.has-sidebar {
+            padding-bottom: calc(var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px) + 16px);
+        }
+        
+        .sidebar {
+            display: none !important;
+        }
+        
+        .main-content {
+            margin-left: 0 !important;
+            width: 100% !important;
+        }
+        
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--color-surface);
+        }
+        
+        .navbar .sidebar-toggle {
+            display: none;
+        }
+    </style>
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item active">
+                    <a href="child-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Talk to Experts</li>
+                
+                <li class="sidebar-item">
+                    <a href="../consultations/" class="sidebar-link">
+                        <i class="fa-solid fa-user-doctor" style="color: var(--color-success);"></i>
+                        <span>Our Doctors</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../consultations/my-appointments.html" class="sidebar-link">
+                        <i class="fa-solid fa-calendar-check" style="color: var(--color-primary);"></i>
+                        <span>My Appointments</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../consultations/messages.html" class="sidebar-link">
+                        <i class="fa-solid fa-comments" style="color: var(--color-warning);"></i>
+                        <span>Messages</span>
+                        <span class="sidebar-badge" id="unread-messages-badge" style="display: none;">0</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../consultations/my-reports.html" class="sidebar-link">
+                        <i class="fa-solid fa-file-medical" style="color: var(--color-info);"></i>
+                        <span>My Reports</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-section">Learning Modules</li>
+                
+                <li class="sidebar-item">
+                    <a href="../modules/dyslexia/" class="sidebar-link">
+                        <i class="fa-solid fa-book-open" style="color: var(--color-dyslexia);"></i>
+                        <span>Reading & Words</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dyscalculia/" class="sidebar-link">
+                        <i class="fa-solid fa-calculator" style="color: var(--color-dyscalculia);"></i>
+                        <span>Numbers & Math</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dysgraphia/" class="sidebar-link">
+                        <i class="fa-solid fa-pen" style="color: var(--color-dysgraphia);"></i>
+                        <span>Writing Practice</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dyspraxia/" class="sidebar-link">
+                        <i class="fa-solid fa-person-running" style="color: var(--color-dyspraxia);"></i>
+                        <span>Movement Games</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">More</li>
+                
+                <li class="sidebar-item">
+                    <a href="../learning-hub/" class="sidebar-link">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Learning Hub</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../progress/" class="sidebar-link">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>My Progress</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../profile/" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../settings/" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="tts-toggle" aria-label="Toggle text-to-speech">
+                <i class="fa-solid fa-volume-high"></i>
+                <span>Read Aloud</span>
+            </button>
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1 class="page-title">My Dashboard</h1>
+            </div>
+            
+            <div class="navbar-right">
+                <!-- Accessibility Toggle -->
+                <button class="btn btn-ghost btn-icon" id="accessibility-btn" title="Accessibility options">
+                    <i class="fa-solid fa-universal-access"></i>
+                </button>
+                
+                <!-- Settings Quick Link -->
+                <a href="../settings/" class="btn btn-ghost btn-icon" title="Settings">
+                    <i class="fa-solid fa-gear"></i>
+                </a>
+                
+                <!-- Dark Mode Toggle -->
+                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle" title="Toggle dark mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-ghost btn-icon notification-btn" id="notification-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </button>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="user-menu-btn" id="user-menu-btn">
+                        <div class="avatar avatar-sm" id="user-avatar">
+                            <img src="../assets/images/avatars/default.svg" alt="User avatar" id="user-avatar-img">
+                        </div>
+                        <span class="user-name" id="user-name">Loading...</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <a href="../profile/" class="dropdown-item">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="../settings/" class="dropdown-item">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="dropdown-logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Dashboard Content -->
+        <div class="content-area">
+            <!-- Welcome Section -->
+            <section class="welcome-section">
+                <div class="welcome-content text-center-mobile">
+                    <h2 class="welcome-title">
+                        Welcome back, <span id="welcome-name">Friend</span>! 👋
+                    </h2>
+                    <p class="welcome-subtitle">Ready for another day of learning? Let's keep going!</p>
+                </div>
+                
+                <!-- Streak & Points -->
+                <div class="stats-quick flex-center-mobile">
+                    <div class="streak-counter" id="streak-counter">
+                        <div class="streak-flame">
+                            <i class="fa-solid fa-fire"></i>
+                        </div>
+                        <div class="streak-info">
+                            <span class="streak-number" id="streak-number">0</span>
+                            <span class="streak-label">Day Streak</span>
+                        </div>
+                    </div>
+                    
+                    <div class="points-display" id="points-display">
+                        <div class="points-icon">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div class="points-info">
+                            <span class="points-number" id="points-number">0</span>
+                            <span class="points-label">Total Points</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Assigned Assessments from Doctor -->
+            <section class="section" id="assessments-section" style="display: none;">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-clipboard-check" style="color: var(--color-warning);"></i>
+                        Assignments from Doctor
+                    </h3>
+                    <span class="badge badge-warning" id="assessments-count">0</span>
+                </div>
+                
+                <div id="assessments-list" class="activity-feed" style="background: var(--color-surface); border-radius: 16px; border: 1px solid var(--color-border); overflow: hidden; gap: 0;">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+            
+
+
+            <!-- Today's Goals -->
+            <section class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-bullseye"></i>
+                        Today's Goals
+                    </h3>
+                    <span class="progress-text" id="goals-progress">0 of 3 completed</span>
+                </div>
+                
+                <div class="goals-list" id="goals-list">
+                    <div class="goal-item">
+                        <div class="goal-checkbox">
+                            <input type="checkbox" id="goal-1" disabled>
+                            <label for="goal-1"></label>
+                        </div>
+                        <div class="goal-content">
+                            <span class="goal-text">Complete 1 reading activity</span>
+                            <span class="goal-points">+10 points</span>
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-checkbox">
+                            <input type="checkbox" id="goal-2" disabled>
+                            <label for="goal-2"></label>
+                        </div>
+                        <div class="goal-content">
+                            <span class="goal-text">Practice math for 10 minutes</span>
+                            <span class="goal-points">+10 points</span>
+                        </div>
+                    </div>
+                    <div class="goal-item">
+                        <div class="goal-checkbox">
+                            <input type="checkbox" id="goal-3" disabled>
+                            <label for="goal-3"></label>
+                        </div>
+                        <div class="goal-content">
+                            <span class="goal-text">Try a new activity</span>
+                            <span class="goal-points">+15 points</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upcoming Appointments -->
+            <section class="section" id="upcoming-appointments-section" style="display: none;">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-calendar-check" style="color: var(--color-success);"></i>
+                        Next Consultations
+                    </h3>
+                    <a href="../consultations/my-appointments.html" class="btn btn-ghost btn-sm">View All</a>
+                </div>
+                <div id="upcoming-appointments-list" class="appointments-grid" style="display: grid; gap: var(--space-4);">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+            
+            <!-- Learning Modules -->
+            <section class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-rocket"></i>
+                        Learning Modules
+                    </h3>
+                    <a href="../learning-hub/" class="btn btn-ghost btn-sm">View All</a>
+                </div>
+                
+                <div class="module-cards">
+                    <!-- Dyslexia Module -->
+                    <a href="../modules/dyslexia/" class="module-card module-dyslexia">
+                        <div class="module-icon">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <div class="module-content">
+                            <h4 class="module-title">Reading & Words</h4>
+                            <p class="module-description">Practice reading, letters, and word games</p>
+                            <div class="module-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="dyslexia-progress" style="width: 0%;"></div>
+                                </div>
+                                <span class="progress-text" id="dyslexia-progress-text">0%</span>
+                            </div>
+                        </div>
+                        <div class="module-arrow">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Dyscalculia Module -->
+                    <a href="../modules/dyscalculia/" class="module-card module-dyscalculia">
+                        <div class="module-icon">
+                            <i class="fa-solid fa-calculator"></i>
+                        </div>
+                        <div class="module-content">
+                            <h4 class="module-title">Numbers & Math</h4>
+                            <p class="module-description">Fun math games and number practice</p>
+                            <div class="module-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="dyscalculia-progress" style="width: 0%;"></div>
+                                </div>
+                                <span class="progress-text" id="dyscalculia-progress-text">0%</span>
+                            </div>
+                        </div>
+                        <div class="module-arrow">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Dysgraphia Module -->
+                    <a href="../modules/dysgraphia/" class="module-card module-dysgraphia">
+                        <div class="module-icon">
+                            <i class="fa-solid fa-pen"></i>
+                        </div>
+                        <div class="module-content">
+                            <h4 class="module-title">Writing Practice</h4>
+                            <p class="module-description">Learn to write letters and words</p>
+                            <div class="module-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="dysgraphia-progress" style="width: 0%;"></div>
+                                </div>
+                                <span class="progress-text" id="dysgraphia-progress-text">0%</span>
+                            </div>
+                        </div>
+                        <div class="module-arrow">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Dyspraxia Module -->
+                    <a href="../modules/dyspraxia/" class="module-card module-dyspraxia">
+                        <div class="module-icon">
+                            <i class="fa-solid fa-person-running"></i>
+                        </div>
+                        <div class="module-content">
+                            <h4 class="module-title">Movement Games</h4>
+                            <p class="module-description">Fun movement and coordination games</p>
+                            <div class="module-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="dyspraxia-progress" style="width: 0%;"></div>
+                                </div>
+                                <span class="progress-text" id="dyspraxia-progress-text">0%</span>
+                            </div>
+                        </div>
+                        <div class="module-arrow">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </a>
+                </div>
+            </section>
+            
+            <!-- Stats Row -->
+            <div class="stats-row">
+                <!-- Weekly Progress Chart -->
+                <section class="section section-chart">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-chart-line"></i>
+                            This Week
+                        </h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="weekly-chart"></canvas>
+                    </div>
+                </section>
+                
+                <!-- Recent Achievements -->
+                <section class="section section-achievements">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-trophy"></i>
+                            Recent Badges
+                        </h3>
+                        <a href="../profile/certificates.html" class="btn btn-ghost btn-sm">
+                            <i class="fa-solid fa-certificate"></i> Certificates
+                        </a>
+                    </div>
+                    <div class="achievements-grid" id="achievements-grid">
+                        <!-- Populated by JS -->
+                        <div class="achievement-placeholder">
+                            <i class="fa-solid fa-lock"></i>
+                            <span>Keep learning to unlock badges!</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- All Activity Section -->
+            <section class="section all-activity-section">
+                <div class="section-header">
+                    <div class="header-left">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            All Activity Feed
+                        </h3>
+                        <p class="section-subtitle">Track your learning journey and achievements</p>
+                    </div>
+                    <div class="header-actions">
+                        <a href="../progress/" class="btn btn-ghost btn-sm">
+                            <i class="fa-solid fa-chart-line"></i> Full Progress
+                        </a>
+                        <a href="../profile/?tab=activity" class="btn btn-secondary btn-sm">View All History</a>
+                    </div>
+                </div>
+                
+                <div class="activity-container">
+                    <!-- Activity Stats Summary (Mobile Friendly) -->
+                    <div class="activity-highlights">
+                        <div class="highlight-item">
+                            <span class="highlight-value" id="activities-this-week">0</span>
+                            <span class="highlight-label">Items This Week</span>
+                        </div>
+                        <div class="highlight-item">
+                            <span class="highlight-value" id="hours-learned">0h</span>
+                            <span class="highlight-label">Time Spent</span>
+                        </div>
+                        <div class="highlight-item">
+                            <span class="highlight-value" id="avg-score">0%</span>
+                            <span class="highlight-label">Avg. Score</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-feed" id="activity-feed">
+                        <!-- Populated by JS -->
+                        <div class="activity-empty">
+                            <i class="fa-solid fa-sparkles"></i>
+                            <p>Start learning to see your activity here!</p>
+                            <a href="../learning-hub/" class="btn btn-primary">Start Learning</a>
+                        </div>
+                    </div>
+                    
+                    <div class="feed-footer">
+                        <button class="btn btn-ghost btn-block" id="load-more-activity" style="display: none;">
+                            Load More Activities <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            <!-- Recent Reports -->
+            <section class="section" id="recent-reports-section" style="display: none;">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-file-medical"></i>
+                        Recent Medical Reports
+                    </h3>
+                    <a href="../consultations/my-reports.html" class="btn btn-ghost btn-sm">View All</a>
+                </div>
+                <div id="recent-reports-list" class="reports-grid" style="display: grid; gap: var(--space-3);">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notification-panel">
+        <div class="notification-panel-header">
+            <h4>Notifications</h4>
+            <button class="btn btn-ghost btn-sm" id="mark-all-read">Mark all read</button>
+        </div>
+        <div class="notification-list" id="notification-list">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+    
+    <!-- Accessibility Panel -->
+    <div class="accessibility-panel" id="accessibility-panel">
+        <div class="accessibility-panel-header">
+            <h4>Accessibility</h4>
+            <button class="btn btn-ghost btn-icon" id="accessibility-close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="accessibility-options">
+            <div class="accessibility-option">
+                <label for="dyslexia-font">Dyslexia-friendly font</label>
+                <input type="checkbox" id="dyslexia-font" class="toggle-switch">
+            </div>
+            <div class="accessibility-option">
+                <label for="high-contrast">High contrast</label>
+                <input type="checkbox" id="high-contrast" class="toggle-switch">
+            </div>
+            <div class="accessibility-option">
+                <label for="large-text">Large text</label>
+                <input type="checkbox" id="large-text" class="toggle-switch">
+            </div>
+            <div class="accessibility-option">
+                <label for="reduced-motion">Reduced motion</label>
+                <input type="checkbox" id="reduced-motion" class="toggle-switch">
+            </div>
+            <div class="accessibility-option">
+                <label for="word-spacing">Extra word spacing</label>
+                <input type="checkbox" id="word-spacing" class="toggle-switch">
+            </div>
+        </div>
+    </div>
+    
+    <!-- TTS Controls (hidden by default) -->
+    <div class="tts-controls" id="tts-controls" style="display: none;">
+        <button class="tts-btn" id="tts-play" aria-label="Play">
+            <i class="fa-solid fa-play"></i>
+        </button>
+        <button class="tts-btn" id="tts-pause" aria-label="Pause">
+            <i class="fa-solid fa-pause"></i>
+        </button>
+        <button class="tts-btn" id="tts-stop" aria-label="Stop">
+            <i class="fa-solid fa-stop"></i>
+        </button>
+        <input type="range" id="tts-rate" min="0.5" max="2" step="0.1" value="1" aria-label="Speech rate">
+        <button class="tts-btn tts-close" id="tts-close" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="child-dashboard.html" class="nav-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../learn/index.html" class="nav-item">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/api-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/tts.js"></script>
+    <script src="../js/realtime.js"></script>
+    <script src="../js/charts.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./dashboard.js"></script>
+    
+    <script>
+        // Initialize child dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof CognoDashboard !== 'undefined') {
+                CognoDashboard.init('child');
+            }
+            
+            // Load unread messages count
+            setTimeout(loadUnreadMessagesCount, 1000);
+            
+            // Subscribe to realtime messages
+            setTimeout(subscribeToNewMessages, 2000);
+            
+            // Initialize real-time features
+            setTimeout(initRealtimeFeatures, 2500);
+        });
+        
+        /**
+         * Initialize all real-time features for the child dashboard
+         */
+        async function initRealtimeFeatures() {
+            if (!CognoSupabase?.client) return;
+            
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                
+                // 1. Start Real-time Notification Listener
+                initNotificationListener(user.id);
+                
+                // 2. Subscribe to student_progress changes (for goals, activity, charts)
+                subscribeToProgressUpdates(user.id);
+                
+                // 3. Subscribe to doctor-assigned goals
+                subscribeToDailyGoals(user.id);
+                
+                // 4. Subscribe to consultation updates (for instant meeting invites)
+                subscribeToConsultationUpdates(user.id);
+                
+                console.log('[Dashboard] Real-time features initialized');
+            } catch (error) {
+                console.error('[Dashboard] Failed to initialize real-time features:', error);
+            }
+        }
+        
+        /**
+         * Start the NotificationListener for real-time push notifications
+         */
+        function initNotificationListener(userId) {
+            if (!window.CognoRealtime?.NotificationListener) {
+                // Fallback: create inline notification subscription
+                CognoSupabase.client
+                    .channel('dashboard-notifications')
+                    .on('postgres_changes', {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'notifications',
+                        filter: `user_id=eq.${userId}`
+                    }, (payload) => {
+                        const notif = payload.new;
+                        
+                        // Show toast notification
+                        if (window.CognoNotifications?.toast) {
+                            CognoNotifications.toast.show(
+                                notif.title || 'New Notification',
+                                notif.type || 'info',
+                                {
+                                    message: notif.message,
+                                    duration: 6000
+                                }
+                            );
+                        }
+                        
+                        // Update notification badge
+                        const badge = document.getElementById('notification-badge');
+                        if (badge) {
+                            const current = parseInt(badge.textContent) || 0;
+                            badge.textContent = current + 1;
+                            badge.style.display = 'flex';
+                        }
+                        
+                        // Reload notification panel if dashboard.js handles it
+                        if (typeof CognoDashboard !== 'undefined' && CognoDashboard.loadNotifications) {
+                            CognoDashboard.loadNotifications();
+                        }
+                    })
+                    .subscribe((status) => {
+                        console.log('[Notifications] Subscription status:', status);
+                    });
+            } else {
+                // Use the NotificationListener from realtime.js
+                const listener = new CognoRealtime.NotificationListener(userId);
+                listener.onNotification = (notification) => {
+                    // Update badge
+                    const badge = document.getElementById('notification-badge');
+                    if (badge) {
+                        const current = parseInt(badge.textContent) || 0;
+                        badge.textContent = current + 1;
+                        badge.style.display = 'flex';
+                    }
+                };
+                listener.start();
+                
+                // Store for cleanup
+                window._notificationListener = listener;
+            }
+        }
+        
+        /**
+         * Subscribe to student_progress changes for real-time dashboard updates
+         */
+        function subscribeToProgressUpdates(userId) {
+            CognoSupabase.client
+                .channel('dashboard-progress')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'student_progress',
+                    filter: `student_id=eq.${userId}`
+                }, async (payload) => {
+                    console.log('[Dashboard] Progress update received:', payload.eventType);
+                    
+                    // Refresh goals (they depend on today's progress)
+                    if (typeof CognoDashboard !== 'undefined') {
+                        await CognoDashboard.loadGoals();
+                    }
+                    
+                    // Refresh activity feed
+                    if (typeof CognoDashboard !== 'undefined') {
+                        await CognoDashboard.loadRecentActivity();
+                    }
+                    
+                    // Refresh stats (streak, points)
+                    if (typeof CognoDashboard !== 'undefined') {
+                        await CognoDashboard.loadChildStats();
+                    }
+                    
+                    // Refresh weekly chart
+                    if (typeof CognoDashboard !== 'undefined' && CognoDashboard.initWeeklyChart) {
+                        // Destroy existing chart before recreating
+                        if (CognoDashboard.charts?.weekly) {
+                            CognoDashboard.charts.weekly.destroy();
+                        }
+                        await CognoDashboard.initWeeklyChart();
+                    }
+                    
+                    // Show toast for new activity
+                    if (payload.eventType === 'INSERT' && window.CognoNotifications?.toast) {
+                        const p = payload.new;
+                        const percentage = p.max_score > 0 ? Math.round((p.score / p.max_score) * 100) : 0;
+                        CognoNotifications.toast.show(
+                            `Activity completed! Score: ${percentage}%`,
+                            percentage >= 80 ? 'success' : 'info',
+                            { duration: 4000 }
+                        );
+                    }
+                })
+                .subscribe((status) => {
+                    console.log('[Dashboard] Progress subscription status:', status);
+                });
+        }
+        
+        /**
+         * Subscribe to doctor-assigned daily goals
+         */
+        function subscribeToDailyGoals(userId) {
+            CognoSupabase.client
+                .channel('dashboard-goals')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'daily_goals',
+                    filter: `student_id=eq.${userId}`
+                }, async (payload) => {
+                    console.log('[Dashboard] Daily goal update:', payload.eventType);
+                    
+                    // Refresh goals display
+                    if (typeof CognoDashboard !== 'undefined') {
+                        await CognoDashboard.loadGoals();
+                    }
+                    
+                    // Notify about new goal from doctor
+                    if (payload.eventType === 'INSERT' && window.CognoNotifications?.toast) {
+                        CognoNotifications.toast.show(
+                            'Your doctor set a new goal for you!',
+                            'info',
+                            {
+                                title: 'New Goal',
+                                duration: 6000,
+                                action: () => {
+                                    document.getElementById('goals-list')?.scrollIntoView({ behavior: 'smooth' });
+                                },
+                                actionText: 'View'
+                            }
+                        );
+                    }
+                })
+                .subscribe((status) => {
+                    console.log('[Dashboard] Goals subscription status:', status);
+                });
+        }
+        
+        /**
+         * Subscribe to consultation updates for instant meeting invites
+         */
+        function subscribeToConsultationUpdates(userId) {
+            CognoSupabase.client
+                .channel('dashboard-consultations')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'consultations',
+                    filter: `patient_id=eq.${userId}`
+                }, async (payload) => {
+                    const consultation = payload.new;
+                    
+                    if (payload.eventType === 'INSERT' || 
+                        (payload.eventType === 'UPDATE' && consultation.status === 'in-progress')) {
+                        
+                        // Get doctor info
+                        let doctorName = 'Your Doctor';
+                        try {
+                            const { data: doctor } = await CognoSupabase.client
+                                .from('profiles')
+                                .select('full_name, display_name')
+                                .eq('id', consultation.doctor_id)
+                                .single();
+                            doctorName = doctor?.display_name || doctor?.full_name || doctorName;
+                        } catch(e) { /* ignore */ }
+                        
+                        // Show instant meeting notification
+                        if (consultation.status === 'in-progress' && window.CognoNotifications?.toast) {
+                            CognoNotifications.toast.show(
+                                `Dr. ${doctorName} is starting a consultation with you!`,
+                                'success',
+                                {
+                                    title: '📹 Live Consultation',
+                                    duration: 15000,
+                                    action: () => {
+                                        window.location.href = `../consultations/video.html?id=${consultation.id}`;
+                                    },
+                                    actionText: 'Join Now'
+                                }
+                            );
+                        } else if (payload.eventType === 'INSERT' && window.CognoNotifications?.toast) {
+                            CognoNotifications.toast.show(
+                                `Dr. ${doctorName} scheduled a consultation.`,
+                                'info',
+                                {
+                                    title: 'New Appointment',
+                                    duration: 8000,
+                                    action: () => {
+                                        window.location.href = '../consultations/my-appointments.html';
+                                    },
+                                    actionText: 'View'
+                                }
+                            );
+                        }
+                    }
+                })
+                .subscribe((status) => {
+                    console.log('[Dashboard] Consultation subscription status:', status);
+                });
+        }
+        
+        // Cleanup real-time subscriptions on page unload
+        window.addEventListener('beforeunload', () => {
+            if (window._notificationListener) {
+                window._notificationListener.stop();
+            }
+            // Supabase channels auto-cleanup, but be explicit
+            CognoSupabase?.client?.removeAllChannels?.();
+        });
+        
+        // Load unread messages count for sidebar badge
+        async function loadUnreadMessagesCount() {
+            const badge = document.getElementById('unread-messages-badge');
+            if (!badge || !CognoSupabase?.client) return;
+            
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                
+                // Count unread messages
+                const { data, error } = await CognoSupabase.client
+                    .from('messages')
+                    .select('id', { count: 'exact', head: true })
+                    .eq('receiver_id', user.id)
+                    .eq('is_read', false);
+                
+                if (!error && data !== null) {
+                    const count = data.length || 0;
+                    if (count > 0) {
+                        badge.textContent = count > 99 ? '99+' : count;
+                        badge.style.display = 'flex';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load unread messages count:', error);
+            }
+        }
+        
+        // Subscribe to new messages in realtime
+        async function subscribeToNewMessages() {
+            if (!CognoSupabase?.client) return;
+            
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                
+                CognoSupabase.client
+                    .channel('child-messages')
+                    .on('postgres_changes', {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'messages',
+                        filter: `receiver_id=eq.${user.id}`
+                    }, async (payload) => {
+                        // Update unread badge
+                        loadUnreadMessagesCount();
+                        
+                        // Get sender info for notification
+                        const { data: senderProfile } = await CognoSupabase.client
+                            .from('profiles')
+                            .select('full_name, display_name')
+                            .eq('id', payload.new.sender_id)
+                            .single();
+                        
+                        const senderName = senderProfile?.display_name || senderProfile?.full_name || 'Doctor';
+                        const previewText = payload.new.content?.substring(0, 50) + (payload.new.content?.length > 50 ? '...' : '');
+                        
+                        // Show toast notification
+                        if (window.CognoNotifications?.toast) {
+                            CognoNotifications.toast.show(`${senderName}: ${previewText}`, 'info', {
+                                title: 'New Message',
+                                action: () => window.location.href = '../consultations/messages.html?doctor=' + payload.new.sender_id,
+                                actionText: 'Reply'
+                            });
+                        }
+                    })
+                    .subscribe();
+            } catch (error) {
+                console.error('Failed to subscribe to messages:', error);
+            }
+        }
+    </script>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <a href="child-dashboard.html" class="nav-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../learn/index.html" class="nav-item">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

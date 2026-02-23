@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-darker: #1d4ed8;
+            --primary-light: #eff6ff;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --primary-light: #1e3a5f;
+            --success-light: #064e3b;
+            --warning-light: #451a03;
+            --danger-light: #450a0a;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 90px;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        /* Topbar */
+        .topbar {
+            background: var(--card);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .topbar-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        .topbar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+        
+        .back-btn:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        
+        /* Content */
+        .content {
+            padding: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Settings Section */
+        .settings-section {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+        }
+        
+        .settings-section-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .setting-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+        
+        .setting-text .label {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .setting-text .description {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .setting-control {
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--border);
+            transition: 0.3s;
+            border-radius: 26px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background: var(--primary);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+        
+        /* Select */
+        .setting-select {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.85rem;
+            min-width: 120px;
+        }
+        
+        .setting-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        /* Buttons */
+        .setting-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .setting-btn:hover {
+            background: var(--border);
+        }
+        
+        .setting-btn.danger {
+            color: var(--danger);
+            border-color: var(--danger);
+        }
+        
+        .setting-btn.danger:hover {
+            background: var(--danger-light);
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0.25rem;
+            z-index: 1000;
+        }
+        
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.65rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            min-width: 50px;
+        }
+        
+        .nav-btn i {
+            font-size: 1.15rem;
+        }
+        
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--primary);
+        }
+        
+        .nav-btn.active {
+            background: var(--primary-light);
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card);
+            color: var(--text);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 2000;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .toast.success { border-left: 3px solid var(--success); }
+        .toast.error { border-left: 3px solid var(--danger); }
+        
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-btn {
+                font-size: 0.6rem;
+                min-width: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <button class="back-btn" onclick="history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <span class="topbar-title">Settings</span>
+        </div>
+    </div>
+    
+    <!-- Content -->
+    <div class="content">
+        <!-- Appearance -->
+        <div class="settings-section">
+            <div class="settings-section-title">
+                <i class="fa-solid fa-palette"></i>
+                Appearance
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-moon"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Dark Mode</div>
+                        <div class="description">Enable dark theme</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-text-height"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Font Size</div>
+                        <div class="description">Adjust text size</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <select class="setting-select" id="font-size-select" onchange="changeFontSize()">
+                        <option value="small">Small</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="large">Large</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notifications -->
+        <div class="settings-section">
+            <div class="settings-section-title">
+                <i class="fa-solid fa-bell"></i>
+                Notifications
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-envelope"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Email Notifications</div>
+                        <div class="description">Receive email alerts</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="email-notif" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-mobile"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Push Notifications</div>
+                        <div class="description">Browser push alerts</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="push-notif" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Appointment Reminders</div>
+                        <div class="description">Get reminded before appointments</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="apt-reminder" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Privacy & Security -->
+        <div class="settings-section">
+            <div class="settings-section-title">
+                <i class="fa-solid fa-shield"></i>
+                Privacy & Security
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-lock"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Change Password</div>
+                        <div class="description">Update your password</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <button class="setting-btn" onclick="changePassword()">
+                        Change
+                    </button>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-key"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Two-Factor Auth</div>
+                        <div class="description">Extra security layer</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="two-factor">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Data & Storage -->
+        <div class="settings-section">
+            <div class="settings-section-title">
+                <i class="fa-solid fa-database"></i>
+                Data & Storage
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-download"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Export Data</div>
+                        <div class="description">Download your data</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <button class="setting-btn" onclick="exportData()">
+                        Export
+                    </button>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-broom"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Clear Cache</div>
+                        <div class="description">Free up storage space</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <button class="setting-btn" onclick="clearCache()">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Support -->
+        <div class="settings-section">
+            <div class="settings-section-title">
+                <i class="fa-solid fa-circle-question"></i>
+                Support
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-headset"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Help Center</div>
+                        <div class="description">FAQs and tutorials</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <button class="setting-btn">
+                        Open <i class="fa-solid fa-arrow-right" style="font-size: 0.7rem; margin-left: 0.25rem;"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon"><i class="fa-solid fa-bug"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Report Issue</div>
+                        <div class="description">Submit a bug report</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <button class="setting-btn">
+                        Report
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Danger Zone -->
+        <div class="settings-section">
+            <div class="settings-section-title" style="color: var(--danger);">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Danger Zone
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-icon" style="color: var(--danger);"><i class="fa-solid fa-trash"></i></div>
+                    <div class="setting-text">
+                        <div class="label">Delete Account</div>
+                        <div class="description">Permanently delete your account</div>
+                    </div>
+                </div>
+                <div class="setting-control">
+                    <button class="setting-btn danger" onclick="deleteAccount()">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a href="patients.html" class="nav-btn">
+            <i class="fa-solid fa-user-group"></i>
+            Patients
+        </a>
+        <a href="schedule.html" class="nav-btn">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="consultations.html" class="nav-btn">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="reports.html" class="nav-btn">
+            <i class="fa-solid fa-chart-bar"></i>
+            Reports
+        </a>
+        <a href="profile.html" class="nav-btn">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadSettings();
+        });
+        
+        function initTheme() {
+            const savedTheme = localStorage.getItem('cogno_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('dark-mode-toggle').checked = savedTheme === 'dark';
+        }
+        
+        function toggleDarkMode() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('cogno_theme', newTheme);
+            showToast('Theme updated!', 'success');
+        }
+        
+        function loadSettings() {
+            // Load saved settings from localStorage
+            const fontSize = localStorage.getItem('cogno_font_size') || 'medium';
+            document.getElementById('font-size-select').value = fontSize;
+        }
+        
+        function changeFontSize() {
+            const size = document.getElementById('font-size-select').value;
+            localStorage.setItem('cogno_font_size', size);
+            
+            // Apply font size
+            const sizes = { small: '14px', medium: '16px', large: '18px' };
+            document.documentElement.style.fontSize = sizes[size];
+            showToast('Font size updated!', 'success');
+        }
+        
+        function changePassword() {
+            showToast('Password change feature coming soon', 'success');
+        }
+        
+        function exportData() {
+            showToast('Preparing data export...', 'success');
+            // In real app, call API to generate export
+        }
+        
+        function clearCache() {
+            localStorage.clear();
+            sessionStorage.clear();
+            showToast('Cache cleared!', 'success');
+            setTimeout(() => location.reload(), 1000);
+        }
+        
+        function deleteAccount() {
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                showToast('Account deletion feature coming soon', 'error');
+            }
+        }
+        
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                ${message}
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

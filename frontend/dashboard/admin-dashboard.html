@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Dashboard - Cogno Solution">
+    <title>Admin Dashboard - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Admin</span>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item active">
+                    <a href="admin-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">User Management</li>
+                
+                <li class="sidebar-item">
+                    <a href="../admin/users/" class="sidebar-link">
+                        <i class="fa-solid fa-users"></i>
+                        <span>All Users</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../admin/children/" class="sidebar-link">
+                        <i class="fa-solid fa-children"></i>
+                        <span>Children</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../admin/parents/" class="sidebar-link">
+                        <i class="fa-solid fa-user-group"></i>
+                        <span>Parents</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../admin/doctors/" class="sidebar-link">
+                        <i class="fa-solid fa-user-doctor"></i>
+                        <span>Doctors</span>
+                        <span class="sidebar-badge" id="pending-doctors" style="display: none;">0</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Analytics</li>
+                
+                <li class="sidebar-item">
+                    <a href="../admin/analytics/" class="sidebar-link">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Platform Analytics</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../admin/reports/" class="sidebar-link">
+                        <i class="fa-solid fa-file-lines"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Content</li>
+                
+                <li class="sidebar-item">
+                    <a href="../admin/modules/" class="sidebar-link">
+                        <i class="fa-solid fa-puzzle-piece"></i>
+                        <span>Learning Modules</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../admin/activities/" class="sidebar-link">
+                        <i class="fa-solid fa-gamepad"></i>
+                        <span>Activities</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../admin/achievements/" class="sidebar-link">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>Achievements</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">System</li>
+                
+                <li class="sidebar-item">
+                    <a href="../admin/settings/" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../admin/logs/" class="sidebar-link">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        <span>System Logs</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1 class="page-title">Admin Dashboard</h1>
+            </div>
+            
+            <div class="navbar-right">
+                <!-- Environment Badge -->
+                <span class="badge badge-warning" id="env-badge" style="display: none;">Development</span>
+                
+                <!-- Dark Mode Toggle -->
+                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle" aria-label="Toggle dark mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-ghost btn-icon notification-btn" id="notification-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </button>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="user-menu-btn" id="user-menu-btn">
+                        <div class="avatar avatar-sm" id="user-avatar">
+                            <img src="../assets/images/avatars/default.svg" alt="User avatar" id="user-avatar-img">
+                        </div>
+                        <span class="user-name" id="user-name">Admin</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <a href="../profile/" class="dropdown-item">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="../admin/settings/" class="dropdown-item">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="dropdown-logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Dashboard Content -->
+        <div class="content-area">
+            <!-- Overview Stats -->
+            <section class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--color-primary-100); color: var(--color-primary);">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="total-users">0</span>
+                        <span class="stat-label">Total Users</span>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fa-solid fa-arrow-up"></i>
+                        <span id="users-trend">+0%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--color-success-100); color: var(--color-success);">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="active-users">0</span>
+                        <span class="stat-label">Active Today</span>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fa-solid fa-arrow-up"></i>
+                        <span id="active-trend">+0%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--color-warning-100); color: var(--color-warning);">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="activities-completed">0</span>
+                        <span class="stat-label">Activities Today</span>
+                    </div>
+                    <div class="stat-trend up">
+                        <i class="fa-solid fa-arrow-up"></i>
+                        <span id="activities-trend">+0%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--color-info-100); color: var(--color-info);">
+                        <i class="fa-solid fa-video"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="total-consultations">0</span>
+                        <span class="stat-label">Consultations Today</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Alerts Section -->
+            <section class="alerts-section" id="alerts-section" style="display: none;">
+                <div class="alert alert-warning">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <div class="alert-content">
+                        <span class="alert-title">Pending Doctor Verifications</span>
+                        <span class="alert-text">
+                            <span id="pending-count">0</span> doctors are waiting for verification
+                        </span>
+                    </div>
+                    <a href="../admin/doctors/?status=pending" class="btn btn-warning btn-sm">Review</a>
+                </div>
+            </section>
+            
+            <!-- User Distribution -->
+            <section class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        User Distribution
+                    </h3>
+                    <div class="section-actions">
+                        <span class="text-muted text-sm">
+                            Last updated: <span id="last-updated">--</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="user-distribution-grid">
+                    <div class="user-stat-card">
+                        <div class="user-stat-icon children">
+                            <i class="fa-solid fa-child"></i>
+                        </div>
+                        <div class="user-stat-info">
+                            <span class="user-stat-value" id="children-count">0</span>
+                            <span class="user-stat-label">Children</span>
+                        </div>
+                        <a href="../admin/children/" class="user-stat-link">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="user-stat-card">
+                        <div class="user-stat-icon parents">
+                            <i class="fa-solid fa-user-group"></i>
+                        </div>
+                        <div class="user-stat-info">
+                            <span class="user-stat-value" id="parents-count">0</span>
+                            <span class="user-stat-label">Parents</span>
+                        </div>
+                        <a href="../admin/parents/" class="user-stat-link">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="user-stat-card">
+                        <div class="user-stat-icon doctors">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+                        <div class="user-stat-info">
+                            <span class="user-stat-value" id="doctors-count">0</span>
+                            <span class="user-stat-label">Doctors</span>
+                        </div>
+                        <a href="../admin/doctors/" class="user-stat-link">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="user-stat-card">
+                        <div class="user-stat-icon admins">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <div class="user-stat-info">
+                            <span class="user-stat-value" id="admins-count">0</span>
+                            <span class="user-stat-label">Admins</span>
+                        </div>
+                        <a href="../admin/users/?role=admin" class="user-stat-link">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <!-- User Growth -->
+                <section class="section section-chart">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-chart-line"></i>
+                            User Growth
+                        </h3>
+                        <select class="form-select form-select-sm" id="growth-period">
+                            <option value="7">Last 7 days</option>
+                            <option value="30" selected>Last 30 days</option>
+                            <option value="90">Last 90 days</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="user-growth-chart"></canvas>
+                    </div>
+                </section>
+                
+                <!-- Activity by Module -->
+                <section class="section section-chart">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-chart-bar"></i>
+                            Activity by Module
+                        </h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="module-activity-chart"></canvas>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Two Column -->
+            <div class="two-column">
+                <!-- Recent Registrations -->
+                <section class="section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-user-plus"></i>
+                            Recent Registrations
+                        </h3>
+                        <a href="../admin/users/?sort=newest" class="btn btn-ghost btn-sm">View All</a>
+                    </div>
+                    <div class="users-list" id="recent-users-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </section>
+                
+                <!-- System Activity -->
+                <section class="section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            System Activity
+                        </h3>
+                        <a href="../admin/logs/" class="btn btn-ghost btn-sm">View Logs</a>
+                    </div>
+                    <div class="activity-log" id="system-activity-log">
+                        <!-- Populated by JS -->
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Platform Health -->
+            <section class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-heartbeat"></i>
+                        Platform Health
+                    </h3>
+                </div>
+                <div class="health-grid">
+                    <div class="health-card">
+                        <div class="health-status healthy" id="api-status">
+                            <i class="fa-solid fa-check-circle"></i>
+                        </div>
+                        <div class="health-info">
+                            <span class="health-name">API Server</span>
+                            <span class="health-detail" id="api-response">--ms</span>
+                        </div>
+                    </div>
+                    
+                    <div class="health-card">
+                        <div class="health-status healthy" id="db-status">
+                            <i class="fa-solid fa-check-circle"></i>
+                        </div>
+                        <div class="health-info">
+                            <span class="health-name">Database</span>
+                            <span class="health-detail" id="db-response">--ms</span>
+                        </div>
+                    </div>
+                    
+                    <div class="health-card">
+                        <div class="health-status healthy" id="realtime-status">
+                            <i class="fa-solid fa-check-circle"></i>
+                        </div>
+                        <div class="health-info">
+                            <span class="health-name">Realtime</span>
+                            <span class="health-detail" id="realtime-connections">0 connections</span>
+                        </div>
+                    </div>
+                    
+                    <div class="health-card">
+                        <div class="health-status healthy" id="storage-status">
+                            <i class="fa-solid fa-check-circle"></i>
+                        </div>
+                        <div class="health-info">
+                            <span class="health-name">Storage</span>
+                            <span class="health-detail" id="storage-used">--</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notification-panel">
+        <div class="notification-panel-header">
+            <h4>Notifications</h4>
+            <button class="btn btn-ghost btn-sm" id="mark-all-read">Mark all read</button>
+        </div>
+        <div class="notification-list" id="notification-list">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/api-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/realtime.js"></script>
+    <script src="../js/charts.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./dashboard.js"></script>
+    
+    <script>
+        // Initialize admin dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoDashboard.init('admin');
+        });
+    </script>
+</body>
+</html>

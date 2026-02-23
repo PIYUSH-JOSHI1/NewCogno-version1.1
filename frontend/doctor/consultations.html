@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Consultations - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f5f7fa; 
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        .topbar {
+            background: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .topbar-left a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .topbar h1 {
+            font-size: 1.25rem;
+            color: #1f2937;
+        }
+        
+        .content {
+            padding: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quick-action-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-action-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        
+        .quick-action-card.primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+        }
+        
+        .quick-action-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: #3b82f6;
+        }
+        
+        .quick-action-card.primary .icon {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .quick-action-card h3 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .quick-action-card p {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            cursor: pointer;
+            color: #6b7280;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            background: #f3f4f6;
+        }
+        
+        .tab.active {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .tab .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background: #ef4444;
+            color: white;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        .tab.active .badge {
+            background: white;
+            color: #3b82f6;
+        }
+        
+        /* Consultation Cards */
+        .consultation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .consultation-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .consultation-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .consultation-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .consultation-info {
+            flex: 1;
+        }
+        
+        .consultation-info h3 {
+            font-size: 1rem;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+        
+        .consultation-info p {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        
+        .consultation-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+        
+        .consultation-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .consultation-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .consultation-status.pending { background: #fef3c7; color: #d97706; }
+        .consultation-status.confirmed { background: #dbeafe; color: #2563eb; }
+        .consultation-status.in_progress { background: #dcfce7; color: #16a34a; }
+        .consultation-status.completed { background: #f3f4f6; color: #6b7280; }
+        .consultation-status.cancelled { background: #fee2e2; color: #dc2626; }
+        
+        .consultation-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+        
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-outline { background: white; border: 1px solid #e5e7eb; color: #374151; }
+        .btn-danger { background: #fee2e2; color: #dc2626; border: none; }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #9ca3af;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Profile Dropdown */
+        .profile-dropdown { position: relative; }
+        .profile-btn { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.6rem; border-radius: 10px; border: none; background: transparent; cursor: pointer; transition: all 0.2s; }
+        .profile-btn:hover { background: #e5e7eb; }
+        .profile-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.85rem; }
+        .profile-info { text-align: left; }
+        .profile-info .name { font-size: 0.85rem; font-weight: 600; color: #1f2937; }
+        .profile-info .role { font-size: 0.7rem; color: #6b7280; }
+        .profile-chevron { color: #6b7280; font-size: 0.75rem; transition: transform 0.2s; }
+        .profile-dropdown.open .profile-chevron { transform: rotate(180deg); }
+        .profile-menu { position: absolute; top: calc(100% + 8px); right: 0; background: white; border-radius: 12px; border: 1px solid #e5e7eb; box-shadow: 0 10px 40px rgba(0,0,0,0.15); min-width: 240px; padding: 0.5rem; display: none; z-index: 1000; }
+        .profile-menu.show { display: block; animation: slideDown 0.2s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .profile-menu-header { padding: 0.75rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 0.5rem; }
+        .profile-menu-header .name { font-weight: 600; color: #1f2937; font-size: 0.95rem; }
+        .profile-menu-header .email { font-size: 0.75rem; color: #3b82f6; }
+        .profile-menu-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0.75rem; border-radius: 8px; cursor: pointer; color: #1f2937; text-decoration: none; font-size: 0.85rem; transition: background 0.2s; border: none; background: none; width: 100%; }
+        .profile-menu-item:hover { background: #f3f4f6; }
+        .profile-menu-item i { width: 20px; color: #6b7280; }
+        .profile-menu-item.danger { color: #ef4444; }
+        .profile-menu-item.danger i { color: #ef4444; }
+        .theme-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 0.75rem; border-radius: 8px; }
+        .theme-toggle-row:hover { background: #f3f4f6; }
+        .theme-toggle-left { display: flex; align-items: center; gap: 0.75rem; color: #1f2937; font-size: 0.85rem; }
+        .theme-toggle-left i { width: 20px; color: #6b7280; }
+        .theme-switch { position: relative; width: 44px; height: 24px; }
+        .theme-switch input { opacity: 0; width: 0; height: 0; }
+        .theme-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #e5e7eb; transition: 0.3s; border-radius: 24px; }
+        .theme-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: 0.3s; border-radius: 50%; }
+        input:checked + .theme-slider { background: #3b82f6; }
+        input:checked + .theme-slider:before { transform: translateX(20px); }
+        .menu-divider { height: 1px; background: #e5e7eb; margin: 0.5rem 0; }
+        .dropdown-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 999; display: none; }
+        .dropdown-overlay.show { display: block; }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .bottom-nav .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.4rem 0.75rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 0.65rem;
+            border-radius: 8px;
+            text-decoration: none;
+            min-width: 48px;
+        }
+        
+        .bottom-nav .nav-btn i {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .bottom-nav .nav-btn:hover {
+            background: #f3f4f6;
+        }
+        
+        .bottom-nav .nav-btn.active {
+            color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .bottom-nav .nav-btn.primary {
+            background: #3b82f6;
+            color: white;
+            padding: 0.75rem 2rem;
+        }
+
+        @media (max-width: 600px) {
+            .consultation-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .consultation-actions {
+                flex-direction: row;
+                width: 100%;
+            }
+            .consultation-actions .btn {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dropdown Overlay -->
+    <div class="dropdown-overlay" id="dropdown-overlay" onclick="closeAllDropdowns()"></div>
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo" style="width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.9rem;">C</div>
+            <h1>Video Consultations</h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button class="topbar-btn" onclick="window.location.href='messages.html'" style="position: relative; width: 40px; height: 40px; border-radius: 10px; border: none; background: transparent; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                <i class="fa-solid fa-bell"></i>
+            </button>
+            <!-- Profile Dropdown -->
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <div class="profile-avatar" id="profile-avatar">D</div>
+                    <div class="profile-info">
+                        <div class="name" id="profile-name">Doctor</div>
+                        <div class="role">Specialist</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down profile-chevron"></i>
+                </button>
+                
+                <div class="profile-menu" id="profile-menu">
+                    <div class="profile-menu-header">
+                        <div class="name" id="menu-name">Doctor</div>
+                        <div class="email" id="menu-email">doctor@example.com</div>
+                    </div>
+                    
+                    <a href="profile.html" class="profile-menu-item">
+                        <i class="fa-solid fa-user"></i>
+                        <span>View Profile</span>
+                    </a>
+                    <a href="profile.html?edit=true" class="profile-menu-item">
+                        <i class="fa-solid fa-pen"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                    <a href="settings.html" class="profile-menu-item">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                    
+                    <div class="theme-toggle-row">
+                        <div class="theme-toggle-left">
+                            <i class="fa-solid fa-moon"></i>
+                            <span>Dark Mode</span>
+                        </div>
+                        <label class="theme-switch">
+                            <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+                            <span class="theme-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="menu-divider"></div>
+                    
+                    <button class="profile-menu-item danger" onclick="logout()">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="quick-action-card primary" onclick="startInstantCall()">
+                <div class="icon"><i class="fa-solid fa-video"></i></div>
+                <div>
+                    <h3>Start Instant Call</h3>
+                    <p>Quick call with a patient</p>
+                </div>
+            </div>
+            <div class="quick-action-card" onclick="window.location.href='schedule.html'">
+                <div class="icon"><i class="fa-solid fa-calendar-plus"></i></div>
+                <div>
+                    <h3>Schedule Meeting</h3>
+                    <p>Book a future consultation</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" data-tab="upcoming">
+                Upcoming
+                <span class="badge" id="upcoming-count">0</span>
+            </div>
+            <div class="tab" data-tab="today">Today</div>
+            <div class="tab" data-tab="past">Past</div>
+            <div class="tab" data-tab="cancelled">Cancelled</div>
+        </div>
+
+        <!-- Consultation List -->
+        <div class="consultation-list" id="consultation-list">
+            <div class="empty-state">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Loading consultations...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a href="patients.html" class="nav-btn">
+            <i class="fa-solid fa-user-group"></i>
+            Patients
+        </a>
+        <a href="schedule.html" class="nav-btn">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="consultations.html" class="nav-btn active">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="reports.html" class="nav-btn">
+            <i class="fa-solid fa-chart-bar"></i>
+            Reports
+        </a>
+        <a href="profile.html" class="nav-btn">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    
+    <script>
+        // Theme initialization
+        (function() {
+            const savedTheme = localStorage.getItem('cogno_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const toggle = document.getElementById('theme-toggle');
+            if (toggle) toggle.checked = savedTheme === 'dark';
+        })();
+        
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('cogno_theme', newTheme);
+        }
+        
+        // Profile Dropdown functions
+        function closeAllDropdowns() {
+            document.getElementById('profile-menu')?.classList.remove('show');
+            document.getElementById('profile-dropdown')?.classList.remove('open');
+            document.getElementById('dropdown-overlay')?.classList.remove('show');
+        }
+        
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profile-menu');
+            const dropdown = document.getElementById('profile-dropdown');
+            const overlay = document.getElementById('dropdown-overlay');
+            
+            if (menu.classList.contains('show')) {
+                closeAllDropdowns();
+            } else {
+                menu.classList.add('show');
+                dropdown.classList.add('open');
+                overlay.classList.add('show');
+            }
+        }
+        
+        async function logout() {
+            try {
+                await CognoSupabase.signOut();
+                window.location.href = '../auth/login.html';
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = '../auth/login.html';
+            }
+        }
+        
+        function updateProfileDropdown(profile) {
+            if (!profile) return;
+            const name = profile.full_name || 'Doctor';
+            const initial = name.charAt(0).toUpperCase();
+            
+            document.getElementById('profile-avatar').textContent = initial;
+            document.getElementById('profile-name').textContent = name;
+            document.getElementById('menu-name').textContent = name;
+            document.getElementById('menu-email').textContent = profile.email || '';
+        }
+
+        let doctorId = null;
+        let allConsultations = [];
+        let currentTab = 'upcoming';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await waitForSupabase();
+            await loadDoctorInfo();
+            await loadConsultations();
+            setupTabs();
+        });
+
+        async function waitForSupabase() {
+            return new Promise((resolve) => {
+                const check = () => {
+                    if (window.CognoSupabase?.client) resolve();
+                    else setTimeout(check, 100);
+                };
+                check();
+            });
+        }
+
+        async function loadDoctorInfo() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+                
+                doctorId = user.id;
+                
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('full_name, display_name')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile) {
+                    const name = profile.display_name || profile.full_name || 'Doctor';
+                    const displayName = name.startsWith('Dr.') ? name : 'Dr. ' + name;
+                    
+                    const initials = name.replace('Dr. ', '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                    
+                    // Update profile dropdown
+                    updateProfileDropdown({
+                        full_name: displayName,
+                        email: user.email
+                    });
+                    document.getElementById('profile-avatar').textContent = initials;
+                }
+            } catch (err) {
+                console.error('Failed to load doctor info:', err);
+            }
+        }
+
+        async function loadConsultations() {
+            try {
+                const { data, error } = await CognoSupabase.client
+                    .from('consultations')
+                    .select(`
+                        id, scheduled_at, duration_minutes, meeting_url, notes, status, meeting_id,
+                        patient:patient_id (id, full_name, avatar_url)
+                    `)
+                    .eq('doctor_id', doctorId)
+                    .order('scheduled_at', { ascending: true });
+                
+                if (error) throw error;
+                
+                allConsultations = data || [];
+                renderConsultations();
+                
+            } catch (err) {
+                console.error('Failed to load consultations:', err);
+                document.getElementById('consultation-list').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-exclamation-triangle"></i>
+                        <p>Failed to load consultations</p>
+                    </div>
+                `;
+            }
+        }
+
+        function setupTabs() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentTab = tab.dataset.tab;
+                    renderConsultations();
+                });
+            });
+        }
+
+        function renderConsultations() {
+            const container = document.getElementById('consultation-list');
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            let filtered = [];
+            
+            switch (currentTab) {
+                case 'upcoming':
+                    filtered = allConsultations.filter(c => {
+                        const date = new Date(c.scheduled_at);
+                        return date >= now && !['cancelled', 'completed', 'no_show'].includes(c.status);
+                    });
+                    break;
+                case 'today':
+                    filtered = allConsultations.filter(c => {
+                        const date = new Date(c.scheduled_at);
+                        return date >= today && date < tomorrow && !['cancelled', 'no_show'].includes(c.status);
+                    });
+                    break;
+                case 'past':
+                    filtered = allConsultations.filter(c => {
+                        const date = new Date(c.scheduled_at);
+                        return date < now || c.status === 'completed';
+                    });
+                    break;
+                case 'cancelled':
+                    filtered = allConsultations.filter(c => 
+                        c.status === 'cancelled' || c.status === 'no_show'
+                    );
+                    break;
+            }
+            
+            // Update badge
+            const upcomingCount = allConsultations.filter(c => {
+                const date = new Date(c.scheduled_at);
+                return date >= now && !['cancelled', 'completed', 'no_show'].includes(c.status);
+            }).length;
+            document.getElementById('upcoming-count').textContent = upcomingCount;
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <p>No ${currentTab} consultations</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filtered.map(c => {
+                const patient = c.patient || {};
+                const initials = (patient.full_name || 'P').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+                const date = new Date(c.scheduled_at);
+                const isToday = date.toDateString() === now.toDateString();
+                const canJoin = ['pending', 'confirmed', 'in_progress'].includes(c.status) && 
+                    date <= new Date(Date.now() + 15 * 60000);
+                
+                return `
+                    <div class="consultation-card">
+                        <div class="consultation-avatar">${initials}</div>
+                        <div class="consultation-info">
+                            <h3>${patient.full_name || 'Patient'}</h3>
+                            <p>${c.notes || 'General Consultation'}</p>
+                            <div class="consultation-meta">
+                                <span><i class="fa-solid fa-calendar"></i> ${isToday ? 'Today' : formatDate(date)}</span>
+                                <span><i class="fa-solid fa-clock"></i> ${formatTime(date)}</span>
+                                <span><i class="fa-solid fa-hourglass-half"></i> ${c.duration_minutes || 30} min</span>
+                            </div>
+                        </div>
+                        <span class="consultation-status ${c.status}">${formatStatus(c.status)}</span>
+                        <div class="consultation-actions">
+                            ${canJoin ? `
+                                <button class="btn btn-success" onclick="joinCall('${c.id}', '${c.meeting_id || ''}')">
+                                    <i class="fa-solid fa-video"></i> Join
+                                </button>
+                            ` : ''}
+                            ${['pending', 'confirmed'].includes(c.status) ? `
+                                <button class="btn btn-outline" onclick="reschedule('${c.id}')">Reschedule</button>
+                                <button class="btn btn-danger" onclick="cancelCall('${c.id}')">Cancel</button>
+                            ` : ''}
+                            ${c.status === 'completed' ? `
+                                <button class="btn btn-outline" onclick="viewNotes('${c.id}')">
+                                    <i class="fa-solid fa-file-lines"></i> Notes
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+        }
+
+        function formatStatus(status) {
+            const map = {
+                'pending': 'Pending',
+                'confirmed': 'Confirmed',
+                'in_progress': 'In Progress',
+                'completed': 'Completed',
+                'cancelled': 'Cancelled',
+                'no_show': 'No Show'
+            };
+            return map[status] || status;
+        }
+
+        async function joinCall(consultationId, meetingId) {
+            const roomId = meetingId || `cogno-consult-${consultationId}`;
+            
+            try {
+                await CognoSupabase.client
+                    .from('consultations')
+                    .update({ 
+                        status: 'in_progress',
+                        meeting_id: roomId,
+                        meeting_url: `${window.location.origin}/frontend/consultations/video.html?room=${roomId}`
+                    })
+                    .eq('id', consultationId);
+            } catch (err) {
+                console.error('Failed to update consultation:', err);
+            }
+            
+            window.open(`../consultations/video.html?room=${roomId}&consultation=${consultationId}`, '_blank');
+        }
+
+        async function startInstantCall() {
+            window.location.href = 'patients.html';
+        }
+
+        async function cancelCall(consultationId) {
+            if (!confirm('Cancel this consultation?')) return;
+            
+            try {
+                await CognoSupabase.client
+                    .from('consultations')
+                    .update({ status: 'cancelled' })
+                    .eq('id', consultationId);
+                
+                await loadConsultations();
+            } catch (err) {
+                console.error('Failed to cancel:', err);
+            }
+        }
+
+        function reschedule(consultationId) {
+            window.location.href = `schedule.html?reschedule=${consultationId}`;
+        }
+
+        function viewNotes(consultationId) {
+            window.location.href = `patient-detail.html?consultation=${consultationId}`;
+        }
+    </script>
+</body>
+</html>

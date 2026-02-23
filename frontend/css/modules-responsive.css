@@ -1,0 +1,728 @@
+/* =====================================================
+   COGNO SOLUTION - Module Pages Responsive Styles
+   Fixes layout, text, and element overflow for all
+   learning module pages across all screen sizes.
+   ===================================================== */
+
+/* =====================================================
+   BASE: Ensure modules adapt to bottom nav
+   ===================================================== */
+body {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px);
+}
+
+/* =====================================================
+   ACTIVITY CONTAINER — Fix 100vh overflow
+   ===================================================== */
+.activity-container {
+    min-height: 100vh;
+    min-height: 100dvh;
+    /* modern viewport unit */
+    height: auto !important;
+    /* override height: 100vh */
+    padding-bottom: 80px;
+    /* space for bottom nav */
+    box-sizing: border-box;
+}
+
+/* =====================================================
+   ACTIVITY CONTENT — Proper centering for all screens
+   ===================================================== */
+.activity-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* =====================================================
+   MOBILE HEADER — Consistent display rules
+   ===================================================== */
+.mobile-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--color-surface, #fff);
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.mobile-header .back-btn {
+    background: var(--color-bg-secondary, #f3f4f6);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--color-text, #1e293b);
+    flex-shrink: 0;
+}
+
+.mobile-header .page-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* =====================================================
+   ACTIVITY NAVBAR — Consistent mobile header
+   ===================================================== */
+.activity-navbar {
+    display: none;
+    /* hidden on desktop by default */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-surface, #fff);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    justify-content: space-between;
+    align-items: center;
+}
+
+.activity-navbar .back-btn,
+.activity-navbar .action-btn {
+    background: var(--color-bg-secondary, #f3f4f6);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--color-text, #1e293b);
+}
+
+.activity-title-group {
+    text-align: center;
+}
+
+.activity-category {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+}
+
+.activity-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* =====================================================
+   CANVAS — Scale properly within containers
+   ===================================================== */
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+.canvas-wrapper {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.canvas-wrapper canvas {
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* =====================================================
+   ACTIVITY HEADER (Desktop) — Scale properly
+   ===================================================== */
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.activity-header h1 {
+    font-size: clamp(1.25rem, 3vw, 2.5rem);
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* =====================================================
+   MODULE INDEX PAGES — Cards grid responsive
+   ===================================================== */
+.activities-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+/* =====================================================
+   GAME CONTENT — Center properly, avoid overflow
+   ===================================================== */
+.game-content {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* =====================================================
+   MATH PROBLEMS — Scale for all screens
+   ===================================================== */
+.math-problem {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.equation {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    text-align: center;
+    justify-content: center;
+}
+
+.blocks-container {
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.blocks-row {
+    justify-content: center;
+}
+
+/* =====================================================
+   TRACING BOX — Scale for all screens
+   ===================================================== */
+.tracing-box {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* =====================================================
+   READING CARDS — Responsive widths
+   ===================================================== */
+.reading-card,
+.questions-card,
+.feedback-card,
+.settings-panel {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* =====================================================
+   BUTTON GROUPS — Don't break out of containers
+   ===================================================== */
+.button-group,
+.feedback-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+/* =====================================================
+   SMALL PHONES (max-width: 479px)
+   ===================================================== */
+@media screen and (max-width: 479px) {
+    .activity-container {
+        padding: 0 !important;
+    }
+
+    .activity-content {
+        padding: 1rem !important;
+    }
+
+    .activity-header {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+    }
+
+    .activity-header h1 {
+        font-size: 1.25rem;
+    }
+
+    .mobile-header {
+        display: flex;
+    }
+
+    .activity-navbar {
+        display: flex !important;
+    }
+
+    .topbar,
+    .sidebar,
+    .hide-xs {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .content-area {
+        padding: 1rem !important;
+    }
+
+    /* Math/game elements */
+    .math-problem {
+        padding: 1.25rem !important;
+    }
+
+    .equation {
+        font-size: 1.5rem !important;
+        gap: 10px !important;
+        margin-bottom: 1.25rem !important;
+    }
+
+    .blocks-container {
+        gap: 0.75rem !important;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .block {
+        width: 28px !important;
+        height: 28px !important;
+    }
+
+    .answer-btn {
+        padding: 10px 16px;
+        font-size: 0.95rem;
+    }
+
+    .answer-options {
+        gap: 10px;
+    }
+
+    /* Tracing */
+    .tracing-box {
+        padding: 1.25rem !important;
+    }
+
+    .letter-display {
+        font-size: 3rem !important;
+    }
+
+    .faded-letter {
+        font-size: 2.5rem !important;
+    }
+
+    /* Reading */
+    .reading-text {
+        font-size: 16px !important;
+        line-height: 1.8 !important;
+    }
+
+    .story-info {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .card-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    /* Module index cards */
+    .activities-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .module-header {
+        padding: 1.25rem 1rem !important;
+        border-radius: 1rem !important;
+        text-align: center;
+    }
+
+    .module-header-content {
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+
+    .module-icon-large {
+        width: 56px !important;
+        height: 56px !important;
+        font-size: 1.5rem !important;
+        margin: 0 auto;
+    }
+
+    .module-header h1 {
+        font-size: 1.35rem !important;
+    }
+
+    .module-stats {
+        flex-wrap: wrap;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+    }
+
+    /* Video/webcam */
+    video,
+    #gameCanvas {
+        height: 200px !important;
+    }
+
+    /* Instructions */
+    .instruction {
+        font-size: 0.8rem;
+        padding: 1rem;
+    }
+}
+
+/* =====================================================
+   PHONES / TABLETS PORTRAIT (480px – 767px)
+   ===================================================== */
+@media screen and (min-width: 480px) and (max-width: 767px) {
+    .activity-container {
+        padding: 0;
+    }
+
+    .activity-content {
+        padding: 1.25rem;
+    }
+
+    .activity-navbar {
+        display: flex !important;
+    }
+
+    .topbar,
+    .sidebar,
+    .hide-xs {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    .content-area {
+        padding: 1.25rem;
+    }
+
+    .activity-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .math-problem {
+        padding: 1.5rem;
+    }
+
+    .equation {
+        font-size: 1.75rem;
+    }
+
+    .blocks-container {
+        gap: 1.5rem;
+    }
+
+    .block {
+        width: 30px;
+        height: 30px;
+    }
+
+    .activities-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .module-header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .module-icon-large {
+        margin: 0 auto;
+    }
+
+    .module-stats {
+        justify-content: center;
+    }
+
+    video,
+    #gameCanvas {
+        height: 280px !important;
+    }
+}
+
+/* =====================================================
+   TABLETS LANDSCAPE (768px – 1023px)
+   ===================================================== */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    .activity-container {
+        padding: 0;
+    }
+
+    .activity-content {
+        padding: 1.5rem;
+    }
+
+    /* Show activity navbar on tablets */
+    .activity-navbar {
+        display: flex !important;
+    }
+
+    .mobile-header {
+        display: flex;
+    }
+
+    .topbar,
+    .sidebar {
+        display: none !important;
+    }
+
+    .hide-xs {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 1.5rem;
+    }
+
+    .content-area {
+        padding: 1.5rem;
+    }
+
+    .activity-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .math-problem {
+        padding: 2rem;
+    }
+
+    .equation {
+        font-size: 2rem;
+    }
+
+    .activities-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .module-header h1 {
+        font-size: 1.75rem;
+    }
+
+    video,
+    #gameCanvas {
+        height: 350px !important;
+    }
+}
+
+/* =====================================================
+   LAPTOPS (1024px – 1279px) — KEY FIX AREA
+   ===================================================== */
+@media screen and (min-width: 1024px) and (max-width: 1279px) {
+    .activity-container {
+        padding: 0;
+    }
+
+    .activity-content {
+        padding: 2rem 1.5rem;
+    }
+
+    /* Show desktop header, hide mobile */
+    .mobile-header {
+        display: none !important;
+    }
+
+    .activity-navbar {
+        display: none !important;
+    }
+
+    .topbar,
+    .activity-header.hide-xs {
+        display: flex !important;
+    }
+
+    /* Sidebar still hidden — using bottom nav */
+    .sidebar {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 1.5rem;
+    }
+
+    .content-area {
+        padding: 1.5rem;
+        max-width: 960px;
+        margin: 0 auto;
+    }
+
+    .activity-header {
+        margin-bottom: 2rem;
+    }
+
+    .activity-header h1 {
+        font-size: 2rem;
+    }
+
+    /* Math elements scale for laptop */
+    .math-problem {
+        padding: 2.5rem;
+        max-width: 700px;
+    }
+
+    .equation {
+        font-size: 2.25rem;
+    }
+
+    .block {
+        width: 35px;
+        height: 35px;
+    }
+
+    /* Module index — 2-column grid on laptop */
+    .activities-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+
+    .module-header {
+        padding: 2rem 1.5rem;
+    }
+
+    .module-header h1 {
+        font-size: 1.75rem;
+    }
+
+    /* Canvas/game */
+    #gameCanvas {
+        height: 400px;
+    }
+
+    video {
+        height: 350px;
+    }
+
+    /* Tracing */
+    .tracing-box {
+        padding: 2.5rem;
+    }
+}
+
+/* =====================================================
+   DESKTOPS (1280px+) 
+   ===================================================== */
+@media screen and (min-width: 1280px) {
+    .activity-container {
+        padding: 0;
+    }
+
+    .activity-content {
+        padding: 2rem;
+        max-width: 1000px;
+    }
+
+    /* Desktop header shown */
+    .mobile-header {
+        display: none !important;
+    }
+
+    .activity-navbar {
+        display: none !important;
+    }
+
+    .sidebar {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 2rem;
+    }
+
+    .content-area {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .activity-header h1 {
+        font-size: 2.5rem;
+    }
+
+    .math-problem {
+        padding: 3rem;
+        max-width: 700px;
+    }
+
+    .equation {
+        font-size: 2.5rem;
+    }
+
+    .activities-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .module-header {
+        padding: 2.5rem 2rem;
+    }
+
+    .module-header h1 {
+        font-size: 2rem;
+    }
+
+    video {
+        height: 400px;
+    }
+
+    #gameCanvas {
+        height: 500px;
+    }
+
+    .tracing-box {
+        padding: 3rem;
+        max-width: 650px;
+    }
+}
+
+/* =====================================================
+   KEYBOARD & FOCUS — Accessibility for all sizes
+   ===================================================== */
+.answer-btn:focus,
+.submit-btn:focus,
+.clear-btn:focus,
+.button-control:focus {
+    outline: 3px solid var(--color-primary, #4f46e5);
+    outline-offset: 2px;
+}
+
+/* =====================================================
+   PRINT — Clean layout for printing
+   ===================================================== */
+@media print {
+
+    .bottom-nav,
+    .mobile-header,
+    .activity-navbar,
+    .topbar,
+    .sidebar {
+        display: none !important;
+    }
+
+    body {
+        padding-bottom: 0 !important;
+    }
+}

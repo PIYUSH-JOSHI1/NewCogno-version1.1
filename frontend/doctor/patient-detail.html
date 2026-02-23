@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Patient Details - Cogno Solution Doctor Portal">
+    <title>Patient Details - Cogno Solution</title>
+    
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+</head>
+<body class="has-sidebar">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+                <span class="sidebar-brand">Cogno Solution</span>
+                <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <a href="../dashboard/doctor-dashboard.html" class="sidebar-link">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Patients</li>
+                    
+                    <li class="sidebar-item active">
+                        <a href="./patients.html" class="sidebar-link">
+                            <i class="fa-solid fa-users"></i>
+                            <span>My Patients</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./live-monitoring.html" class="sidebar-link">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>Live Monitoring</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./assessments.html" class="sidebar-link">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                            <span>Assessments</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Consultations</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./consultations.html" class="sidebar-link">
+                            <i class="fa-solid fa-video"></i>
+                            <span>Video Consultations</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./schedule.html" class="sidebar-link">
+                            <i class="fa-solid fa-calendar"></i>
+                            <span>My Schedule</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./messages.html" class="sidebar-link">
+                            <i class="fa-solid fa-message"></i>
+                            <span>Messages</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Reports</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./reports.html" class="sidebar-link">
+                            <i class="fa-solid fa-chart-bar"></i>
+                            <span>Patient Reports</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="./recommendations.html" class="sidebar-link">
+                            <i class="fa-solid fa-lightbulb"></i>
+                            <span>Recommendations</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Account</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="./profile.html" class="sidebar-link">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../settings/index.html" class="sidebar-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="sidebar-link" id="logout-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                
+                <nav class="breadcrumb">
+                    <a href="./">Dashboard</a>
+                    <span>/</span>
+                    <a href="./patients.html">Patients</a>
+                    <span>/</span>
+                    <span id="patient-name-breadcrumb">Patient Details</span>
+                </nav>
+                
+                <div class="topbar-actions">
+                    <button class="btn btn-primary btn-sm" onclick="startConsultation()">
+                        <i class="fa-solid fa-video"></i> Start Call
+                    </button>
+                </div>
+            </header>
+            
+            <div class="content-area">
+                <!-- Patient Header -->
+                <div class="patient-header card">
+                    <div class="patient-header-main">
+                        <div class="patient-avatar-large" id="patient-avatar">
+                            <span id="patient-initials">--</span>
+                        </div>
+                        <div class="patient-header-info">
+                            <h1 id="patient-name">Loading...</h1>
+                            <div class="patient-meta">
+                                <span><i class="fa-solid fa-birthday-cake"></i> Age: <span id="patient-age">--</span> years</span>
+                                <span><i class="fa-solid fa-user-friends"></i> Parent: <span id="parent-name">--</span></span>
+                                <span><i class="fa-solid fa-calendar"></i> Joined: <span id="join-date">--</span></span>
+                            </div>
+                            <div class="patient-conditions-large" id="patient-conditions">
+                                <span class="condition-tag">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="patient-header-stats">
+                        <div class="stat-box">
+                            <div class="stat-value" id="overall-progress">--%</div>
+                            <div class="stat-label">Overall Progress</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="current-streak"><i class="fa-solid fa-fire" style="color: var(--color-danger);"></i> -</div>
+                            <div class="stat-label">Day Streak</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="total-sessions">-</div>
+                            <div class="stat-label">Sessions</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="avg-score">--%</div>
+                            <div class="stat-label">Avg Score</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabs Navigation -->
+                <div class="tabs-nav">
+                    <button class="tab-btn active" data-tab="overview">Overview</button>
+                    <button class="tab-btn" data-tab="progress">Progress</button>
+                    <button class="tab-btn" data-tab="activities">Activities</button>
+                    <button class="tab-btn" data-tab="notes">Notes</button>
+                    <button class="tab-btn" data-tab="reports">Reports</button>
+                </div>
+                
+                <!-- Tab Content -->
+                <div class="tab-content active" id="tab-overview">
+                    <div class="overview-grid">
+                        <!-- Progress Chart -->
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h2>Weekly Progress</h2>
+                                <select id="progress-period">
+                                    <option value="7">Last 7 days</option>
+                                    <option value="30">Last 30 days</option>
+                                    <option value="90">Last 3 months</option>
+                                </select>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="progress-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Module Breakdown -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Module Progress</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="module-progress-list" id="module-progress">
+                                    <!-- Dynamic content rendered by renderModuleProgress() -->
+                                    <div style="text-align: center; padding: 1rem; color: var(--text-secondary);">
+                                        <i class="fa-solid fa-spinner fa-spin"></i>
+                                        <p style="margin-top: 0.5rem;">Loading module progress...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Recent Activity -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Recent Activity</h2>
+                                <a href="#" class="btn btn-ghost btn-sm" onclick="switchTab('activities'); return false;">View All</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="activity-timeline" id="recent-activities">
+                                    <!-- Rendered dynamically after loading activities -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Strengths & Challenges -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Analysis</h2>
+                            </div>
+                            <div class="card-body" id="analysis-content">
+                                <div style="text-align: center; padding: 1rem; color: var(--text-secondary);">
+                                    <i class="fa-solid fa-spinner fa-spin"></i>
+                                    <p>Analyzing patient data...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="tab-progress">
+                    <!-- Dynamic content rendered by renderProgressTab() -->
+                    <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                        <p style="margin-top: 1rem;">Loading progress data...</p>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="tab-activities">
+                    <!-- Dynamic content rendered by renderActivitiesTab() -->
+                    <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                        <p style="margin-top: 1rem;">Loading activities...</p>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="tab-notes">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-notes-medical"></i> Clinical Notes</h2>
+                            <button class="btn btn-primary btn-sm" onclick="addNote()">
+                                <i class="fa-solid fa-plus"></i> Add Note
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="notes-list" id="notes-list">
+                                <!-- Dynamic content rendered by renderNotesTab() -->
+                                <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                    <i class="fa-solid fa-spinner fa-spin"></i>
+                                    <p style="margin-top: 0.5rem;">Loading notes...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="tab-reports">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-file-medical"></i> Generated Reports</h2>
+                            <button class="btn btn-primary btn-sm" onclick="generateReport()">
+                                <i class="fa-solid fa-file-export"></i> Generate Report
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="reports-list" id="reports-list">
+                                <!-- Dynamic content rendered by renderReportsTab() -->
+                                <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                    <i class="fa-solid fa-spinner fa-spin"></i>
+                                    <p style="margin-top: 0.5rem;">Loading reports...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/charts.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./doctor.js"></script>
+    
+    <style>
+        .patient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-6);
+            gap: var(--space-8);
+            flex-wrap: wrap;
+        }
+        
+        .patient-header-main {
+            display: flex;
+            align-items: center;
+            gap: var(--space-6);
+        }
+        
+        .patient-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--color-dyslexia);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .patient-header-info h1 {
+            font-size: 1.5rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .patient-meta {
+            display: flex;
+            gap: var(--space-6);
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: var(--space-3);
+        }
+        
+        .patient-meta i {
+            margin-right: var(--space-2);
+        }
+        
+        .patient-conditions-large {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .patient-header-stats {
+            display: flex;
+            gap: var(--space-6);
+        }
+        
+        .stat-box {
+            text-align: center;
+            padding: var(--space-4) var(--space-6);
+            background: var(--color-background);
+            border-radius: var(--radius-lg);
+        }
+        
+        .stat-box .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        
+        .stat-box .stat-label {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .tabs-nav {
+            display: flex;
+            gap: var(--space-2);
+            margin: var(--space-6) 0;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: var(--space-2);
+        }
+        
+        .tab-btn {
+            padding: var(--space-3) var(--space-6);
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            transition: all 0.2s;
+        }
+        
+        .tab-btn:hover {
+            color: var(--color-primary);
+            background: var(--color-primary-100);
+        }
+        
+        .tab-btn.active {
+            color: var(--color-primary);
+            background: var(--color-primary-100);
+            border-bottom: 2px solid var(--color-primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-6);
+        }
+        
+        .chart-card {
+            grid-column: span 2;
+        }
+        
+        .module-progress-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4) 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .module-progress-item:last-child {
+            border-bottom: none;
+        }
+        
+        .module-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .module-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .module-info h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .module-info p {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .module-progress-bar {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            width: 200px;
+        }
+        
+        .progress-track {
+            flex: 1;
+            height: 8px;
+            background: var(--color-background);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .activity-timeline {
+            position: relative;
+        }
+        
+        .timeline-item {
+            display: flex;
+            gap: var(--space-4);
+            padding: var(--space-4) 0;
+            position: relative;
+        }
+        
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-top: 4px;
+        }
+        
+        .timeline-content h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: var(--space-1);
+        }
+        
+        .timeline-content p {
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .timeline-time {
+            font-size: 0.7rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .analysis-section {
+            margin-bottom: var(--space-6);
+        }
+        
+        .analysis-section h4 {
+            font-size: 0.875rem;
+            margin-bottom: var(--space-3);
+        }
+        
+        .analysis-list {
+            list-style: none;
+            padding-left: var(--space-6);
+        }
+        
+        .analysis-list li {
+            position: relative;
+            padding: var(--space-2) 0;
+            font-size: 0.875rem;
+        }
+        
+        .analysis-list li::before {
+            content: '•';
+            position: absolute;
+            left: calc(-1 * var(--space-4));
+            color: var(--color-text-secondary);
+        }
+        
+        .note-item {
+            padding: var(--space-4);
+            background: var(--color-background);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-4);
+        }
+        
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-2);
+            font-size: 0.75rem;
+        }
+        
+        .note-date {
+            color: var(--color-text-secondary);
+        }
+        
+        .note-type {
+            background: var(--color-primary-100);
+            color: var(--color-primary);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+        }
+        
+        .note-item p {
+            font-size: 0.875rem;
+        }
+        
+        .report-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            background: var(--color-background);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-4);
+        }
+        
+        .report-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--color-danger-100);
+            color: var(--color-danger);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .report-info {
+            flex: 1;
+        }
+        
+        .report-info h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .report-info p {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+        
+        @media (max-width: 1024px) {
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-card {
+                grid-column: span 1;
+            }
+            
+            .patient-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .patient-header-main {
+                flex-direction: column;
+            }
+            
+            .patient-meta {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+    
+    <script>
+        let patientId = null;
+        let patientData = null;
+        let patientActivities = [];
+        let patientNotes = [];
+        let progressChart = null;
+        
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                switchTab(tab);
+            });
+        });
+        
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        }
+        
+        // Load patient data from URL and Supabase
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            patientId = urlParams.get('id');
+            
+            if (!patientId) {
+                alert('No patient ID provided');
+                window.location.href = './patients.html';
+                return;
+            }
+            
+            await loadPatientData();
+            await loadPatientActivities();
+            await loadPatientNotes();
+            renderProgressTab();
+            renderActivitiesTab();
+            renderNotesTab();
+            renderReportsTab();
+            initProgressChart();
+        });
+        
+        async function loadPatientData() {
+            try {
+                // Get patient profile
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', patientId)
+                    .single();
+                
+                if (profile) {
+                    patientData = profile;
+                    
+                    // Update UI with patient info
+                    document.getElementById('patient-name-breadcrumb').textContent = profile.full_name || 'Patient';
+                    document.title = `${profile.full_name || 'Patient'} - Cogno Solution`;
+                    
+                    // Update header elements
+                    const nameEl = document.getElementById('patient-name');
+                    if (nameEl) nameEl.textContent = profile.full_name || 'Patient';
+                    
+                    // Update initials
+                    const initialsEl = document.getElementById('patient-initials');
+                    if (initialsEl) {
+                        const initials = (profile.full_name || 'P').split(' ').map(n => n[0]).join('').toUpperCase();
+                        initialsEl.textContent = initials;
+                    }
+                    
+                    // Update avatar
+                    const avatarContainer = document.getElementById('patient-avatar');
+                    if (avatarContainer && profile.avatar_url) {
+                        avatarContainer.innerHTML = `<img src="${profile.avatar_url}" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                    }
+                    
+                    // Update age
+                    if (profile.date_of_birth) {
+                        const age = Math.floor((new Date() - new Date(profile.date_of_birth)) / 31557600000);
+                        document.getElementById('patient-age').textContent = age;
+                    }
+                    
+                    // Update join date
+                    if (profile.created_at) {
+                        document.getElementById('join-date').textContent = new Date(profile.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                    }
+                    
+                    // Load patient conditions
+                    await loadPatientConditions();
+                }
+            } catch (error) {
+                console.error('Error loading patient data:', error);
+            }
+        }
+        
+        async function loadPatientConditions() {
+            try {
+                const { data: conditions } = await CognoSupabase.client
+                    .from('student_conditions')
+                    .select('*')
+                    .eq('student_id', patientId);
+                
+                if (conditions && conditions.length > 0) {
+                    const conditionsEl = document.getElementById('patient-conditions');
+                    conditionsEl.innerHTML = conditions.map(c => 
+                        `<span class="condition-tag ${c.condition}">${c.condition}</span>`
+                    ).join('');
+                } else {
+                    document.getElementById('patient-conditions').innerHTML = '<span class="condition-tag">No conditions specified</span>';
+                }
+            } catch (error) {
+                console.error('Error loading conditions:', error);
+            }
+        }
+        
+        async function loadPatientActivities() {
+            try {
+                // Get all activities from student_progress table (correct table name)
+                const { data: activities, error } = await CognoSupabase.client
+                    .from('student_progress')
+                    .select('*')
+                    .eq('student_id', patientId)
+                    .order('updated_at', { ascending: false });
+                
+                if (error) {
+                    console.error('Error loading activities:', error);
+                    return;
+                }
+                
+                patientActivities = activities || [];
+                console.log('Loaded activities:', patientActivities.length, patientActivities);
+                
+                // Update header stats
+                updateHeaderStats();
+                
+            } catch (error) {
+                console.error('Error loading patient activities:', error);
+            }
+        }
+        
+        function updateHeaderStats() {
+            const totalActivities = patientActivities.length;
+            const completedActivities = patientActivities.filter(a => a.completed).length;
+            // Calculate percentage from score/max_score
+            const avgScore = patientActivities.length > 0 
+                ? Math.round(patientActivities.reduce((sum, a) => {
+                    const pct = a.max_score ? Math.round((a.score / a.max_score) * 100) : a.score;
+                    return sum + pct;
+                }, 0) / patientActivities.length)
+                : 0;
+            const totalTime = patientActivities.reduce((sum, a) => sum + (a.time_spent_seconds || 0), 0);
+            
+            // Calculate streak (consecutive days with activity)
+            const streak = calculateStreak();
+            
+            const statsEl = document.querySelector('.patient-header-stats');
+            if (statsEl) {
+                statsEl.innerHTML = `
+                    <div class="stat-box">
+                        <div class="stat-value">${totalActivities}</div>
+                        <div class="stat-label">Activities</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">${avgScore}%</div>
+                        <div class="stat-label">Avg Score</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value">${Math.round(totalTime / 60)}m</div>
+                        <div class="stat-label">Total Time</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value"><i class="fa-solid fa-fire" style="color: var(--color-danger);"></i> ${streak}</div>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                `;
+            }
+            
+            // Render recent activities on overview tab
+            renderRecentActivities();
+            
+            // Render module progress on overview tab
+            renderModuleProgress();
+            
+            // Render dynamic analysis
+            renderAnalysis();
+        }
+        
+        function renderRecentActivities() {
+            const container = document.getElementById('recent-activities');
+            if (!container) return;
+            
+            if (patientActivities.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 1rem; color: var(--text-secondary);">
+                        <i class="fa-solid fa-clock-rotate-left" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                        <p>No recent activity</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const recentActivities = patientActivities.slice(0, 5);
+            
+            container.innerHTML = recentActivities.map(a => {
+                const scorePct = a.max_score ? Math.round((a.score / a.max_score) * 100) : a.score;
+                const scoreColor = scorePct >= 80 ? 'var(--color-success)' 
+                    : scorePct >= 50 ? 'var(--color-warning)' 
+                    : 'var(--color-danger)';
+                const timeAgo = getTimeAgo(new Date(a.updated_at));
+                
+                return `
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="background: ${scoreColor};"></div>
+                        <div class="timeline-content">
+                            <h4>${a.activity_type || a.activity_id}</h4>
+                            <p>Score: ${scorePct}% ${a.module_type ? `• ${a.module_type}` : ''}</p>
+                            <span class="timeline-time">${timeAgo}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function renderModuleProgress() {
+            const container = document.getElementById('module-progress');
+            if (!container) return;
+            
+            if (patientActivities.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 1rem; color: var(--text-secondary);">
+                        <p>No module progress data yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group by module
+            const moduleStats = {};
+            patientActivities.forEach(a => {
+                const module = a.module_type || 'general';
+                if (!moduleStats[module]) {
+                    moduleStats[module] = {
+                        total: 0, completed: 0, score: 0, maxScore: 0, time: 0
+                    };
+                }
+                moduleStats[module].total++;
+                if (a.completed) moduleStats[module].completed++;
+                moduleStats[module].score += a.score || 0;
+                moduleStats[module].maxScore += a.max_score || 100;
+                moduleStats[module].time += a.time_spent_seconds || 0;
+            });
+            
+            const moduleColors = {
+                dyslexia: { color: '#3b82f6', icon: 'book-open' },
+                dyscalculia: { color: '#10b981', icon: 'calculator' },
+                dysgraphia: { color: '#f59e0b', icon: 'pen' },
+                dyspraxia: { color: '#8b5cf6', icon: 'person-walking' },
+                general: { color: '#6b7280', icon: 'graduation-cap' }
+            };
+            
+            container.innerHTML = Object.entries(moduleStats).map(([module, stats]) => {
+
+                const avgScore = stats.maxScore > 0 ? Math.round((stats.score / stats.maxScore) * 100) : 0;
+                const m = moduleColors[module] || moduleColors.general;
+                
+                return `
+                    <div class="module-progress-item">
+                        <div class="module-info">
+                            <div class="module-icon" style="background: ${m.color}20; color: ${m.color};">
+                                <i class="fa-solid fa-${m.icon}"></i>
+                            </div>
+                            <div>
+                                <h4 style="text-transform: capitalize;">${module}</h4>
+                                <p>${stats.completed}/${stats.total} activities completed</p>
+                            </div>
+                        </div>
+                        <div class="module-progress-bar">
+                            <div class="progress-track">
+                                <div class="progress-fill" style="width: ${avgScore}%; background: ${m.color};"></div>
+                            </div>
+                            <span>${avgScore}%</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function calculateStreak() {
+            if (patientActivities.length === 0) return 0;
+            
+            const activityDates = [...new Set(patientActivities.map(a => 
+                new Date(a.updated_at).toDateString()
+            ))].sort((a, b) => new Date(b) - new Date(a));
+            
+            let streak = 0;
+            const today = new Date().toDateString();
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            
+            // Check if activity today or yesterday to start streak
+            if (activityDates[0] !== today && activityDates[0] !== yesterday) return 0;
+            
+            for (let i = 0; i < activityDates.length; i++) {
+                const expectedDate = new Date();
+                expectedDate.setDate(expectedDate.getDate() - i);
+                
+                if (activityDates[i] === expectedDate.toDateString()) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            return streak;
+        }
+        
+        function renderAnalysis() {
+            const container = document.getElementById('analysis-content');
+            if (!container) return;
+            
+            if (patientActivities.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 1rem; color: var(--text-secondary);">
+                        <i class="fa-solid fa-chart-bar" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                        <p>Not enough activity data for analysis yet.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group by module and compute stats
+            const moduleStats = {};
+            const allModules = ['dyslexia', 'dyscalculia', 'dysgraphia', 'dyspraxia'];
+            patientActivities.forEach(a => {
+                const module = a.module_type || 'general';
+                if (!moduleStats[module]) {
+                    moduleStats[module] = { total: 0, completed: 0, totalScore: 0, totalMax: 0 };
+                }
+                moduleStats[module].total++;
+                if (a.completed) moduleStats[module].completed++;
+                moduleStats[module].totalScore += a.score || 0;
+                moduleStats[module].totalMax += a.max_score || 100;
+            });
+            
+            const strengths = [];
+            const challenges = [];
+            const streak = calculateStreak();
+            const moduleNames = {
+                dyslexia: 'Reading (Dyslexia)',
+                dyscalculia: 'Math (Dyscalculia)',
+                dysgraphia: 'Writing (Dysgraphia)',
+                dyspraxia: 'Motor Skills (Dyspraxia)'
+            };
+            
+            // Analyze each module
+            Object.entries(moduleStats).forEach(([mod, stats]) => {
+                const avgPct = stats.totalMax > 0 ? Math.round((stats.totalScore / stats.totalMax) * 100) : 0;
+                const compRate = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
+                const name = moduleNames[mod] || mod;
+                
+                if (avgPct >= 70) {
+                    strengths.push(`Strong performance in ${name} (${avgPct}% avg score)`);
+                } else if (avgPct < 50 && stats.total >= 2) {
+                    challenges.push(`${name} needs attention (${avgPct}% avg score)`);
+                }
+                
+                if (compRate >= 80 && stats.total >= 3) {
+                    strengths.push(`High completion rate in ${name} (${compRate}%)`);
+                } else if (compRate < 40 && stats.total >= 3) {
+                    challenges.push(`Low completion rate in ${name} (${compRate}%)`);
+                }
+            });
+            
+            // Check for streaks
+            if (streak >= 5) {
+                strengths.push(`Excellent consistency — ${streak} day active streak`);
+            } else if (streak >= 3) {
+                strengths.push(`Consistent daily practice — ${streak} day streak`);
+            } else if (streak === 0) {
+                challenges.push('No recent activity — encourage resuming practice');
+            }
+            
+            // Check for unstarted modules
+            allModules.forEach(mod => {
+                if (!moduleStats[mod]) {
+                    challenges.push(`${moduleNames[mod] || mod} module not yet started`);
+                }
+            });
+            
+            // Ensure at least one item in each list
+            if (strengths.length === 0) {
+                strengths.push('Getting started with learning activities');
+            }
+            if (challenges.length === 0) {
+                challenges.push('Performing well across all areas — keep it up!');
+            }
+            
+            container.innerHTML = `
+                <div class="analysis-section">
+                    <h4><i class="fa-solid fa-thumbs-up" style="color: var(--color-success);"></i> Strengths</h4>
+                    <ul class="analysis-list">
+                        ${strengths.map(s => `<li>${s}</li>`).join('')}
+                    </ul>
+                </div>
+                <div class="analysis-section">
+                    <h4><i class="fa-solid fa-flag" style="color: var(--color-warning);"></i> Areas for Improvement</h4>
+                    <ul class="analysis-list">
+                        ${challenges.map(c => `<li>${c}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+        
+        async function loadPatientNotes() {
+            try {
+                // Check if doctor_notes table exists
+                const { data: notes, error } = await CognoSupabase.client
+                    .from('doctor_notes')
+                    .select('*')
+                    .eq('patient_id', patientId)
+                    .order('created_at', { ascending: false });
+                
+                if (!error) {
+                    patientNotes = notes || [];
+                }
+            } catch (error) {
+                console.log('Notes table may not exist yet');
+                patientNotes = [];
+            }
+        }
+        
+        function renderProgressTab() {
+            const container = document.getElementById('tab-progress');
+            if (!container) return;
+            
+            // Group activities by module
+            const moduleStats = {};
+            patientActivities.forEach(a => {
+                const module = a.module_type || 'general';
+                if (!moduleStats[module]) {
+                    moduleStats[module] = {
+                        total: 0,
+                        completed: 0,
+                        totalScore: 0,
+                        totalMaxScore: 0,
+                        totalTime: 0,
+                        activities: []
+                    };
+                }
+                moduleStats[module].total++;
+                if (a.completed) moduleStats[module].completed++;
+                moduleStats[module].totalScore += a.score || 0;
+                moduleStats[module].totalMaxScore += a.max_score || 100;
+                moduleStats[module].totalTime += a.time_spent_seconds || 0;
+                moduleStats[module].activities.push(a);
+            });
+            
+            const moduleColors = {
+                dyslexia: { bg: '#3b82f620', color: '#3b82f6', icon: 'book-open' },
+                dyscalculia: { bg: '#10b98120', color: '#10b981', icon: 'calculator' },
+                dysgraphia: { bg: '#f59e0b20', color: '#f59e0b', icon: 'pen' },
+                dyspraxia: { bg: '#8b5cf620', color: '#8b5cf6', icon: 'person-walking' },
+                general: { bg: '#6b728020', color: '#6b7280', icon: 'graduation-cap' }
+            };
+            
+            container.innerHTML = `
+                <div class="progress-overview" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    ${Object.entries(moduleStats).map(([module, stats]) => {
+                        const avgScore = stats.totalMaxScore > 0 ? Math.round((stats.totalScore / stats.totalMaxScore) * 100) : 0;
+                        const completionRate = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
+                        const m = moduleColors[module] || moduleColors.general;
+                        return `
+                            <div class="card" style="padding: 1.5rem;">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                    <div style="width: 48px; height: 48px; border-radius: 12px; background: ${m.bg}; color: ${m.color}; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                                        <i class="fa-solid fa-${m.icon}"></i>
+                                    </div>
+                                    <div>
+                                        <h3 style="margin: 0; font-size: 1.1rem; text-transform: capitalize;">${module}</h3>
+                                        <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">${stats.total} activities</p>
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+                                    <div>
+                                        <div style="font-size: 1.25rem; font-weight: 600; color: ${m.color};">${avgScore}%</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-secondary);">Avg Score</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 1.25rem; font-weight: 600; color: var(--color-success);">${stats.completed}</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-secondary);">Completed</div>
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 1.25rem; font-weight: 600;">${Math.round(stats.totalTime / 60)}m</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-secondary);">Time</div>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 1rem;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                                        <span>Completion</span>
+                                        <span>${completionRate}%</span>
+                                    </div>
+                                    <div style="height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
+                                        <div style="height: 100%; width: ${completionRate}%; background: ${m.color}; border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-chart-line"></i> Score Trend</h2>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="score-trend-chart" height="200"></canvas>
+                    </div>
+                </div>
+            `;
+            
+            // Initialize score trend chart
+            setTimeout(() => initScoreTrendChart(), 100);
+        }
+        
+        function initScoreTrendChart() {
+            const ctx = document.getElementById('score-trend-chart');
+            if (!ctx) return;
+            
+            // Group activities by date
+            const activityByDate = {};
+            patientActivities.forEach(a => {
+                const date = new Date(a.updated_at).toLocaleDateString('en-US', { month: 'Short', day: 'numeric' });
+                if (!activityByDate[date]) {
+                    activityByDate[date] = { total: 0, score: 0, maxScore: 0 };
+                }
+                activityByDate[date].total++;
+                activityByDate[date].score += a.score || 0;
+                activityByDate[date].maxScore += a.max_score || 100;
+            });
+            
+            const labels = Object.keys(activityByDate).slice(-14); // Last 14 data points
+            const scores = labels.map(date => {
+                const d = activityByDate[date];
+                return d.maxScore > 0 ? Math.round((d.score / d.maxScore) * 100) : 0;
+            });
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Average Score',
+                        data: scores,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: false, min: 0, max: 100 }
+                    }
+                }
+            });
+        }
+        
+        function renderActivitiesTab() {
+            const container = document.getElementById('tab-activities');
+            if (!container) return;
+            
+            if (patientActivities.length === 0) {
+                container.innerHTML = `
+                    <div class="card">
+                        <div class="card-body" style="text-align: center; padding: 3rem;">
+                            <i class="fa-solid fa-clipboard-list" style="font-size: 3rem; color: var(--text-secondary); margin-bottom: 1rem;"></i>
+                            <h3>No Activities Yet</h3>
+                            <p style="color: var(--text-secondary);">This patient hasn't completed any learning activities yet.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const moduleColors = {
+                dyslexia: '#3b82f6',
+                dyscalculia: '#10b981',
+                dysgraphia: '#f59e0b',
+                dyspraxia: '#8b5cf6'
+            };
+            
+            container.innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-list"></i> Activity History</h2>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <select id="activity-module-filter" class="form-select" style="width: auto;">
+                                <option value="">All Modules</option>
+                                <option value="dyslexia">Dyslexia</option>
+                                <option value="dyscalculia">Dyscalculia</option>
+                                <option value="dysgraphia">Dysgraphia</option>
+                                <option value="dyspraxia">Dyspraxia</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="activities-table" id="activities-table-container">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="border-bottom: 2px solid var(--border-color);">
+                                        <th style="text-align: left; padding: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">Activity</th>
+                                        <th style="text-align: left; padding: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">Module</th>
+                                        <th style="text-align: center; padding: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">Score</th>
+                                        <th style="text-align: center; padding: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">Time</th>
+                                        <th style="text-align: center; padding: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">Status</th>
+                                        <th style="text-align: right; padding: 0.75rem; font-size: 0.85rem; color: var(--text-secondary);">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="activities-tbody">
+                                    ${patientActivities.map(a => {
+                                        const color = moduleColors[a.module_type] || '#6b7280';
+                                        const scorePct = a.max_score ? Math.round((a.score / a.max_score) * 100) : a.score;
+                                        const scoreColor = scorePct >= 80 ? 'var(--color-success)' : scorePct >= 50 ? 'var(--color-warning)' : 'var(--color-error)';
+                                        return `
+                                            <tr style="border-bottom: 1px solid var(--border-color);" data-module="${a.module_type || ''}">
+                                                <td style="padding: 0.75rem;">
+                                                    <div style="font-weight: 500;">${a.activity_type || a.activity_id}</div>
+                                                    ${a.difficulty_level ? `<div style="font-size: 0.75rem; color: var(--text-secondary);">${a.difficulty_level}</div>` : ''}
+                                                </td>
+                                                <td style="padding: 0.75rem;">
+                                                    <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.75rem; background: ${color}20; color: ${color}; text-transform: capitalize;">
+                                                        ${a.module_type || 'General'}
+                                                    </span>
+                                                </td>
+                                                <td style="padding: 0.75rem; text-align: center;">
+                                                    <span style="font-weight: 600; color: ${scoreColor};">${scorePct}%</span>
+                                                </td>
+                                                <td style="padding: 0.75rem; text-align: center; color: var(--text-secondary);">
+                                                    ${Math.round((a.time_spent_seconds || 0) / 60)}m
+                                                </td>
+                                                <td style="padding: 0.75rem; text-align: center;">
+                                                    ${a.completed 
+                                                        ? '<span style="color: var(--color-success);"><i class="fa-solid fa-check-circle"></i> Done</span>' 
+                                                        : '<span style="color: var(--text-secondary);"><i class="fa-solid fa-clock"></i> In Progress</span>'}
+                                                </td>
+                                                <td style="padding: 0.75rem; text-align: right; color: var(--text-secondary); font-size: 0.85rem;">
+                                                    ${new Date(a.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                </td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add filter functionality
+            document.getElementById('activity-module-filter')?.addEventListener('change', (e) => {
+                const filter = e.target.value.toLowerCase();
+                document.querySelectorAll('#activities-tbody tr').forEach(row => {
+                    const module = row.dataset.module?.toLowerCase() || '';
+                    row.style.display = !filter || module === filter ? '' : 'none';
+                });
+            });
+        }
+        
+        function renderNotesTab() {
+            const container = document.getElementById('tab-notes');
+            if (!container) return;
+            
+            const notesList = document.getElementById('notes-list');
+            if (!notesList) return;
+            
+            if (patientNotes.length === 0) {
+                notesList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                        <i class="fa-solid fa-sticky-note" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <p>No clinical notes yet. Add your first note above.</p>
+                    </div>
+                `;
+            } else {
+                notesList.innerHTML = patientNotes.map(note => `
+                    <div class="note-item">
+                        <div class="note-header">
+                            <span class="note-date">${new Date(note.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                            <span class="note-type">${note.note_type || 'General'}</span>
+                        </div>
+                        <p>${note.content}</p>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function renderReportsTab() {
+            const container = document.getElementById('tab-reports');
+            if (!container) return;
+            
+            // Generate summary report from activities
+            const totalActivities = patientActivities.length;
+            const avgScore = totalActivities > 0 
+                ? Math.round(patientActivities.reduce((sum, a) => sum + (a.score || 0), 0) / totalActivities) 
+                : 0;
+            const totalTime = patientActivities.reduce((sum, a) => sum + (a.time_spent_seconds || 0), 0);
+            
+            // Module breakdown
+            const moduleStats = {};
+            patientActivities.forEach(a => {
+                const module = a.module_type || 'general';
+                if (!moduleStats[module]) {
+                    moduleStats[module] = { total: 0, score: 0, maxScore: 0 };
+                }
+                moduleStats[module].total++;
+                moduleStats[module].score += a.score || 0;
+                moduleStats[module].maxScore += a.max_score || 100;
+            });
+            
+            const reportsList = document.getElementById('reports-list');
+            if (reportsList) {
+                reportsList.innerHTML = `
+                    <div class="report-item" style="background: var(--color-primary-100); border: 1px solid var(--color-primary);">
+                        <div class="report-icon" style="background: var(--color-primary); color: white;">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+                        <div class="report-info">
+                            <h4>Current Progress Summary</h4>
+                            <p>Auto-generated from ${totalActivities} activities</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="viewProgressSummary()">
+                            <i class="fa-solid fa-eye"></i> View
+                        </button>
+                    </div>
+                    
+                    ${Object.entries(moduleStats).map(([module, stats]) => {
+                        const avgPct = stats.maxScore > 0 ? Math.round((stats.score / stats.maxScore) * 100) : 0;
+                        return `
+                        <div class="report-item">
+                            <div class="report-icon">
+                                <i class="fa-solid fa-file-lines"></i>
+                            </div>
+                            <div class="report-info">
+                                <h4 style="text-transform: capitalize;">${module} Module Report</h4>
+                                <p>${stats.total} activities, Avg: ${avgPct}%</p>
+                            </div>
+                            <button class="btn btn-outline btn-sm" onclick="generateModuleReport('${module}')">
+                                <i class="fa-solid fa-download"></i> Export
+                            </button>
+                        </div>
+                    `;}).join('')}
+                `;
+            }
+        }
+        
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return 'Just now';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            const days = Math.floor(hours / 24);
+            return `${days} day${days > 1 ? 's' : ''} ago`;
+        }
+        
+        async function initProgressChart() {
+            const ctx = document.getElementById('progress-chart');
+            if (!ctx) return;
+            
+            // Get last 7 days of activity data
+            const dayLabels = [];
+            const dayScores = [];
+            const dayCounts = [];
+            const today = new Date();
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+                dayLabels.push(dayName);
+                
+                // Find activities for this day
+                const dayStart = new Date(date);
+                dayStart.setHours(0, 0, 0, 0);
+                const dayEnd = new Date(date);
+                dayEnd.setHours(23, 59, 59, 999);
+                
+                const dayActivities = patientActivities.filter(a => {
+                    const actDate = new Date(a.updated_at);
+                    return actDate >= dayStart && actDate <= dayEnd;
+                });
+                
+                dayCounts.push(dayActivities.length);
+                
+                if (dayActivities.length > 0) {
+                    const avgScore = dayActivities.reduce((sum, a) => {
+                        const pct = a.max_score ? Math.round((a.score / a.max_score) * 100) : a.score;
+                        return sum + pct;
+                    }, 0) / dayActivities.length;
+                    dayScores.push(Math.round(avgScore));
+                } else {
+                    dayScores.push(null);
+                }
+            }
+            
+            progressChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dayLabels,
+                    datasets: [
+                        {
+                            label: 'Activities',
+                            data: dayCounts,
+                            backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                            borderColor: '#3b82f6',
+                            borderWidth: 1,
+                            yAxisID: 'y1'
+                        },
+                        {
+                            label: 'Avg Score',
+                            data: dayScores,
+                            type: 'line',
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: false,
+                            tension: 0.4,
+                            spanGaps: true,
+                            yAxisID: 'y'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            position: 'left',
+                            min: 0,
+                            max: 100,
+                            title: { display: true, text: 'Score %' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            min: 0,
+                            grid: { drawOnChartArea: false },
+                            title: { display: true, text: 'Activities' }
+                        }
+                    }
+                }
+            });
+        }
+        
+        async function startConsultation() {
+            try {
+                const roomId = `cogno-${crypto.randomUUID()}`;
+                
+                // Create consultation record
+                const { data, error } = await CognoSupabase.client
+                    .from('consultations')
+                    .insert({
+                        doctor_id: (await CognoSupabase.getCurrentUser())?.user?.id,
+                        patient_id: patientId,
+                        scheduled_at: new Date().toISOString(),
+                        status: 'in-progress',
+                        reason: 'Direct call from patient detail',
+                        room_id: roomId
+                    })
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                // Send notification to patient
+                await CognoSupabase.client
+                    .from('notifications')
+                    .insert({
+                        user_id: patientId,
+                        title: 'Incoming Call',
+                        message: 'Your doctor is calling you. Click to join.',
+                        notification_type: 'call',
+                        metadata: { consultation_id: data.id, room_id: roomId }
+                    });
+                
+                // Open video call
+                window.open(`../consultations/video.html?room=${roomId}&consultation=${data.id}`, '_blank');
+                
+            } catch (error) {
+                console.error('Failed to start consultation:', error);
+                alert('Failed to start call: ' + error.message);
+            }
+        }
+        
+        async function addNote() {
+            const content = prompt('Enter your clinical note:');
+            if (!content) return;
+            
+            const noteType = prompt('Note type (Progress Review, Consultation, Observation):', 'Progress Review');
+            
+            try {
+                const { data, error } = await CognoSupabase.client
+                    .from('doctor_notes')
+                    .insert({
+                        patient_id: patientId,
+                        doctor_id: (await CognoSupabase.getCurrentUser())?.user?.id,
+                        content: content,
+                        note_type: noteType || 'General'
+                    })
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                patientNotes.unshift(data);
+                renderNotesTab();
+                CognoNotifications?.toast?.success('Note added successfully');
+                
+            } catch (error) {
+                console.error('Error adding note:', error);
+                CognoNotifications?.toast?.error('Failed to save note. The notes table may not exist yet.');
+            }
+        }
+        
+        function generateReport() {
+            CognoNotifications?.toast?.info('Generating comprehensive report...');
+            setTimeout(() => {
+                viewProgressSummary();
+            }, 500);
+        }
+        
+        function viewProgressSummary() {
+            const totalActivities = patientActivities.length;
+            const avgScore = totalActivities > 0 
+                ? Math.round(patientActivities.reduce((sum, a) => {
+                    const pct = a.max_score ? Math.round((a.score / a.max_score) * 100) : a.score;
+                    return sum + pct;
+                }, 0) / totalActivities)
+                : 0;
+            const totalTime = patientActivities.reduce((sum, a) => sum + (a.time_spent_seconds || 0), 0);
+            const completedCount = patientActivities.filter(a => a.completed).length;
+            
+            // Module breakdown
+            const moduleStats = {};
+            patientActivities.forEach(a => {
+                const module = a.module_type || 'general';
+                if (!moduleStats[module]) {
+                    moduleStats[module] = { total: 0, score: 0, maxScore: 0, completed: 0 };
+                }
+                moduleStats[module].total++;
+                moduleStats[module].score += a.score || 0;
+                moduleStats[module].maxScore += a.max_score || 100;
+                if (a.completed) moduleStats[module].completed++;
+            });
+            
+            const reportContent = `
+PATIENT PROGRESS SUMMARY
+========================
+Patient: ${patientData?.full_name || 'Unknown'}
+Generated: ${new Date().toLocaleDateString()}
+
+OVERVIEW
+--------
+Total Activities: ${totalActivities}
+Completed: ${completedCount}
+Average Score: ${avgScore}%
+Total Learning Time: ${Math.round(totalTime / 60)} minutes
+
+MODULE BREAKDOWN
+----------------
+${Object.entries(moduleStats).map(([module, stats]) => {
+    const pct = stats.maxScore > 0 ? Math.round((stats.score / stats.maxScore) * 100) : 0;
+    const compRate = stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0;
+    return `${module.toUpperCase()}: ${stats.total} activities, Avg Score: ${pct}%, Completion: ${compRate}%`;
+}
+).join('\n')}
+            `;
+            
+            // Show in modal or download
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${patientData?.full_name || 'patient'}-progress-report.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            CognoNotifications?.toast?.success('Report downloaded!');
+        }
+        
+        function generateModuleReport(module) {
+            const moduleActivities = patientActivities.filter(a => (a.module_type || 'general') === module);
+            const avgScore = moduleActivities.length > 0 
+                ? Math.round(moduleActivities.reduce((s, a) => {
+                    const pct = a.max_score ? Math.round((a.score / a.max_score) * 100) : a.score;
+                    return s + pct;
+                }, 0) / moduleActivities.length) 
+                : 0;
+            
+            const reportContent = `
+${module.toUpperCase()} MODULE REPORT
+${'='.repeat(module.length + 14)}
+Patient: ${patientData?.full_name || 'Unknown'}
+Generated: ${new Date().toLocaleDateString()}
+
+SUMMARY
+-------
+Total Activities: ${moduleActivities.length}
+Completed: ${moduleActivities.filter(a => a.completed).length}
+Average Score: ${avgScore}%
+
+ACTIVITY DETAILS
+----------------
+${moduleActivities.map(a => {
+    const pct = a.max_score ? Math.round((a.score / a.max_score) * 100) : a.score;
+    return `- ${a.activity_type || a.activity_id}: Score ${pct}%, ${a.completed ? 'Completed' : 'In Progress'}, ${new Date(a.updated_at).toLocaleDateString()}`;
+}).join('\n')}
+            `;
+            
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${patientData?.full_name || 'patient'}-${module}-report.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            CognoNotifications?.toast?.success(`${module} report downloaded!`);
+        }
+    </script>
+</body>
+</html>
