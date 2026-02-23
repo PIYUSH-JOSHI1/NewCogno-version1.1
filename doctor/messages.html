@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Messages - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --topbar-height: 70px;
+            --bottom-nav-height: 75px;
+            --sidebar-width: 380px;
+            --primary-color: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #eff6ff;
+            --bg-color: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            padding-bottom: var(--bottom-nav-height);
+            background-color: #f1f5f9; /* Slightly darker gray for better card contrast */
+        }
+
+        /* Top Bar - Premium UI */
+        .topbar {
+            height: var(--topbar-height);
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            z-index: 2000; /* Higher than overlay */
+            flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            position: relative;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .topbar-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .topbar-left h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .topbar-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: white;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .topbar-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: relative;
+        }
+
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            gap: 12px;
+        }
+
+        .profile-btn:hover {
+            border-color: var(--primary-color);
+            background: #fbfcfe;
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 0.95rem;
+        }
+
+        .profile-info {
+            text-align: left;
+        }
+
+        .profile-info .name {
+            font-weight: 700;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            line-height: 1.2;
+        }
+
+        .profile-info .role {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Messages Layout */
+        .messages-container {
+            display: grid;
+            grid-template-columns: var(--sidebar-width) 1fr;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+            position: relative;
+            max-width: 1600px;
+            margin: 1.5rem auto;
+            width: calc(100% - 3rem);
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Conversations Panel */
+        .conversations-panel {
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            background: white;
+            height: 100%;
+            min-width: 0;
+        }
+
+        .conversations-header {
+            padding: 1.75rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .conversations-header h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 1.25rem;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 2.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            outline: none;
+            background: #f8fafc;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .search-box input:focus {
+            background: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .conversations-list {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+
+        .conversation-item {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .conversation-item:last-child { border-bottom: none; }
+        .conversation-item:hover { background: #f8fafc; }
+        .conversation-item.active { background: var(--primary-light); border-left: 4px solid var(--primary-color); }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #475569;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Avatar styles handled by shared .avatar class */
+
+        .conversation-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .conversation-name {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .conversation-name h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conversation-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .conversation-preview {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Chat Panel */
+        .chat-panel {
+            display: flex;
+            flex-direction: column;
+            background: #f8fafc;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 1.25rem 2rem;
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .chat-header .avatar {
+            font-size: 1.1rem;
+        }
+
+        .chat-header-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .name-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .name-row h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.01em;
+        }
+
+        .header-action-icons {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-action-icons button {
+            background: none;
+            border: none;
+            padding: 6px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .header-action-icons button:hover {
+            color: var(--primary-color);
+            background: var(--primary-light);
+        }
+
+        .chat-header-info p {
+            font-size: 0.85rem;
+            color: #10b981;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .chat-header-info p::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            background: #f8fafc;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 80%;
+        }
+
+        .message.received { align-self: flex-start; }
+        .message.sent { align-self: flex-end; flex-direction: row-reverse; }
+
+        .message-content {
+            padding: 1rem 1.25rem;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            word-break: break-all; /* Fix for long URLs */
+            overflow-wrap: anywhere;
+        }
+
+        .message.received .message-content {
+            background: white;
+            color: var(--text-main);
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .message.sent .message-content {
+            background: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .chat-input-area {
+            padding: 1.25rem 2rem;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        #message-input {
+            flex: 1;
+            padding: 0.9rem 1.25rem;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            outline: none;
+            background: #f8fafc;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        #message-input:focus {
+            background: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+        }
+
+        .send-btn {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .send-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        /* Bottom Navigation - Fixed at bottom */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--bottom-nav-height);
+            background: white;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
+            padding: 0 1rem;
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            padding: 8px 12px;
+            border-radius: 12px;
+            min-width: 64px;
+        }
+
+        .nav-btn i {
+            font-size: 1.4rem;
+        }
+
+        .nav-btn:hover {
+            color: var(--primary-color);
+            background: var(--primary-light);
+        }
+
+        .nav-btn.active {
+            color: var(--primary-color);
+            background: var(--primary-light);
+        }
+
+        /* Profile Menu */
+        .profile-menu {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            background: white;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+            min-width: 280px;
+            padding: 1rem;
+            display: none !important;
+            z-index: 1100;
+        }
+
+        .profile-menu.show { display: block !important; animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        .profile-menu-header {
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 0.75rem;
+        }
+
+        .profile-menu-header .name { font-weight: 700; color: var(--text-main); font-size: 1.05rem; }
+        .profile-menu-header .email { font-size: 0.85rem; color: var(--text-muted); }
+
+        .profile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .profile-menu-item:hover { background: #f8fafc; color: var(--primary-color); }
+        .profile-menu-item i { font-size: 1.1rem; color: var(--text-muted); width: 24px; }
+        .profile-menu-item:hover i { color: var(--primary-color); }
+
+        .profile-menu-item.danger { color: #ef4444; }
+        .profile-menu-item.danger i { color: #ef4444; }
+
+        .dropdown-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.02);
+            z-index: 1500; /* Below topbar but above content */
+            display: none;
+        }
+        .dropdown-overlay.show { display: block; }
+
+        /* Notifications Panel */
+        .notifications-panel {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            background: white;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+            width: 320px;
+            display: none !important;
+            z-index: 1100;
+            overflow: hidden;
+        }
+
+        .notifications-panel.show { display: block !important; animation: slideDown 0.3s ease; }
+
+        .notifications-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notifications-header h4 { font-weight: 700; font-size: 0.95rem; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Mobile Responsive Fixes */
+        @media (max-width: 900px) {
+            :root {
+                --topbar-height: 60px;
+                --bottom-nav-height: 65px;
+            }
+
+            .topbar {
+                padding: 0 0.75rem;
+                height: var(--topbar-height);
+                gap: 0.5rem;
+            }
+
+            .topbar h1 {
+                font-size: 0.9rem;
+                white-space: nowrap;
+                letter-spacing: -0.01em;
+            }
+
+            .topbar-logo {
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+                border-radius: 8px;
+            }
+
+            .version-banner {
+                padding: 2px 8px;
+                font-size: 0.65rem;
+                white-space: nowrap;
+                background: rgba(59, 130, 246, 0.1);
+                color: var(--primary-color);
+                border: 1px solid var(--primary-light);
+            }
+
+            .profile-info {
+                display: none;
+            }
+
+            .profile-btn {
+                padding: 2px;
+                border: none;
+                background: transparent;
+            }
+
+            .messages-container {
+                grid-template-columns: 1fr;
+                margin: 0;
+                width: 100%;
+                height: calc(100dvh - var(--topbar-height) - var(--bottom-nav-height));
+                border-radius: 0;
+                border: none;
+            }
+
+            .bottom-nav {
+                height: var(--bottom-nav-height);
+            }
+
+            .nav-btn {
+                padding: 6px 4px;
+                min-width: 50px;
+                font-size: 0.65rem;
+                gap: 2px;
+            }
+
+            .nav-btn i {
+                font-size: 1.25rem;
+            }
+
+            .message-content {
+                max-width: 90%;
+            }
+
+            .conversations-panel.hidden-mobile { display: none; }
+            .chat-panel { 
+                display: none; 
+                flex-direction: column;
+                height: 100%;
+                background: white;
+            }
+            .chat-panel.active { display: flex; }
+            
+            .chat-header {
+                padding: 0.75rem 1rem;
+            }
+
+            .chat-messages {
+                padding: 1rem;
+            }
+
+            #mobile-back {
+                display: flex !important;
+            }
+
+            .profile-menu {
+                width: calc(100vw - 2rem);
+                right: -1rem;
+                top: 65px;
+            }
+
+            .notifications-panel {
+                width: calc(100vw - 2rem);
+                right: -4rem;
+                top: 65px;
+            }
+        }
+
+        .version-banner {
+            background: #3b82f6; 
+            color: white; 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            font-size: 0.8rem; 
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="dropdown-overlay" id="dropdown-overlay" onclick="closeAllDropdowns()"></div>
+
+    <!-- Top Bar -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo">C</div>
+            <h1>Doctor Messages v2</h1>
+        </div>
+        <div class="version-banner">NEW INTERFACE ACTIVE</div>
+        <div class="topbar-right">
+            <!-- Notifications -->
+            <div style="position: relative;">
+                <button class="topbar-btn" onclick="toggleNotifications()">
+                    <i class="fa-solid fa-bell"></i>
+                    <span id="notif-badge" style="position: absolute; top: 0; right: 0; width: 10px; height: 10px; background: #ef4444; border-radius: 50%; border: 2px solid white; display: none;"></span>
+                </button>
+                <div class="notifications-panel" id="notifications-panel">
+                    <div class="notifications-header">
+                        <h4>Notifications</h4>
+                        <button onclick="markAllRead()" style="border: none; background: none; color: var(--primary-color); font-size: 0.8rem; font-weight: 600; cursor: pointer;">Mark all read</button>
+                    </div>
+                    <div id="notifications-list" style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+                        <i class="fa-solid fa-bell-slash" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+                        No new notifications
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile -->
+            <div class="profile-dropdown">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <div class="profile-avatar" id="top-avatar">DR</div>
+                    <div class="profile-info">
+                        <div class="name" id="top-name">Doctor</div>
+                        <div class="role" id="top-role">Specialist</div>
+                    </div>
+                </button>
+                <div class="profile-menu" id="profile-menu">
+                    <div class="profile-menu-header">
+                        <div class="name" id="menu-name">Doctor</div>
+                        <div class="email" id="menu-email">doctor@example.com</div>
+                    </div>
+                    <a href="profile.html" class="profile-menu-item"><i class="fa-regular fa-user"></i> Profile</a>
+                    <a href="settings.html" class="profile-menu-item"><i class="fa-solid fa-gear"></i> Settings</a>
+                    <div style="height: 1px; background: #f1f5f9; margin: 0.5rem 0;"></div>
+                    <button class="profile-menu-item danger" onclick="logout()" style="width: 100%; border: none; background: none; cursor: pointer; text-align: left;">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="messages-container">
+        <!-- Sidebar -->
+        <aside class="conversations-panel" id="conversations-panel">
+            <div class="conversations-header">
+                <h3>Conversations</h3>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="conversation-search" placeholder="Search patients...">
+                </div>
+            </div>
+            <div class="conversations-list" id="conversations-list">
+                <!-- Data injected here -->
+                <div style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <p>Loading your chats...</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Chat Area -->
+        <section class="chat-panel" id="chat-panel">
+            <!-- Empty State -->
+            <div class="empty-state" id="no-chat-selected" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); text-align: center; padding: 2rem;">
+                <i class="fa-regular fa-comments" style="font-size: 4rem; opacity: 0.1; margin-bottom: 1.5rem;"></i>
+                <h2 style="font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">Doctor Communications v2</h2>
+                <p>Welcome to the new messaging system. Select a patient from the list to begin.</p>
+            </div>
+
+            <!-- Active Chat -->
+            <div id="active-chat" style="display: none; flex-direction: column; height: 100%;">
+                <div class="chat-header">
+                    <button onclick="backToList()" class="topbar-btn" style="display: none; width: 36px; height: 36px;" id="mobile-back">
+                        <i class="fa-solid fa-chevron-left" style="font-size: 1rem;"></i>
+                    </button>
+                    <div class="avatar" id="chat-avatar">PJ</div>
+                    <div class="chat-header-info">
+                        <div class="name-row">
+                            <h3 id="chat-name">Piyush Joshi</h3>
+                            <div class="header-action-icons">
+                                <button onclick="startVideoCall()" title="Instant Video Call"><i class="fa-solid fa-video"></i></button>
+                                <button onclick="scheduleCall()" title="Schedule Appointment"><i class="fa-solid fa-calendar-alt"></i></button>
+                            </div>
+                        </div>
+                        <p id="chat-status">Online</p>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <!-- Messages go here -->
+                </div>
+
+                <div class="chat-input-area">
+                    <button class="topbar-btn" style="width: 44px; height: 44px; background: #f8fafc;" onclick="document.getElementById('file-input').click()">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                    <input type="file" id="file-input" style="display: none;" onchange="handleFileUpload(this)">
+                    <input type="text" id="message-input" placeholder="Write a message..." onkeypress="if(event.key==='Enter') sendMessage()">
+                    <button class="send-btn" onclick="sendMessage()">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Navigation -->
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn"><i class="fa-solid fa-house"></i> Home</a>
+        <a href="patients.html" class="nav-btn"><i class="fa-solid fa-user-group"></i> Patients</a>
+        <a href="schedule.html" class="nav-btn"><i class="fa-solid fa-calendar"></i> Schedule</a>
+        <a href="consultations.html" class="nav-btn"><i class="fa-solid fa-video"></i> Consult</a>
+        <a href="messages.html" class="nav-btn active"><i class="fa-solid fa-message"></i> Messages</a>
+        <a href="reports.html" class="nav-btn"><i class="fa-solid fa-chart-bar"></i> Reports</a>
+        <a href="profile.html" class="nav-btn"><i class="fa-solid fa-user"></i> Profile</a>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/api-client.js"></script>
+    <script>
+        let doctorId = null;
+        let currentChatPatientId = null;
+        let conversationsMap = new Map();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data: { user } } = await CognoSupabase.client.auth.getUser();
+            if (!user) {
+                window.location.href = '../auth/login.html';
+                return;
+            }
+            doctorId = user.id;
+            
+            await loadDoctorInfo();
+            await loadConversations();
+            setupRealtime();
+
+            // Mobile check
+            if (window.innerWidth <= 900) {
+                document.getElementById('mobile-back').style.display = 'flex';
+            }
+        });
+
+        async function loadDoctorInfo() {
+            const { data: { user } } = await CognoSupabase.client.auth.getUser();
+            const { data: profile } = await CognoSupabase.client
+                .from('profiles')
+                .select('full_name, specialization, avatar_url')
+                .eq('id', doctorId)
+                .single();
+            
+            if (profile) {
+                const name = (profile.full_name || 'Doctor').startsWith('Dr.') ? profile.full_name : 'Dr. ' + profile.full_name;
+                document.getElementById('top-name').textContent = name;
+                document.getElementById('menu-name').textContent = name;
+                document.getElementById('top-role').textContent = profile.specialization || 'Specialist';
+                document.getElementById('menu-email').textContent = user.email || '';
+                const initial = name.replace('Dr. ', '').charAt(0).toUpperCase();
+                document.getElementById('top-avatar').textContent = initial;
+            }
+        }
+
+        async function loadConversations() {
+            // 1. Get patient links
+            const { data: links } = await CognoSupabase.client
+                .from('doctor_patients')
+                .select('patient_id')
+                .eq('doctor_id', doctorId);
+            
+            if (!links || links.length === 0) {
+                document.getElementById('conversations-list').innerHTML = `
+                    <div style="padding: 3rem 2rem; text-align: center; color: var(--text-muted);">
+                        <p>No patients assigned yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const pIds = links.map(l => l.patient_id);
+
+            // 2. Get profiles
+            const { data: profiles } = await CognoSupabase.client
+                .from('profiles')
+                .select('id, full_name, avatar_url')
+                .in('id', pIds);
+            
+            // 3. Get last messages
+            const { data: messages } = await CognoSupabase.client
+                .from('messages')
+                .select('*')
+                .or(`sender_id.eq.${doctorId},receiver_id.eq.${doctorId}`)
+                .order('created_at', { ascending: false });
+
+            const listEl = document.getElementById('conversations-list');
+            listEl.innerHTML = '';
+
+            profiles.forEach(p => {
+                const lastMsg = (messages || []).find(m => m.sender_id === p.id || m.receiver_id === p.id);
+                const item = document.createElement('div');
+                item.className = 'conversation-item';
+                item.onclick = () => openChat(p.id, p.full_name, p.avatar_url);
+                
+                const initials = (p.full_name || 'P').split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+                const avatarContent = p.avatar_url 
+                    ? `<img src="${p.avatar_url}" alt="${p.full_name}">` 
+                    : initials;
+                
+                const time = lastMsg ? formatTimeAgo(lastMsg.created_at) : '';
+                const preview = lastMsg ? lastMsg.content : 'No messages yet';
+
+                item.innerHTML = `
+                    <div class="avatar">${avatarContent}</div>
+                    <div class="conversation-info">
+                        <div class="conversation-name">
+                            <h4>${p.full_name}</h4>
+                            <span class="conversation-time">${time}</span>
+                        </div>
+                        <p class="conversation-preview">${preview}</p>
+                    </div>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+
+        async function openChat(pId, pName, pAvatar) {
+            currentChatPatientId = pId;
+            document.getElementById('no-chat-selected').style.display = 'none';
+            document.getElementById('active-chat').style.display = 'flex';
+            document.getElementById('chat-name').textContent = pName;
+            
+            const initials = pName.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+            const avatarEl = document.getElementById('chat-avatar');
+            if (pAvatar) {
+                avatarEl.innerHTML = `<img src="${pAvatar}" alt="${pName}">`;
+            } else {
+                avatarEl.textContent = initials;
+            }
+            
+            if (window.innerWidth <= 900) {
+                document.getElementById('conversations-panel').classList.add('hidden-mobile');
+                document.getElementById('chat-panel').classList.add('active');
+            }
+
+            await loadMessages();
+        }
+
+        async function loadMessages() {
+            const { data: msgs } = await CognoSupabase.client
+                .from('messages')
+                .select('*')
+                .or(`and(sender_id.eq.${doctorId},receiver_id.eq.${currentChatPatientId}),and(sender_id.eq.${currentChatPatientId},receiver_id.eq.${doctorId})`)
+                .order('created_at', { ascending: true });
+
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = '';
+
+            (msgs || []).forEach(m => {
+                const isSent = m.sender_id === doctorId;
+                const div = document.createElement('div');
+                div.className = `message ${isSent ? 'sent' : 'received'}`;
+                div.innerHTML = `<div class="message-content">${m.content}</div>`;
+                container.appendChild(div);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            if (!text || !currentChatPatientId) return;
+
+            const { error } = await CognoSupabase.client.from('messages').insert({
+                sender_id: doctorId,
+                receiver_id: currentChatPatientId,
+                content: text
+            });
+
+            if (!error) {
+                input.value = '';
+                await loadMessages();
+                await loadConversations();
+            }
+        }
+
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profile-menu');
+            const notifPanel = document.getElementById('notifications-panel');
+            const overlay = document.getElementById('dropdown-overlay');
+            
+            notifPanel.classList.remove('show');
+            menu.classList.toggle('show');
+            
+            if (menu.classList.contains('show')) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        function toggleNotifications() {
+            const menu = document.getElementById('profile-menu');
+            const notifPanel = document.getElementById('notifications-panel');
+            const overlay = document.getElementById('dropdown-overlay');
+            
+            menu.classList.remove('show');
+            notifPanel.classList.toggle('show');
+            
+            if (notifPanel.classList.contains('show')) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+
+        function markAllRead() {
+            document.getElementById('notif-badge').style.display = 'none';
+        }
+
+        function closeAllDropdowns() {
+            document.getElementById('profile-menu').classList.remove('show');
+            document.getElementById('notifications-panel').classList.remove('show');
+            document.getElementById('dropdown-overlay').classList.remove('show');
+        }
+
+        async function logout() {
+            await CognoSupabase.client.auth.signOut();
+            window.location.href = '../auth/login.html';
+        }
+
+        function backToList() {
+            document.getElementById('conversations-panel').classList.remove('hidden-mobile');
+            document.getElementById('chat-panel').classList.remove('active');
+        }
+
+        function setupRealtime() {
+            CognoSupabase.client
+                .channel('any')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+                    const msg = payload.new;
+                    if (msg.sender_id === currentChatPatientId || msg.receiver_id === currentChatPatientId) {
+                        loadMessages();
+                    }
+                    loadConversations();
+                })
+                .subscribe();
+        }
+
+        // Action Buttons
+        async function startVideoCall() {
+            if (!currentChatPatientId) return;
+            const roomId = `call-${doctorId.slice(0,8)}-${currentChatPatientId.slice(0,8)}`;
+            const url = `../consultations/video.html?room=${roomId}&consultation=instant`;
+            
+            // Send join link message
+            await CognoSupabase.client.from('messages').insert({
+                sender_id: doctorId,
+                receiver_id: currentChatPatientId,
+                content: `Inviting you to a video call. Click to join: ${window.location.origin}/frontend/consultations/video.html?room=${roomId}`
+            });
+
+            window.location.href = url;
+        }
+
+        function scheduleCall() {
+            if (currentChatPatientId) {
+                window.location.href = `schedule.html?patientId=${currentChatPatientId}`;
+            }
+        }
+
+        function formatTimeAgo(d) {
+            const date = new Date(d);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+            if (diff < 60) return 'now';
+            if (diff < 3600) return Math.floor(diff/60) + 'm';
+            if (diff < 86400) return Math.floor(diff/3600) + 'h';
+            return date.toLocaleDateString();
+        }
+    </script>
+</body>
+</html>

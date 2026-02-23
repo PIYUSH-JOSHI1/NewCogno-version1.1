@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Video Consultations - Cogno Solution Doctor Portal">
+    <title>Video Consultations - Cogno Solution</title>
+    
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    
+    <style>
+        .consultations-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+        }
+        
+        .consultations-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: var(--space-1);
+            background: var(--color-surface);
+            padding: var(--space-1);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-6);
+            border: 1px solid var(--color-border);
+        }
+        
+        .tab {
+            padding: var(--space-3) var(--space-5);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            background: var(--color-background);
+        }
+        
+        .tab.active {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .tab-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background: var(--color-danger);
+            color: white;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: var(--space-2);
+        }
+        
+        .tab.active .tab-badge {
+            background: white;
+            color: var(--color-primary);
+        }
+        
+        .consultation-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            margin-bottom: var(--space-4);
+            border: 1px solid var(--color-border);
+            display: flex;
+            gap: var(--space-4);
+        }
+        
+        .consultation-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .consultation-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .consultation-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .consultation-info {
+            flex: 1;
+        }
+        
+        .consultation-patient {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: var(--space-1);
+        }
+        
+        .consultation-details {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: var(--space-3);
+        }
+        
+        .consultation-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-4);
+            margin-bottom: var(--space-3);
+        }
+        
+        .consultation-meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .consultation-meta-item i {
+            color: var(--color-primary);
+        }
+        
+        .consultation-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .consultation-status.scheduled {
+            background: var(--color-primary-100);
+            color: var(--color-primary);
+        }
+        
+        .consultation-status.confirmed {
+            background: var(--color-success-100);
+            color: var(--color-success);
+        }
+        
+        .consultation-status.in-progress {
+            background: var(--color-warning-100);
+            color: var(--color-warning);
+        }
+        
+        .consultation-status.completed {
+            background: var(--color-text-100);
+            color: var(--color-text-secondary);
+        }
+        
+        .consultation-status.cancelled {
+            background: var(--color-danger-100);
+            color: var(--color-danger);
+        }
+        
+        .consultation-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            justify-content: center;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--space-12);
+            color: var(--color-text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: var(--space-4);
+            color: var(--color-border);
+        }
+        
+        .empty-state h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+            color: var(--color-text);
+        }
+        
+        @media (max-width: 768px) {
+            .consultation-card {
+                flex-direction: column;
+            }
+            
+            .consultation-actions {
+                flex-direction: row;
+            }
+        }
+    </style>
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="../dashboard/doctor-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Patients</li>
+                
+                <li class="sidebar-item">
+                    <a href="./patients.html" class="sidebar-link">
+                        <i class="fa-solid fa-users"></i>
+                        <span>My Patients</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./live-monitoring.html" class="sidebar-link">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Live Monitoring</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./assessments.html" class="sidebar-link">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>Assessments</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Consultations</li>
+                
+                <li class="sidebar-item active">
+                    <a href="./consultations.html" class="sidebar-link">
+                        <i class="fa-solid fa-video"></i>
+                        <span>Video Consultations</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./schedule.html" class="sidebar-link">
+                        <i class="fa-solid fa-calendar"></i>
+                        <span>My Schedule</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./messages.html" class="sidebar-link">
+                        <i class="fa-solid fa-message"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Reports</li>
+                
+                <li class="sidebar-item">
+                    <a href="./reports.html" class="sidebar-link">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        <span>Patient Reports</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./recommendations.html" class="sidebar-link">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>Recommendations</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Account</li>
+                
+                <li class="sidebar-item">
+                    <a href="./profile.html" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../settings/index.html" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav class="breadcrumb">
+                    <a href="../dashboard/doctor-dashboard.html">Dashboard</a>
+                    <span>/</span>
+                    <span>Video Consultations</span>
+                </nav>
+            </div>
+            
+            <div class="navbar-right">
+                <button class="btn btn-primary btn-sm" id="start-instant-btn">
+                    <i class="fa-solid fa-video"></i>
+                    <span>Start Instant Call</span>
+                </button>
+                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Consultations Content -->
+        <div class="content-area">
+            <header class="consultations-header">
+                <h1>Video Consultations</h1>
+            </header>
+            
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" data-tab="upcoming">
+                    Upcoming
+                    <span class="tab-badge" id="upcoming-count">0</span>
+                </div>
+                <div class="tab" data-tab="today">
+                    Today
+                </div>
+                <div class="tab" data-tab="past">
+                    Past
+                </div>
+                <div class="tab" data-tab="cancelled">
+                    Cancelled
+                </div>
+            </div>
+            
+            <!-- Consultation List -->
+            <div id="consultations-container">
+                <!-- Upcoming Consultations -->
+                <div class="tab-content active" id="upcoming-content">
+                    <div class="empty-state" id="empty-upcoming">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <h3>No Upcoming Consultations</h3>
+                        <p>Your scheduled consultations will appear here</p>
+                    </div>
+                    <div id="upcoming-list"></div>
+                </div>
+                
+                <!-- Today's Consultations -->
+                <div class="tab-content" id="today-content" style="display: none;">
+                    <div class="empty-state" id="empty-today">
+                        <i class="fa-solid fa-calendar-day"></i>
+                        <h3>No Consultations Today</h3>
+                        <p>You don't have any consultations scheduled for today</p>
+                    </div>
+                    <div id="today-list"></div>
+                </div>
+                
+                <!-- Past Consultations -->
+                <div class="tab-content" id="past-content" style="display: none;">
+                    <div class="empty-state" id="empty-past">
+                        <i class="fa-solid fa-history"></i>
+                        <h3>No Past Consultations</h3>
+                        <p>Your completed consultations will appear here</p>
+                    </div>
+                    <div id="past-list"></div>
+                </div>
+                
+                <!-- Cancelled Consultations -->
+                <div class="tab-content" id="cancelled-content" style="display: none;">
+                    <div class="empty-state" id="empty-cancelled">
+                        <i class="fa-solid fa-calendar-xmark"></i>
+                        <h3>No Cancelled Consultations</h3>
+                        <p>Cancelled consultations will appear here</p>
+                    </div>
+                    <div id="cancelled-list"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container toast-top-right"></div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./doctor.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    
+                    // Update active tab
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+                    document.getElementById(`${tabName}-content`).style.display = 'block';
+                });
+            });
+            
+            // Load consultations after DoctorPortal initializes
+            setTimeout(loadConsultations, 500);
+            
+            // Start instant call button
+            document.getElementById('start-instant-btn')?.addEventListener('click', () => {
+                // Get first available patient for instant call
+                if (DoctorPortal.patients.length > 0) {
+                    startConsultationWithPatient(DoctorPortal.patients[0].id);
+                } else {
+                    DoctorPortal.showToast('No patients available for consultation', 'warning');
+                }
+            });
+        });
+        
+        async function loadConsultations() {
+            if (!DoctorPortal.currentDoctor) {
+                setTimeout(loadConsultations, 500);
+                return;
+            }
+            
+            try {
+                const now = new Date();
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                
+                // Fetch all consultations for this doctor
+                const { data: consultations, error } = await CognoSupabase?.client
+                    ?.from('consultations')
+                    ?.select(`
+                        *,
+                        patient:patient_id (
+                            id,
+                            full_name,
+                            email,
+                            avatar_url
+                        )
+                    `)
+                    ?.eq('doctor_id', DoctorPortal.currentDoctor.id)
+                    ?.order('scheduled_at', { ascending: true });
+                
+                if (error) {
+                    console.error('Error loading consultations:', error);
+                    return;
+                }
+                
+                const upcomingList = [];
+                const todayList = [];
+                const pastList = [];
+                const cancelledList = [];
+                
+                (consultations || []).forEach(c => {
+                    const scheduledAt = new Date(c.scheduled_at);
+                    
+                    if (c.status === 'cancelled' || c.status === 'no_show') {
+                        cancelledList.push(c);
+                    } else if (c.status === 'completed') {
+                        pastList.push(c);
+                    } else if (scheduledAt < now && c.status !== 'in_progress') {
+                        pastList.push(c);
+                    } else if (scheduledAt >= today && scheduledAt < tomorrow) {
+                        todayList.push(c);
+                        upcomingList.push(c);
+                    } else if (scheduledAt >= tomorrow) {
+                        upcomingList.push(c);
+                    }
+                });
+                
+                // Update counts
+                document.getElementById('upcoming-count').textContent = upcomingList.length;
+                
+                // Render lists
+                renderConsultationList('upcoming-list', upcomingList, 'empty-upcoming');
+                renderConsultationList('today-list', todayList, 'empty-today');
+                renderConsultationList('past-list', pastList, 'empty-past');
+                renderConsultationList('cancelled-list', cancelledList, 'empty-cancelled');
+                
+            } catch (error) {
+                console.error('Failed to load consultations:', error);
+            }
+        }
+        
+        function renderConsultationList(containerId, consultations, emptyId) {
+            const container = document.getElementById(containerId);
+            const emptyState = document.getElementById(emptyId);
+            
+            if (!container) return;
+            
+            if (consultations.length === 0) {
+                container.innerHTML = '';
+                if (emptyState) emptyState.style.display = 'block';
+                return;
+            }
+            
+            if (emptyState) emptyState.style.display = 'none';
+            
+            container.innerHTML = consultations.map(c => {
+                const patient = c.patient || {};
+                const initials = getInitials(patient.full_name || 'P');
+                const scheduledAt = new Date(c.scheduled_at);
+                const isToday = scheduledAt.toDateString() === new Date().toDateString();
+                const canJoin = c.status === 'confirmed' || c.status === 'in_progress' || 
+                    (c.status === 'pending' && scheduledAt <= new Date(Date.now() + 15 * 60000));
+                
+                return `
+                    <div class="consultation-card">
+                        <div class="consultation-avatar">
+                            ${patient.avatar_url 
+                                ? `<img src="${patient.avatar_url}" alt="${patient.full_name}">` 
+                                : `<span>${initials}</span>`}
+                        </div>
+                        <div class="consultation-info">
+                            <div class="consultation-patient">${patient.full_name || 'Patient'}</div>
+                            <div class="consultation-details">
+                                ${c.reason || 'General Consultation'}
+                            </div>
+                            <div class="consultation-meta">
+                                <div class="consultation-meta-item">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    ${isToday ? 'Today' : scheduledAt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                                </div>
+                                <div class="consultation-meta-item">
+                                    <i class="fa-solid fa-clock"></i>
+                                    ${scheduledAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                                </div>
+                                <div class="consultation-meta-item">
+                                    <i class="fa-solid fa-hourglass-half"></i>
+                                    ${c.duration_minutes || 30} min
+                                </div>
+                            </div>
+                            <span class="consultation-status ${c.status}">
+                                <i class="fa-solid fa-circle"></i>
+                                ${formatStatus(c.status)}
+                            </span>
+                        </div>
+                        <div class="consultation-actions">
+                            ${canJoin ? `
+                                <button class="btn btn-primary btn-sm" onclick="joinConsultation('${c.id}', '${c.meeting_id || ''}')">
+                                    <i class="fa-solid fa-video"></i>
+                                    Join Call
+                                </button>
+                            ` : ''}
+                            ${c.status === 'pending' || c.status === 'confirmed' ? `
+                                <button class="btn btn-ghost btn-sm" onclick="rescheduleConsultation('${c.id}')">
+                                    Reschedule
+                                </button>
+                                <button class="btn btn-ghost btn-sm text-danger" onclick="cancelConsultation('${c.id}')">
+                                    Cancel
+                                </button>
+                            ` : ''}
+                            ${c.status === 'completed' ? `
+                                <button class="btn btn-ghost btn-sm" onclick="viewNotes('${c.id}')">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                    View Notes
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        }
+        
+        function formatStatus(status) {
+            const statusMap = {
+                'pending': 'Pending',
+                'confirmed': 'Confirmed',
+                'in_progress': 'In Progress',
+                'completed': 'Completed',
+                'cancelled': 'Cancelled',
+                'no_show': 'No Show'
+            };
+            return statusMap[status] || status;
+        }
+        
+        async function joinConsultation(consultationId, meetingId) {
+            // Generate room ID if not exists
+            const roomId = meetingId || `cogno-consult-${consultationId}`;
+            
+            // Update consultation status to in_progress
+            try {
+                await CognoSupabase?.client
+                    ?.from('consultations')
+                    ?.update({ 
+                        status: 'in_progress',
+                        meeting_id: roomId,
+                        meeting_url: `${window.location.origin}/frontend/consultations/video.html?room=${roomId}`
+                    })
+                    ?.eq('id', consultationId);
+            } catch (error) {
+                console.error('Failed to update consultation:', error);
+            }
+            
+            // Open video consultation
+            window.open(`../consultations/video.html?room=${roomId}&consultation=${consultationId}`, '_blank');
+        }
+        
+        function startConsultationWithPatient(patientId) {
+            const roomId = `cogno-instant-${Date.now()}`;
+            window.open(`../consultations/video.html?room=${roomId}&patient=${patientId}`, '_blank');
+        }
+        
+        async function cancelConsultation(consultationId) {
+            if (!confirm('Are you sure you want to cancel this consultation?')) return;
+            
+            try {
+                const { error } = await CognoSupabase?.client
+                    ?.from('consultations')
+                    ?.update({ 
+                        status: 'cancelled',
+                        cancelled_at: new Date().toISOString()
+                    })
+                    ?.eq('id', consultationId);
+                
+                if (error) throw error;
+                
+                DoctorPortal.showToast('Consultation cancelled', 'success');
+                loadConsultations();
+            } catch (error) {
+                console.error('Failed to cancel:', error);
+                DoctorPortal.showToast('Failed to cancel consultation', 'error');
+            }
+        }
+        
+        function rescheduleConsultation(consultationId) {
+            // For now, redirect to schedule page
+            window.location.href = `./schedule.html?reschedule=${consultationId}`;
+        }
+        
+        function viewNotes(consultationId) {
+            window.location.href = `./patient-detail.html?consultation=${consultationId}`;
+        }
+    </script>
+</body>
+</html>

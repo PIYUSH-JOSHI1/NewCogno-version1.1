@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Reports - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f5f7fa; 
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        .topbar {
+            background: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .topbar-left a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .topbar h1 {
+            font-size: 1.25rem;
+            color: #1f2937;
+        }
+        
+        .content {
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Quick Stats */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .stat-card .number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .stat-card .label {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        
+        .stat-card.primary { border-left: 4px solid #3b82f6; }
+        .stat-card.success { border-left: 4px solid #10b981; }
+        .stat-card.warning { border-left: 4px solid #f59e0b; }
+        
+        /* Report Templates */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.1rem;
+            color: #1f2937;
+        }
+        
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .template-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .template-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+        
+        .template-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eff6ff;
+            color: #3b82f6;
+            border-radius: 12px;
+            font-size: 1.25rem;
+        }
+        
+        .template-card h3 {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .template-card p {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        /* Filters */
+        .filters-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.65rem 1rem 0.65rem 2.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        
+        .filter-select {
+            padding: 0.65rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            min-width: 150px;
+        }
+        
+        /* Reports Table */
+        .reports-table-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .reports-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .reports-table th,
+        .reports-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .reports-table th {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #9ca3af;
+            font-weight: 600;
+            background: #f9fafb;
+        }
+        
+        .reports-table tr:hover {
+            background: #f9fafb;
+        }
+        
+        .report-title-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .report-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
+        }
+        
+        .report-title h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.15rem;
+        }
+        
+        .report-title p {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+        
+        .patient-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .patient-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .status-badge.completed { background: #dcfce7; color: #16a34a; }
+        .status-badge.draft { background: #fef3c7; color: #d97706; }
+        .status-badge.pending { background: #dbeafe; color: #2563eb; }
+        
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-outline { background: white; border: 1px solid #e5e7eb; color: #374151; }
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            justify-content: center;
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        
+        .btn-icon:hover { background: #e5e7eb; }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #9ca3af;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .modal-overlay.show { display: flex; }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-header h2 { font-size: 1.1rem; margin: 0; }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        
+        .modal-body { padding: 1.5rem; }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+        
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .bottom-nav .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.4rem 1rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 0.65rem;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+        
+        .bottom-nav .nav-btn i {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .bottom-nav .nav-btn:hover { background: #f3f4f6; }
+        .bottom-nav .nav-btn.active { color: #3b82f6; background: #eff6ff; }
+        .bottom-nav .nav-btn.primary {
+            background: #3b82f6;
+            color: white;
+            padding: 0.5rem 1.25rem;
+        }
+
+        /* Profile Dropdown */
+        .profile-dropdown { position: relative; }
+        .profile-btn { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.6rem; border-radius: 10px; border: none; background: transparent; cursor: pointer; transition: all 0.2s; }
+        .profile-btn:hover { background: #e5e7eb; }
+        .profile-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.85rem; }
+        .profile-info { text-align: left; }
+        .profile-info .name { font-size: 0.85rem; font-weight: 600; color: #1f2937; }
+        .profile-info .role { font-size: 0.7rem; color: #6b7280; }
+        .profile-chevron { color: #6b7280; font-size: 0.75rem; transition: transform 0.2s; }
+        .profile-dropdown.open .profile-chevron { transform: rotate(180deg); }
+        .profile-menu { position: absolute; top: calc(100% + 8px); right: 0; background: white; border-radius: 12px; border: 1px solid #e5e7eb; box-shadow: 0 10px 40px rgba(0,0,0,0.15); min-width: 240px; padding: 0.5rem; display: none; z-index: 1000; }
+        .profile-menu.show { display: block; animation: slideDown 0.2s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .profile-menu-header { padding: 0.75rem; border-bottom: 1px solid #e5e7eb; margin-bottom: 0.5rem; }
+        .profile-menu-header .name { font-weight: 600; color: #1f2937; font-size: 0.95rem; }
+        .profile-menu-header .email { font-size: 0.75rem; color: #3b82f6; }
+        .profile-menu-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0.75rem; border-radius: 8px; cursor: pointer; color: #1f2937; text-decoration: none; font-size: 0.85rem; transition: background 0.2s; border: none; background: none; width: 100%; }
+        .profile-menu-item:hover { background: #f3f4f6; }
+        .profile-menu-item i { width: 20px; color: #6b7280; }
+        .profile-menu-item.danger { color: #ef4444; }
+        .profile-menu-item.danger i { color: #ef4444; }
+        .theme-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 0.75rem; border-radius: 8px; }
+        .theme-toggle-row:hover { background: #f3f4f6; }
+        .theme-toggle-left { display: flex; align-items: center; gap: 0.75rem; color: #1f2937; font-size: 0.85rem; }
+        .theme-toggle-left i { width: 20px; color: #6b7280; }
+        .theme-switch { position: relative; width: 44px; height: 24px; }
+        .theme-switch input { opacity: 0; width: 0; height: 0; }
+        .theme-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #e5e7eb; transition: 0.3s; border-radius: 24px; }
+        .theme-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; transition: 0.3s; border-radius: 50%; }
+        input:checked + .theme-slider { background: #3b82f6; }
+        input:checked + .theme-slider:before { transform: translateX(20px); }
+        .menu-divider { height: 1px; background: #e5e7eb; margin: 0.5rem 0; }
+        .dropdown-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 999; display: none; }
+        .dropdown-overlay.show { display: block; }
+
+        @media (max-width: 768px) {
+            .reports-table th:nth-child(3),
+            .reports-table td:nth-child(3),
+            .reports-table th:nth-child(4),
+            .reports-table td:nth-child(4) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dropdown-overlay" id="dropdown-overlay" onclick="closeAllDropdowns()"></div>
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo" style="width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.9rem;">C</div>
+            <h1>Patient Reports</h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button class="topbar-btn" onclick="window.location.href='messages.html'" style="position: relative; width: 40px; height: 40px; border-radius: 10px; border: none; background: transparent; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                <i class="fa-solid fa-bell"></i>
+            </button>
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <div class="profile-avatar" id="profile-avatar">D</div>
+                    <div class="profile-info">
+                        <div class="name" id="profile-name">Doctor</div>
+                        <div class="role">Specialist</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down profile-chevron"></i>
+                </button>
+                <div class="profile-menu" id="profile-menu">
+                    <div class="profile-menu-header">
+                        <div class="name" id="menu-name">Doctor</div>
+                        <div class="email" id="menu-email">doctor@example.com</div>
+                    </div>
+                    <a href="profile.html" class="profile-menu-item"><i class="fa-solid fa-user"></i><span>View Profile</span></a>
+                    <a href="profile.html?edit=true" class="profile-menu-item"><i class="fa-solid fa-pen"></i><span>Edit Profile</span></a>
+                    <a href="settings.html" class="profile-menu-item"><i class="fa-solid fa-gear"></i><span>Settings</span></a>
+                    <div class="theme-toggle-row">
+                        <div class="theme-toggle-left"><i class="fa-solid fa-moon"></i><span>Dark Mode</span></div>
+                        <label class="theme-switch"><input type="checkbox" id="theme-toggle" onchange="toggleTheme()"><span class="theme-slider"></span></label>
+                    </div>
+                    <div class="menu-divider"></div>
+                    <button class="profile-menu-item danger" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i><span>Sign Out</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card primary">
+                <div class="number" id="total-reports">0</div>
+                <div class="label">Total Reports</div>
+            </div>
+            <div class="stat-card success">
+                <div class="number" id="completed-reports">0</div>
+                <div class="label">Completed</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="number" id="drafts-count">0</div>
+                <div class="label">Drafts</div>
+            </div>
+        </div>
+
+        <!-- Report Templates -->
+        <div class="section-header">
+            <h2><i class="fa-solid fa-file-lines"></i> Create New Report</h2>
+        </div>
+        <div class="templates-grid">
+            <div class="template-card" onclick="openReportModal('assessment')">
+                <div class="template-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                <h3>Initial Assessment</h3>
+                <p>For new patients</p>
+            </div>
+            <div class="template-card" onclick="openReportModal('progress')">
+                <div class="template-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <h3>Progress Report</h3>
+                <p>Weekly/monthly updates</p>
+            </div>
+            <div class="template-card" onclick="openReportModal('evaluation')">
+                <div class="template-icon"><i class="fa-solid fa-star"></i></div>
+                <h3>Monthly Evaluation</h3>
+                <p>Detailed review</p>
+            </div>
+            <div class="template-card" onclick="openReportModal('discharge')">
+                <div class="template-icon"><i class="fa-solid fa-flag-checkered"></i></div>
+                <h3>Discharge Summary</h3>
+                <p>Final summary</p>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="section-header">
+            <h2>Recent Reports</h2>
+            <button class="btn btn-primary" onclick="openReportModal('progress')">
+                <i class="fa-solid fa-plus"></i> New Report
+            </button>
+        </div>
+        <div class="filters-bar">
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search reports...">
+            </div>
+            <select class="filter-select" id="filter-type">
+                <option value="">All Types</option>
+                <option value="assessment">Assessment</option>
+                <option value="progress">Progress</option>
+                <option value="evaluation">Evaluation</option>
+                <option value="discharge">Discharge</option>
+            </select>
+            <select class="filter-select" id="filter-status">
+                <option value="">All Status</option>
+                <option value="completed">Completed</option>
+                <option value="draft">Draft</option>
+            </select>
+        </div>
+
+        <!-- Reports Table -->
+        <div class="reports-table-container">
+            <table class="reports-table">
+                <thead>
+                    <tr>
+                        <th>Report</th>
+                        <th>Patient</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reports-body">
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                                <p>Loading reports...</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Create Report Modal -->
+    <div class="modal-overlay" id="report-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-file-medical"></i> Create Report</h2>
+                <button class="modal-close" onclick="closeReportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Patient *</label>
+                        <select id="report-patient">
+                            <option value="">Select patient...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Report Type *</label>
+                        <select id="report-type">
+                            <option value="assessment">Initial Assessment</option>
+                            <option value="progress">Progress Report</option>
+                            <option value="evaluation">Monthly Evaluation</option>
+                            <option value="discharge">Discharge Summary</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Report Title *</label>
+                    <input type="text" id="report-title" placeholder="Enter report title">
+                </div>
+                <div class="form-group">
+                    <label>Summary</label>
+                    <textarea id="report-summary" rows="3" placeholder="Brief summary..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Findings & Observations</label>
+                    <textarea id="report-findings" rows="4" placeholder="Detail your findings..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Recommendations</label>
+                    <textarea id="report-recommendations" rows="3" placeholder="Your recommendations..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeReportModal()">Cancel</button>
+                <button class="btn btn-outline" onclick="saveDraft()">Save Draft</button>
+                <button class="btn btn-primary" onclick="saveReport()">
+                    <i class="fa-solid fa-check"></i> Complete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a href="patients.html" class="nav-btn">
+            <i class="fa-solid fa-user-group"></i>
+            Patients
+        </a>
+        <a href="schedule.html" class="nav-btn">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="consultations.html" class="nav-btn">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="reports.html" class="nav-btn active">
+            <i class="fa-solid fa-chart-bar"></i>
+            Reports
+        </a>
+        <a href="profile.html" class="nav-btn">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('cogno_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const toggle = document.getElementById('theme-toggle');
+            if (toggle) toggle.checked = savedTheme === 'dark';
+        })();
+        
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('cogno_theme', newTheme);
+        }
+        
+        function closeAllDropdowns() {
+            document.getElementById('profile-menu')?.classList.remove('show');
+            document.getElementById('profile-dropdown')?.classList.remove('open');
+            document.getElementById('dropdown-overlay')?.classList.remove('show');
+        }
+        
+        function toggleProfileMenu() {
+            const menu = document.getElementById('profile-menu');
+            const dropdown = document.getElementById('profile-dropdown');
+            const overlay = document.getElementById('dropdown-overlay');
+            if (menu.classList.contains('show')) {
+                closeAllDropdowns();
+            } else {
+                menu.classList.add('show');
+                dropdown.classList.add('open');
+                overlay.classList.add('show');
+            }
+        }
+        
+        async function logout() {
+            try {
+                await CognoSupabase.signOut();
+                window.location.href = '../auth/login.html';
+            } catch (error) {
+                window.location.href = '../auth/login.html';
+            }
+        }
+        
+        function updateProfileDropdown(profile) {
+            if (!profile) return;
+            const name = profile.full_name || 'Doctor';
+            const initial = name.charAt(0).toUpperCase();
+            document.getElementById('profile-avatar').textContent = initial;
+            document.getElementById('profile-name').textContent = name;
+            document.getElementById('menu-name').textContent = name;
+            document.getElementById('menu-email').textContent = profile.email || '';
+        }
+
+        let doctorId = null;
+        let patients = [];
+        let reports = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await waitForSupabase();
+            await loadDoctorInfo();
+            await loadPatients();
+            await loadReports();
+        });
+
+        async function waitForSupabase() {
+            return new Promise((resolve) => {
+                const check = () => {
+                    if (window.CognoSupabase?.client) resolve();
+                    else setTimeout(check, 100);
+                };
+                check();
+            });
+        }
+
+        async function loadDoctorInfo() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+                
+                doctorId = user.id;
+                
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('full_name, display_name, email')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile) {
+                    const name = profile.display_name || profile.full_name || 'Doctor';
+                    const displayName = name.startsWith('Dr.') ? name : 'Dr. ' + name;
+                    updateProfileDropdown({ full_name: displayName, email: profile.email || user.email });
+                }
+            } catch (err) {
+                console.error('Failed to load doctor info:', err);
+            }
+        }
+
+        async function loadPatients() {
+            try {
+                const { data: assigned } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .select('patient:patient_id (id, full_name)')
+                    .eq('doctor_id', doctorId);
+                
+                if (assigned && assigned.length > 0) {
+                    patients = assigned.map(a => a.patient).filter(Boolean);
+                } else {
+                    const { data: students } = await CognoSupabase.client
+                        .from('profiles')
+                        .select('id, full_name')
+                        .eq('role', 'student');
+                    patients = students || [];
+                }
+                
+                const select = document.getElementById('report-patient');
+                patients.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.textContent = p.full_name;
+                    select.appendChild(opt);
+                });
+            } catch (err) {
+                console.error('Failed to load patients:', err);
+            }
+        }
+
+        async function loadReports() {
+            const tbody = document.getElementById('reports-body');
+            tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading reports...</p></div></td></tr>`;
+            
+            console.log('Loading reports for doctor:', doctorId);
+            
+            try {
+                const { data, error } = await CognoSupabase.client
+                    .from('doctor_reports')
+                    .select(`
+                        id,
+                        title,
+                        report_type,
+                        content,
+                        assessment_data,
+                        recommendations,
+                        shared_with_parent,
+                        created_at,
+                        updated_at,
+                        patient:patient_id (id, full_name)
+                    `)
+                    .eq('doctor_id', doctorId)
+                    .order('created_at', { ascending: false });
+                
+                console.log('Reports query result:', { data, error });
+                
+                if (error) throw error;
+                
+                reports = (data || []).map(r => ({
+                    id: r.id,
+                    title: r.title,
+                    type: r.report_type,
+                    patient: r.patient?.full_name || 'Unknown',
+                    patient_id: r.patient?.id,
+                    date: r.created_at?.split('T')[0],
+                    status: r.shared_with_parent ? 'completed' : 'draft',
+                    content: r.content,
+                    assessment_data: r.assessment_data,
+                    recommendations: r.recommendations
+                }));
+                
+                console.log('Processed reports:', reports);
+                
+                updateStats();
+                renderReports(reports);
+            } catch (err) {
+                console.error('Failed to load reports:', err);
+                tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-exclamation-circle" style="color: #ef4444;"></i><p>Error: ${err.message}</p></div></td></tr>`;
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('total-reports').textContent = reports.length;
+            document.getElementById('completed-reports').textContent = reports.filter(r => r.status === 'completed').length;
+            document.getElementById('drafts-count').textContent = reports.filter(r => r.status === 'draft').length;
+        }
+
+        function renderReports(data) {
+            const tbody = document.getElementById('reports-body');
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-file-lines"></i>
+                                <p>No reports found</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            const typeIcons = {
+                assessment: 'fa-clipboard-check',
+                progress: 'fa-chart-line',
+                evaluation: 'fa-star',
+                discharge: 'fa-flag-checkered'
+            };
+            
+            tbody.innerHTML = data.map(r => {
+                const initials = r.patient.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+                return `
+                    <tr>
+                        <td>
+                            <div class="report-title-cell">
+                                <div class="report-icon"><i class="fa-solid ${typeIcons[r.type] || 'fa-file'}"></i></div>
+                                <div class="report-title">
+                                    <h4>${r.title}</h4>
+                                    <p>${capitalize(r.type)}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="patient-cell">
+                                <div class="patient-avatar">${initials}</div>
+                                <span>${r.patient}</span>
+                            </div>
+                        </td>
+                        <td>${formatDate(r.date)}</td>
+                        <td><span class="status-badge ${r.status}">${capitalize(r.status)}</span></td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn btn-icon" onclick="viewReport('${r.id}')"><i class="fa-solid fa-eye"></i></button>
+                                <button class="btn btn-icon" onclick="editReport('${r.id}')"><i class="fa-solid fa-edit"></i></button>
+                                <button class="btn btn-icon" onclick="downloadReport('${r.id}')"><i class="fa-solid fa-download"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openReportModal(type) {
+            document.getElementById('report-type').value = type;
+            document.getElementById('report-modal').classList.add('show');
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.remove('show');
+        }
+
+        async function saveDraft() {
+            const title = document.getElementById('report-title').value;
+            const patientId = document.getElementById('report-patient').value;
+            
+            if (!title) {
+                alert('Please enter a title');
+                return;
+            }
+            
+            try {
+                const { error } = await CognoSupabase.client
+                    .from('doctor_reports')
+                    .insert({
+                        doctor_id: doctorId,
+                        patient_id: patientId || null,
+                        report_type: document.getElementById('report-type').value,
+                        title: title,
+                        content: document.getElementById('report-summary').value,
+                        assessment_data: { 
+                            findings: document.getElementById('report-findings').value 
+                        },
+                        recommendations: [document.getElementById('report-recommendations').value],
+                        shared_with_parent: false
+                    });
+                
+                if (error) throw error;
+                
+                await loadReports();
+                closeReportModal();
+                clearReportForm();
+                alert('Draft saved!');
+            } catch (err) {
+                console.error('Failed to save draft:', err);
+                alert('Failed to save draft: ' + err.message);
+            }
+        }
+
+        async function saveReport() {
+            const title = document.getElementById('report-title').value;
+            const patientId = document.getElementById('report-patient').value;
+            
+            if (!title || !patientId) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            try {
+                const reportData = {
+                    doctor_id: doctorId,
+                    patient_id: patientId,
+                    report_type: document.getElementById('report-type').value,
+                    title: title,
+                    content: document.getElementById('report-summary').value,
+                    assessment_data: { 
+                        findings: document.getElementById('report-findings').value 
+                    },
+                    recommendations: [document.getElementById('report-recommendations').value],
+                    shared_with_parent: true
+                };
+                
+                // Check if we're editing an existing report
+                const editingId = document.getElementById('report-modal').dataset.editingId;
+                
+                if (editingId) {
+                    const { error } = await CognoSupabase.client
+                        .from('doctor_reports')
+                        .update(reportData)
+                        .eq('id', editingId);
+                    if (error) throw error;
+                } else {
+                    const { error } = await CognoSupabase.client
+                        .from('doctor_reports')
+                        .insert(reportData);
+                    if (error) throw error;
+                }
+                
+                await loadReports();
+                closeReportModal();
+                clearReportForm();
+                alert(editingId ? 'Report updated!' : 'Report created!');
+            } catch (err) {
+                console.error('Failed to save report:', err);
+                alert('Failed to save report: ' + err.message);
+            }
+        }
+        
+        function clearReportForm() {
+            document.getElementById('report-title').value = '';
+            document.getElementById('report-patient').value = '';
+            document.getElementById('report-type').value = 'assessment';
+            document.getElementById('report-summary').value = '';
+            document.getElementById('report-findings').value = '';
+            document.getElementById('report-recommendations').value = '';
+            delete document.getElementById('report-modal').dataset.editingId;
+        }
+
+        async function viewReport(id) {
+            const report = reports.find(r => r.id === id);
+            if (!report) return;
+            
+            const viewHtml = `
+                <div style="padding: 1.5rem;">
+                    <h3 style="margin-bottom: 1rem;">${report.title}</h3>
+                    <p style="color: #6b7280; margin-bottom: 1rem;"><strong>Patient:</strong> ${report.patient} | <strong>Type:</strong> ${capitalize(report.type)} | <strong>Date:</strong> ${formatDate(report.date)}</p>
+                    <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <h4 style="font-size: 0.9rem; color: #374151; margin-bottom: 0.5rem;">Summary</h4>
+                        <p style="font-size: 0.9rem;">${report.content || 'No summary provided'}</p>
+                    </div>
+                    <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <h4 style="font-size: 0.9rem; color: #374151; margin-bottom: 0.5rem;">Findings</h4>
+                        <p style="font-size: 0.9rem;">${report.assessment_data?.findings || 'No findings recorded'}</p>
+                    </div>
+                    <div style="background: #f9fafb; padding: 1rem; border-radius: 8px;">
+                        <h4 style="font-size: 0.9rem; color: #374151; margin-bottom: 0.5rem;">Recommendations</h4>
+                        <p style="font-size: 0.9rem;">${Array.isArray(report.recommendations) ? report.recommendations.join(', ') : 'None'}</p>
+                    </div>
+                </div>
+            `;
+            
+            showViewModal('Report Details', viewHtml);
+        }
+        
+        function showViewModal(title, content) {
+            let modal = document.getElementById('view-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'view-modal';
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content" style="max-width: 600px;">
+                        <div class="modal-header">
+                            <h2 id="view-modal-title"></h2>
+                            <button class="modal-close" onclick="document.getElementById('view-modal').classList.remove('show')">&times;</button>
+                        </div>
+                        <div id="view-modal-body"></div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+            document.getElementById('view-modal-title').textContent = title;
+            document.getElementById('view-modal-body').innerHTML = content;
+            modal.classList.add('show');
+        }
+        
+        function editReport(id) {
+            const report = reports.find(r => r.id === id);
+            if (!report) return;
+            
+            document.getElementById('report-modal').dataset.editingId = id;
+            document.getElementById('report-title').value = report.title;
+            document.getElementById('report-patient').value = report.patient_id || '';
+            document.getElementById('report-type').value = report.type;
+            document.getElementById('report-summary').value = report.content || '';
+            document.getElementById('report-findings').value = report.assessment_data?.findings || '';
+            document.getElementById('report-recommendations').value = Array.isArray(report.recommendations) ? report.recommendations.join('\n') : '';
+            
+            document.getElementById('report-modal').classList.add('show');
+        }
+        
+        function downloadReport(id) {
+            const report = reports.find(r => r.id === id);
+            if (!report) return;
+            
+            const content = `
+PATIENT REPORT
+==============
+
+Title: ${report.title}
+Patient: ${report.patient}
+Type: ${capitalize(report.type)}
+Date: ${formatDate(report.date)}
+Status: ${capitalize(report.status)}
+
+SUMMARY
+-------
+${report.content || 'No summary provided'}
+
+FINDINGS
+--------
+${report.assessment_data?.findings || 'No findings recorded'}
+
+RECOMMENDATIONS
+---------------
+${Array.isArray(report.recommendations) ? report.recommendations.join('\n') : 'None'}
+
+---
+Generated by Cogno Solution
+            `.trim();
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${report.title.replace(/[^a-z0-9]/gi, '_')}_report.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // Search & Filter
+        document.getElementById('search-input')?.addEventListener('input', filterReports);
+        document.getElementById('filter-type')?.addEventListener('change', filterReports);
+        document.getElementById('filter-status')?.addEventListener('change', filterReports);
+
+        function filterReports() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const type = document.getElementById('filter-type').value;
+            const status = document.getElementById('filter-status').value;
+            
+            let filtered = reports;
+            if (query) filtered = filtered.filter(r => r.title.toLowerCase().includes(query) || r.patient.toLowerCase().includes(query));
+            if (type) filtered = filtered.filter(r => r.type === type);
+            if (status) filtered = filtered.filter(r => r.status === status);
+            
+            renderReports(filtered);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1182 @@
+/* =====================================================
+   COGNO SOLUTION - Responsive Styles
+   Mobile-First Responsive Design
+   ===================================================== */
+
+/* =====================================================
+   BREAKPOINTS REFERENCE:
+   - xs: 0-479px (small phones)
+   - sm: 480-639px (large phones)
+   - md: 640-767px (tablets portrait)
+   - lg: 768-1023px (tablets landscape)
+   - xl: 1024-1279px (laptops)
+   - 2xl: 1280px+ (desktops)
+   ===================================================== */
+
+/* =====================================================
+   DASHBOARD SIDEBAR RESPONSIVE
+   ===================================================== */
+/* Sidebar toggle is globally hidden — sidebar replaced by bottom nav */
+.sidebar-toggle {
+    display: none !important;
+}
+
+/* Sidebar is hidden at all breakpoints — see style.css */
+.sidebar {
+    display: none !important;
+}
+
+/* Main content always full width */
+body.has-sidebar .main-content {
+    margin-left: 0;
+    width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .navbar-right {
+        gap: 0.25rem;
+    }
+
+    .btn-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+}
+
+/* =====================================================
+   EXTRA SMALL DEVICES (0 - 479px)
+   ===================================================== */
+@media screen and (max-width: 479px) {
+
+    /* Typography */
+    html {
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+    }
+
+    h4 {
+        font-size: 1.125rem;
+    }
+
+    /* Layout */
+    .container {
+        padding: 0 var(--spacing-md);
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: var(--spacing-md);
+        padding-top: calc(64px + var(--spacing-md));
+    }
+
+    /* Navigation */
+    .navbar,
+    .topbar {
+        padding: 0 var(--spacing-sm);
+        /* Reduce padding on mobile */
+        gap: var(--spacing-xs);
+        height: 56px;
+        /* Consistent height on mobile */
+    }
+
+    .navbar-left,
+    .topbar-left {
+        gap: var(--spacing-xs);
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .topbar-title,
+    .page-title {
+        font-size: 1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .breadcrumb {
+        font-size: 0.8rem;
+        /* Smaller font on small mobile */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+        /* Limit width to prevent pushing icons off screen */
+    }
+
+    .breadcrumb a,
+    .breadcrumb span {
+        display: inline-block;
+    }
+
+    .navbar-right,
+    .topbar-actions,
+    .topbar-right {
+        gap: 0;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Hide less critical icons on very small screens */
+    #accessibility-btn,
+    #dark-mode-toggle,
+    .navbar-right .search-wrapper {
+        display: none !important;
+    }
+
+    /* Make buttons smaller on mobile */
+    .btn-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .navbar .btn-sm,
+    .topbar .btn-sm {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+        height: 32px;
+    }
+
+    .user-menu-btn {
+        padding: 2px;
+    }
+
+    .user-menu-btn .avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    .navbar-menu {
+        display: none;
+    }
+
+    .navbar-brand span {
+        display: none;
+    }
+
+    /* Sidebar - Full Overlay */
+    .sidebar {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+
+    /* Cards */
+    .card-body {
+        padding: var(--spacing-md);
+    }
+
+    .card-header {
+        padding: var(--spacing-md);
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    /* Grids */
+    .grid-cols-2,
+    .grid-cols-3,
+    .grid-cols-4,
+    .grid-cols-5,
+    .grid-cols-6 {
+        grid-template-columns: 1fr;
+    }
+
+    /* Forms */
+    .form-input,
+    .form-textarea,
+    .form-select {
+        font-size: 16px;
+        /* Prevents zoom on iOS */
+    }
+
+    /* Buttons */
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-group {
+        flex-direction: column;
+    }
+
+    /* Tables */
+    .table th,
+    .table td {
+        padding: var(--spacing-sm);
+        font-size: var(--font-size-sm);
+    }
+
+    /* Modals */
+    .modal {
+        margin: var(--spacing-md);
+        max-height: calc(100vh - 32px);
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: var(--spacing-md);
+    }
+
+    /* Stats Cards */
+    .card-stat {
+        padding: var(--spacing-md);
+    }
+
+    .card-stat-icon {
+        width: 48px;
+        height: 48px;
+        font-size: var(--font-size-xl);
+    }
+
+    .card-stat-value {
+        font-size: var(--font-size-2xl);
+    }
+
+    /* Module Cards */
+    .module-card {
+        padding: var(--spacing-md);
+    }
+
+    .module-card-icon {
+        width: 60px;
+        height: 60px;
+        font-size: var(--font-size-2xl);
+    }
+
+    /* Toast */
+    .toast-container {
+        left: var(--spacing-md);
+        right: var(--spacing-md);
+    }
+
+    .toast {
+        min-width: auto;
+        width: 100%;
+    }
+
+    /* Tabs */
+    .tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tab {
+        padding: var(--spacing-sm) var(--spacing-md);
+        white-space: nowrap;
+    }
+
+    /* Hide on mobile */
+    .hide-xs {
+        display: none !important;
+    }
+}
+
+/* =====================================================
+   SMALL DEVICES (480px - 639px)
+   ===================================================== */
+@media screen and (min-width: 480px) and (max-width: 639px) {
+    html {
+        font-size: 15px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+
+    .container {
+        padding: 0 var(--spacing-lg);
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: var(--spacing-lg);
+        padding-top: calc(64px + var(--spacing-lg));
+    }
+
+    /* Sidebar hidden */
+    .sidebar {
+        display: none !important;
+    }
+
+    /* Grids */
+    .grid-cols-3,
+    .grid-cols-4,
+    .grid-cols-5,
+    .grid-cols-6 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Buttons */
+    .btn-group {
+        flex-wrap: wrap;
+    }
+
+    .btn-group .btn {
+        flex: 0 0 calc(50% - var(--spacing-xs));
+    }
+
+    /* Hide on small */
+    .hide-sm {
+        display: none !important;
+    }
+}
+
+/* =====================================================
+   MEDIUM DEVICES - Tablets Portrait (640px - 767px)
+   ===================================================== */
+@media screen and (min-width: 640px) and (max-width: 767px) {
+    .container {
+        padding: 0 var(--spacing-lg);
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: var(--spacing-lg);
+        padding-top: calc(64px + var(--spacing-lg));
+    }
+
+    /* Sidebar hidden */
+    .sidebar {
+        display: none !important;
+    }
+
+    /* Grids */
+    .grid-cols-4,
+    .grid-cols-5,
+    .grid-cols-6 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-cols-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Navbar */
+    .navbar-menu {
+        gap: var(--spacing-md);
+    }
+
+    .navbar-link span {
+        display: none;
+    }
+
+    /* Hide on medium */
+    .hide-md {
+        display: none !important;
+    }
+}
+
+/* =====================================================
+   LARGE DEVICES - Tablets Landscape (768px - 1023px)
+   ===================================================== */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    .main-content {
+        margin-left: 0;
+        padding: var(--spacing-xl);
+    }
+
+    /* Sidebar hidden */
+    .sidebar {
+        display: none !important;
+    }
+
+    /* Grids */
+    .grid-cols-5,
+    .grid-cols-6 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid-cols-4 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Hide on large */
+    .hide-lg {
+        display: none !important;
+    }
+}
+
+/* =====================================================
+   EXTRA LARGE DEVICES - Laptops (1024px - 1279px)
+   ===================================================== */
+@media screen and (min-width: 1024px) and (max-width: 1279px) {
+    .main-content {
+        margin-left: 0;
+        padding: var(--spacing-xl);
+    }
+
+    .sidebar {
+        display: none !important;
+    }
+
+    /* Grids */
+    .grid-cols-5,
+    .grid-cols-6 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* Hide on XL */
+    .hide-xl {
+        display: none !important;
+    }
+}
+
+/* =====================================================
+   2XL DEVICES - Desktops (1280px+)
+   ===================================================== */
+@media screen and (min-width: 1280px) {
+    .container {
+        max-width: 1280px;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: var(--spacing-2xl);
+    }
+
+    /* Hide on 2XL */
+    .hide-2xl {
+        display: none !important;
+    }
+}
+
+/* =====================================================
+   RESPONSIVE GRID UTILITIES
+   ===================================================== */
+/* Small screens and up */
+@media (min-width: 480px) {
+    .sm\:grid-cols-1 {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .sm\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sm\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Medium screens and up */
+@media (min-width: 640px) {
+    .md\:grid-cols-1 {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .md\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .md\:grid-cols-4 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Large screens and up */
+@media (min-width: 768px) {
+    .lg\:grid-cols-1 {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .lg\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .lg\:grid-cols-4 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .lg\:grid-cols-5 {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* XL screens and up */
+@media (min-width: 1024px) {
+    .xl\:grid-cols-1 {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .xl\:grid-cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .xl\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .xl\:grid-cols-4 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .xl\:grid-cols-5 {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .xl\:grid-cols-6 {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+/* =====================================================
+   RESPONSIVE FLEX UTILITIES
+   ===================================================== */
+@media (max-width: 639px) {
+    .flex-col-mobile {
+        flex-direction: column;
+    }
+
+    .flex-wrap-mobile {
+        flex-wrap: wrap;
+    }
+}
+
+@media (min-width: 640px) {
+    .md\:flex-row {
+        flex-direction: row;
+    }
+
+    .md\:flex-col {
+        flex-direction: column;
+    }
+}
+
+@media (min-width: 768px) {
+    .lg\:flex-row {
+        flex-direction: row;
+    }
+
+    .lg\:flex-col {
+        flex-direction: column;
+    }
+}
+
+/* =====================================================
+   RESPONSIVE TEXT UTILITIES
+   ===================================================== */
+@media (max-width: 639px) {
+    .text-center-mobile {
+        text-align: center;
+    }
+}
+
+@media (min-width: 640px) {
+    .md\:text-left {
+        text-align: left;
+    }
+
+    .md\:text-center {
+        text-align: center;
+    }
+
+    .md\:text-right {
+        text-align: right;
+    }
+}
+
+/* =====================================================
+   RESPONSIVE SPACING UTILITIES
+   ===================================================== */
+@media (max-width: 479px) {
+    .xs\:p-0 {
+        padding: 0;
+    }
+
+    .xs\:p-sm {
+        padding: var(--spacing-sm);
+    }
+
+    .xs\:p-md {
+        padding: var(--spacing-md);
+    }
+
+    .xs\:mt-md {
+        margin-top: var(--spacing-md);
+    }
+
+    .xs\:mb-md {
+        margin-bottom: var(--spacing-md);
+    }
+}
+
+@media (min-width: 480px) {
+    .sm\:p-lg {
+        padding: var(--spacing-lg);
+    }
+
+    .sm\:mt-lg {
+        margin-top: var(--spacing-lg);
+    }
+
+    .sm\:mb-lg {
+        margin-bottom: var(--spacing-lg);
+    }
+}
+
+@media (min-width: 768px) {
+    .lg\:p-xl {
+        padding: var(--spacing-xl);
+    }
+
+    .lg\:mt-xl {
+        margin-top: var(--spacing-xl);
+    }
+
+    .lg\:mb-xl {
+        margin-bottom: var(--spacing-xl);
+    }
+}
+
+/* =====================================================
+   MOBILE NAVIGATION
+   ===================================================== */
+.mobile-menu-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    transition: background var(--transition-fast);
+}
+
+.mobile-menu-toggle:hover {
+    background: var(--bg-secondary);
+}
+
+@media (max-width: 767px) {
+    .mobile-menu-toggle {
+        display: flex;
+    }
+}
+
+.mobile-menu-icon span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: currentColor;
+    margin: 5px 0;
+    transition: all var(--transition-fast);
+}
+
+.mobile-menu-toggle.active .mobile-menu-icon span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.mobile-menu-toggle.active .mobile-menu-icon span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active .mobile-menu-icon span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* Mobile Sidebar Overlay */
+.sidebar-overlay {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-base);
+    z-index: calc(var(--z-sticky) - 1);
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+@media (min-width: 768px) {
+    .sidebar-overlay {
+        display: none;
+    }
+}
+
+/* =====================================================
+   RESPONSIVE DASHBOARD LAYOUT
+   ===================================================== */
+.dashboard-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+@media (min-width: 640px) {
+    .dashboard-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+    .dashboard-stats {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* =====================================================
+   RESPONSIVE AUTH PAGES
+   ===================================================== */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: stretch;
+}
+
+.auth-left,
+.auth-right {
+    flex: 1;
+}
+
+.auth-left {
+    display: none;
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #1D4ED8 100%);
+    padding: var(--spacing-2xl);
+    color: var(--white);
+}
+
+.auth-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl);
+}
+
+.auth-form-container {
+    width: 100%;
+    max-width: 400px;
+}
+
+@media (min-width: 1024px) {
+    .auth-left {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+/* =====================================================
+   RESPONSIVE MODULE GAME LAYOUT
+   ===================================================== */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.game-main {
+    flex: 1;
+}
+
+.game-sidebar {
+    width: 100%;
+}
+
+@media (min-width: 1024px) {
+    .game-container {
+        flex-direction: row;
+    }
+
+    .game-sidebar {
+        width: 320px;
+        flex-shrink: 0;
+    }
+}
+
+/* =====================================================
+   RESPONSIVE VIDEO CONSULTATION
+   ===================================================== */
+.video-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+}
+
+.video-main {
+    aspect-ratio: 16/9;
+    background: var(--text-primary);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+}
+
+.video-participants {
+    display: flex;
+    gap: var(--spacing-md);
+    overflow-x: auto;
+    padding-bottom: var(--spacing-sm);
+}
+
+.video-participant {
+    width: 120px;
+    flex-shrink: 0;
+    aspect-ratio: 16/9;
+    background: var(--text-primary);
+    border-radius: var(--radius-lg);
+}
+
+@media (min-width: 768px) {
+    .video-grid {
+        grid-template-columns: 1fr 200px;
+    }
+
+    .video-participants {
+        flex-direction: column;
+        overflow-x: visible;
+    }
+
+    .video-participant {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .video-grid {
+        grid-template-columns: 1fr 280px;
+    }
+}
+
+/* =====================================================
+   PRINT STYLES
+   ===================================================== */
+@media print {
+
+    .navbar,
+    .sidebar,
+    .mobile-menu-toggle,
+    .btn,
+    .toast-container {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+
+    .card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: underline;
+    }
+
+    body {
+        font-size: 12pt;
+        color: #000;
+        background: #fff;
+    }
+}
+
+/* =====================================================
+   LANDSCAPE ORIENTATION
+   ===================================================== */
+@media (max-height: 500px) and (orientation: landscape) {
+    .auth-page {
+        min-height: auto;
+        padding: var(--spacing-md) 0;
+    }
+
+    .modal {
+        max-height: 95vh;
+    }
+
+    .game-container {
+        max-height: calc(100vh - 64px - 32px);
+        overflow: hidden;
+    }
+}
+
+/* =====================================================
+   RESPONSIVE ACTIVITY NAVBAR
+   ===================================================== */
+.activity-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--white);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dark-mode .activity-navbar {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.activity-navbar .back-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    transition: all 0.2s;
+    font-size: 1.125rem;
+}
+
+.dark-mode .activity-navbar .back-btn {
+    background: #334155 !important;
+    color: #f1f5f9 !important;
+}
+
+.activity-navbar .back-btn:active {
+    transform: scale(0.9);
+}
+
+.activity-title-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.activity-category {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.activity-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dark-mode .activity-name {
+    color: #f1f5f9 !important;
+}
+
+.activity-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+
+.dark-mode .action-btn {
+    color: #94a3b8;
+}
+
+@media (min-width: 769px) {
+    .activity-navbar {
+        display: none !important;
+    }
+}
+
+/* =====================================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ===================================================== */
+@media (hover: none) and (pointer: coarse) {
+
+    /* Learning Module Activities */
+    .activity-container {
+        padding: var(--spacing-md) !important;
+        height: auto !important;
+        min-height: calc(100vh - var(--mobile-header-height, 56px));
+        margin-top: calc(var(--mobile-header-height, 56px)) !important;
+        padding-bottom: 5rem !important;
+        display: flex;
+        flex-direction: column !important;
+    }
+
+    .activity-header,
+    .topbar,
+    .navbar-container,
+    .module-header:not(.mobile-header) {
+        display: none !important;
+        /* Replaced by standardized mobile header */
+    }
+
+    .activity-sidebar {
+        width: 100% !important;
+        height: auto !important;
+        border-right: none !important;
+        border-bottom: 2px solid var(--color-border, var(--border)) !important;
+        padding: var(--spacing-md) !important;
+        margin-bottom: var(--spacing-md) !important;
+    }
+
+    .activity-main {
+        padding: 0 !important;
+        flex: 1;
+    }
+
+    .activity-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-xs) !important;
+    }
+
+    .reading-content {
+        padding: var(--spacing-md) !important;
+        font-size: 1.1rem !important;
+        line-height: var(--line-height-relaxed) !important;
+    }
+
+    /* Tracing and Drawing specific */
+    .tracing-box {
+        padding: var(--spacing-md) !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .canvas-wrapper {
+        width: 100% !important;
+        margin: var(--spacing-md) 0 !important;
+        aspect-ratio: 2/1;
+        overflow: hidden;
+    }
+
+    canvas {
+        max-width: 100% !important;
+        height: auto !important;
+        width: 100% !important;
+    }
+
+    .letter-display {
+        font-size: 3rem !important;
+    }
+
+    /* Mobile Interaction Fixes */
+    .button-group,
+    .game-buttons,
+    .activity-controls {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: var(--spacing-xs) !important;
+    }
+
+    .button-control,
+    .btn-control {
+        flex: 1;
+        min-width: 120px;
+        justify-content: center;
+    }
+
+    /* Larger touch targets */
+    .btn {
+        min-height: 48px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+        min-height: 52px;
+    }
+
+    .sidebar-link {
+        padding: var(--spacing-md);
+    }
+
+    .dropdown-item {
+        padding: var(--spacing-md);
+    }
+
+    /* Remove hover effects that don't work on touch */
+    .card:hover {
+        transform: none;
+    }
+
+    .module-card:hover {
+        transform: none;
+    }
+
+    /* Disable sidebar hover expansion on touch */
+    .sidebar:hover {
+        width: 80px;
+    }
+}
+
+/* =====================================================
+   HIGH RESOLUTION DISPLAYS
+   ===================================================== */
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+
+    /* Thinner borders for retina */
+    .card,
+    .form-input,
+    .btn {
+        border-width: 0.5px;
+    }
+}

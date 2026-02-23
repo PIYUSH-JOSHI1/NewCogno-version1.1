@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Hub - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --light: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--dark);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Gradient Background */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #312e81, #1e1b4b, #0f172a);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float linear infinite;
+            opacity: 0.6;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        /* Mouse Glow */
+        .mouse-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s;
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Navigation */
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .nav-brand img {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: white;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .nav-profile .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .nav-profile .avatar:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            position: relative;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(99,102,241,0.2);
+            border: 1px solid rgba(99,102,241,0.3);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            margin-bottom: 25px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(99,102,241,0); }
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #818cf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            color: rgba(255,255,255,0.7);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        
+        /* Typing Effect */
+        .typing-container {
+            height: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .typing-text {
+            font-size: 1.3rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+        
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 25px;
+            background: var(--accent);
+            margin-left: 3px;
+            animation: blink 0.7s infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* Stats Counter */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+        
+        /* Daily Challenge Wheel */
+        .challenge-section {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 40px;
+            margin-bottom: 60px;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .wheel-container {
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .spin-wheel {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #ef4444 0deg 60deg,
+                #f59e0b 60deg 120deg,
+                #10b981 120deg 180deg,
+                #3b82f6 180deg 240deg,
+                #8b5cf6 240deg 300deg,
+                #ec4899 300deg 360deg
+            );
+            position: relative;
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            box-shadow: 0 0 30px rgba(99,102,241,0.3), inset 0 0 50px rgba(0,0,0,0.3);
+        }
+        
+        .spin-wheel::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: var(--dark);
+            border-radius: 50%;
+            border: 4px solid white;
+            z-index: 2;
+        }
+        
+        .wheel-pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid white;
+            z-index: 3;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+        }
+        
+        .spin-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            z-index: 5;
+            transition: transform 0.3s;
+        }
+        
+        .spin-btn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .challenge-content {
+            flex: 1;
+        }
+        
+        .challenge-content h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .challenge-content p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 25px;
+        }
+        
+        .challenge-result {
+            background: rgba(99,102,241,0.2);
+            border: 1px solid rgba(99,102,241,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            display: none;
+        }
+        
+        .challenge-result.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .challenge-result h3 {
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        
+        .challenge-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .challenge-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(99,102,241,0.4);
+        }
+        
+        /* Module Cards */
+        .modules-section {
+            margin-bottom: 60px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+        
+        .module-card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+        
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--card-color);
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+        
+        .module-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .module-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            border-color: var(--card-color);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 30px rgba(var(--card-rgb), 0.2);
+        }
+        
+        .module-card.dyslexia { --card-color: #3b82f6; --card-rgb: 59,130,246; }
+        .module-card.dyscalculia { --card-color: #f59e0b; --card-rgb: 245,158,11; }
+        .module-card.dysgraphia { --card-color: #8b5cf6; --card-rgb: 139,92,246; }
+        .module-card.dyspraxia { --card-color: #10b981; --card-rgb: 16,185,129; }
+        
+        .module-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--card-color), rgba(255,255,255,0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .module-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        
+        .module-card p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        
+        .module-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .module-stats span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Worksheets Grid */
+        .worksheets-section {
+            margin-bottom: 60px;
+        }
+        
+        .worksheets-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+        
+        .worksheet-card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .worksheet-card:hover {
+            transform: translateX(10px);
+            border-color: var(--primary);
+            background: rgba(99,102,241,0.1);
+        }
+        
+        .worksheet-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+        
+        .worksheet-icon.blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .worksheet-icon.orange { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .worksheet-icon.purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .worksheet-icon.green { background: linear-gradient(135deg, #10b981, #047857); }
+        
+        .worksheet-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        
+        .worksheet-info p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+        
+        .worksheet-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16,185,129,0.2);
+            color: #10b981;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        /* AI Mascot */
+        .ai-mascot {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+        
+        .mascot-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 10px 40px rgba(99,102,241,0.4);
+            animation: bounce 2s infinite;
+            position: relative;
+        }
+        
+        .mascot-btn::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            animation: ripple 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+        
+        .mascot-chat {
+            position: absolute;
+            bottom: 85px;
+            right: 0;
+            width: 350px;
+            background: rgba(15,23,42,0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 25px;
+            display: none;
+            animation: chatSlide 0.3s ease;
+        }
+        
+        .mascot-chat.show {
+            display: block;
+        }
+        
+        @keyframes chatSlide {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .mascot-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .mascot-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .mascot-header h4 {
+            font-size: 1.1rem;
+        }
+        
+        .mascot-header span {
+            font-size: 0.8rem;
+            color: #10b981;
+        }
+        
+        .mascot-message {
+            background: rgba(99,102,241,0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .quick-action {
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quick-action:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 9999;
+            animation: confettiFall 3s linear forwards;
+        }
+        
+        @keyframes confettiFall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        /* Sound Toggle */
+        .sound-toggle {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+        
+        .sound-toggle:hover {
+            background: var(--primary);
+        }
+        
+        /* Achievements Section */
+        .achievements-section {
+            margin-bottom: 100px;
+        }
+        
+        .streak-counter {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            animation: pulse 2s infinite;
+        }
+        
+        .streak-counter i {
+            font-size: 1.3rem;
+            animation: flicker 0.5s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            from { opacity: 0.7; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1.1); }
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+        
+        .achievement-card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .achievement-card.unlocked {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(245,158,11,0.2);
+        }
+        
+        .achievement-card.unlocked::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: conic-gradient(from 0deg, transparent, rgba(245,158,11,0.3), transparent);
+            animation: rotate 4s linear infinite;
+        }
+        
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+        
+        .achievement-card.unlocked::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: rgba(15,23,42,0.95);
+            border-radius: 22px;
+        }
+        
+        .achievement-card > * {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .achievement-card.locked {
+            opacity: 0.6;
+            filter: grayscale(50%);
+        }
+        
+        .achievement-card.mystery .achievement-badge {
+            animation: mystery 3s ease-in-out infinite;
+        }
+        
+        @keyframes mystery {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(5deg); }
+            75% { transform: scale(0.9) rotate(-5deg); }
+        }
+        
+        .achievement-card:hover {
+            transform: translateY(-10px) scale(1.02);
+        }
+        
+        .achievement-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, var(--accent), transparent);
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .achievement-badge {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: badgePop 0.5s ease;
+        }
+        
+        .achievement-card.unlocked .achievement-badge {
+            animation: shine 3s ease-in-out infinite;
+        }
+        
+        @keyframes shine {
+            0%, 100% { filter: drop-shadow(0 0 5px rgba(245,158,11,0.5)); }
+            50% { filter: drop-shadow(0 0 20px rgba(245,158,11,0.8)); }
+        }
+        
+        .achievement-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .achievement-card p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .achievement-date {
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .achievement-progress {
+            margin-top: 10px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            display: block;
+            height: 100%;
+            width: var(--progress);
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            animation: progressGrow 1s ease-out;
+        }
+        
+        @keyframes progressGrow {
+            from { width: 0; }
+        }
+        
+        .achievement-progress span {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        /* XP Progress Bar */
+        .xp-bar-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px 30px;
+            background: rgba(15,23,42,0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 50;
+        }
+        
+        .xp-bar {
+            max-width: 800px;
+            margin: 0 auto;
+            height: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .xp-fill {
+            height: 100%;
+            width: 62.5%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            background-size: 200% 100%;
+            border-radius: 20px;
+            animation: xpShine 2s ease-in-out infinite;
+            position: relative;
+        }
+        
+        .xp-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes xpShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .xp-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .xp-level {
+            background: var(--dark);
+            padding: 3px 12px;
+            border-radius: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .modules-grid { grid-template-columns: repeat(2, 1fr); }
+            .achievements-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .stats-bar { flex-wrap: wrap; gap: 30px; }
+            .challenge-section { flex-direction: column; text-align: center; }
+            .modules-grid { grid-template-columns: 1fr; }
+            .worksheets-grid { grid-template-columns: 1fr; }
+            .achievements-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .xp-bar-container { padding: 10px 15px; }
+            .section-header { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animated"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Mouse Glow -->
+    <div class="mouse-glow" id="mouseGlow"></div>
+    
+    <!-- Sound Toggle -->
+    <button class="sound-toggle" id="soundToggle" title="Toggle Sound">
+        <i class="fa-solid fa-volume-high"></i>
+    </button>
+    
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-brand">
+                <img src="../assets/images/icons/logo.svg" alt="Cogno" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><circle cx=%2220%22 cy=%2220%22 r=%2218%22 fill=%22%236366f1%22/><text x=%2220%22 y=%2226%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2218%22 font-weight=%22bold%22>C</text></svg>'">
+                <span>Cogno</span>
+            </div>
+            <div class="nav-links">
+                <a href="../dashboard/child-dashboard.html"><i class="fa-solid fa-home"></i> Dashboard</a>
+                <a href="#modules">Modules</a>
+                <a href="#worksheets">Worksheets</a>
+                <a href="../progress/">Progress</a>
+            </div>
+            <div class="nav-profile">
+                <img src="../assets/images/avatars/default.svg" class="avatar" alt="Profile" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><circle cx=%2220%22 cy=%2220%22 r=%2218%22 fill=%22%234f46e5%22/><text x=%2220%22 y=%2226%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2216%22>👤</text></svg>'">
+            </div>
+        </nav>
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-badge">
+                <i class="fa-solid fa-sparkles"></i>
+                <span>Your Learning Adventure Awaits</span>
+            </div>
+            <h1>Learning Hub</h1>
+            <p>Discover amazing resources, fun activities, and tools designed just for you!</p>
+            
+            <div class="typing-container">
+                <span class="typing-text" id="typingText"></span>
+                <span class="typing-cursor"></span>
+            </div>
+            
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number" data-count="35">0</div>
+                    <div class="stat-label">Activities</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="4">0</div>
+                    <div class="stat-label">Learning Modules</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="12">0</div>
+                    <div class="stat-label">Worksheets</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="500">0</div>
+                    <div class="stat-label">Happy Learners</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Daily Challenge Wheel -->
+        <section class="challenge-section">
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <div class="spin-wheel" id="spinWheel"></div>
+                <button class="spin-btn" id="spinBtn">SPIN</button>
+            </div>
+            <div class="challenge-content">
+                <h2>🎯 Daily Challenge</h2>
+                <p>Spin the wheel to discover today's fun learning challenge! Complete it to earn bonus XP and unlock special rewards.</p>
+                <div class="challenge-result" id="challengeResult">
+                    <h3 id="challengeTitle">Your Challenge:</h3>
+                    <p id="challengeDesc"></p>
+                    <button class="challenge-btn" id="startChallenge">
+                        <i class="fa-solid fa-play"></i>
+                        Start Challenge
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Learning Modules -->
+        <section class="modules-section" id="modules">
+            <div class="section-header">
+                <h2>🚀 Learning Modules</h2>
+            </div>
+            <div class="modules-grid">
+                <div class="module-card dyslexia" onclick="navigateTo('../modules/dyslexia/')">
+                    <div class="module-icon">📚</div>
+                    <h3>Reading & Words</h3>
+                    <p>Fun phonics games, word puzzles, and reading adventures</p>
+                    <div class="module-stats">
+                        <span><i class="fa-solid fa-gamepad"></i> 10 Games</span>
+                        <span><i class="fa-solid fa-star"></i> Popular</span>
+                    </div>
+                </div>
+                <div class="module-card dyscalculia" onclick="navigateTo('../modules/dyscalculia/')">
+                    <div class="module-icon">🔢</div>
+                    <h3>Numbers & Math</h3>
+                    <p>Interactive math games with visual learning</p>
+                    <div class="module-stats">
+                        <span><i class="fa-solid fa-gamepad"></i> 8 Games</span>
+                        <span><i class="fa-solid fa-fire"></i> Hot</span>
+                    </div>
+                </div>
+                <div class="module-card dysgraphia" onclick="navigateTo('../modules/dysgraphia/')">
+                    <div class="module-icon">✏️</div>
+                    <h3>Writing Practice</h3>
+                    <p>Creative writing exercises and tracing activities</p>
+                    <div class="module-stats">
+                        <span><i class="fa-solid fa-gamepad"></i> 7 Games</span>
+                        <span><i class="fa-solid fa-wand-magic-sparkles"></i> New</span>
+                    </div>
+                </div>
+                <div class="module-card dyspraxia" onclick="navigateTo('../modules/dyspraxia/')">
+                    <div class="module-icon">🎮</div>
+                    <h3>Movement Games</h3>
+                    <p>Camera-based games for motor skills</p>
+                    <div class="module-stats">
+                        <span><i class="fa-solid fa-gamepad"></i> 10 Games</span>
+                        <span><i class="fa-solid fa-camera"></i> AR</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Worksheets -->
+        <section class="worksheets-section" id="worksheets">
+            <div class="section-header">
+                <h2>📄 Printable Worksheets</h2>
+            </div>
+            <div class="worksheets-grid">
+                <a href="worksheets/dyslexia-phonics-worksheet.html" class="worksheet-card">
+                    <div class="worksheet-icon blue">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <div class="worksheet-info">
+                        <h3>Phonics Worksheet</h3>
+                        <p>Sound blending, rhyming & letter recognition</p>
+                        <span class="worksheet-badge"><i class="fa-solid fa-print"></i> 2 Pages</span>
+                    </div>
+                </a>
+                <a href="worksheets/dyscalculia-number-sense.html" class="worksheet-card">
+                    <div class="worksheet-icon orange">
+                        <i class="fa-solid fa-calculator"></i>
+                    </div>
+                    <div class="worksheet-info">
+                        <h3>Number Sense</h3>
+                        <p>Counting, place value & Indian currency</p>
+                        <span class="worksheet-badge"><i class="fa-solid fa-print"></i> 3 Pages</span>
+                    </div>
+                </a>
+                <a href="worksheets/dysgraphia-handwriting-worksheet.html" class="worksheet-card">
+                    <div class="worksheet-icon purple">
+                        <i class="fa-solid fa-pen"></i>
+                    </div>
+                    <div class="worksheet-info">
+                        <h3>Handwriting Practice</h3>
+                        <p>Letter formation, Hindi script & spacing</p>
+                        <span class="worksheet-badge"><i class="fa-solid fa-print"></i> 3 Pages</span>
+                    </div>
+                </a>
+                <a href="worksheets/dyspraxia-motor-skills-worksheet.html" class="worksheet-card">
+                    <div class="worksheet-icon green">
+                        <i class="fa-solid fa-person-running"></i>
+                    </div>
+                    <div class="worksheet-info">
+                        <h3>Motor Skills</h3>
+                        <p>Gross motor, fine motor & daily living</p>
+                        <span class="worksheet-badge"><i class="fa-solid fa-print"></i> 3 Pages</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+        
+        <!-- Achievements Section -->
+        <section class="achievements-section" id="achievements">
+            <div class="section-header">
+                <h2>🏆 Your Achievements</h2>
+                <div class="streak-counter">
+                    <i class="fa-solid fa-fire"></i>
+                    <span id="streakCount">7</span> Day Streak!
+                </div>
+            </div>
+            <div class="achievements-grid">
+                <div class="achievement-card unlocked" onclick="showAchievement(this)">
+                    <div class="achievement-glow"></div>
+                    <div class="achievement-badge">🌟</div>
+                    <h4>First Steps</h4>
+                    <p>Complete your first activity</p>
+                    <div class="achievement-date">Earned: Today</div>
+                </div>
+                <div class="achievement-card unlocked" onclick="showAchievement(this)">
+                    <div class="achievement-glow"></div>
+                    <div class="achievement-badge">📚</div>
+                    <h4>Bookworm</h4>
+                    <p>Read 5 stories</p>
+                    <div class="achievement-date">Earned: Yesterday</div>
+                </div>
+                <div class="achievement-card unlocked" onclick="showAchievement(this)">
+                    <div class="achievement-glow"></div>
+                    <div class="achievement-badge">🔢</div>
+                    <h4>Math Wizard</h4>
+                    <p>Score 100% in math quiz</p>
+                    <div class="achievement-date">Earned: 2 days ago</div>
+                </div>
+                <div class="achievement-card locked">
+                    <div class="achievement-badge">🎯</div>
+                    <h4>Perfect Aim</h4>
+                    <p>Pop 50 balloons</p>
+                    <div class="achievement-progress">
+                        <div class="progress-bar" style="--progress: 70%"></div>
+                        <span>35/50</span>
+                    </div>
+                </div>
+                <div class="achievement-card locked">
+                    <div class="achievement-badge">✨</div>
+                    <h4>Week Warrior</h4>
+                    <p>7 day learning streak</p>
+                    <div class="achievement-progress">
+                        <div class="progress-bar" style="--progress: 100%"></div>
+                        <span>7/7 - Almost!</span>
+                    </div>
+                </div>
+                <div class="achievement-card locked mystery">
+                    <div class="achievement-badge">❓</div>
+                    <h4>Mystery Badge</h4>
+                    <p>Keep exploring to unlock!</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- XP Progress Bar (Fixed Bottom) -->
+        <div class="xp-bar-container">
+            <div class="xp-bar">
+                <div class="xp-fill" id="xpFill"></div>
+                <div class="xp-text">
+                    <span class="xp-level">Level 5</span>
+                    <span class="xp-points">1,250 / 2,000 XP</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI Mascot -->
+    <div class="ai-mascot">
+        <div class="mascot-chat" id="mascotChat">
+            <div class="mascot-header">
+                <div class="mascot-avatar">🤖</div>
+                <div>
+                    <h4>Cogno Bot</h4>
+                    <span>● Online</span>
+                </div>
+            </div>
+            <div class="mascot-message" id="mascotMessage">
+                Hey there! 👋 I'm Cogno Bot, your learning buddy! How can I help you today?
+            </div>
+            <div class="quick-actions">
+                <button class="quick-action" onclick="mascotAction('reading')">📚 Reading Help</button>
+                <button class="quick-action" onclick="mascotAction('math')">🔢 Math Tips</button>
+                <button class="quick-action" onclick="mascotAction('writing')">✏️ Writing</button>
+                <button class="quick-action" onclick="mascotAction('games')">🎮 Games</button>
+            </div>
+        </div>
+        <button class="mascot-btn" id="mascotBtn">🤖</button>
+    </div>
+    
+    <script>
+        // Sound effects
+        const sounds = {
+            click: new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleVdBb6bT4tikaU1FXX+mr8bOxLaokJKaj5Rne255eICGh4KDgoqJiYiLio+MjIyNjY6Oko6PkZGSk5OSkpGQkJGPjo+OjY2MjIyLioqKiYmJiIiHh4aFhYSEg4OCgoGBgH9/fn59fXx8e3t7enp5eXh4d3d3dnZ1dXR0c3NycnFxcHBvb25ubW1sbGtramppaWhoZ2dmZmVlZGRjY2JiYWFgYF9fXl5dXVxcW1taWllZWFhXV1ZWVVVUVFNTUlJRUVBQT09OTk1NTExLS0pKSUlISEdHRkZFRUREQ0NCQkFBQEA/Pz4+PT08PDs7Ojo5OTg4Nzc2NjU1NDQzMzIyMTEwMC8vLi4tLS0sLCsrKiopKSgoJycmJiUlJCQjIyIiISEgIB8fHh4dHRwcGxsaGhkZGBgXFxYWFRUUFBMTEhIRERAQDw8ODg0NDAwLCwoKCQkICCcG'),
+            spin: new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleVdBb6bT4tikaU1FXX+mr8bOxLaokJKaj5Rne255eICGh4KDgoqJiYiLio+MjIyNjY6Oko6PkZGSk5OSkpGQkJGPjo+OjY2MjIyLioqKiYmJiIiHh4aFhYSEg4OCgoGBgH9/fn59fXx8e3t7enp5eXh4d3d3dnZ1dXR0c3NycnFxcHBvb25ubW1sbGtramppaWhoZ2dmZmVlZGRjY2JiYWFgYF9fXl5dXVxcW1taWllZWFhXV1ZWVVVUVFNTUlJRUVBQT09OTk1NTExLS0pKSUlISEdHRkZFRUREQ0NCQkFBQEA/Pz4+PT08PDs7Ojo5OTg4Nzc2NjU1NDQzMzIyMTEwMC8vLi4tLS0sLCsrKiopKSgoJycmJiUlJCQjIyIiISEgIB8fHh4dHRwcGxsaGhkZGBgXFxYWFRUUFBMTEhIRERAQDw8ODg0NDAwLCwoKCQkICCcG'),
+            success: new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleVdBb6bT4tikaU1FXX+mr8bOxLaokJKaj5Rne255eICGh4KDgoqJiYiLio+MjIyNjY6Oko6PkZGSk5OSkpGQkJGPjo+OjY2MjIyLioqKiYmJiIiHh4aFhYSEg4OCgoGBgH9/fn59fXx8e3t7enp5eXh4d3d3dnZ1dXR0c3NycnFxcHBvb25ubW1sbGtramppaWhoZ2dmZmVlZGRjY2JiYWFgYF9fXl5dXVxcW1taWllZWFhXV1ZWVVVUVFNTUlJRUVBQT09OTk1NTExLS0pKSUlISEdHRkZFRUREQ0NCQkFBQEA/Pz4+PT08PDs7Ojo5OTg4Nzc2NjU1NDQzMzIyMTEwMC8vLi4tLS0sLCsrKiopKSgoJycmJiUlJCQjIyIiISEgIB8fHh4dHRwcGxsaGhkZGBgXFxYWFRUUFBMTEhIRERAQDw8ODg0NDAwLCwoKCQkICCcG')
+        };
+        
+        let soundEnabled = true;
+        
+        function playSound(name) {
+            if (soundEnabled && sounds[name]) {
+                sounds[name].currentTime = 0;
+                sounds[name].play().catch(() => {});
+            }
+        }
+        
+        // Sound toggle
+        document.getElementById('soundToggle').addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            const icon = document.querySelector('#soundToggle i');
+            icon.className = soundEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark';
+        });
+        
+        // Floating Particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const colors = ['#6366f1', '#8b5cf6', '#f59e0b', '#10b981', '#ec4899'];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 10 + 5 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.animationDuration = Math.random() * 10 + 10 + 's';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+        
+        // Mouse Glow
+        document.addEventListener('mousemove', (e) => {
+            const glow = document.getElementById('mouseGlow');
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+        
+        // Typing Effect
+        const phrases = [
+            "Every child can learn! 🌟",
+            "Learning is an adventure! 🚀",
+            "You are amazing! 💪",
+            "Small steps, big progress! 📈",
+            "Believe in yourself! ✨"
+        ];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        
+        function typeEffect() {
+            const element = document.getElementById('typingText');
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                element.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                element.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+            
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                setTimeout(() => isDeleting = true, 2000);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+            }
+            
+            setTimeout(typeEffect, isDeleting ? 50 : 100);
+        }
+        typeEffect();
+        
+        // Stats Counter
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const target = parseInt(counter.dataset.count);
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+                
+                const updateCounter = () => {
+                    current += step;
+                    if (current < target) {
+                        counter.textContent = Math.floor(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target + '+';
+                    }
+                };
+                updateCounter();
+            });
+        }
+        
+        // Intersection Observer for counters
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.disconnect();
+                }
+            });
+        });
+        observer.observe(document.querySelector('.stats-bar'));
+        
+        // Spin Wheel
+        const challenges = [
+            { title: "🎯 Word Hunter", desc: "Find 5 words that start with the letter 'S'", link: "../modules/dyslexia/" },
+            { title: "🔢 Number Ninja", desc: "Solve 3 addition puzzles in under 2 minutes", link: "../modules/dyscalculia/" },
+            { title: "✏️ Writing Wizard", desc: "Practice writing your name 3 times beautifully", link: "../modules/dysgraphia/" },
+            { title: "🎮 Movement Master", desc: "Play the Mirror Me game and match 5 poses", link: "../modules/dyspraxia/mirror-me.html" },
+            { title: "📚 Story Explorer", desc: "Read a short story and answer 3 questions", link: "../modules/dyslexia/" },
+            { title: "🎨 Creative Challenge", desc: "Draw and label 5 shapes", link: "../modules/dysgraphia/" }
+        ];
+        
+        let isSpinning = false;
+        
+        document.getElementById('spinBtn').addEventListener('click', () => {
+            if (isSpinning) return;
+            isSpinning = true;
+            
+            playSound('spin');
+            
+            const wheel = document.getElementById('spinWheel');
+            const randomDeg = Math.floor(Math.random() * 360) + 1800; // At least 5 full spins
+            wheel.style.transform = `rotate(${randomDeg}deg)`;
+            
+            setTimeout(() => {
+                const resultIndex = Math.floor(((360 - (randomDeg % 360)) / 60)) % 6;
+                const challenge = challenges[resultIndex];
+                
+                document.getElementById('challengeTitle').textContent = challenge.title;
+                document.getElementById('challengeDesc').textContent = challenge.desc;
+                document.getElementById('challengeResult').classList.add('show');
+                document.getElementById('startChallenge').onclick = () => window.location.href = challenge.link;
+                
+                createConfetti();
+                playSound('success');
+                isSpinning = false;
+            }, 4000);
+        });
+        
+        // Confetti
+        function createConfetti() {
+            const colors = ['#6366f1', '#8b5cf6', '#f59e0b', '#10b981', '#ec4899', '#3b82f6'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 3500);
+            }
+        }
+        
+        // AI Mascot
+        const mascotBtn = document.getElementById('mascotBtn');
+        const mascotChat = document.getElementById('mascotChat');
+        
+        mascotBtn.addEventListener('click', () => {
+            playSound('click');
+            mascotChat.classList.toggle('show');
+        });
+        
+        const mascotResponses = {
+            reading: "📚 Great choice! For reading, try the Phonics Fun game first. It helps you learn letter sounds in a fun way! Would you like me to take you there?",
+            math: "🔢 Math can be fun! Start with the Number Ninja game - it uses cool visuals to help you understand numbers better!",
+            writing: "✏️ Writing tip: Start with big arm movements in the air before using a pencil. This helps your brain learn the letter shapes!",
+            games: "🎮 I recommend trying Mirror Me! It's super fun - you copy poses using your camera. Great for coordination!"
+        };
+        
+        function mascotAction(action) {
+            playSound('click');
+            document.getElementById('mascotMessage').textContent = mascotResponses[action];
+        }
+        
+        // Navigation
+        function navigateTo(url) {
+            playSound('click');
+            window.location.href = url;
+        }
+        
+        // Add hover sound to cards
+        document.querySelectorAll('.module-card, .worksheet-card').forEach(card => {
+            card.addEventListener('mouseenter', () => playSound('click'));
+        });
+    </script>
+</body>
+</html>

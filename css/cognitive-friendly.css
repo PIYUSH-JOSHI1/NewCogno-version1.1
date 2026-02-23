@@ -1,0 +1,1031 @@
+/* =====================================================
+   COGNO SOLUTION - Cognitive Friendly Styles
+   Accessibility Features for Learning Disabilities
+   ===================================================== */
+
+/* =====================================================
+   DYSLEXIA-FRIENDLY FONT SUPPORT
+   ===================================================== */
+
+/* OpenDyslexic Font Family */
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('../assets/fonts/OpenDyslexic-Regular.woff2') format('woff2'),
+         url('../assets/fonts/OpenDyslexic-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('../assets/fonts/OpenDyslexic-Bold.woff2') format('woff2'),
+         url('../assets/fonts/OpenDyslexic-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'OpenDyslexic';
+    src: url('../assets/fonts/OpenDyslexic-Italic.woff2') format('woff2'),
+         url('../assets/fonts/OpenDyslexic-Italic.woff') format('woff');
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+/* Atkinson Hyperlegible - Alternative accessible font */
+@font-face {
+    font-family: 'Atkinson Hyperlegible';
+    src: url('../assets/fonts/AtkinsonHyperlegible-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Atkinson Hyperlegible';
+    src: url('../assets/fonts/AtkinsonHyperlegible-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* =====================================================
+   DYSLEXIA MODE
+   Applied when user enables dyslexia-friendly settings
+   ===================================================== */
+body.dyslexia-mode {
+    --font-family: 'OpenDyslexic', 'Atkinson Hyperlegible', Arial, sans-serif;
+    font-family: var(--font-family);
+    letter-spacing: 0.05em;
+    word-spacing: 0.16em;
+    line-height: 1.8;
+}
+
+body.dyslexia-mode h1,
+body.dyslexia-mode h2,
+body.dyslexia-mode h3,
+body.dyslexia-mode h4,
+body.dyslexia-mode h5,
+body.dyslexia-mode h6 {
+    letter-spacing: 0.03em;
+    word-spacing: 0.1em;
+    line-height: 1.5;
+}
+
+body.dyslexia-mode p,
+body.dyslexia-mode li,
+body.dyslexia-mode span,
+body.dyslexia-mode label {
+    max-width: 70ch; /* Optimal line length for readability */
+}
+
+/* Increased spacing between paragraphs */
+body.dyslexia-mode p {
+    margin-bottom: 1.5em;
+}
+
+/* Avoid justified text - use left alignment */
+body.dyslexia-mode * {
+    text-align: left !important;
+}
+
+body.dyslexia-mode .text-center,
+body.dyslexia-mode .text-center-forced {
+    text-align: center !important;
+}
+
+/* =====================================================
+   HIGH CONTRAST MODE
+   ===================================================== */
+body.high-contrast {
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F5F5F5;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --border-color: #000000;
+    --primary-blue: #0000EE;
+    --primary-green: #006600;
+    --primary-orange: #CC6600;
+    --primary-red: #CC0000;
+}
+
+body.high-contrast .card,
+body.high-contrast .btn,
+body.high-contrast .form-input,
+body.high-contrast .form-select,
+body.high-contrast .form-textarea {
+    border-width: 2px;
+    border-color: #000000;
+}
+
+body.high-contrast a {
+    text-decoration: underline;
+    color: #0000EE;
+}
+
+body.high-contrast a:visited {
+    color: #551A8B;
+}
+
+body.high-contrast .btn-primary,
+body.high-contrast .btn-success,
+body.high-contrast .btn-warning,
+body.high-contrast .btn-danger {
+    border: 2px solid #000000;
+}
+
+body.high-contrast *:focus-visible {
+    outline: 4px solid #000000;
+    outline-offset: 4px;
+}
+
+/* =====================================================
+   LARGE TEXT MODE
+   ===================================================== */
+body.large-text {
+    font-size: 1.25rem;
+}
+
+body.large-text h1 { font-size: 3rem; }
+body.large-text h2 { font-size: 2.5rem; }
+body.large-text h3 { font-size: 2rem; }
+body.large-text h4 { font-size: 1.75rem; }
+body.large-text h5 { font-size: 1.5rem; }
+body.large-text h6 { font-size: 1.25rem; }
+
+body.large-text .btn {
+    font-size: 1.25rem;
+    min-height: 56px;
+    padding: var(--spacing-md) var(--spacing-xl);
+}
+
+body.large-text .form-input,
+body.large-text .form-select,
+body.large-text .form-textarea {
+    font-size: 1.25rem;
+    min-height: 56px;
+}
+
+body.large-text .badge {
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
+/* =====================================================
+   REDUCED MOTION MODE
+   Respects user's system preference for reduced motion
+   ===================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+body.reduce-motion *,
+body.reduce-motion *::before,
+body.reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+}
+
+/* =====================================================
+   TEXT-TO-SPEECH HIGHLIGHTING
+   ===================================================== */
+.tts-active {
+    position: relative;
+}
+
+.tts-highlight {
+    background: linear-gradient(180deg, transparent 60%, rgba(255, 237, 74, 0.6) 60%);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.tts-word-highlight {
+    background: #FFED4A;
+    padding: 2px 4px;
+    border-radius: 4px;
+    outline: 2px solid rgba(255, 237, 74, 0.5);
+}
+
+/* TTS Controls */
+.tts-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.tts-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border: 2px solid var(--border-color);
+    transition: all var(--transition-fast);
+}
+
+.tts-btn:hover {
+    background: var(--primary-blue);
+    color: var(--white);
+    border-color: var(--primary-blue);
+}
+
+.tts-btn.active {
+    background: var(--primary-blue);
+    color: var(--white);
+    border-color: var(--primary-blue);
+}
+
+.tts-speed-control {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.tts-speed-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+/* =====================================================
+   FOCUS INDICATORS (ENHANCED)
+   ===================================================== */
+.focus-visible-always *:focus {
+    outline: 3px solid var(--primary-blue);
+    outline-offset: 3px;
+}
+
+/* Skip navigation link */
+.skip-nav {
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-blue);
+    color: var(--white);
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    z-index: 9999;
+    font-weight: 600;
+    transition: top var(--transition-fast);
+}
+
+.skip-nav:focus {
+    top: 0;
+}
+
+/* =====================================================
+   READING GUIDE / LINE FOCUS
+   ===================================================== */
+.reading-guide {
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: transparent;
+    pointer-events: none;
+    z-index: 9998;
+    display: none;
+}
+
+.reading-guide::before,
+.reading-guide::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.reading-guide::before {
+    top: 0;
+    height: calc(50vh - 20px);
+    transform: translateY(-100%);
+}
+
+.reading-guide::after {
+    bottom: 0;
+    height: calc(50vh - 20px);
+    transform: translateY(100%);
+}
+
+body.reading-guide-active .reading-guide {
+    display: block;
+}
+
+/* Alternative: Highlight bar */
+.reading-highlight-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 2em;
+    background: rgba(255, 255, 0, 0.2);
+    border-top: 2px solid rgba(255, 200, 0, 0.5);
+    border-bottom: 2px solid rgba(255, 200, 0, 0.5);
+    pointer-events: none;
+    z-index: 9997;
+    display: none;
+}
+
+body.reading-highlight-active .reading-highlight-bar {
+    display: block;
+}
+
+/* =====================================================
+   SYLLABLE HIGHLIGHTING (Dyslexia Support)
+   ===================================================== */
+.syllable-text .syllable {
+    display: inline;
+}
+
+.syllable-text .syllable-break {
+    display: inline;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin: 0 1px;
+}
+
+/* Colored syllables for learning */
+.syllable-colored .syllable:nth-child(odd) {
+    color: var(--primary-blue);
+}
+
+.syllable-colored .syllable:nth-child(even) {
+    color: var(--primary-green);
+}
+
+/* =====================================================
+   WORD SPACING OPTIONS
+   ===================================================== */
+body.word-spacing-1 { word-spacing: 0.1em; }
+body.word-spacing-2 { word-spacing: 0.2em; }
+body.word-spacing-3 { word-spacing: 0.3em; }
+body.word-spacing-4 { word-spacing: 0.4em; }
+
+/* =====================================================
+   LETTER SPACING OPTIONS
+   ===================================================== */
+body.letter-spacing-1 { letter-spacing: 0.05em; }
+body.letter-spacing-2 { letter-spacing: 0.1em; }
+body.letter-spacing-3 { letter-spacing: 0.15em; }
+body.letter-spacing-4 { letter-spacing: 0.2em; }
+
+/* =====================================================
+   LINE HEIGHT OPTIONS
+   ===================================================== */
+body.line-height-1 { line-height: 1.6; }
+body.line-height-2 { line-height: 1.8; }
+body.line-height-3 { line-height: 2.0; }
+body.line-height-4 { line-height: 2.2; }
+
+/* =====================================================
+   BACKGROUND COLOR OPTIONS
+   For reducing visual stress
+   ===================================================== */
+body.bg-cream {
+    --bg-primary: #FFFEF0;
+    --bg-secondary: #FDFCF0;
+    background-color: #FFFEF0;
+}
+
+body.bg-peach {
+    --bg-primary: #FFEFD5;
+    --bg-secondary: #FFF8F0;
+    background-color: #FFEFD5;
+}
+
+body.bg-light-blue {
+    --bg-primary: #F0F8FF;
+    --bg-secondary: #E8F4FF;
+    background-color: #F0F8FF;
+}
+
+body.bg-light-green {
+    --bg-primary: #F0FFF0;
+    --bg-secondary: #E8FFE8;
+    background-color: #F0FFF0;
+}
+
+body.bg-light-gray {
+    --bg-primary: #F5F5F5;
+    --bg-secondary: #EBEBEB;
+    background-color: #F5F5F5;
+}
+
+/* =====================================================
+   DYSCALCULIA SUPPORT
+   ===================================================== */
+/* Number formatting with spaces */
+.number-spaced {
+    letter-spacing: 0.15em;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Math expression styling */
+.math-expression {
+    font-family: 'Times New Roman', serif;
+    font-size: 1.25em;
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    display: inline-block;
+}
+
+/* Number line styling */
+.number-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-lg);
+    background: var(--white);
+    border-radius: var(--radius-xl);
+    border: 2px solid var(--border-color);
+    position: relative;
+}
+
+.number-line::before {
+    content: '';
+    position: absolute;
+    left: var(--spacing-lg);
+    right: var(--spacing-lg);
+    height: 4px;
+    background: var(--dyscalculia-color);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 0;
+}
+
+.number-line-item {
+    position: relative;
+    z-index: 1;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background: var(--white);
+    border: 3px solid var(--dyscalculia-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+    color: var(--dyscalculia-color);
+}
+
+.number-line-item.active {
+    background: var(--dyscalculia-color);
+    color: var(--white);
+    transform: scale(1.2);
+}
+
+/* Visual counting blocks */
+.counting-blocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+}
+
+.counting-block {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-md);
+    background: var(--dyscalculia-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.counting-block:hover {
+    transform: scale(1.1);
+}
+
+.counting-block.selected {
+    outline: 4px solid var(--primary-orange);
+    outline-offset: 2px;
+}
+
+/* =====================================================
+   DYSGRAPHIA SUPPORT
+   ===================================================== */
+/* Letter tracing canvas */
+.letter-trace-canvas {
+    border: 3px dashed var(--dysgraphia-color);
+    border-radius: var(--radius-xl);
+    background: var(--white);
+    touch-action: none;
+    cursor: crosshair;
+}
+
+/* Letter guide lines */
+.writing-lines {
+    position: relative;
+    background: var(--white);
+    background-image: 
+        linear-gradient(var(--border-color) 1px, transparent 1px),
+        linear-gradient(var(--primary-red) 1px, transparent 1px);
+    background-size: 100% 2rem, 100% 4rem;
+    background-position: 0 0, 0 2rem;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--border-color);
+    min-height: 200px;
+}
+
+/* Dotted letter guides */
+.dotted-letter {
+    font-size: 6rem;
+    color: transparent;
+    -webkit-text-stroke: 3px var(--border-dark);
+    text-stroke: 3px var(--border-dark);
+    font-family: 'Arial', sans-serif;
+}
+
+.dotted-letter.dashed {
+    background: repeating-linear-gradient(
+        90deg,
+        var(--dysgraphia-color),
+        var(--dysgraphia-color) 10px,
+        transparent 10px,
+        transparent 20px
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-stroke: 0;
+}
+
+/* =====================================================
+   DYSPRAXIA SUPPORT
+   ===================================================== */
+/* Large click targets */
+body.dyspraxia-mode .btn {
+    min-height: 60px;
+    min-width: 60px;
+    padding: var(--spacing-md) var(--spacing-2xl);
+}
+
+body.dyspraxia-mode .form-input,
+body.dyspraxia-mode .form-select {
+    min-height: 60px;
+    padding: var(--spacing-md);
+}
+
+body.dyspraxia-mode .sidebar-link {
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Increased spacing between interactive elements */
+body.dyspraxia-mode .btn + .btn {
+    margin-left: var(--spacing-lg);
+}
+
+body.dyspraxia-mode .form-group {
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Visual feedback on click */
+body.dyspraxia-mode .btn:active {
+    transform: scale(0.95);
+    outline: 4px solid var(--primary-blue);
+}
+
+/* Movement exercise containers */
+.movement-exercise {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--text-primary);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+}
+
+.movement-target {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-full);
+    background: var(--dyspraxia-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: var(--font-size-2xl);
+    animation: pulse 2s infinite;
+}
+
+.movement-score {
+    position: absolute;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    background: rgba(0, 0, 0, 0.7);
+    color: var(--white);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+}
+
+/* =====================================================
+   ACCESSIBILITY SETTINGS PANEL
+   ===================================================== */
+.accessibility-panel {
+    position: fixed;
+    right: -320px;
+    top: 64px;
+    bottom: 0;
+    width: 320px;
+    background: var(--white);
+    border-left: 1px solid var(--border-color);
+    padding: var(--spacing-xl);
+    overflow-y: auto;
+    z-index: var(--z-modal);
+    transition: right var(--transition-base);
+    box-shadow: var(--shadow-xl);
+}
+
+.accessibility-panel.active {
+    right: 0;
+}
+
+.accessibility-toggle {
+    position: fixed;
+    right: var(--spacing-lg);
+    bottom: var(--spacing-lg);
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-full);
+    background: var(--primary-blue);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-2xl);
+    box-shadow: var(--shadow-lg);
+    z-index: var(--z-fixed);
+    transition: all var(--transition-fast);
+}
+
+.accessibility-toggle:hover {
+    background: var(--primary-blue-dark);
+    transform: scale(1.1);
+}
+
+.accessibility-section {
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.accessibility-section:last-child {
+    border-bottom: none;
+}
+
+.accessibility-section-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.accessibility-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) 0;
+}
+
+.accessibility-option-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    width: 48px;
+    height: 26px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--border-dark);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+}
+
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: var(--white);
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: var(--primary-blue);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(22px);
+}
+
+/* Slider Controls */
+.slider-control {
+    width: 100%;
+}
+
+.slider-control input[type="range"] {
+    width: 100%;
+    height: 8px;
+    border-radius: var(--radius-full);
+    background: var(--border-color);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.slider-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-full);
+    background: var(--primary-blue);
+    cursor: pointer;
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-top: var(--spacing-xs);
+}
+
+/* Color swatches */
+.color-swatches {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.color-swatch {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all var(--transition-fast);
+}
+
+.color-swatch:hover {
+    transform: scale(1.1);
+}
+
+.color-swatch.active {
+    border-color: var(--text-primary);
+    outline: 2px solid var(--primary-blue);
+    outline-offset: 2px;
+}
+
+.color-swatch.white { background: #FFFFFF; border-color: var(--border-color); }
+.color-swatch.cream { background: #FFFEF0; }
+.color-swatch.peach { background: #FFEFD5; }
+.color-swatch.light-blue { background: #F0F8FF; }
+.color-swatch.light-green { background: #F0FFF0; }
+.color-swatch.light-gray { background: #F5F5F5; }
+
+/* =====================================================
+   AUDIO FEEDBACK INDICATORS
+   ===================================================== */
+.audio-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-full);
+}
+
+.audio-indicator-bar {
+    width: 4px;
+    height: 16px;
+    background: var(--primary-blue);
+    border-radius: var(--radius-full);
+    animation: audioWave 0.5s ease-in-out infinite;
+}
+
+.audio-indicator-bar:nth-child(1) { animation-delay: 0s; }
+.audio-indicator-bar:nth-child(2) { animation-delay: 0.1s; }
+.audio-indicator-bar:nth-child(3) { animation-delay: 0.2s; }
+.audio-indicator-bar:nth-child(4) { animation-delay: 0.3s; }
+
+@keyframes audioWave {
+    0%, 100% { height: 8px; }
+    50% { height: 16px; }
+}
+
+/* =====================================================
+   VISUAL CUE HELPERS
+   ===================================================== */
+/* Arrow indicators */
+.visual-arrow {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-blue);
+    color: var(--white);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xl);
+    animation: bounce 1s infinite;
+}
+
+/* Pulsing attention indicator */
+.attention-pulse {
+    position: relative;
+}
+
+.attention-pulse::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 12px;
+    height: 12px;
+    background: var(--primary-red);
+    border-radius: var(--radius-full);
+    animation: pulse 2s infinite;
+}
+
+/* Step-by-step progress */
+.step-indicator {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    background: var(--primary-blue);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+    flex-shrink: 0;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-title {
+    font-weight: 600;
+    margin-bottom: var(--spacing-xs);
+}
+
+.step-desc {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+}
+
+/* =====================================================
+   REWARD ANIMATIONS (Child-Friendly)
+   ===================================================== */
+.reward-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: var(--z-modal);
+    animation: fadeIn 0.3s ease;
+}
+
+.reward-content {
+    text-align: center;
+    animation: bounceIn 0.5s ease;
+}
+
+.reward-icon {
+    font-size: 6rem;
+    margin-bottom: var(--spacing-lg);
+}
+
+.reward-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--primary-green);
+    margin-bottom: var(--spacing-sm);
+}
+
+.reward-message {
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Star rating animation */
+.star-rating {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.star {
+    font-size: var(--font-size-3xl);
+    color: var(--border-dark);
+    transition: all var(--transition-base);
+}
+
+.star.earned {
+    color: var(--primary-orange);
+    animation: starPop 0.3s ease;
+}
+
+@keyframes starPop {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+/* Confetti effect */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confettiFall 3s linear forwards;
+    z-index: var(--z-toast);
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}

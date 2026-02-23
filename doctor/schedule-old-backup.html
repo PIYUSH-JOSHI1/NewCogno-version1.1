@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Schedule - Cogno Solution Doctor Portal">
+    <title>Schedule - Cogno Solution</title>
+    
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="../dashboard/doctor-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Patients</li>
+                
+                <li class="sidebar-item">
+                    <a href="./patients.html" class="sidebar-link">
+                        <i class="fa-solid fa-users"></i>
+                        <span>My Patients</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./live-monitoring.html" class="sidebar-link">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Live Monitoring</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./assessments.html" class="sidebar-link">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>Assessments</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Consultations</li>
+                
+                <li class="sidebar-item">
+                    <a href="./consultations.html" class="sidebar-link">
+                        <i class="fa-solid fa-video"></i>
+                        <span>Video Consultations</span>
+                    </a>
+                </li>
+                <li class="sidebar-item active">
+                    <a href="./schedule.html" class="sidebar-link">
+                        <i class="fa-solid fa-calendar"></i>
+                        <span>My Schedule</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./messages.html" class="sidebar-link">
+                        <i class="fa-solid fa-message"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Reports</li>
+                
+                <li class="sidebar-item">
+                    <a href="./reports.html" class="sidebar-link">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        <span>Patient Reports</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./recommendations.html" class="sidebar-link">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>Recommendations</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Account</li>
+                
+                <li class="sidebar-item">
+                    <a href="./profile.html" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../settings/index.html" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                
+                <nav class="breadcrumb">
+                    <a href="./">Dashboard</a>
+                    <span>/</span>
+                    <span>Schedule</span>
+                </nav>
+                
+                <div class="topbar-actions">
+                    <button class="btn btn-primary" id="add-appointment-btn">
+                        <i class="fa-solid fa-plus"></i> New Appointment
+                    </button>
+                </div>
+            </header>
+            
+            <div class="content-area">
+                <!-- Calendar Header -->
+                <div class="calendar-header card">
+                    <div class="calendar-nav">
+                        <button class="btn btn-ghost" id="prev-week"><i class="fa-solid fa-chevron-left"></i></button>
+                        <h2 id="current-week">February 3 - 9, 2026</h2>
+                        <button class="btn btn-ghost" id="next-week"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    <div class="calendar-views">
+                        <button class="btn btn-ghost active" data-view="week">Week</button>
+                        <button class="btn btn-ghost" data-view="day">Day</button>
+                        <button class="btn btn-ghost" data-view="list">List</button>
+                    </div>
+                </div>
+                
+                <!-- Calendar Grid -->
+                <div class="calendar-container card">
+                    <div class="calendar-grid" id="calendar-grid">
+                        <!-- Time Column -->
+                        <div class="time-column">
+                            <div class="time-slot header"></div>
+                            <div class="time-slot">8:00 AM</div>
+                            <div class="time-slot">9:00 AM</div>
+                            <div class="time-slot">10:00 AM</div>
+                            <div class="time-slot">11:00 AM</div>
+                            <div class="time-slot">12:00 PM</div>
+                            <div class="time-slot">1:00 PM</div>
+                            <div class="time-slot">2:00 PM</div>
+                            <div class="time-slot">3:00 PM</div>
+                            <div class="time-slot">4:00 PM</div>
+                            <div class="time-slot">5:00 PM</div>
+                        </div>
+                        
+                        <!-- Day Columns - Will be generated dynamically -->
+                        <div class="day-column" data-day="0">
+                            <div class="day-header">
+                                <span class="day-name">Mon</span>
+                                <span class="day-date">-</span>
+                            </div>
+                            <div class="day-slots"></div>
+                        </div>
+                        <div class="day-column" data-day="1">
+                            <div class="day-header">
+                                <span class="day-name">Tue</span>
+                                <span class="day-date">-</span>
+                            </div>
+                            <div class="day-slots"></div>
+                        </div>
+                        <div class="day-column" data-day="2">
+                            <div class="day-header">
+                                <span class="day-name">Wed</span>
+                                <span class="day-date">-</span>
+                            </div>
+                            <div class="day-slots"></div>
+                        </div>
+                        <div class="day-column" data-day="3">
+                            <div class="day-header">
+                                <span class="day-name">Thu</span>
+                                <span class="day-date">-</span>
+                            </div>
+                            <div class="day-slots"></div>
+                        </div>
+                        <div class="day-column" data-day="4">
+                            <div class="day-header">
+                                <span class="day-name">Fri</span>
+                                <span class="day-date">-</span>
+                            </div>
+                            <div class="day-slots"></div>
+                        </div>
+                        <div class="day-column weekend" data-day="5">
+                            <div class="day-header">
+                                <span class="day-name">Sat</span>
+                                <span class="day-date">-</span>
+                            </div>
+                            <div class="day-slots"></div>
+                        </div>
+                        <div class="day-column weekend" data-day="6">
+                            <div class="day-header">
+                                <span class="day-name">Sun</span>
+                                <span class="day-date">-</span>
+                            </div>
+                            <div class="day-slots"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upcoming Appointments Summary -->
+                <div class="upcoming-section card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-clock"></i> Today's Appointments</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="upcoming-list" id="upcoming-list">
+                            <div class="empty-state" style="padding: 2rem; text-align: center;">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                                <p>Loading appointments...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- New Appointment Modal -->
+    <div class="modal" id="appointment-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Schedule Appointment</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="appointment-form">
+                    <div class="form-group">
+                        <label>Patient</label>
+                        <select id="apt-patient" required>
+                            <option value="">Loading patients...</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" id="apt-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Time</label>
+                            <input type="time" id="apt-time" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Duration</label>
+                        <select id="apt-duration">
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">1 hour</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="apt-type" value="video" checked>
+                                <span><i class="fa-solid fa-video"></i> Video Call</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="apt-type" value="in-person">
+                                <span><i class="fa-solid fa-hospital"></i> In-person</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="apt-notes" placeholder="Add notes about this appointment..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveAppointment()">Schedule</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./doctor.js"></script>
+    
+    <style>
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4);
+        }
+        
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .calendar-nav h2 {
+            font-size: 1.125rem;
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .calendar-views {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .calendar-views .btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .calendar-container {
+            padding: 0;
+            overflow-x: auto;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(7, 1fr);
+            min-width: 800px;
+        }
+        
+        .time-column {
+            border-right: 1px solid var(--color-border);
+        }
+        
+        .time-slot {
+            height: 60px;
+            padding: var(--space-2);
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .time-slot.header {
+            height: 50px;
+        }
+        
+        .day-column {
+            border-right: 1px solid var(--color-border);
+        }
+        
+        .day-column:last-child {
+            border-right: none;
+        }
+        
+        .day-column.today {
+            background: rgba(59, 130, 246, 0.02);
+        }
+        
+        .day-column.weekend {
+            background: var(--color-background);
+        }
+        
+        .day-header {
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--color-border);
+            padding: var(--space-2);
+        }
+        
+        .day-column.today .day-header {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .day-name {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--color-text-secondary);
+        }
+        
+        .day-column.today .day-name {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .day-date {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .day-slots {
+            position: relative;
+            height: 600px; /* 10 hours * 60px */
+        }
+        
+        .appointment {
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            border-radius: var(--radius-md);
+            padding: var(--space-2);
+            border-left: 3px solid;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .appointment:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .apt-time {
+            font-size: 0.65rem;
+            font-weight: 600;
+            display: block;
+        }
+        
+        .apt-patient {
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .apt-type {
+            font-size: 0.6rem;
+            padding: 2px 4px;
+        }
+        
+        .upcoming-section {
+            margin-top: var(--space-6);
+        }
+        
+        .upcoming-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .upcoming-item:last-child {
+            border-bottom: none;
+        }
+        
+        .upcoming-time {
+            text-align: center;
+            min-width: 80px;
+        }
+        
+        .upcoming-time .time {
+            font-size: 1rem;
+            font-weight: 600;
+            display: block;
+        }
+        
+        .upcoming-time .duration {
+            font-size: 0.7rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .upcoming-info {
+            flex: 1;
+        }
+        
+        .upcoming-info h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .upcoming-info p {
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .upcoming-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-4);
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: var(--space-4);
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-4);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .radio-option:has(input:checked) {
+            border-color: var(--color-primary);
+            background: var(--color-primary-100);
+        }
+        
+        .radio-option input {
+            display: none;
+        }
+    </style>
+    
+    <script>
+        // Schedule state
+        let currentWeekStart = getMonday(new Date());
+        let weekAppointments = [];
+        
+        // Get Monday of current week
+        function getMonday(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            return new Date(d.setDate(diff));
+        }
+        
+        // Realtime subscription for new appointments
+        let appointmentsSubscription = null;
+        
+        // Initialize schedule after Supabase is ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Wait for Supabase client
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            if (!CognoSupabase?.client) {
+                console.error('Supabase client not available');
+                return;
+            }
+            
+            // Initialize calendar
+            updateWeekDisplay();
+            await loadWeekAppointments();
+            await loadTodaysAppointments();
+            
+            // Setup realtime subscription for new appointments
+            setupRealtimeSubscription();
+        });
+        
+        // Setup realtime subscription to consultations table
+        async function setupRealtimeSubscription() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                
+                // Subscribe to changes on consultations table for this doctor
+                appointmentsSubscription = CognoSupabase.client
+                    .channel('doctor-appointments')
+                    .on('postgres_changes', {
+                        event: '*',
+                        schema: 'public',
+                        table: 'consultations',
+                        filter: `doctor_id=eq.${user.id}`
+                    }, (payload) => {
+                        console.log('Appointment change received:', payload);
+                        
+                        // Reload appointments when changes occur
+                        loadWeekAppointments();
+                        loadTodaysAppointments();
+                        
+                        // Show notification for new appointments
+                        if (payload.eventType === 'INSERT') {
+                            const apt = payload.new;
+                            const scheduledDate = new Date(apt.scheduled_at);
+                            showNewAppointmentNotification(scheduledDate);
+                        }
+                    })
+                    .subscribe();
+                
+                console.log('Realtime subscription active for appointments');
+            } catch (err) {
+                console.error('Failed to setup realtime subscription:', err);
+            }
+        }
+        
+        // Show notification for new appointment
+        function showNewAppointmentNotification(scheduledDate) {
+            const dateStr = scheduledDate.toLocaleDateString();
+            const timeStr = scheduledDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            // Play notification sound if available
+            try {
+                const audio = new Audio('../assets/audio/notification.mp3');
+                audio.volume = 0.3;
+                audio.play().catch(() => {});
+            } catch (e) {}
+            
+            // Show toast notification
+            if (typeof CognoNotifications !== 'undefined' && CognoNotifications?.toast) {
+                CognoNotifications.toast.info(`New appointment booked for ${dateStr} at ${timeStr}`);
+            } else {
+                // Fallback: show a simple notification
+                const notif = document.createElement('div');
+                notif.style.cssText = 'position: fixed; top: 20px; right: 20px; background: var(--color-primary); color: white; padding: 1rem 1.5rem; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+                notif.innerHTML = `<strong>New Appointment!</strong><br>Booked for ${dateStr} at ${timeStr}`;
+                document.body.appendChild(notif);
+                setTimeout(() => notif.remove(), 5000);
+            }
+        }
+        
+        // Update week display
+        function updateWeekDisplay() {
+            const weekEnd = new Date(currentWeekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+            
+            const options = { month: 'short', day: 'numeric' };
+            const startStr = currentWeekStart.toLocaleDateString('en-US', options);
+            const endStr = weekEnd.toLocaleDateString('en-US', { ...options, year: 'numeric' });
+            
+            document.getElementById('current-week').textContent = `${startStr} - ${endStr}`;
+            
+            // Update day headers
+            const dayColumns = document.querySelectorAll('.day-column');
+            const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            dayColumns.forEach((col, i) => {
+                const date = new Date(currentWeekStart);
+                date.setDate(date.getDate() + i);
+                
+                col.querySelector('.day-name').textContent = dayNames[i];
+                col.querySelector('.day-date').textContent = date.getDate();
+                col.dataset.date = date.toISOString().split('T')[0];
+                
+                // Highlight today
+                col.classList.remove('today');
+                if (date.getTime() === today.getTime()) {
+                    col.classList.add('today');
+                }
+            });
+        }
+        
+        // Load appointments for the week
+        async function loadWeekAppointments() {
+            if (!CognoSupabase?.client) return;
+            
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                
+                const weekEnd = new Date(currentWeekStart);
+                weekEnd.setDate(weekEnd.getDate() + 7);
+                
+                const { data, error } = await CognoSupabase.client
+                    .from('consultations')
+                    .select(`
+                        *,
+                        patient:patient_id (
+                            id,
+                            full_name,
+                            avatar_url
+                        )
+                    `)
+                    .eq('doctor_id', user.id)
+                    .gte('scheduled_at', currentWeekStart.toISOString())
+                    .lt('scheduled_at', weekEnd.toISOString())
+                    .in('status', ['pending', 'scheduled', 'confirmed', 'in_progress'])
+                    .order('scheduled_at', { ascending: true });
+                
+                if (error) throw error;
+                
+                weekAppointments = data || [];
+                console.log('Loaded', weekAppointments.length, 'appointments for week');
+                renderCalendarAppointments();
+                
+            } catch (error) {
+                console.error('Failed to load week appointments:', error);
+            }
+        }
+        
+        // Render appointments on calendar
+        function renderCalendarAppointments() {
+            // Clear all day slots
+            document.querySelectorAll('.day-slots').forEach(slot => slot.innerHTML = '');
+            
+            weekAppointments.forEach(apt => {
+                const aptDate = new Date(apt.scheduled_at);
+                const dateStr = aptDate.toISOString().split('T')[0];
+                
+                const dayCol = document.querySelector(`.day-column[data-date="${dateStr}"]`);
+                if (!dayCol) return;
+                
+                const slotsContainer = dayCol.querySelector('.day-slots');
+                
+                // Calculate position (8 AM = 0px, each hour = 60px)
+                const hour = aptDate.getHours();
+                const minutes = aptDate.getMinutes();
+                const topPosition = ((hour - 8) * 60) + (minutes);
+                
+                // Duration in pixels (default 30 min = 30px)
+                const duration = apt.duration_minutes || 30;
+                const height = duration;
+                
+                // Determine type/color based on meeting_url (video if has URL)
+                let bgColor = 'var(--color-primary-100)';
+                let borderColor = 'var(--color-primary)';
+                let typeLabel = 'Video';
+                let badgeClass = 'badge-primary';
+                
+                if (!apt.meeting_url) {
+                    bgColor = 'var(--color-success-100)';
+                    borderColor = 'var(--color-success)';
+                    typeLabel = 'In-person';
+                    badgeClass = 'badge-success';
+                }
+                
+                const timeStr = aptDate.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+                
+                const aptEl = document.createElement('div');
+                aptEl.className = 'appointment';
+                aptEl.style.cssText = `top: ${topPosition}px; height: ${height}px; background: ${bgColor}; border-left-color: ${borderColor};`;
+                aptEl.dataset.appointmentId = apt.id;
+                aptEl.innerHTML = `
+                    <span class="apt-time">${timeStr}</span>
+                    <span class="apt-patient">${apt.patient?.full_name || 'Patient'}</span>
+                    <span class="apt-type badge ${badgeClass}">${typeLabel}</span>
+                `;
+                aptEl.onclick = () => openAppointmentDetails(apt);
+                
+                slotsContainer.appendChild(aptEl);
+            });
+        }
+        
+        // Load today's appointments
+        async function loadTodaysAppointments() {
+            if (!CognoSupabase?.client) return;
+            
+            const container = document.getElementById('upcoming-list');
+            
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                
+                const { data, error } = await CognoSupabase.client
+                    .from('consultations')
+                    .select(`
+                        *,
+                        patient:patient_id (
+                            id,
+                            full_name,
+                            avatar_url
+                        )
+                    `)
+                    .eq('doctor_id', user.id)
+                    .gte('scheduled_at', today.toISOString())
+                    .lt('scheduled_at', tomorrow.toISOString())
+                    .in('status', ['pending', 'scheduled', 'confirmed', 'in_progress'])
+                    .order('scheduled_at', { ascending: true });
+                
+                if (error) throw error;
+                
+                if (!data || data.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state" style="padding: 2rem; text-align: center;">
+                            <i class="fa-solid fa-calendar-check" style="font-size: 2rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                            <p>No appointments scheduled for today</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = data.map(apt => {
+                    const aptDate = new Date(apt.scheduled_at);
+                    const timeStr = aptDate.toLocaleTimeString('en-US', { 
+                        hour: 'numeric', 
+                        minute: '2-digit',
+                        hour12: true 
+                    });
+                    
+                    const duration = apt.duration_minutes || 30;
+                    const isVideo = !!apt.meeting_url;
+                    const now = new Date();
+                    const isNow = aptDate <= now && new Date(aptDate.getTime() + duration * 60000) >= now;
+                    const isPast = aptDate < now && !isNow;
+                    
+                    return `
+                        <div class="upcoming-item ${isPast ? 'past' : ''}" data-id="${apt.id}">
+                            <div class="upcoming-time">
+                                <span class="time">${timeStr}</span>
+                                <span class="duration">${duration} min</span>
+                            </div>
+                            <div class="upcoming-info">
+                                <h4>${apt.patient?.full_name || 'Patient'}</h4>
+                                <p>${apt.notes || (isVideo ? 'Video Consultation' : 'In-person Consultation')}</p>
+                            </div>
+                            <div class="upcoming-actions">
+                                ${isVideo ? `
+                                    <button class="btn ${isNow ? 'btn-primary' : 'btn-outline'} btn-sm" onclick="joinCall('${apt.id}', '${apt.meeting_url || ''}')">
+                                        <i class="fa-solid fa-video"></i> ${isNow ? 'Join Now' : 'Join'}
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-outline btn-sm" disabled>
+                                        <i class="fa-solid fa-hospital"></i> In-person
+                                    </button>
+                                `}
+                                <button class="btn btn-ghost btn-sm" onclick="openAppointmentMenu(event, ${apt.id})">
+                                    <i class="fa-solid fa-ellipsis"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Failed to load todays appointments:', error);
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 2rem; text-align: center; color: var(--color-error);">
+                        <i class="fa-solid fa-exclamation-triangle"></i>
+                        <p>Failed to load appointments</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Join video call
+        function joinCall(appointmentId, meetingUrl) {
+            if (meetingUrl && meetingUrl.startsWith('http')) {
+                window.open(meetingUrl, '_blank');
+            } else {
+                // Use Jitsi
+                const roomId = `cogno-consult-${appointmentId}`;
+                window.open(`https://meet.jit.si/${roomId}`, '_blank');
+            }
+            
+            // Update status
+            CognoSupabase?.client
+                ?.from('consultations')
+                ?.update({ status: 'in-progress' })
+                ?.eq('id', appointmentId);
+        }
+        
+        // Open appointment details
+        function openAppointmentDetails(apt) {
+            console.log('Open appointment details:', apt);
+            // Could show a modal with full details
+        }
+        
+        // Open appointment menu
+        function openAppointmentMenu(event, aptId) {
+            event.stopPropagation();
+            // Could show dropdown with cancel/reschedule options
+        }
+        
+        // Week navigation
+        document.getElementById('prev-week')?.addEventListener('click', () => {
+            currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+            updateWeekDisplay();
+            loadWeekAppointments();
+        });
+        
+        document.getElementById('next-week')?.addEventListener('click', () => {
+            currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+            updateWeekDisplay();
+            loadWeekAppointments();
+        });
+        
+        // Modal handling
+        document.getElementById('add-appointment-btn')?.addEventListener('click', () => {
+            document.getElementById('appointment-modal').classList.add('show');
+            loadPatientsForSelect();
+        });
+        
+        async function loadPatientsForSelect() {
+            const select = document.getElementById('apt-patient');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">Loading patients...</option>';
+            
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                
+                // Load assigned patients from doctor_patients table
+                const { data: assignedPatients, error } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .select(`
+                        patient:patient_id (
+                            id,
+                            full_name,
+                            display_name,
+                            email
+                        )
+                    `)
+                    .eq('doctor_id', user.id)
+                    .eq('status', 'active');
+                
+                if (error) throw error;
+                
+                if (assignedPatients && assignedPatients.length > 0) {
+                    select.innerHTML = '<option value="">Select Patient</option>' + 
+                        assignedPatients.map(dp => 
+                            `<option value="${dp.patient?.id}">${dp.patient?.display_name || dp.patient?.full_name || dp.patient?.email || 'Patient'}</option>`
+                        ).join('');
+                } else {
+                    // Fallback: load all students
+                    const { data: students } = await CognoSupabase.client
+                        .from('profiles')
+                        .select('id, full_name, display_name, email')
+                        .eq('role', 'student')
+                        .order('full_name');
+                    
+                    if (students && students.length > 0) {
+                        select.innerHTML = '<option value="">Select Patient</option>' + 
+                            students.map(s => 
+                                `<option value="${s.id}">${s.display_name || s.full_name || s.email || 'Patient'}</option>`
+                            ).join('');
+                    } else {
+                        select.innerHTML = '<option value="">No patients available</option>';
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load patients:', err);
+                select.innerHTML = '<option value="">Error loading patients</option>';
+            }
+        }
+        
+        function closeModal() {
+            document.querySelector('.modal.show')?.classList.remove('show');
+        }
+        
+        document.querySelectorAll('.modal-close, .modal-overlay').forEach(el => {
+            el.addEventListener('click', closeModal);
+        });
+        
+        async function saveAppointment() {
+            const patientId = document.getElementById('apt-patient').value;
+            const date = document.getElementById('apt-date').value;
+            const time = document.getElementById('apt-time').value;
+            const duration = parseInt(document.getElementById('apt-duration').value);
+            const type = document.querySelector('input[name="apt-type"]:checked')?.value || 'video';
+            const notes = document.getElementById('apt-notes').value;
+            
+            if (!patientId || !date || !time) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            const scheduledAt = new Date(`${date}T${time}`);
+            
+            try {
+                // Get doctor ID from auth
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) throw new Error('Not authenticated');
+                
+                const doctorId = user.id;
+                
+                // Get doctor and patient names
+                const { data: doctorProfile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('full_name, display_name')
+                    .eq('id', doctorId)
+                    .single();
+                
+                const patientSelect = document.getElementById('apt-patient');
+                const patientName = patientSelect.options[patientSelect.selectedIndex]?.text || 'Patient';
+                const doctorName = doctorProfile?.display_name || doctorProfile?.full_name || 'Your Doctor';
+                
+                // Generate meeting URL for video calls
+                const meetingUrl = type === 'video' ? `https://meet.jit.si/cogno-consult-${Date.now()}` : null;
+                
+                const { error } = await CognoSupabase.client
+                    .from('consultations')
+                    .insert({
+                        doctor_id: doctorId,
+                        patient_id: patientId,
+                        scheduled_at: scheduledAt.toISOString(),
+                        duration_minutes: duration,
+                        meeting_url: meetingUrl,
+                        notes: notes,
+                        status: 'scheduled'
+                    });
+                
+                if (error) throw error;
+                
+                // Send notification to patient
+                await CognoSupabase.client.from('notifications').insert({
+                    user_id: patientId,
+                    title: 'New Appointment Scheduled',
+                    message: `Dr. ${doctorName} scheduled an appointment with you on ${new Date(scheduledAt).toLocaleDateString()} at ${new Date(scheduledAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
+                    notification_type: 'appointment',
+                    action_url: '/consultations/'
+                });
+                
+                alert(`Appointment scheduled with ${patientName}!`);
+                closeModal();
+                document.getElementById('appointment-form').reset();
+                
+                // Reload appointments
+                await loadWeekAppointments();
+                await loadTodaysAppointments();
+                
+            } catch (error) {
+                console.error('Failed to save appointment:', error);
+                alert('Failed to schedule appointment: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

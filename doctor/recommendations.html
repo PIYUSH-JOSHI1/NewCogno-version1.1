@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f5f7fa; 
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        .topbar {
+            background: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .topbar-left a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .topbar h1 {
+            font-size: 1.25rem;
+            color: #1f2937;
+        }
+        
+        .content {
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Quick Templates Section */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.1rem;
+            color: #1f2937;
+        }
+        
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .template-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .template-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+        
+        .template-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .template-icon {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-size: 1.25rem;
+        }
+        
+        .template-card.dyslexia .template-icon { background: #eff6ff; color: #3b82f6; }
+        .template-card.dyscalculia .template-icon { background: #fef3c7; color: #d97706; }
+        .template-card.dysgraphia .template-icon { background: #dcfce7; color: #16a34a; }
+        .template-card.dyspraxia .template-icon { background: #fce7f3; color: #db2777; }
+        
+        .template-title { font-weight: 600; font-size: 0.95rem; }
+        
+        .template-activities {
+            list-style: none;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        
+        .template-activities li {
+            padding: 0.35rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .template-activities li i { color: #9ca3af; }
+        
+        .template-footer {
+            margin-top: 1rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #f3f4f6;
+            text-align: center;
+        }
+        
+        .template-footer button {
+            background: none;
+            border: none;
+            color: #3b82f6;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        
+        /* Filters */
+        .filters-bar {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.65rem 1rem 0.65rem 2.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        
+        .filter-select {
+            padding: 0.65rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            min-width: 150px;
+        }
+        
+        /* Recommendations Grid */
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1rem;
+        }
+        
+        .rec-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .rec-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        
+        .rec-patient {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .rec-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .rec-patient-info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.15rem;
+        }
+        
+        .rec-patient-info p {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+        
+        .condition-tag {
+            padding: 0.25rem 0.65rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .condition-tag.dyslexia { background: #eff6ff; color: #2563eb; }
+        .condition-tag.dyscalculia { background: #fef3c7; color: #d97706; }
+        .condition-tag.dysgraphia { background: #dcfce7; color: #16a34a; }
+        .condition-tag.dyspraxia { background: #fce7f3; color: #db2777; }
+        
+        .rec-activities {
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+        
+        .rec-activities h5 {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        
+        .activity-list {
+            list-style: none;
+        }
+        
+        .activity-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0;
+            font-size: 0.85rem;
+        }
+        
+        .activity-list li i {
+            color: #10b981;
+            font-size: 0.75rem;
+        }
+        
+        .rec-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        
+        .rec-goal {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-outline { background: white; border: 1px solid #e5e7eb; color: #374151; }
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #9ca3af;
+            grid-column: 1 / -1;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .modal-overlay.show { display: flex; }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-header h2 { font-size: 1.1rem; margin: 0; }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        
+        .modal-body { padding: 1.5rem; }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: normal;
+            padding: 0.35rem 0;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+        
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .bottom-nav .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.4rem 1rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 0.65rem;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+        
+        .bottom-nav .nav-btn i {
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+        
+        .bottom-nav .nav-btn:hover { background: #f3f4f6; }
+        .bottom-nav .nav-btn.active { color: #3b82f6; background: #eff6ff; }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo" style="width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.9rem;">C</div>
+            <h1>Learning Plans</h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button class="topbar-btn" onclick="window.location.href='messages.html'" style="position: relative; width: 40px; height: 40px; border-radius: 10px; border: none; background: transparent; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                <i class="fa-solid fa-bell"></i>
+            </button>
+            <div style="display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.6rem; border-radius: 10px; cursor: pointer;" onclick="window.location.href='profile.html'">
+                <div id="doctor-avatar" style="width: 36px; height: 36px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.85rem;">D</div>
+                <span id="doctor-name" style="font-weight: 600; font-size: 0.85rem; color: #1f2937;">Doctor</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Quick Templates -->
+        <div class="section-header">
+            <h2><i class="fa-solid fa-lightbulb"></i> Quick Templates</h2>
+            <button class="btn btn-primary" onclick="openRecommendationModal()">
+                <i class="fa-solid fa-plus"></i> Custom Plan
+            </button>
+        </div>
+        <div class="templates-grid">
+            <div class="template-card dyslexia" onclick="useTemplate('dyslexia')">
+                <div class="template-header">
+                    <div class="template-icon"><i class="fa-solid fa-book-reader"></i></div>
+                    <span class="template-title">Dyslexia Support</span>
+                </div>
+                <ul class="template-activities">
+                    <li><i class="fa-solid fa-check"></i> Phonics exercises</li>
+                    <li><i class="fa-solid fa-check"></i> Sight word practice</li>
+                    <li><i class="fa-solid fa-check"></i> Reading fluency drills</li>
+                    <li><i class="fa-solid fa-check"></i> Letter reversal training</li>
+                </ul>
+                <div class="template-footer">
+                    <button><i class="fa-solid fa-arrow-right"></i> Use Template</button>
+                </div>
+            </div>
+            
+            <div class="template-card dyscalculia" onclick="useTemplate('dyscalculia')">
+                <div class="template-header">
+                    <div class="template-icon"><i class="fa-solid fa-calculator"></i></div>
+                    <span class="template-title">Dyscalculia Support</span>
+                </div>
+                <ul class="template-activities">
+                    <li><i class="fa-solid fa-check"></i> Number sense games</li>
+                    <li><i class="fa-solid fa-check"></i> Counting exercises</li>
+                    <li><i class="fa-solid fa-check"></i> Math fact practice</li>
+                    <li><i class="fa-solid fa-check"></i> Visual math tools</li>
+                </ul>
+                <div class="template-footer">
+                    <button><i class="fa-solid fa-arrow-right"></i> Use Template</button>
+                </div>
+            </div>
+            
+            <div class="template-card dysgraphia" onclick="useTemplate('dysgraphia')">
+                <div class="template-header">
+                    <div class="template-icon"><i class="fa-solid fa-pen"></i></div>
+                    <span class="template-title">Dysgraphia Support</span>
+                </div>
+                <ul class="template-activities">
+                    <li><i class="fa-solid fa-check"></i> Handwriting practice</li>
+                    <li><i class="fa-solid fa-check"></i> Letter formation</li>
+                    <li><i class="fa-solid fa-check"></i> Fine motor exercises</li>
+                    <li><i class="fa-solid fa-check"></i> Tracing activities</li>
+                </ul>
+                <div class="template-footer">
+                    <button><i class="fa-solid fa-arrow-right"></i> Use Template</button>
+                </div>
+            </div>
+            
+            <div class="template-card dyspraxia" onclick="useTemplate('dyspraxia')">
+                <div class="template-header">
+                    <div class="template-icon"><i class="fa-solid fa-running"></i></div>
+                    <span class="template-title">Dyspraxia Support</span>
+                </div>
+                <ul class="template-activities">
+                    <li><i class="fa-solid fa-check"></i> Balance exercises</li>
+                    <li><i class="fa-solid fa-check"></i> Coordination games</li>
+                    <li><i class="fa-solid fa-check"></i> Motor planning</li>
+                    <li><i class="fa-solid fa-check"></i> Spatial awareness</li>
+                </ul>
+                <div class="template-footer">
+                    <button><i class="fa-solid fa-arrow-right"></i> Use Template</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="section-header">
+            <h2>Patient Plans</h2>
+        </div>
+        <div class="filters-bar">
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search patients...">
+            </div>
+            <select class="filter-select" id="filter-condition">
+                <option value="">All Conditions</option>
+                <option value="dyslexia">Dyslexia</option>
+                <option value="dyscalculia">Dyscalculia</option>
+                <option value="dysgraphia">Dysgraphia</option>
+                <option value="dyspraxia">Dyspraxia</option>
+            </select>
+        </div>
+
+        <!-- Recommendations Grid -->
+        <div class="recommendations-grid" id="recommendations-grid">
+            <div class="empty-state">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Loading recommendations...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Recommendation Modal -->
+    <div class="modal-overlay" id="recommendation-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-lightbulb"></i> Create Learning Plan</h2>
+                <button class="modal-close" onclick="closeRecommendationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Patient *</label>
+                        <select id="rec-patient">
+                            <option value="">Select patient...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <select id="rec-condition">
+                            <option value="">Select condition...</option>
+                            <option value="dyslexia">Dyslexia</option>
+                            <option value="dyscalculia">Dyscalculia</option>
+                            <option value="dysgraphia">Dysgraphia</option>
+                            <option value="dyspraxia">Dyspraxia</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Recommended Activities</label>
+                    <div class="checkbox-group" id="activities-container">
+                        <!-- Activities populated by JS -->
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Daily Time Goal (minutes)</label>
+                        <input type="number" id="rec-time" value="30" min="5" max="120">
+                    </div>
+                    <div class="form-group">
+                        <label>Duration (weeks)</label>
+                        <input type="number" id="rec-duration" value="4" min="1" max="12">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Additional Notes</label>
+                    <textarea id="rec-notes" rows="3" placeholder="Any additional instructions..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeRecommendationModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveRecommendation()">
+                    <i class="fa-solid fa-check"></i> Create Plan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a href="schedule.html" class="nav-btn">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="consultations.html" class="nav-btn">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="reports.html" class="nav-btn">
+            <i class="fa-solid fa-chart-bar"></i>
+            Reports
+        </a>
+        <a href="profile.html" class="nav-btn">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    
+    <script>
+        let doctorId = null;
+        let patients = [];
+        let recommendations = [];
+        
+        const activityTemplates = {
+            dyslexia: [
+                'Phonics exercises (20 min/day)',
+                'Sight word practice',
+                'Reading fluency drills',
+                'Letter reversal training',
+                'Audio book listening',
+                'Word games'
+            ],
+            dyscalculia: [
+                'Number sense games',
+                'Counting exercises',
+                'Math fact practice',
+                'Visual math manipulatives',
+                'Number line activities',
+                'Pattern recognition'
+            ],
+            dysgraphia: [
+                'Handwriting practice sheets',
+                'Letter formation exercises',
+                'Fine motor skill activities',
+                'Tracing exercises',
+                'Grip strengthening',
+                'Spacing practice'
+            ],
+            dyspraxia: [
+                'Balance exercises',
+                'Coordination games',
+                'Motor planning activities',
+                'Spatial awareness tasks',
+                'Sequencing exercises',
+                'Hand-eye coordination'
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await waitForSupabase();
+            await loadDoctorInfo();
+            await loadPatients();
+            await loadRecommendations();
+        });
+
+        async function waitForSupabase() {
+            return new Promise((resolve) => {
+                const check = () => {
+                    if (window.CognoSupabase?.client) resolve();
+                    else setTimeout(check, 100);
+                };
+                check();
+            });
+        }
+
+        async function loadDoctorInfo() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+                
+                doctorId = user.id;
+                
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('full_name, display_name')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile) {
+                    const name = profile.display_name || profile.full_name || 'Doctor';
+                    const displayName = name.startsWith('Dr.') ? name : 'Dr. ' + name;
+                    document.getElementById('doctor-name').textContent = displayName;
+                    
+                    const initials = name.replace('Dr. ', '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                    document.getElementById('doctor-avatar').textContent = initials;
+                }
+            } catch (err) {
+                console.error('Failed to load doctor info:', err);
+            }
+        }
+
+        async function loadPatients() {
+            try {
+                const { data: assigned } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .select('patient:patient_id (id, full_name)')
+                    .eq('doctor_id', doctorId);
+                
+                if (assigned && assigned.length > 0) {
+                    patients = assigned.map(a => a.patient).filter(Boolean);
+                } else {
+                    const { data: students } = await CognoSupabase.client
+                        .from('profiles')
+                        .select('id, full_name')
+                        .eq('role', 'student');
+                    patients = students || [];
+                }
+                
+                const select = document.getElementById('rec-patient');
+                patients.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.textContent = p.full_name;
+                    select.appendChild(opt);
+                });
+            } catch (err) {
+                console.error('Failed to load patients:', err);
+            }
+        }
+
+        async function loadRecommendations() {
+            const grid = document.getElementById('recommendations-grid');
+            grid.innerHTML = `<div class="empty-state"><i class="fa-solid fa-spinner fa-spin"></i><p>Loading plans...</p></div>`;
+            
+            try {
+                const { data, error } = await CognoSupabase.client
+                    .from('learning_plans')
+                    .select(`
+                        id,
+                        condition,
+                        activities,
+                        time_goal_minutes,
+                        duration_weeks,
+                        notes,
+                        status,
+                        created_at,
+                        patient:patient_id (id, full_name)
+                    `)
+                    .eq('doctor_id', doctorId)
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                recommendations = (data || []).map(r => ({
+                    id: r.id,
+                    patient: { name: r.patient?.full_name || 'Unknown', id: r.patient?.id },
+                    condition: r.condition,
+                    activities: r.activities || [],
+                    timeGoal: r.time_goal_minutes,
+                    duration: r.duration_weeks,
+                    notes: r.notes,
+                    status: r.status,
+                    createdAt: r.created_at?.split('T')[0]
+                }));
+                
+                renderRecommendations(recommendations);
+            } catch (err) {
+                console.error('Failed to load recommendations:', err);
+                recommendations = [];
+                renderRecommendations(recommendations);
+            }
+        }
+
+        function renderRecommendations(data) {
+            const grid = document.getElementById('recommendations-grid');
+            
+            if (data.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <p>No learning plans found</p>
+                        <button class="btn btn-primary" style="margin-top: 1rem;" onclick="openRecommendationModal()">Create First Plan</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = data.map(rec => {
+                const initials = rec.patient.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+                return `
+                    <div class="rec-card">
+                        <div class="rec-header">
+                            <div class="rec-patient">
+                                <div class="rec-avatar">${initials}</div>
+                                <div class="rec-patient-info">
+                                    <h4>${rec.patient.name}</h4>
+                                    <p>Created ${formatDate(rec.createdAt)}</p>
+                                </div>
+                            </div>
+                            <span class="condition-tag ${rec.condition}">${capitalize(rec.condition)}</span>
+                        </div>
+                        <div class="rec-activities">
+                            <h5>Recommended Activities</h5>
+                            <ul class="activity-list">
+                                ${rec.activities.map(a => `<li><i class="fa-solid fa-check-circle"></i> ${a}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="rec-footer">
+                            <span class="rec-goal"><i class="fa-solid fa-clock"></i> ${rec.timeGoal} min/day</span>
+                            <button class="btn btn-sm btn-outline" onclick="editPlan('${rec.id}')">
+                                <i class="fa-solid fa-edit"></i> Edit
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openRecommendationModal(condition = '') {
+            if (condition) {
+                document.getElementById('rec-condition').value = condition;
+                populateActivities(condition);
+            } else {
+                document.getElementById('activities-container').innerHTML = '<p style="color: #9ca3af; font-size: 0.85rem;">Select a condition to see recommended activities</p>';
+            }
+            document.getElementById('recommendation-modal').classList.add('show');
+        }
+
+        function closeRecommendationModal() {
+            document.getElementById('recommendation-modal').classList.remove('show');
+        }
+
+        function useTemplate(condition) {
+            openRecommendationModal(condition);
+        }
+
+        document.getElementById('rec-condition').addEventListener('change', (e) => {
+            populateActivities(e.target.value);
+        });
+
+        function populateActivities(condition) {
+            const container = document.getElementById('activities-container');
+            const activities = activityTemplates[condition] || [];
+            
+            if (activities.length === 0) {
+                container.innerHTML = '<p style="color: #9ca3af; font-size: 0.85rem;">Select a condition to see recommended activities</p>';
+                return;
+            }
+            
+            container.innerHTML = activities.map((act, i) => `
+                <label>
+                    <input type="checkbox" name="activity" value="${act}" ${i < 3 ? 'checked' : ''}>
+                    ${act}
+                </label>
+            `).join('');
+        }
+
+        async function saveRecommendation() {
+            const patientId = document.getElementById('rec-patient').value;
+            const condition = document.getElementById('rec-condition').value;
+            const timeGoal = document.getElementById('rec-time').value;
+            const duration = document.getElementById('rec-duration').value;
+            const notes = document.getElementById('rec-notes').value;
+            
+            if (!patientId) {
+                alert('Please select a patient');
+                return;
+            }
+            
+            if (!condition) {
+                alert('Please select a condition');
+                return;
+            }
+            
+            const selectedActivities = [...document.querySelectorAll('input[name="activity"]:checked')].map(i => i.value);
+            
+            if (selectedActivities.length === 0) {
+                alert('Please select at least one activity');
+                return;
+            }
+            
+            try {
+                const planData = {
+                    doctor_id: doctorId,
+                    patient_id: patientId,
+                    condition: condition,
+                    activities: selectedActivities,
+                    time_goal_minutes: parseInt(timeGoal),
+                    duration_weeks: parseInt(duration),
+                    notes: notes,
+                    status: 'active'
+                };
+                
+                // Check if editing
+                const editingId = document.getElementById('recommendation-modal').dataset.editingId;
+                
+                if (editingId) {
+                    const { error } = await CognoSupabase.client
+                        .from('learning_plans')
+                        .update(planData)
+                        .eq('id', editingId);
+                    if (error) throw error;
+                } else {
+                    const { error } = await CognoSupabase.client
+                        .from('learning_plans')
+                        .insert(planData);
+                    if (error) throw error;
+                }
+                
+                await loadRecommendations();
+                closeRecommendationModal();
+                clearRecommendationForm();
+                alert(editingId ? 'Learning plan updated!' : 'Learning plan created!');
+            } catch (err) {
+                console.error('Failed to save learning plan:', err);
+                alert('Failed to save learning plan: ' + err.message);
+            }
+        }
+        
+        function clearRecommendationForm() {
+            document.getElementById('rec-patient').value = '';
+            document.getElementById('rec-condition').value = '';
+            document.getElementById('rec-time').value = '30';
+            document.getElementById('rec-duration').value = '4';
+            document.getElementById('rec-notes').value = '';
+            document.getElementById('activities-container').innerHTML = '<p style="color: #9ca3af; font-size: 0.85rem;">Select a condition to see recommended activities</p>';
+            delete document.getElementById('recommendation-modal').dataset.editingId;
+        }
+
+        async function editPlan(id) {
+            const plan = recommendations.find(r => r.id === id);
+            if (!plan) return;
+            
+            document.getElementById('recommendation-modal').dataset.editingId = id;
+            document.getElementById('rec-patient').value = plan.patient.id || '';
+            document.getElementById('rec-condition').value = plan.condition;
+            document.getElementById('rec-time').value = plan.timeGoal || 30;
+            document.getElementById('rec-duration').value = plan.duration || 4;
+            document.getElementById('rec-notes').value = plan.notes || '';
+            
+            // Populate activities and check the ones that were selected
+            populateActivities(plan.condition);
+            setTimeout(() => {
+                const checkboxes = document.querySelectorAll('input[name="activity"]');
+                checkboxes.forEach(cb => {
+                    cb.checked = plan.activities.includes(cb.value);
+                });
+            }, 100);
+            
+            document.getElementById('recommendation-modal').classList.add('show');
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        // Search & Filter
+        document.getElementById('search-input')?.addEventListener('input', filterRecommendations);
+        document.getElementById('filter-condition')?.addEventListener('change', filterRecommendations);
+
+        function filterRecommendations() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const condition = document.getElementById('filter-condition').value;
+            
+            let filtered = recommendations;
+            if (query) filtered = filtered.filter(r => r.patient.name.toLowerCase().includes(query));
+            if (condition) filtered = filtered.filter(r => r.condition === condition);
+            
+            renderRecommendations(filtered);
+        }
+    </script>
+</body>
+</html>

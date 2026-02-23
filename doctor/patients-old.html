@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Patients - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f5f7fa;
+            --bg-dark: #1a1a2e;
+            --card: #ffffff;
+            --card-dark: #16213e;
+            --text: #1f2937;
+            --text-dark: #f1f5f9;
+            --text-muted: #6b7280;
+            --text-muted-dark: #94a3b8;
+            --border: #e5e7eb;
+            --border-dark: #334155;
+        }
+        
+        [data-theme="dark"] {
+            --bg: var(--bg-dark);
+            --card: var(--card-dark);
+            --text: var(--text-dark);
+            --text-muted: var(--text-muted-dark);
+            --border: var(--border-dark);
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        /* New Topbar */
+        .topbar {
+            background: var(--card);
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            gap: 1rem;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .topbar-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        
+        .topbar h1 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .topbar-btn {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+        
+        .topbar-btn:hover {
+            background: var(--border);
+            color: var(--text);
+        }
+        
+        .topbar-btn .badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 18px;
+            height: 18px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.65rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: relative;
+        }
+        
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .profile-btn:hover {
+            background: var(--border);
+        }
+        
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .profile-info {
+            text-align: left;
+            display: none;
+        }
+        
+        @media (min-width: 600px) {
+            .profile-info { display: block; }
+        }
+        
+        .profile-info .name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .profile-info .role {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .profile-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            min-width: 220px;
+            padding: 0.5rem;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .profile-menu.show {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .profile-menu-header {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-menu-header .name {
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .profile-menu-header .email {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .profile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        
+        .profile-menu-item:hover {
+            background: var(--border);
+        }
+        
+        .profile-menu-item i {
+            width: 20px;
+            color: var(--text-muted);
+        }
+        
+        .profile-menu-item.danger {
+            color: var(--danger);
+        }
+        
+        .profile-menu-item.danger i {
+            color: var(--danger);
+        }
+        
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 0.75rem;
+        }
+        
+        .theme-toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+        
+        .theme-toggle-label i {
+            width: 20px;
+            color: var(--text-muted);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-switch.active {
+            background: var(--primary);
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+        }
+        
+        .menu-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0.5rem 0;
+        }
+        
+        /* Notifications Panel */
+        .notifications-panel {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            width: 320px;
+            max-height: 400px;
+            display: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .notifications-panel.show {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+        
+        .notifications-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notifications-header h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        
+        .notifications-header button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .notifications-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .notification-item:hover {
+            background: var(--border);
+        }
+        
+        .notification-item.unread {
+            background: rgba(59, 130, 246, 0.05);
+        }
+        
+        .notification-item .title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .notification-item .time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        
+        .notifications-empty {
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
+        .content {
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-card .number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+        
+        .stat-card .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .stat-card.primary { border-left: 4px solid var(--primary); }
+        .stat-card.success { border-left: 4px solid var(--success); }
+        .stat-card.warning { border-left: 4px solid var(--warning); }
+        
+        /* Search Bar */
+        .search-section {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            border: 1px solid var(--border);
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: var(--bg);
+            color: var(--text);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        
+        .filter-btn {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--card);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text);
+            font-size: 0.85rem;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Patient Cards */
+        .patients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .patient-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        
+        .patient-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+        
+        .patient-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        
+        .patient-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .patient-avatar.dyslexia { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+        .patient-avatar.dyscalculia { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .patient-avatar.dysgraphia { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .patient-avatar.dyspraxia { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        
+        .patient-info h3 {
+            font-size: 1rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+        
+        .patient-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .patient-status {
+            margin-left: auto;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .patient-status.active { background: #dcfce7; color: #16a34a; }
+        .patient-status.new { background: #dbeafe; color: #2563eb; }
+        .patient-status.attention { background: #fef3c7; color: #d97706; }
+        
+        .patient-conditions {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .condition-tag {
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        
+        .condition-tag.dyslexia { background: #dbeafe; color: #1d4ed8; }
+        .condition-tag.dyscalculia { background: #d1fae5; color: #059669; }
+        .condition-tag.dysgraphia { background: #fed7aa; color: #c2410c; }
+        .condition-tag.dyspraxia { background: #fecaca; color: #dc2626; }
+        
+        .patient-stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            padding: 0.75rem 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+        
+        .patient-stat {
+            text-align: center;
+        }
+        
+        .patient-stat .value {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        
+        .patient-stat .label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        
+        .patient-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+        .btn-success { background: var(--success); color: white; }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.25rem;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .bottom-nav .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.4rem 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 0.6rem;
+            border-radius: 8px;
+            text-decoration: none;
+            min-width: 44px;
+        }
+        
+        .bottom-nav .nav-btn i {
+            font-size: 1rem;
+            margin-bottom: 0.15rem;
+        }
+        
+        .bottom-nav .nav-btn:hover {
+            background: var(--border);
+        }
+        
+        .bottom-nav .nav-btn.active {
+            color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        @media (max-width: 600px) {
+            .patients-grid {
+                grid-template-columns: 1fr;
+            }
+            .filter-btn span { display: none; }
+            .filter-btn { padding: 0.5rem 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo">C</div>
+            <h1>My Patients</h1>
+        </div>
+        
+        <div class="topbar-right">
+            <!-- Notifications -->
+            <div class="profile-dropdown" id="notifications-dropdown">
+                <button class="topbar-btn" onclick="toggleNotifications()">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notification-count" style="display: none;">0</span>
+                </button>
+                <div class="notifications-panel" id="notifications-panel">
+                    <div class="notifications-header">
+                        <h3>Notifications</h3>
+                        <button onclick="markAllRead()">Mark all read</button>
+                    </div>
+                    <div class="notifications-list" id="notifications-list">
+                        <div class="notifications-empty">
+                            <i class="fa-solid fa-bell-slash"></i>
+                            <p>No new notifications</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Dropdown -->
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="profile-btn" onclick="toggleProfileMenu()">
+                    <div class="profile-avatar" id="profile-avatar">D</div>
+                    <div class="profile-info">
+                        <div class="name" id="profile-name">Doctor</div>
+                        <div class="role">Specialist</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down" style="color: var(--text-muted); font-size: 0.7rem;"></i>
+                </button>
+                <div class="profile-menu" id="profile-menu">
+                    <div class="profile-menu-header">
+                        <div class="name" id="menu-name">Doctor</div>
+                        <div class="email" id="menu-email">doctor@cogno.com</div>
+                    </div>
+                    <a href="profile.html" class="profile-menu-item">
+                        <i class="fa-solid fa-user"></i>
+                        <span>View Profile</span>
+                    </a>
+                    <a href="profile.html?edit=true" class="profile-menu-item">
+                        <i class="fa-solid fa-pen"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                    <a href="../settings/index.html" class="profile-menu-item">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                    <div class="menu-divider"></div>
+                    <div class="theme-toggle">
+                        <div class="theme-toggle-label">
+                            <i class="fa-solid fa-moon"></i>
+                            <span>Dark Mode</span>
+                        </div>
+                        <div class="toggle-switch" id="theme-toggle" onclick="toggleTheme()"></div>
+                    </div>
+                    <div class="menu-divider"></div>
+                    <button class="profile-menu-item danger" onclick="logout()">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card primary">
+                <div class="number" id="total-patients">0</div>
+                <div class="label">Total Patients</div>
+            </div>
+            <div class="stat-card success">
+                <div class="number" id="active-patients">0</div>
+                <div class="label">Active</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="number" id="need-attention">0</div>
+                <div class="label">Need Attention</div>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search patients...">
+            </div>
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="dyslexia">Dyslexia</button>
+            <button class="filter-btn" data-filter="dyscalculia">Dyscalculia</button>
+            <button class="filter-btn" data-filter="dysgraphia">Dysgraphia</button>
+            <button class="filter-btn" data-filter="dyspraxia">Dyspraxia</button>
+        </div>
+
+        <!-- Patients Grid -->
+        <div class="patients-grid" id="patients-grid">
+            <div class="empty-state">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Loading patients...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a href="schedule.html" class="nav-btn">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="consultations.html" class="nav-btn">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="reports.html" class="nav-btn">
+            <i class="fa-solid fa-chart-bar"></i>
+            Reports
+        </a>
+        <a href="profile.html" class="nav-btn">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    
+    <script>
+        let doctorId = null;
+        let allPatients = [];
+        let doctorEmail = '';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            initTheme();
+            await waitForSupabase();
+            await loadDoctorInfo();
+            await loadPatients();
+            await loadNotifications();
+            setupFilters();
+            setupSearch();
+            setupDropdownClose();
+        });
+
+        // Theme Management
+        function initTheme() {
+            const savedTheme = localStorage.getItem('cogno_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            if (savedTheme === 'dark') {
+                document.getElementById('theme-toggle')?.classList.add('active');
+            }
+        }
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('cogno_theme', newTheme);
+            document.getElementById('theme-toggle')?.classList.toggle('active');
+        }
+
+        // Dropdown Management
+        function toggleProfileMenu() {
+            document.getElementById('profile-menu')?.classList.toggle('show');
+            document.getElementById('notifications-panel')?.classList.remove('show');
+        }
+
+        function toggleNotifications() {
+            document.getElementById('notifications-panel')?.classList.toggle('show');
+            document.getElementById('profile-menu')?.classList.remove('show');
+        }
+
+        function setupDropdownClose() {
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#profile-dropdown')) {
+                    document.getElementById('profile-menu')?.classList.remove('show');
+                }
+                if (!e.target.closest('#notifications-dropdown')) {
+                    document.getElementById('notifications-panel')?.classList.remove('show');
+                }
+            });
+        }
+
+        async function logout() {
+            await CognoSupabase.client.auth.signOut();
+            window.location.href = '../auth/login.html';
+        }
+
+        async function waitForSupabase() {
+            return new Promise((resolve) => {
+                const check = () => {
+                    if (window.CognoSupabase?.client) resolve();
+                    else setTimeout(check, 100);
+                };
+                check();
+            });
+        }
+
+        async function loadDoctorInfo() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+                
+                doctorId = user.id;
+                doctorEmail = user.email || '';
+                
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('full_name, display_name')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile) {
+                    const name = profile.display_name || profile.full_name || 'Doctor';
+                    const displayName = name.startsWith('Dr.') ? name : 'Dr. ' + name;
+                    
+                    const initials = name.replace('Dr. ', '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                    
+                    // Update all profile elements
+                    document.getElementById('profile-avatar').textContent = initials;
+                    document.getElementById('profile-name').textContent = displayName;
+                    document.getElementById('menu-name').textContent = displayName;
+                    document.getElementById('menu-email').textContent = doctorEmail;
+                }
+            } catch (err) {
+                console.error('Failed to load doctor info:', err);
+            }
+        }
+
+        async function loadNotifications() {
+            try {
+                const { data: notifications } = await CognoSupabase.client
+                    .from('notifications')
+                    .select('*')
+                    .eq('user_id', doctorId)
+                    .order('created_at', { ascending: false })
+                    .limit(10);
+                
+                const container = document.getElementById('notifications-list');
+                const badge = document.getElementById('notification-count');
+                const unreadCount = (notifications || []).filter(n => !n.is_read).length;
+                
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+                
+                if (notifications && notifications.length > 0) {
+                    container.innerHTML = notifications.map(n => `
+                        <div class="notification-item ${n.is_read ? '' : 'unread'}" onclick="handleNotification('${n.id}', '${n.action_url || ''}')">
+                            <div class="title">${n.title}</div>
+                            <div class="time">${timeAgo(n.created_at)}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('Failed to load notifications:', err);
+            }
+        }
+
+        async function handleNotification(id, url) {
+            await CognoSupabase.client.from('notifications').update({ is_read: true }).eq('id', id);
+            if (url) window.location.href = url;
+            else loadNotifications();
+        }
+
+        async function markAllRead() {
+            await CognoSupabase.client.from('notifications').update({ is_read: true }).eq('user_id', doctorId);
+            loadNotifications();
+        }
+
+        function timeAgo(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+            return Math.floor(seconds / 86400) + 'd ago';
+        }
+
+        async function loadPatients() {
+            const container = document.getElementById('patients-grid');
+            
+            try {
+                // Get assigned patients
+                const { data: assigned, error: err1 } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .select(`
+                        patient:patient_id (
+                            id, full_name, display_name, avatar_url, created_at
+                        ),
+                        status, assigned_at
+                    `)
+                    .eq('doctor_id', doctorId);
+                
+                if (!err1 && assigned && assigned.length > 0) {
+                    // Get conditions for each patient
+                    const patientIds = assigned.map(a => a.patient?.id).filter(Boolean);
+                    
+                    const { data: conditions } = await CognoSupabase.client
+                        .from('child_conditions')
+                        .select('child_id, condition_type, severity')
+                        .in('child_id', patientIds);
+                    
+                    const { data: progress } = await CognoSupabase.client
+                        .from('learning_progress')
+                        .select('user_id, completion_percentage')
+                        .in('user_id', patientIds);
+                    
+                    const conditionsMap = {};
+                    (conditions || []).forEach(c => {
+                        if (!conditionsMap[c.child_id]) conditionsMap[c.child_id] = [];
+                        conditionsMap[c.child_id].push(c);
+                    });
+                    
+                    const progressMap = {};
+                    (progress || []).forEach(p => {
+                        if (!progressMap[p.user_id]) progressMap[p.user_id] = 0;
+                        progressMap[p.user_id] = Math.max(progressMap[p.user_id], p.completion_percentage || 0);
+                    });
+                    
+                    allPatients = assigned.map(a => ({
+                        id: a.patient?.id,
+                        name: a.patient?.display_name || a.patient?.full_name || 'Patient',
+                        avatar_url: a.patient?.avatar_url,
+                        status: a.status || 'active',
+                        conditions: conditionsMap[a.patient?.id] || [],
+                        progress: progressMap[a.patient?.id] || 0,
+                        joinedAt: a.patient?.created_at
+                    })).filter(p => p.id);
+                    
+                } else {
+                    // Fallback: get all students
+                    const { data: students } = await CognoSupabase.client
+                        .from('profiles')
+                        .select('id, full_name, display_name, avatar_url, created_at')
+                        .eq('role', 'student')
+                        .order('created_at', { ascending: false });
+                    
+                    allPatients = (students || []).map(s => ({
+                        id: s.id,
+                        name: s.display_name || s.full_name || 'Student',
+                        avatar_url: s.avatar_url,
+                        status: 'active',
+                        conditions: [],
+                        progress: 0,
+                        joinedAt: s.created_at
+                    }));
+                }
+                
+                updateStats();
+                renderPatients(allPatients);
+                
+            } catch (err) {
+                console.error('Failed to load patients:', err);
+                container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-exclamation-triangle"></i><p>Failed to load patients</p></div>`;
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('total-patients').textContent = allPatients.length;
+            document.getElementById('active-patients').textContent = allPatients.filter(p => p.status === 'active').length;
+            document.getElementById('need-attention').textContent = allPatients.filter(p => p.progress < 30).length;
+        }
+
+        function renderPatients(patients) {
+            const container = document.getElementById('patients-grid');
+            
+            if (patients.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-users"></i><p>No patients found</p></div>`;
+                return;
+            }
+            
+            container.innerHTML = patients.map(p => {
+                const initials = p.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+                const primaryCondition = p.conditions[0]?.condition_type || 'dyslexia';
+                const statusClass = p.progress < 30 ? 'attention' : (isNew(p.joinedAt) ? 'new' : 'active');
+                const statusText = p.progress < 30 ? 'Needs Help' : (isNew(p.joinedAt) ? 'New' : 'Active');
+                
+                return `
+                    <div class="patient-card" data-conditions="${p.conditions.map(c => c.condition_type).join(',')}">
+                        <div class="patient-header">
+                            <div class="patient-avatar ${primaryCondition}">${initials}</div>
+                            <div class="patient-info">
+                                <h3>${p.name}</h3>
+                                <p>Joined ${formatDate(p.joinedAt)}</p>
+                            </div>
+                            <span class="patient-status ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="patient-conditions">
+                            ${p.conditions.length > 0 
+                                ? p.conditions.map(c => `<span class="condition-tag ${c.condition_type}">${capitalize(c.condition_type)}</span>`).join('')
+                                : '<span class="condition-tag dyslexia">Learning Support</span>'
+                            }
+                        </div>
+                        <div class="patient-stats-row">
+                            <div class="patient-stat">
+                                <div class="value">${p.progress}%</div>
+                                <div class="label">Progress</div>
+                            </div>
+                            <div class="patient-stat">
+                                <div class="value">${p.conditions.length || 1}</div>
+                                <div class="label">Conditions</div>
+                            </div>
+                            <div class="patient-stat">
+                                <div class="value">${Math.floor(Math.random() * 10) + 1}</div>
+                                <div class="label">Sessions</div>
+                            </div>
+                        </div>
+                        <div class="patient-actions">
+                            <button class="btn btn-outline" onclick="viewProfile('${p.id}')">
+                                <i class="fa-solid fa-user"></i> Profile
+                            </button>
+                            <button class="btn btn-primary" onclick="openChat('${p.id}')">
+                                <i class="fa-solid fa-message"></i> Message
+                            </button>
+                            <button class="btn btn-success" onclick="scheduleCall('${p.id}')">
+                                <i class="fa-solid fa-video"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function setupFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const filter = btn.dataset.filter;
+                    if (filter === 'all') {
+                        renderPatients(allPatients);
+                    } else {
+                        const filtered = allPatients.filter(p => 
+                            p.conditions.some(c => c.condition_type === filter)
+                        );
+                        renderPatients(filtered);
+                    }
+                });
+            });
+        }
+
+        function setupSearch() {
+            document.getElementById('search-input').addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const filtered = allPatients.filter(p => 
+                    p.name.toLowerCase().includes(query)
+                );
+                renderPatients(filtered);
+            });
+        }
+
+        function isNew(dateStr) {
+            if (!dateStr) return false;
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffDays = (now - date) / (1000 * 60 * 60 * 24);
+            return diffDays < 30;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'Recently';
+            return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function viewProfile(patientId) {
+            window.location.href = `patient-detail.html?id=${patientId}`;
+        }
+
+        function openChat(patientId) {
+            window.location.href = `messages.html?chat=${patientId}`;
+        }
+
+        function scheduleCall(patientId) {
+            window.location.href = `schedule.html?patient=${patientId}`;
+        }
+    </script>
+</body>
+</html>

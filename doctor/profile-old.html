@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="My Profile - Cogno Solution Doctor Portal">
+    <title>My Profile - Cogno Solution</title>
+    
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <style>
+        .profile-header-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 600;
+            position: relative;
+        }
+        
+        .profile-avatar-large img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .avatar-edit-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            border: 3px solid var(--bg-secondary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .profile-header-info {
+            flex: 1;
+        }
+        
+        .profile-header-info h1 {
+            margin: 0;
+            font-size: 1.75rem;
+            color: var(--text-primary);
+        }
+        
+        .profile-header-info .specialization {
+            color: var(--color-primary);
+            font-size: 1rem;
+            margin: 0.25rem 0;
+        }
+        
+        .profile-header-info .email {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .profile-stat {
+            text-align: center;
+        }
+        
+        .profile-stat .value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .profile-stat .label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .profile-form-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-form-card h3 {
+            margin: 0 0 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-primary);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-light);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .loading-placeholder {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-stats {
+                justify-content: center;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="../dashboard/doctor-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Patients</li>
+                
+                <li class="sidebar-item">
+                    <a href="./patients.html" class="sidebar-link">
+                        <i class="fa-solid fa-users"></i>
+                        <span>My Patients</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./live-monitoring.html" class="sidebar-link">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Live Monitoring</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./assessments.html" class="sidebar-link">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>Assessments</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Consultations</li>
+                
+                <li class="sidebar-item">
+                    <a href="./consultations.html" class="sidebar-link">
+                        <i class="fa-solid fa-video"></i>
+                        <span>Video Consultations</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./schedule.html" class="sidebar-link">
+                        <i class="fa-solid fa-calendar"></i>
+                        <span>My Schedule</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./messages.html" class="sidebar-link">
+                        <i class="fa-solid fa-message"></i>
+                        <span>Messages</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Reports</li>
+                
+                <li class="sidebar-item">
+                    <a href="./reports.html" class="sidebar-link">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        <span>Patient Reports</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./recommendations.html" class="sidebar-link">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>Recommendations</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Account</li>
+                
+                <li class="sidebar-item active">
+                    <a href="./profile.html" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../settings/index.html" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+        
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav class="breadcrumb">
+                    <a href="../dashboard/doctor-dashboard.html">Dashboard</a>
+                    <span>/</span>
+                    <span>Profile</span>
+                </nav>
+            </div>
+            
+            <div class="navbar-right">
+                <button class="btn btn-ghost btn-icon" id="notifications-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notification-badge" id="notification-badge" style="display: none;"></span>
+                </button>
+                <div class="user-menu">
+                    <div class="avatar avatar-sm" id="user-avatar">
+                        <i class="fa-solid fa-user-doctor"></i>
+                    </div>
+                    <span id="user-name" class="loading-placeholder">Loading...</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <!-- Profile Header -->
+            <div class="profile-header-card">
+                <div class="profile-avatar-large" id="profile-avatar">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <label class="avatar-edit-btn" for="avatar-input">
+                        <i class="fa-solid fa-camera"></i>
+                    </label>
+                    <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                </div>
+                <div class="profile-header-info">
+                    <h1 id="profile-name" class="loading-placeholder">Loading...</h1>
+                    <p class="specialization" id="profile-specialization">Loading...</p>
+                    <p class="email" id="profile-email">Loading...</p>
+                </div>
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <div class="value" id="stat-patients">-</div>
+                        <div class="label">Patients</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="value" id="stat-consultations">-</div>
+                        <div class="label">Consultations</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="value" id="stat-experience">-</div>
+                        <div class="label">Years Exp.</div>
+                    </div>
+                </div>
+            </div>
+                
+                <!-- Personal Information -->
+                <div class="profile-form-card">
+                    <h3><i class="fa-solid fa-user"></i> Personal Information</h3>
+                    <form id="personal-info-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="full-name">Full Name</label>
+                                <input type="text" id="full-name" class="form-input" placeholder="Dr. John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" class="form-input" placeholder="doctor@example.com" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" class="form-input" placeholder="+1 (555) 000-0000">
+                            </div>
+                            <div class="form-group">
+                                <label for="date-of-birth">Date of Birth</label>
+                                <input type="date" id="date-of-birth" class="form-input">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Professional Information -->
+                <div class="profile-form-card">
+                    <h3><i class="fa-solid fa-stethoscope"></i> Professional Information</h3>
+                    <form id="professional-info-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="specialization">Specialization</label>
+                                <select id="specialization" class="form-select">
+                                    <option value="">Select specialization</option>
+                                    <option value="pediatric-neurologist">Pediatric Neurologist</option>
+                                    <option value="child-psychologist">Child Psychologist</option>
+                                    <option value="speech-therapist">Speech Therapist</option>
+                                    <option value="occupational-therapist">Occupational Therapist</option>
+                                    <option value="special-educator">Special Educator</option>
+                                    <option value="developmental-pediatrician">Developmental Pediatrician</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="license-number">License Number</label>
+                                <input type="text" id="license-number" class="form-input" placeholder="Enter license number">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="years-experience">Years of Experience</label>
+                                <input type="number" id="years-experience" class="form-input" min="0" placeholder="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="consultation-fee">Consultation Fee (USD)</label>
+                                <input type="number" id="consultation-fee" class="form-input" min="0" placeholder="100">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="bio">Professional Bio</label>
+                            <textarea id="bio" class="form-textarea" rows="4" 
+                                placeholder="Write a brief description about yourself, your experience, and areas of expertise..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Availability -->
+                <div class="profile-form-card">
+                    <h3><i class="fa-solid fa-clock"></i> Availability</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="available-days">Available Days</label>
+                            <div class="checkbox-group" id="available-days">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="monday" checked> Mon
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="tuesday" checked> Tue
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="wednesday" checked> Wed
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="thursday" checked> Thu
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="friday" checked> Fri
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="saturday"> Sat
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="days" value="sunday"> Sun
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="start-time">Available From</label>
+                            <input type="time" id="start-time" class="form-input" value="09:00">
+                        </div>
+                        <div class="form-group">
+                            <label for="end-time">Available Until</label>
+                            <input type="time" id="end-time" class="form-input" value="17:00">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Save Button -->
+                <div class="form-actions">
+                    <button class="btn btn-ghost" onclick="location.reload()">
+                        <i class="fa-solid fa-rotate-left"></i> Reset
+                    </button>
+                    <button class="btn btn-primary" onclick="saveProfile()">
+                        <i class="fa-solid fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container toast-top-right"></div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./doctor.js"></script>
+    <script>
+        // Load profile data after DoctorPortal initializes
+        document.addEventListener('DOMContentLoaded', () => {
+            waitForDoctorPortal();
+        });
+        
+        function waitForDoctorPortal(attempts = 0) {
+            if (DoctorPortal.doctorProfile) {
+                loadProfileData();
+            } else if (attempts < 50) {
+                // Wait up to 5 seconds (50 attempts * 100ms)
+                setTimeout(() => waitForDoctorPortal(attempts + 1), 100);
+            } else {
+                console.error('Timeout waiting for DoctorPortal to initialize');
+            }
+        }
+        
+        function loadProfileData() {
+            const profile = DoctorPortal.doctorProfile;
+            if (!profile) return;
+            
+            // Update header
+            document.getElementById('profile-name').textContent = profile.full_name?.startsWith('Dr.') 
+                ? profile.full_name 
+                : `Dr. ${profile.full_name}`;
+            document.getElementById('profile-email').textContent = profile.email;
+            document.getElementById('profile-specialization').textContent = profile.specialization || 'Medical Professional';
+            
+            // Update avatar
+            if (profile.avatar_url) {
+                document.getElementById('profile-avatar').innerHTML = `
+                    <img src="${profile.avatar_url}" alt="Avatar">
+                    <label class="avatar-edit-btn" for="avatar-input">
+                        <i class="fa-solid fa-camera"></i>
+                    </label>
+                    <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                `;
+            }
+            
+            // Update stats
+            document.getElementById('stat-patients').textContent = DoctorPortal.patients.length;
+            document.getElementById('stat-consultations').textContent = DoctorPortal.consultations.length;
+            document.getElementById('stat-experience').textContent = profile.years_experience || '0';
+            
+            // Fill form fields
+            document.getElementById('full-name').value = profile.full_name || '';
+            document.getElementById('email').value = profile.email || '';
+            document.getElementById('phone').value = profile.phone || '';
+            document.getElementById('date-of-birth').value = profile.date_of_birth || '';
+            document.getElementById('license-number').value = profile.license_number || '';
+            document.getElementById('years-experience').value = profile.years_experience || '';
+            document.getElementById('consultation-fee').value = profile.consultation_fee || '';
+            document.getElementById('bio').value = profile.bio || '';
+            
+            // Set specialization
+            const specSelect = document.getElementById('specialization');
+            if (profile.specialization) {
+                const option = Array.from(specSelect.options).find(o => 
+                    o.text.toLowerCase() === profile.specialization.toLowerCase()
+                );
+                if (option) option.selected = true;
+            }
+        }
+        
+        async function saveProfile() {
+            const updates = {
+                full_name: document.getElementById('full-name').value,
+                phone: document.getElementById('phone').value,
+                date_of_birth: document.getElementById('date-of-birth').value || null,
+                specialization: document.getElementById('specialization').selectedOptions[0]?.text || null,
+                license_number: document.getElementById('license-number').value,
+                years_experience: parseInt(document.getElementById('years-experience').value) || null,
+                consultation_fee: parseFloat(document.getElementById('consultation-fee').value) || null,
+                bio: document.getElementById('bio').value
+            };
+            
+            try {
+                const { error } = await CognoSupabase?.client
+                    ?.from('profiles')
+                    ?.update(updates)
+                    ?.eq('id', DoctorPortal.currentDoctor.id);
+                
+                if (error) throw error;
+                
+                DoctorPortal.showToast('Profile updated successfully!', 'success');
+                
+                // Update local profile
+                Object.assign(DoctorPortal.doctorProfile, updates);
+                DoctorPortal.updateDoctorInfo();
+                
+            } catch (error) {
+                console.error('Failed to update profile:', error);
+                DoctorPortal.showToast('Failed to update profile', 'error');
+            }
+        }
+        
+        // Handle avatar upload
+        document.getElementById('avatar-input')?.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            try {
+                // Upload to Supabase Storage
+                const fileName = `${DoctorPortal.currentDoctor.id}/avatar.${file.name.split('.').pop()}`;
+                
+                const { data, error } = await CognoSupabase?.client
+                    ?.storage
+                    ?.from('avatars')
+                    ?.upload(fileName, file, { upsert: true });
+                
+                if (error) throw error;
+                
+                // Get public URL
+                const { data: urlData } = CognoSupabase?.client
+                    ?.storage
+                    ?.from('avatars')
+                    ?.getPublicUrl(fileName);
+                
+                // Update profile
+                await CognoSupabase?.client
+                    ?.from('profiles')
+                    ?.update({ avatar_url: urlData.publicUrl })
+                    ?.eq('id', DoctorPortal.currentDoctor.id);
+                
+                // Reload
+                location.reload();
+                
+            } catch (error) {
+                console.error('Failed to upload avatar:', error);
+                DoctorPortal.showToast('Failed to upload avatar', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

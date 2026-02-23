@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Schedule - Cogno Solution</title>
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            font-family: 'Inter', sans-serif; 
+            background: #f5f7fa; 
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        .topbar {
+            background: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .topbar-left a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .topbar h1 {
+            font-size: 1.25rem;
+            margin: 0;
+            color: #1f2937;
+        }
+        
+        .content {
+            padding: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Calendar Header */
+        .calendar-header {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .calendar-nav button {
+            background: none;
+            border: 1px solid #e5e7eb;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .calendar-nav button:hover {
+            background: #f3f4f6;
+        }
+        
+        .calendar-nav h2 {
+            font-size: 1.1rem;
+            margin: 0;
+            min-width: 220px;
+            text-align: center;
+        }
+        
+        .view-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .view-tabs button {
+            background: #f3f4f6;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #6b7280;
+        }
+        
+        .view-tabs button.active {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        /* Week Grid */
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .day-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            min-height: 200px;
+        }
+        
+        .day-card.today {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        
+        .day-header {
+            padding: 0.75rem;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+        
+        .day-card.today .day-header {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .day-name {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #9ca3af;
+            display: block;
+        }
+        
+        .day-card.today .day-name {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .day-number {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .day-appointments {
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .apt-item {
+            background: #eff6ff;
+            border-left: 3px solid #3b82f6;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .apt-item:hover {
+            background: #dbeafe;
+        }
+        
+        .apt-item .time {
+            font-weight: 600;
+            color: #1e40af;
+        }
+        
+        .apt-item .name {
+            color: #374151;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Today's Appointments List */
+        .today-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .today-section h3 {
+            margin: 0 0 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .apt-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .apt-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .apt-time-box {
+            text-align: center;
+            min-width: 70px;
+        }
+        
+        .apt-time-box .time {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .apt-time-box .duration {
+            font-size: 0.7rem;
+            color: #9ca3af;
+        }
+        
+        .apt-info {
+            flex: 1;
+        }
+        
+        .apt-info h4 {
+            margin: 0 0 0.25rem;
+            font-size: 0.95rem;
+        }
+        
+        .apt-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+        
+        .apt-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .apt-dropdown {
+            position: relative;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 160px;
+            z-index: 100;
+            display: none;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .dropdown-menu button {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: none;
+            background: none;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #374151;
+        }
+        
+        .dropdown-menu button:hover {
+            background: #f3f4f6;
+        }
+        
+        .dropdown-menu button.danger {
+            color: #dc2626;
+        }
+        
+        .dropdown-menu button.danger:hover {
+            background: #fef2f2;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-outline {
+            background: white;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #9ca3af;
+        }
+        
+        .empty-state i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: relative;
+        }
+        
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .profile-btn:hover {
+            background: #e5e7eb;
+        }
+        
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .profile-info {
+            text-align: left;
+        }
+        
+        .profile-info .name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .profile-info .role {
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+        
+        .profile-chevron {
+            color: #6b7280;
+            font-size: 0.75rem;
+            transition: transform 0.2s;
+        }
+        
+        .profile-dropdown.open .profile-chevron {
+            transform: rotate(180deg);
+        }
+        
+        .profile-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            min-width: 240px;
+            padding: 0.5rem;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .profile-menu.show {
+            display: block;
+            animation: slideDown 0.2s ease;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .profile-menu-header {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-menu-header .name {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 0.95rem;
+        }
+        
+        .profile-menu-header .email {
+            font-size: 0.75rem;
+            color: #3b82f6;
+        }
+        
+        .profile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #1f2937;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+        }
+        
+        .profile-menu-item:hover {
+            background: #f3f4f6;
+        }
+        
+        .profile-menu-item i {
+            width: 20px;
+            color: #6b7280;
+        }
+        
+        .profile-menu-item.danger {
+            color: #ef4444;
+        }
+        
+        .profile-menu-item.danger i {
+            color: #ef4444;
+        }
+        
+        .theme-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 0.75rem;
+            border-radius: 8px;
+        }
+        
+        .theme-toggle-row:hover {
+            background: #f3f4f6;
+        }
+        
+        .theme-toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #1f2937;
+            font-size: 0.85rem;
+        }
+        
+        .theme-toggle-left i {
+            width: 20px;
+            color: #6b7280;
+        }
+        
+        .theme-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .theme-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #e5e7eb;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+        
+        .theme-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .theme-slider {
+            background: #3b82f6;
+        }
+        
+        input:checked + .theme-slider:before {
+            transform: translateX(20px);
+        }
+        
+        .menu-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 0.5rem 0;
+        }
+        
+        .dropdown-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 999;
+            display: none;
+        }
+        
+        .dropdown-overlay.show {
+            display: block;
+        }
+        
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .bottom-nav .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 0.65rem;
+            border-radius: 8px;
+            text-decoration: none;
+            min-width: 50px;
+        }
+        
+        .bottom-nav .nav-btn i {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .bottom-nav .nav-btn:hover {
+            background: #f3f4f6;
+        }
+        
+        .bottom-nav .nav-btn.active {
+            color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .bottom-nav .nav-btn.primary {
+            background: #3b82f6;
+            color: white;
+            padding: 0.75rem 2rem;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .type-options {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .type-option {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .type-option.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        
+        .type-option i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #6b7280;
+        }
+        
+        .type-option.selected i {
+            color: #3b82f6;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        @media (max-width: 900px) {
+            .week-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .week-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .calendar-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dropdown Overlay -->
+    <div class="dropdown-overlay" id="dropdown-overlay" onclick="closeAllDropdowns()"></div>
+    
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="topbar-logo" style="width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.9rem;">C</div>
+            <h1>My Schedule</h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <button class="topbar-btn" onclick="window.location.href='messages.html'" style="position: relative; width: 40px; height: 40px; border-radius: 10px; border: none; background: transparent; color: #6b7280; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                <i class="fa-solid fa-bell"></i>
+            </button>
+            <div class="profile-dropdown" id="profile-dropdown">
+                <button class="profile-btn" onclick="toggleProfileMenu(event)">
+                    <div class="profile-avatar" id="doctor-avatar">D</div>
+                    <div class="profile-info">
+                        <div class="name" id="doctor-name">Doctor</div>
+                        <div class="role">Healthcare Provider</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down profile-chevron"></i>
+                </button>
+                <div class="profile-menu" id="profile-menu">
+                    <div class="profile-menu-header">
+                        <div class="name" id="menu-doctor-name">Doctor</div>
+                        <div class="email" id="menu-doctor-email">doctor@cogno.care</div>
+                    </div>
+                    <a href="profile.html" class="profile-menu-item">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                    <a href="settings.html" class="profile-menu-item">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                    <div class="theme-toggle-row">
+                        <div class="theme-toggle-left">
+                            <i class="fa-solid fa-moon"></i>
+                            <span>Dark Mode</span>
+                        </div>
+                        <label class="theme-switch">
+                            <input type="checkbox" id="theme-toggle" onchange="toggleTheme()">
+                            <span class="theme-slider"></span>
+                        </label>
+                    </div>
+                    <div class="menu-divider"></div>
+                    <button class="profile-menu-item danger" onclick="logout()">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Sign Out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Calendar Header -->
+        <div class="calendar-header">
+            <div class="calendar-nav">
+                <button id="prev-week"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 id="current-week">February 2 - 8, 2026</h2>
+                <button id="next-week"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <button class="btn btn-primary" onclick="openScheduleModal()" style="padding: 0.6rem 1.25rem; font-size: 0.9rem;">
+                    <i class="fa-solid fa-plus"></i> New Appointment
+                </button>
+            </div>
+        </div>
+
+        <!-- Week Grid -->
+        <div class="week-grid" id="week-grid">
+            <!-- Days will be generated by JS -->
+        </div>
+
+        <!-- Today's Appointments -->
+        <div class="today-section">
+            <h3><i class="fa-solid fa-clock"></i> Today's Appointments</h3>
+            <div class="apt-list" id="today-list">
+                <div class="empty-state">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <p>Loading appointments...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-btn">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a href="patients.html" class="nav-btn">
+            <i class="fa-solid fa-user-group"></i>
+            Patients
+        </a>
+        <a href="schedule.html" class="nav-btn active">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="consultations.html" class="nav-btn">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="reports.html" class="nav-btn">
+            <i class="fa-solid fa-chart-bar"></i>
+            Reports
+        </a>
+        <a href="profile.html" class="nav-btn">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+
+    <!-- Schedule Modal -->
+    <div class="modal-overlay" id="schedule-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-calendar-plus"></i> New Appointment</h2>
+                <button class="modal-close" onclick="closeScheduleModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Select Patient *</label>
+                    <select id="apt-patient">
+                        <option value="">-- Select a patient --</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date *</label>
+                        <input type="date" id="apt-date">
+                    </div>
+                    <div class="form-group">
+                        <label>Time *</label>
+                        <input type="time" id="apt-time">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Duration</label>
+                    <select id="apt-duration">
+                        <option value="30">30 minutes</option>
+                        <option value="45">45 minutes</option>
+                        <option value="60">1 hour</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Appointment Type</label>
+                    <div class="type-options">
+                        <div class="type-option selected" data-type="video" onclick="selectType(this)">
+                            <i class="fa-solid fa-video"></i>
+                            Video Call
+                        </div>
+                        <div class="type-option" data-type="in-person" onclick="selectType(this)">
+                            <i class="fa-solid fa-hospital"></i>
+                            In-Person
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Notes (Optional)</label>
+                    <textarea id="apt-notes" rows="2" placeholder="Any notes for this appointment..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeScheduleModal()">Cancel</button>
+                <button id="create-apt-btn" class="btn btn-primary" onclick="createAppointment()">
+                    <i class="fa-solid fa-check"></i> Schedule Appointment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    
+    <script>
+        // State
+        let currentWeekStart = getMonday(new Date());
+        let weekAppointments = [];
+        let selectedType = 'video';
+        let doctorId = null;
+
+        // Get Monday of week
+        function getMonday(d) {
+            const date = new Date(d);
+            const day = date.getDay();
+            const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+            return new Date(date.setDate(diff));
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Wait for Supabase
+            await waitForSupabase();
+            
+            // Get doctor info
+            await loadDoctorInfo();
+            
+            // Render calendar
+            renderWeekGrid();
+            updateWeekDisplay();
+            
+            // Load data
+            await Promise.all([
+                loadWeekAppointments(),
+                loadTodayAppointments()
+            ]);
+            
+            // Setup realtime
+            setupRealtime();
+        });
+
+        async function waitForSupabase() {
+            return new Promise((resolve) => {
+                const check = () => {
+                    if (window.CognoSupabase?.client) {
+                        resolve();
+                    } else {
+                        setTimeout(check, 100);
+                    }
+                };
+                check();
+            });
+        }
+
+        async function loadDoctorInfo() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+                
+                doctorId = user.id;
+                
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('full_name, display_name')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile) {
+                    const name = profile.display_name || profile.full_name || 'Doctor';
+                    const displayName = name.startsWith('Dr.') ? name : 'Dr. ' + name;
+                    document.getElementById('doctor-name').textContent = displayName;
+                    
+                    const initials = name.replace('Dr. ', '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                    document.getElementById('doctor-avatar').textContent = initials;
+                }
+            } catch (err) {
+                console.error('Failed to load doctor info:', err);
+            }
+        }
+
+        function renderWeekGrid() {
+            const grid = document.getElementById('week-grid');
+            const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            
+            grid.innerHTML = dayNames.map((name, i) => `
+                <div class="day-card" data-day="${i}">
+                    <div class="day-header">
+                        <span class="day-name">${name}</span>
+                        <span class="day-number">-</span>
+                    </div>
+                    <div class="day-appointments" id="day-apts-${i}"></div>
+                </div>
+            `).join('');
+        }
+
+        function updateWeekDisplay() {
+            const weekEnd = new Date(currentWeekStart);
+            weekEnd.setDate(weekEnd.getDate() + 6);
+            
+            const options = { month: 'short', day: 'numeric' };
+            const startStr = currentWeekStart.toLocaleDateString('en-US', options);
+            const endStr = weekEnd.toLocaleDateString('en-US', { ...options, year: 'numeric' });
+            
+            document.getElementById('current-week').textContent = `${startStr} - ${endStr}`;
+            
+            // Update day numbers and highlight today
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            document.querySelectorAll('.day-card').forEach((card, i) => {
+                const date = new Date(currentWeekStart);
+                date.setDate(date.getDate() + i);
+                
+                card.querySelector('.day-number').textContent = date.getDate();
+                card.dataset.date = date.toISOString().split('T')[0];
+                
+                card.classList.toggle('today', date.getTime() === today.getTime());
+            });
+        }
+
+        async function loadWeekAppointments() {
+            if (!doctorId) return;
+            
+            const weekEnd = new Date(currentWeekStart);
+            weekEnd.setDate(weekEnd.getDate() + 7);
+            
+            try {
+                const { data, error } = await CognoSupabase.client
+                    .from('consultations')
+                    .select(`
+                        id, scheduled_at, duration_minutes, meeting_url, notes, status,
+                        patient:patient_id (id, full_name)
+                    `)
+                    .eq('doctor_id', doctorId)
+                    .gte('scheduled_at', currentWeekStart.toISOString())
+                    .lt('scheduled_at', weekEnd.toISOString())
+                    .in('status', ['pending', 'confirmed', 'in_progress'])
+                    .order('scheduled_at');
+                
+                if (error) {
+                    console.error('Week appointments error:', error);
+                    return;
+                }
+                
+                weekAppointments = data || [];
+                renderWeekAppointments();
+                
+            } catch (err) {
+                console.error('Failed to load week appointments:', err);
+            }
+        }
+
+        function renderWeekAppointments() {
+            // Clear all day slots
+            document.querySelectorAll('.day-appointments').forEach(el => el.innerHTML = '');
+            
+            weekAppointments.forEach(apt => {
+                const aptDate = new Date(apt.scheduled_at);
+                const dateStr = aptDate.toISOString().split('T')[0];
+                const card = document.querySelector(`.day-card[data-date="${dateStr}"]`);
+                
+                if (card) {
+                    const container = card.querySelector('.day-appointments');
+                    const timeStr = aptDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                    
+                    container.innerHTML += `
+                        <div class="apt-item" onclick="viewAppointment('${apt.id}')">
+                            <span class="time">${timeStr}</span>
+                            <span class="name">${apt.patient?.full_name || 'Patient'}</span>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        async function loadTodayAppointments() {
+            if (!doctorId) return;
+            
+            const container = document.getElementById('today-list');
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            try {
+                const { data, error } = await CognoSupabase.client
+                    .from('consultations')
+                    .select(`
+                        id, scheduled_at, duration_minutes, meeting_url, notes, status,
+                        patient:patient_id (id, full_name, avatar_url)
+                    `)
+                    .eq('doctor_id', doctorId)
+                    .gte('scheduled_at', today.toISOString())
+                    .lt('scheduled_at', tomorrow.toISOString())
+                    .in('status', ['pending', 'confirmed', 'in_progress'])
+                    .order('scheduled_at');
+                
+                if (error) {
+                    console.error('Today appointments error:', error);
+                    container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-exclamation-triangle"></i><p>Error loading appointments</p></div>`;
+                    return;
+                }
+                
+                if (!data || data.length === 0) {
+                    container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-calendar-check"></i><p>No appointments scheduled for today</p></div>`;
+                    todayAppointmentsData = [];
+                    return;
+                }
+                
+                // Store for later use in view/cancel functions
+                todayAppointmentsData = data;
+                
+                container.innerHTML = data.map(apt => {
+                    const aptDate = new Date(apt.scheduled_at);
+                    const timeStr = aptDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                    const duration = apt.duration_minutes || 30;
+                    const isVideo = !!apt.meeting_url;
+                    
+                    return `
+                        <div class="apt-card">
+                            <div class="apt-time-box">
+                                <span class="time">${timeStr}</span>
+                                <span class="duration">${duration} min</span>
+                            </div>
+                            <div class="apt-info">
+                                <h4>${apt.patient?.full_name || 'Patient'}</h4>
+                                <p>${isVideo ? '<i class="fa-solid fa-video"></i> Video Call' : '<i class="fa-solid fa-hospital"></i> In-Person'}</p>
+                            </div>
+                            <div class="apt-actions">
+                                ${isVideo ? `<button class="btn btn-primary" onclick="joinCall('${apt.meeting_url}')"><i class="fa-solid fa-video"></i> Join</button>` : ''}
+                                <div class="apt-dropdown">
+                                    <button class="btn btn-outline" onclick="toggleDropdown('dropdown-${apt.id}')"><i class="fa-solid fa-ellipsis"></i></button>
+                                    <div class="dropdown-menu" id="dropdown-${apt.id}">
+                                        <button onclick="viewAppointment('${apt.id}')"><i class="fa-solid fa-eye"></i> View Details</button>
+                                        <button onclick="rescheduleAppointment('${apt.id}')"><i class="fa-solid fa-clock-rotate-left"></i> Reschedule</button>
+                                        <button class="danger" onclick="cancelAppointment('${apt.id}')"><i class="fa-solid fa-times"></i> Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (err) {
+                console.error('Failed to load today appointments:', err);
+                container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-exclamation-triangle"></i><p>Failed to load</p></div>`;
+            }
+        }
+
+        // Store appointments for later use
+        let todayAppointmentsData = [];
+        
+        function joinCall(url) {
+            if (url) window.open(url, '_blank');
+        }
+        
+        function toggleDropdown(dropdownId) {
+            // Close all other dropdowns
+            document.querySelectorAll('.dropdown-menu.show').forEach(d => {
+                if (d.id !== dropdownId) d.classList.remove('show');
+            });
+            document.getElementById(dropdownId)?.classList.toggle('show');
+        }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.apt-dropdown')) {
+                document.querySelectorAll('.dropdown-menu.show').forEach(d => d.classList.remove('show'));
+            }
+        });
+
+        function viewAppointment(id) {
+            const apt = todayAppointmentsData.find(a => a.id === id) || weekAppointments.find(a => a.id === id);
+            if (!apt) return;
+            
+            const aptDate = new Date(apt.scheduled_at);
+            const isVideo = !!apt.meeting_url;
+            
+            const html = `
+                <div style="padding: 1.5rem;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.25rem;">
+                            ${(apt.patient?.full_name || 'P').split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase()}
+                        </div>
+                        <div>
+                            <h3 style="margin: 0;">${apt.patient?.full_name || 'Patient'}</h3>
+                            <p style="margin: 0; color: #6b7280; font-size: 0.9rem;">${isVideo ? 'Video Consultation' : 'In-Person Visit'}</p>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="background: #f9fafb; padding: 0.75rem; border-radius: 8px;">
+                            <p style="margin: 0; font-size: 0.75rem; color: #6b7280;">Date</p>
+                            <p style="margin: 0; font-weight: 500;">${aptDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</p>
+                        </div>
+                        <div style="background: #f9fafb; padding: 0.75rem; border-radius: 8px;">
+                            <p style="margin: 0; font-size: 0.75rem; color: #6b7280;">Time</p>
+                            <p style="margin: 0; font-weight: 500;">${aptDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</p>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div style="background: #f9fafb; padding: 0.75rem; border-radius: 8px;">
+                            <p style="margin: 0; font-size: 0.75rem; color: #6b7280;">Duration</p>
+                            <p style="margin: 0; font-weight: 500;">${apt.duration_minutes || 30} minutes</p>
+                        </div>
+                        <div style="background: #f9fafb; padding: 0.75rem; border-radius: 8px;">
+                            <p style="margin: 0; font-size: 0.75rem; color: #6b7280;">Status</p>
+                            <p style="margin: 0; font-weight: 500; color: ${apt.status === 'confirmed' ? '#10b981' : '#f59e0b'};">${apt.status?.charAt(0).toUpperCase() + apt.status?.slice(1) || 'Pending'}</p>
+                        </div>
+                    </div>
+                    ${apt.notes ? `<div style="background: #f9fafb; padding: 0.75rem; border-radius: 8px;"><p style="margin: 0; font-size: 0.75rem; color: #6b7280;">Notes</p><p style="margin: 0;">${apt.notes}</p></div>` : ''}
+                </div>
+            `;
+            
+            showModal('Appointment Details', html);
+        }
+        
+        function showModal(title, content) {
+            let modal = document.getElementById('details-modal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'details-modal';
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content" style="max-width: 450px;">
+                        <div class="modal-header">
+                            <h2 id="details-modal-title"></h2>
+                            <button class="modal-close" onclick="document.getElementById('details-modal').classList.remove('show')">&times;</button>
+                        </div>
+                        <div id="details-modal-body"></div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+            document.getElementById('details-modal-title').textContent = title;
+            document.getElementById('details-modal-body').innerHTML = content;
+            modal.classList.add('show');
+        }
+        
+        async function cancelAppointment(id) {
+            if (!confirm('Are you sure you want to cancel this appointment? The patient will be notified.')) {
+                return;
+            }
+            
+            try {
+                // Get appointment details first for notification
+                const apt = todayAppointmentsData.find(a => a.id === id) || weekAppointments.find(a => a.id === id);
+                
+                const { error } = await CognoSupabase.client
+                    .from('consultations')
+                    .update({ status: 'cancelled' })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                // Notify patient and doctor
+                const patientName = apt?.patient?.full_name || 'Patient';
+                const notifications = [];
+                
+                if (apt?.patient?.id) {
+                    notifications.push({
+                        user_id: apt.patient.id,
+                        title: 'Appointment Cancelled',
+                        message: `Your appointment on ${new Date(apt.scheduled_at).toLocaleDateString()} has been cancelled.`,
+                        notification_type: 'appointment'
+                    });
+                }
+                
+                notifications.push({
+                    user_id: doctorId,
+                    title: 'Appointment Cancelled',
+                    message: `Appointment with ${patientName} on ${new Date(apt.scheduled_at).toLocaleDateString()} has been cancelled.`,
+                    notification_type: 'appointment'
+                });
+                
+                await CognoSupabase.client.from('notifications').insert(notifications);
+                
+                alert('Appointment cancelled successfully');
+                await loadWeekAppointments();
+                await loadTodayAppointments();
+            } catch (err) {
+                console.error('Failed to cancel appointment:', err);
+                alert('Failed to cancel: ' + err.message);
+            }
+        }
+        
+        function rescheduleAppointment(id) {
+            const apt = todayAppointmentsData.find(a => a.id === id) || weekAppointments.find(a => a.id === id);
+            if (!apt) return;
+            
+            // Open schedule modal with pre-filled data for editing
+            const modal = document.getElementById('schedule-modal');
+            const createBtn = document.getElementById('create-apt-btn');
+            modal.dataset.rescheduleId = id;
+            modal.querySelector('.modal-header h2').innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> Reschedule Appointment';
+            createBtn.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> Update Appointment';
+            modal.classList.add('show');
+            loadPatientsDropdown().then(() => {
+                document.getElementById('apt-patient').value = apt.patient?.id || '';
+            });
+            
+            const aptDate = new Date(apt.scheduled_at);
+            document.getElementById('apt-date').value = aptDate.toISOString().split('T')[0];
+            document.getElementById('apt-time').value = aptDate.toTimeString().slice(0,5);
+            document.getElementById('apt-duration').value = apt.duration_minutes || 30;
+            document.getElementById('apt-notes').value = apt.notes || '';
+            
+            if (apt.meeting_url) {
+                document.querySelector('.type-option[data-type="video"]').classList.add('selected');
+                document.querySelector('.type-option[data-type="in-person"]').classList.remove('selected');
+                selectedType = 'video';
+            } else {
+                document.querySelector('.type-option[data-type="in-person"]').classList.add('selected');
+                document.querySelector('.type-option[data-type="video"]').classList.remove('selected');
+                selectedType = 'in-person';
+            }
+        }
+
+        // Navigation
+        document.getElementById('prev-week').onclick = () => {
+            currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+            updateWeekDisplay();
+            loadWeekAppointments();
+        };
+
+        document.getElementById('next-week').onclick = () => {
+            currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+            updateWeekDisplay();
+            loadWeekAppointments();
+        };
+
+        // Modal functions
+        function openScheduleModal() {
+            const modal = document.getElementById('schedule-modal');
+            const createBtn = document.getElementById('create-apt-btn');
+            
+            // Clear reschedule state for new appointment
+            delete modal.dataset.rescheduleId;
+            modal.querySelector('.modal-header h2').innerHTML = '<i class="fa-solid fa-calendar-plus"></i> Schedule Appointment';
+            createBtn.innerHTML = '<i class="fa-solid fa-check"></i> Schedule Appointment';
+            
+            // Reset form
+            document.getElementById('apt-patient').value = '';
+            document.getElementById('apt-notes').value = '';
+            selectedType = 'video';
+            document.querySelectorAll('.type-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.type === 'video');
+            });
+            
+            modal.classList.add('show');
+            loadPatientsDropdown();
+            
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('apt-date').value = tomorrow.toISOString().split('T')[0];
+            document.getElementById('apt-time').value = '10:00';
+        }
+
+        function closeScheduleModal() {
+            document.getElementById('schedule-modal').classList.remove('show');
+        }
+
+        function selectType(el) {
+            document.querySelectorAll('.type-option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedType = el.dataset.type;
+        }
+
+        async function loadPatientsDropdown() {
+            const select = document.getElementById('apt-patient');
+            select.innerHTML = '<option value="">Loading...</option>';
+            
+            try {
+                // Try doctor_patients first
+                const { data: assigned, error: err1 } = await CognoSupabase.client
+                    .from('doctor_patients')
+                    .select('patient:patient_id (id, full_name, display_name)')
+                    .eq('doctor_id', doctorId)
+                    .eq('status', 'active');
+                
+                if (!err1 && assigned && assigned.length > 0) {
+                    select.innerHTML = '<option value="">-- Select a patient --</option>' +
+                        assigned.map(dp => `<option value="${dp.patient?.id}">${dp.patient?.display_name || dp.patient?.full_name || 'Patient'}</option>`).join('');
+                    return;
+                }
+                
+                // Fallback: all students
+                const { data: students, error: err2 } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('id, full_name, display_name')
+                    .eq('role', 'student')
+                    .order('full_name');
+                
+                if (!err2 && students && students.length > 0) {
+                    select.innerHTML = '<option value="">-- Select a patient --</option>' +
+                        students.map(s => `<option value="${s.id}">${s.display_name || s.full_name || 'Student'}</option>`).join('');
+                } else {
+                    select.innerHTML = '<option value="">No patients found</option>';
+                }
+                
+            } catch (err) {
+                console.error('Failed to load patients:', err);
+                select.innerHTML = '<option value="">Error loading</option>';
+            }
+        }
+
+        async function createAppointment() {
+            const patientId = document.getElementById('apt-patient').value;
+            const date = document.getElementById('apt-date').value;
+            const time = document.getElementById('apt-time').value;
+            const duration = parseInt(document.getElementById('apt-duration').value);
+            const notes = document.getElementById('apt-notes').value;
+            const rescheduleId = document.getElementById('schedule-modal').dataset.rescheduleId;
+            
+            if (!patientId) {
+                alert('Please select a patient');
+                return;
+            }
+            if (!date || !time) {
+                alert('Please select date and time');
+                return;
+            }
+            
+            const scheduledAt = new Date(`${date}T${time}`);
+            const roomId = `cogno-appt-${doctorId.slice(0,8)}-${patientId.slice(0,8)}-${Date.now()}`;
+            const meetingUrl = selectedType === 'video' ? `/consultations/video.html?room=${roomId}&consultation=scheduled` : null;
+            
+            try {
+                const patientSelect = document.getElementById('apt-patient');
+                const patientName = patientSelect.options[patientSelect.selectedIndex]?.text || 'Patient';
+                
+                if (rescheduleId) {
+                    // Update existing appointment
+                    const { error } = await CognoSupabase.client
+                        .from('consultations')
+                        .update({
+                            patient_id: patientId,
+                            scheduled_at: scheduledAt.toISOString(),
+                            duration_minutes: duration,
+                            meeting_url: meetingUrl,
+                            notes: notes || null,
+                            status: 'pending'
+                        })
+                        .eq('id', rescheduleId);
+                    
+                    if (error) throw error;
+                    
+                    // Notify patient and doctor about reschedule
+                    await CognoSupabase.client.from('notifications').insert([
+                        {
+                            user_id: patientId,
+                            title: 'Appointment Rescheduled',
+                            message: `Your appointment has been rescheduled to ${scheduledAt.toLocaleDateString()} at ${scheduledAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
+                            notification_type: 'appointment'
+                        },
+                        {
+                            user_id: doctorId,
+                            title: 'Appointment Updated',
+                            message: `Appointment with ${patientName} rescheduled to ${scheduledAt.toLocaleDateString()} at ${scheduledAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
+                            notification_type: 'appointment'
+                        }
+                    ]);
+                    
+                    alert(`Appointment rescheduled with ${patientName}!`);
+                } else {
+                    // Create new appointment
+                    const { error } = await CognoSupabase.client
+                        .from('consultations')
+                        .insert({
+                            doctor_id: doctorId,
+                            patient_id: patientId,
+                            scheduled_at: scheduledAt.toISOString(),
+                            duration_minutes: duration,
+                            meeting_url: meetingUrl,
+                            notes: notes || null,
+                            status: 'pending'
+                        });
+                    
+                    if (error) throw error;
+                    
+                    // Notify patient and doctor
+                    await CognoSupabase.client.from('notifications').insert([
+                        {
+                            user_id: patientId,
+                            title: 'New Appointment Scheduled',
+                            message: `You have a new appointment on ${scheduledAt.toLocaleDateString()} at ${scheduledAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
+                            notification_type: 'appointment'
+                        },
+                        {
+                            user_id: doctorId,
+                            title: 'Appointment Confirmed',
+                            message: `Appointment with ${patientName} scheduled for ${scheduledAt.toLocaleDateString()} at ${scheduledAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`,
+                            notification_type: 'appointment'
+                        }
+                    ]);
+                    
+                    alert(`Appointment scheduled with ${patientName}!`);
+                }
+                
+                closeScheduleModal();
+                clearScheduleForm();
+                
+                // Reload
+                await loadWeekAppointments();
+                await loadTodayAppointments();
+                
+            } catch (err) {
+                console.error('Failed to create/reschedule appointment:', err);
+                alert('Failed: ' + err.message);
+            }
+        }
+        
+        function clearScheduleForm() {
+            document.getElementById('apt-patient').value = '';
+            document.getElementById('apt-notes').value = '';
+            delete document.getElementById('schedule-modal').dataset.rescheduleId;
+        }
+
+        // Realtime subscription
+        function setupRealtime() {
+            if (!doctorId) return;
+            
+            CognoSupabase.client
+                .channel('schedule-updates')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'consultations',
+                    filter: `doctor_id=eq.${doctorId}`
+                }, () => {
+                    console.log('Appointment updated');
+                    loadWeekAppointments();
+                    loadTodayAppointments();
+                })
+                .subscribe();
+        }
+        
+        // Profile Dropdown Functions
+        function toggleProfileMenu(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('profile-dropdown');
+            const menu = document.getElementById('profile-menu');
+            const overlay = document.getElementById('dropdown-overlay');
+            
+            const isOpen = menu.classList.contains('show');
+            
+            if (isOpen) {
+                closeAllDropdowns();
+            } else {
+                menu.classList.add('show');
+                dropdown.classList.add('open');
+                overlay.classList.add('show');
+            }
+        }
+        
+        function closeAllDropdowns() {
+            const menu = document.getElementById('profile-menu');
+            const dropdown = document.getElementById('profile-dropdown');
+            const overlay = document.getElementById('dropdown-overlay');
+            
+            if (menu) menu.classList.remove('show');
+            if (dropdown) dropdown.classList.remove('open');
+            if (overlay) overlay.classList.remove('show');
+        }
+        
+        function toggleTheme() {
+            const isDark = document.getElementById('theme-toggle').checked;
+            document.body.classList.toggle('dark-mode', isDark);
+            localStorage.setItem('darkMode', isDark);
+        }
+        
+        async function logout() {
+            try {
+                await CognoSupabase.client.auth.signOut();
+                window.location.href = '../auth/login.html';
+            } catch (err) {
+                console.error('Logout failed:', err);
+                window.location.href = '../auth/login.html';
+            }
+        }
+        
+        async function updateProfileDropdown() {
+            try {
+                const { data: { user } } = await CognoSupabase.client.auth.getUser();
+                if (!user) return;
+                
+                const { data: profile } = await CognoSupabase.client
+                    .from('profiles')
+                    .select('full_name, email')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profile) {
+                    const name = profile.full_name || 'Doctor';
+                    const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    const email = profile.email || user.email || 'doctor@cogno.care';
+                    
+                    const avatarEl = document.getElementById('doctor-avatar');
+                    const nameEl = document.getElementById('doctor-name');
+                    const menuNameEl = document.getElementById('menu-doctor-name');
+                    const menuEmailEl = document.getElementById('menu-doctor-email');
+                    
+                    if (avatarEl) avatarEl.textContent = initials;
+                    if (nameEl) nameEl.textContent = name;
+                    if (menuNameEl) menuNameEl.textContent = name;
+                    if (menuEmailEl) menuEmailEl.textContent = email;
+                }
+                
+                // Initialize theme
+                const savedTheme = localStorage.getItem('darkMode') === 'true';
+                document.getElementById('theme-toggle').checked = savedTheme;
+                document.body.classList.toggle('dark-mode', savedTheme);
+            } catch (err) {
+                console.error('Failed to update profile dropdown:', err);
+            }
+        }
+        
+        // Call updateProfileDropdown on load
+        document.addEventListener('DOMContentLoaded', updateProfileDropdown);
+    </script>
+</body>
+</html>

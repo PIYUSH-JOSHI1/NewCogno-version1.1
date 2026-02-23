@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Sense Worksheet - Dyscalculia Support | Cogno Solution</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Print-optimized styles based on NCERT & Clinical Math Intervention */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Lexend', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a2e;
+            background: white;
+            padding: 20px;
+        }
+        
+        @media print {
+            body { padding: 0; }
+            .no-print { display: none !important; }
+            .page-break { page-break-after: always; }
+            .worksheet-page { margin: 0; box-shadow: none; }
+        }
+        
+        .no-print {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+        
+        .no-print h1 { margin-bottom: 10px; }
+        
+        .print-btn {
+            background: white;
+            color: #d97706;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .print-btn:hover { background: #f0f0f0; }
+        
+        .worksheet-page {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            padding: 40px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-radius: 12px;
+        }
+        
+        .worksheet-header {
+            border-bottom: 3px solid #f59e0b;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .worksheet-header h1 {
+            color: #d97706;
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .worksheet-header .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+        
+        .student-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #fffbeb;
+            border-radius: 8px;
+        }
+        
+        .student-info label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        
+        .student-info input {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #fcd34d;
+            background: transparent;
+            padding: 5px 0;
+            font-size: 1rem;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+        }
+        
+        .section-title {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .instructions {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+        
+        .instructions strong {
+            color: #92400e;
+        }
+        
+        /* Number Recognition Grid */
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .number-cell {
+            border: 2px solid #fcd34d;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            background: #fffbeb;
+        }
+        
+        .number-cell .number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #d97706;
+        }
+        
+        .number-cell .hindi {
+            font-size: 1.2rem;
+            color: #92400e;
+            margin-top: 5px;
+        }
+        
+        .number-cell .word {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+        
+        /* Counting Objects */
+        .count-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .count-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .count-item .objects {
+            font-size: 2rem;
+            min-width: 150px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .count-item .answer-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .count-item .answer-box .big-box {
+            width: 80px;
+            height: 80px;
+            border: 3px dashed #fcd34d;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            background: #fffbeb;
+        }
+        
+        .count-item .answer-box label {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+        
+        /* Place Value */
+        .place-value-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+        
+        .place-value-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        
+        .place-value-item .number-display {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 800;
+            color: #d97706;
+            margin-bottom: 15px;
+            letter-spacing: 10px;
+        }
+        
+        .place-value-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .place-box {
+            text-align: center;
+        }
+        
+        .place-box .label {
+            background: #f59e0b;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 8px 8px 0 0;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .place-box .value {
+            border: 2px solid #fcd34d;
+            border-top: none;
+            padding: 15px 25px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            min-width: 60px;
+            background: #fffbeb;
+        }
+        
+        /* Comparison */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .compare-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .compare-item .num {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #374151;
+            background: #f3f4f6;
+            padding: 10px 25px;
+            border-radius: 8px;
+        }
+        
+        .compare-item .symbol-box {
+            width: 60px;
+            height: 60px;
+            border: 3px dashed #fcd34d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: #fffbeb;
+        }
+        
+        /* Operations with Visuals */
+        .operation-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        
+        .operation-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 25px;
+        }
+        
+        .operation-visual {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .operation-visual .group {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 2rem;
+            min-width: 100px;
+            text-align: center;
+        }
+        
+        .operation-visual .op-sign {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #d97706;
+        }
+        
+        .operation-equation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .operation-equation .num {
+            background: #fef3c7;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+        
+        .operation-equation .answer {
+            width: 80px;
+            height: 60px;
+            border: 3px dashed #fcd34d;
+            border-radius: 8px;
+            background: #fffbeb;
+        }
+        
+        /* Word Problems - Indian Context */
+        .word-problem {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .word-problem .problem-icon {
+            font-size: 3rem;
+            float: left;
+            margin-right: 15px;
+        }
+        
+        .word-problem .problem-text {
+            font-size: 1.1rem;
+            color: #374151;
+            margin-bottom: 15px;
+        }
+        
+        .word-problem .problem-text .highlight {
+            background: #fef3c7;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        
+        .word-problem .work-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            clear: both;
+        }
+        
+        .word-problem .work-box {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 100px;
+        }
+        
+        .word-problem .work-box label {
+            font-size: 0.85rem;
+            color: #6b7280;
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        .word-problem .answer-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .word-problem .answer-line span {
+            font-weight: 600;
+        }
+        
+        .word-problem .answer-line input {
+            flex: 1;
+            border: none;
+            border-bottom: 2px solid #fcd34d;
+            padding: 5px;
+            font-size: 1.2rem;
+        }
+        
+        /* Indian Currency */
+        .currency-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .currency-item .coins {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            min-width: 200px;
+        }
+        
+        .currency-item .coin {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        
+        .currency-item .coin.r1 { background: #fef3c7; border: 2px solid #d97706; color: #92400e; }
+        .currency-item .coin.r2 { background: #fee2e2; border: 2px solid #dc2626; color: #991b1b; }
+        .currency-item .coin.r5 { background: #dbeafe; border: 2px solid #2563eb; color: #1e40af; }
+        .currency-item .coin.r10 { background: #d1fae5; border: 2px solid #059669; color: #065f46; }
+        
+        .currency-item .total-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .currency-item .total-box span {
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .currency-item .total-box input {
+            width: 80px;
+            height: 45px;
+            border: 2px dashed #fcd34d;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        /* Scoring Section */
+        .scoring-box {
+            background: #f0fdf4;
+            border: 2px solid #86efac;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .scoring-box h3 {
+            color: #166534;
+            margin-bottom: 15px;
+        }
+        
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-item label {
+            display: block;
+            font-size: 0.8rem;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .score-item input {
+            width: 50px;
+            height: 40px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        
+        .footer .brand {
+            font-weight: 700;
+            color: #d97706;
+        }
+    </style>
+</head>
+<body>
+    <!-- Print Controls -->
+    <div class="no-print">
+        <h1>🔢 Number Sense & Math Worksheet</h1>
+        <p>Based on NCERT guidelines & clinical protocols for Dyscalculia intervention</p>
+        <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet</button>
+        <button class="print-btn" onclick="window.history.back()">← Back to Learning Hub</button>
+    </div>
+
+    <!-- Page 1: Number Recognition & Counting -->
+    <div class="worksheet-page">
+        <div class="worksheet-header">
+            <h1>🔢 Number Sense Assessment</h1>
+            <p class="subtitle">Level 1 - Number Recognition & Counting | As per NCERT Foundation Numeracy</p>
+        </div>
+        
+        <div class="student-info">
+            <div>
+                <label>Child's Name (बच्चे का नाम):</label>
+                <input type="text" placeholder="">
+            </div>
+            <div>
+                <label>Age / Class (आयु / कक्षा):</label>
+                <input type="text" placeholder="">
+            </div>
+            <div>
+                <label>Date (तारीख):</label>
+                <input type="text" placeholder="">
+            </div>
+        </div>
+
+        <!-- Section 1: Number Recognition 1-10 -->
+        <div class="section">
+            <div class="section-title">
+                <span>🔢 Section A: Number Recognition (संख्या पहचान 1-10)</span>
+                <span class="badge">10 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Read each number aloud. Point to the number when asked.
+                <br><strong>निर्देश:</strong> प्रत्येक संख्या को जोर से पढ़ें। पूछे जाने पर संख्या की ओर इशारा करें।
+            </div>
+            
+            <div class="number-grid">
+                <div class="number-cell">
+                    <div class="number">1</div>
+                    <div class="hindi">१</div>
+                    <div class="word">One / एक</div>
+                </div>
+                <div class="number-cell">
+                    <div class="number">2</div>
+                    <div class="hindi">२</div>
+                    <div class="word">Two / दो</div>
+                </div>
+                <div class="number-cell">
+                    <div class="number">3</div>
+                    <div class="hindi">३</div>
+                    <div class="word">Three / तीन</div>
+                </div>
+                <div class="number-cell">
+                    <div class="number">4</div>
+                    <div class="hindi">४</div>
+                    <div class="word">Four / चार</div>
+                </div>
+                <div class="number-cell">
+                    <div class="number">5</div>
+                    <div class="hindi">५</div>
+                    <div class="word">Five / पांच</div>
+                </div>
+                <div class="number-cell">
+                    <div class="number">6</div>
+                    <div class="hindi">६</div>
+                    <div class="word">Six / छह</div>
+                </div>
+                <div class="number-cell">
+                    <div class="number">7</div>
+                    <div class="hindi">७</div>
+                    <div class="word">Seven / सात</div>
+                </div>
+                <div class="number-cell">
+                    <div class="number">8</div>
+                    <div class="hindi">८</div>
+                    <div class="word">Eight / आठ</div>
+                </div>
+                <div class="number-cell">
+                    <div class="number">9</div>
+                    <div class="hindi">९</div>
+                    <div class="word">Nine / नौ</div>
+                </div>
+                <div class="number-cell">
+                    <div class="number">10</div>
+                    <div class="hindi">१०</div>
+                    <div class="word">Ten / दस</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Counting Objects -->
+        <div class="section">
+            <div class="section-title">
+                <span>🍎 Section B: Count and Write (गिनो और लिखो)</span>
+                <span class="badge">8 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Count the objects and write the number in the box.
+                <br><strong>निर्देश:</strong> वस्तुओं को गिनें और बॉक्स में संख्या लिखें।
+            </div>
+            
+            <div class="count-grid">
+                <div class="count-item">
+                    <div class="objects">🍎🍎🍎</div>
+                    <div class="answer-box">
+                        <div class="big-box"></div>
+                        <label>सेब (Apples)</label>
+                    </div>
+                </div>
+                <div class="count-item">
+                    <div class="objects">🌟🌟🌟🌟🌟</div>
+                    <div class="answer-box">
+                        <div class="big-box"></div>
+                        <label>तारे (Stars)</label>
+                    </div>
+                </div>
+                <div class="count-item">
+                    <div class="objects">🐦🐦</div>
+                    <div class="answer-box">
+                        <div class="big-box"></div>
+                        <label>पक्षी (Birds)</label>
+                    </div>
+                </div>
+                <div class="count-item">
+                    <div class="objects">🌸🌸🌸🌸🌸🌸🌸</div>
+                    <div class="answer-box">
+                        <div class="big-box"></div>
+                        <label>फूल (Flowers)</label>
+                    </div>
+                </div>
+                <div class="count-item">
+                    <div class="objects">📚📚📚📚</div>
+                    <div class="answer-box">
+                        <div class="big-box"></div>
+                        <label>किताबें (Books)</label>
+                    </div>
+                </div>
+                <div class="count-item">
+                    <div class="objects">🍌🍌🍌🍌🍌🍌</div>
+                    <div class="answer-box">
+                        <div class="big-box"></div>
+                        <label>केले (Bananas)</label>
+                    </div>
+                </div>
+                <div class="count-item">
+                    <div class="objects">🏀🏀🏀🏀🏀🏀🏀🏀</div>
+                    <div class="answer-box">
+                        <div class="big-box"></div>
+                        <label>गेंद (Balls)</label>
+                    </div>
+                </div>
+                <div class="count-item">
+                    <div class="objects">🦋🦋🦋🦋🦋🦋🦋🦋🦋🦋</div>
+                    <div class="answer-box">
+                        <div class="big-box"></div>
+                        <label>तितली (Butterflies)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Worksheet aligned with NCERT Foundation Numeracy & NIPUN Bharat Mission guidelines</p>
+            <p class="brand">Cogno Solution - Supporting Learning Differences</p>
+        </div>
+    </div>
+
+    <!-- Page 2: Place Value & Comparison -->
+    <div class="worksheet-page page-break">
+        <div class="worksheet-header">
+            <h1>🔢 Number Sense Assessment</h1>
+            <p class="subtitle">Level 1 - Place Value & Comparison | Page 2</p>
+        </div>
+
+        <!-- Section 3: Place Value -->
+        <div class="section">
+            <div class="section-title">
+                <span>🏠 Section C: Place Value (स्थानीय मान)</span>
+                <span class="badge">8 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Write the number of Tens (दहाई) and Ones (इकाई) for each number.
+                <br><strong>निर्देश:</strong> प्रत्येक संख्या के लिए दहाई और इकाई लिखें।
+                <br><em>Example: 25 = 2 Tens + 5 Ones (25 = 2 दहाई + 5 इकाई)</em>
+            </div>
+            
+            <div class="place-value-grid">
+                <div class="place-value-item">
+                    <div class="number-display">34</div>
+                    <div class="place-value-boxes">
+                        <div class="place-box">
+                            <div class="label">TENS (दहाई)</div>
+                            <div class="value"></div>
+                        </div>
+                        <div class="place-box">
+                            <div class="label">ONES (इकाई)</div>
+                            <div class="value"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="place-value-item">
+                    <div class="number-display">57</div>
+                    <div class="place-value-boxes">
+                        <div class="place-box">
+                            <div class="label">TENS (दहाई)</div>
+                            <div class="value"></div>
+                        </div>
+                        <div class="place-box">
+                            <div class="label">ONES (इकाई)</div>
+                            <div class="value"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="place-value-item">
+                    <div class="number-display">82</div>
+                    <div class="place-value-boxes">
+                        <div class="place-box">
+                            <div class="label">TENS (दहाई)</div>
+                            <div class="value"></div>
+                        </div>
+                        <div class="place-box">
+                            <div class="label">ONES (इकाई)</div>
+                            <div class="value"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="place-value-item">
+                    <div class="number-display">46</div>
+                    <div class="place-value-boxes">
+                        <div class="place-box">
+                            <div class="label">TENS (दहाई)</div>
+                            <div class="value"></div>
+                        </div>
+                        <div class="place-box">
+                            <div class="label">ONES (इकाई)</div>
+                            <div class="value"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Comparison -->
+        <div class="section">
+            <div class="section-title">
+                <span>⚖️ Section D: Compare Numbers (संख्याओं की तुलना)</span>
+                <span class="badge">6 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Write > (greater than), < (less than), or = (equal to) in the circle.
+                <br><strong>निर्देश:</strong> गोले में > (बड़ा), < (छोटा), या = (बराबर) लिखें।
+            </div>
+            
+            <div class="compare-grid">
+                <div class="compare-item">
+                    <span class="num">15</span>
+                    <div class="symbol-box"></div>
+                    <span class="num">12</span>
+                </div>
+                <div class="compare-item">
+                    <span class="num">8</span>
+                    <div class="symbol-box"></div>
+                    <span class="num">18</span>
+                </div>
+                <div class="compare-item">
+                    <span class="num">25</span>
+                    <div class="symbol-box"></div>
+                    <span class="num">25</span>
+                </div>
+                <div class="compare-item">
+                    <span class="num">42</span>
+                    <div class="symbol-box"></div>
+                    <span class="num">24</span>
+                </div>
+                <div class="compare-item">
+                    <span class="num">67</span>
+                    <div class="symbol-box"></div>
+                    <span class="num">76</span>
+                </div>
+                <div class="compare-item">
+                    <span class="num">99</span>
+                    <div class="symbol-box"></div>
+                    <span class="num">100</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Indian Currency -->
+        <div class="section">
+            <div class="section-title">
+                <span>💰 Section E: Count the Money (पैसे गिनो - भारतीय रुपया)</span>
+                <span class="badge">5 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Count all the coins and write the total in Rupees (₹).
+                <br><strong>निर्देश:</strong> सभी सिक्कों को गिनें और कुल रुपये में लिखें।
+            </div>
+            
+            <div class="currency-item">
+                <div class="coins">
+                    <div class="coin r5">₹5</div>
+                    <div class="coin r5">₹5</div>
+                    <div class="coin r2">₹2</div>
+                </div>
+                <div class="total-box">
+                    <span>Total / कुल = ₹</span>
+                    <input type="text">
+                </div>
+            </div>
+            
+            <div class="currency-item">
+                <div class="coins">
+                    <div class="coin r10">₹10</div>
+                    <div class="coin r5">₹5</div>
+                    <div class="coin r1">₹1</div>
+                    <div class="coin r1">₹1</div>
+                </div>
+                <div class="total-box">
+                    <span>Total / कुल = ₹</span>
+                    <input type="text">
+                </div>
+            </div>
+            
+            <div class="currency-item">
+                <div class="coins">
+                    <div class="coin r10">₹10</div>
+                    <div class="coin r10">₹10</div>
+                    <div class="coin r5">₹5</div>
+                    <div class="coin r2">₹2</div>
+                    <div class="coin r2">₹2</div>
+                </div>
+                <div class="total-box">
+                    <span>Total / कुल = ₹</span>
+                    <input type="text">
+                </div>
+            </div>
+            
+            <div class="currency-item">
+                <div class="coins">
+                    <div class="coin r5">₹5</div>
+                    <div class="coin r5">₹5</div>
+                    <div class="coin r5">₹5</div>
+                    <div class="coin r5">₹5</div>
+                </div>
+                <div class="total-box">
+                    <span>Total / कुल = ₹</span>
+                    <input type="text">
+                </div>
+            </div>
+            
+            <div class="currency-item">
+                <div class="coins">
+                    <div class="coin r10">₹10</div>
+                    <div class="coin r10">₹10</div>
+                    <div class="coin r10">₹10</div>
+                    <div class="coin r5">₹5</div>
+                    <div class="coin r2">₹2</div>
+                    <div class="coin r1">₹1</div>
+                    <div class="coin r1">₹1</div>
+                    <div class="coin r1">₹1</div>
+                </div>
+                <div class="total-box">
+                    <span>Total / कुल = ₹</span>
+                    <input type="text">
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Aligned with NCERT Class 1-2 Mathematics & RBI Financial Literacy Guidelines</p>
+            <p class="brand">Cogno Solution - Supporting Learning Differences</p>
+        </div>
+    </div>
+
+    <!-- Page 3: Operations & Word Problems -->
+    <div class="worksheet-page page-break">
+        <div class="worksheet-header">
+            <h1>🔢 Number Sense Assessment</h1>
+            <p class="subtitle">Level 1 - Addition & Word Problems | Page 3</p>
+        </div>
+
+        <!-- Section 6: Visual Addition -->
+        <div class="section">
+            <div class="section-title">
+                <span>➕ Section F: Addition with Pictures (चित्रों से जोड़)</span>
+                <span class="badge">6 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Count the objects in each group, then add them together.
+                <br><strong>निर्देश:</strong> प्रत्येक समूह में वस्तुओं को गिनें, फिर उन्हें जोड़ें।
+            </div>
+            
+            <div class="operation-grid">
+                <div class="operation-item">
+                    <div class="operation-visual">
+                        <div class="group">🍎🍎🍎</div>
+                        <span class="op-sign">+</span>
+                        <div class="group">🍎🍎</div>
+                        <span class="op-sign">=</span>
+                        <div class="group" style="background:#fffbeb; border-color:#fcd34d;">?</div>
+                    </div>
+                    <div class="operation-equation">
+                        <span class="num">3</span>
+                        <span>+</span>
+                        <span class="num">2</span>
+                        <span>=</span>
+                        <div class="answer"></div>
+                    </div>
+                </div>
+                
+                <div class="operation-item">
+                    <div class="operation-visual">
+                        <div class="group">🌟🌟🌟🌟</div>
+                        <span class="op-sign">+</span>
+                        <div class="group">🌟🌟🌟</div>
+                        <span class="op-sign">=</span>
+                        <div class="group" style="background:#fffbeb; border-color:#fcd34d;">?</div>
+                    </div>
+                    <div class="operation-equation">
+                        <span class="num">4</span>
+                        <span>+</span>
+                        <span class="num">3</span>
+                        <span>=</span>
+                        <div class="answer"></div>
+                    </div>
+                </div>
+                
+                <div class="operation-item">
+                    <div class="operation-visual">
+                        <div class="group">🐦🐦🐦🐦🐦</div>
+                        <span class="op-sign">+</span>
+                        <div class="group">🐦🐦🐦🐦</div>
+                        <span class="op-sign">=</span>
+                        <div class="group" style="background:#fffbeb; border-color:#fcd34d;">?</div>
+                    </div>
+                    <div class="operation-equation">
+                        <span class="num">5</span>
+                        <span>+</span>
+                        <span class="num">4</span>
+                        <span>=</span>
+                        <div class="answer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 7: Word Problems (Indian Context) -->
+        <div class="section">
+            <div class="section-title">
+                <span>📝 Section G: Word Problems (शब्द समस्याएं)</span>
+                <span class="badge">9 marks</span>
+            </div>
+            
+            <div class="instructions">
+                <strong>Instructions:</strong> Read the problem carefully. Show your work and write the answer.
+                <br><strong>निर्देश:</strong> समस्या को ध्यान से पढ़ें। अपना कार्य दिखाएं और उत्तर लिखें।
+            </div>
+            
+            <div class="word-problem">
+                <div class="problem-icon">🥭</div>
+                <div class="problem-text">
+                    राम के पास <span class="highlight">5 आम</span> हैं। उसकी माँ ने उसे <span class="highlight">3 आम और</span> दिए।<br>
+                    Ram has <span class="highlight">5 mangoes</span>. His mother gave him <span class="highlight">3 more</span>.<br>
+                    <strong>अब राम के पास कितने आम हैं? / How many mangoes does Ram have now?</strong>
+                </div>
+                <div class="work-area">
+                    <div class="work-box">
+                        <label>Draw / चित्र बनाएं:</label>
+                    </div>
+                    <div class="work-box">
+                        <label>Number sentence / संख्या वाक्य:</label>
+                    </div>
+                </div>
+                <div class="answer-line">
+                    <span>Answer / उत्तर:</span>
+                    <input type="text">
+                    <span>mangoes / आम</span>
+                </div>
+            </div>
+            
+            <div class="word-problem">
+                <div class="problem-icon">📚</div>
+                <div class="problem-text">
+                    प्रिया ने <span class="highlight">₹20</span> की किताब खरीदी। उसने <span class="highlight">₹50</span> दिए।<br>
+                    Priya bought a book for <span class="highlight">₹20</span>. She gave <span class="highlight">₹50</span>.<br>
+                    <strong>उसे कितने रुपये वापस मिले? / How much money did she get back?</strong>
+                </div>
+                <div class="work-area">
+                    <div class="work-box">
+                        <label>Show work / हल दिखाएं:</label>
+                    </div>
+                    <div class="work-box">
+                        <label>Number sentence / संख्या वाक्य:</label>
+                    </div>
+                </div>
+                <div class="answer-line">
+                    <span>Answer / उत्तर: ₹</span>
+                    <input type="text">
+                </div>
+            </div>
+            
+            <div class="word-problem">
+                <div class="problem-icon">🚌</div>
+                <div class="problem-text">
+                    एक बस में <span class="highlight">12 यात्री</span> थे। अगले स्टॉप पर <span class="highlight">5 यात्री और</span> चढ़े।<br>
+                    A bus had <span class="highlight">12 passengers</span>. At the next stop, <span class="highlight">5 more</span> got on.<br>
+                    <strong>अब बस में कितने यात्री हैं? / How many passengers are on the bus now?</strong>
+                </div>
+                <div class="work-area">
+                    <div class="work-box">
+                        <label>Draw / चित्र बनाएं:</label>
+                    </div>
+                    <div class="work-box">
+                        <label>Number sentence / संख्या वाक्य:</label>
+                    </div>
+                </div>
+                <div class="answer-line">
+                    <span>Answer / उत्तर:</span>
+                    <input type="text">
+                    <span>passengers / यात्री</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scoring Section -->
+        <div class="scoring-box">
+            <h3>📊 Assessment Score (मूल्यांकन अंक)</h3>
+            <div class="score-grid">
+                <div class="score-item">
+                    <label>Section A<br>(Recognition)</label>
+                    <input type="text" placeholder="/10">
+                </div>
+                <div class="score-item">
+                    <label>Section B<br>(Counting)</label>
+                    <input type="text" placeholder="/8">
+                </div>
+                <div class="score-item">
+                    <label>Section C<br>(Place Value)</label>
+                    <input type="text" placeholder="/8">
+                </div>
+                <div class="score-item">
+                    <label>Section D<br>(Compare)</label>
+                    <input type="text" placeholder="/6">
+                </div>
+                <div class="score-item">
+                    <label>Section E<br>(Currency)</label>
+                    <input type="text" placeholder="/5">
+                </div>
+            </div>
+            <div class="score-grid" style="margin-top: 15px;">
+                <div class="score-item">
+                    <label>Section F<br>(Addition)</label>
+                    <input type="text" placeholder="/6">
+                </div>
+                <div class="score-item">
+                    <label>Section G<br>(Word Problems)</label>
+                    <input type="text" placeholder="/9">
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px; font-weight: 600; font-size: 1.2rem;">
+                Total Score: ______ / 52
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Assessment aligned with NCERT, NIPUN Bharat & NEP 2020 Foundation Numeracy goals</p>
+            <p class="brand">Cogno Solution - Supporting Learning Differences</p>
+        </div>
+    </div>
+</body>
+</html>

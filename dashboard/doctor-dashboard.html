@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Doctor Dashboard - Cogno Solution">
+    <title>Doctor Dashboard - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item active">
+                    <a href="./doctor-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Patients</li>
+                
+                <li class="sidebar-item">
+                    <a href="../doctor/patients.html" class="sidebar-link">
+                        <i class="fa-solid fa-users"></i>
+                        <span>My Patients</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../doctor/live-monitoring.html" class="sidebar-link">
+                        <i class="fa-solid fa-eye"></i>
+                        <span>Live Monitoring</span>
+                        <span class="sidebar-badge live" id="live-badge" style="display: none;">
+                            <i class="fa-solid fa-circle"></i>
+                        </span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../doctor/assessments.html" class="sidebar-link">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        <span>Assessments</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Consultations</li>
+                
+                <li class="sidebar-item">
+                    <a href="../doctor/consultations.html" class="sidebar-link">
+                        <i class="fa-solid fa-video"></i>
+                        <span>Video Consultations</span>
+                        <span class="sidebar-badge" id="consultation-badge" style="display: none;">0</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../doctor/schedule.html" class="sidebar-link">
+                        <i class="fa-solid fa-calendar"></i>
+                        <span>My Schedule</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../doctor/messages.html" class="sidebar-link">
+                        <i class="fa-solid fa-message"></i>
+                        <span>Messages</span>
+                        <span class="sidebar-badge" id="message-badge" style="display: none;">0</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Reports</li>
+                
+                <li class="sidebar-item">
+                    <a href="../doctor/reports.html" class="sidebar-link">
+                        <i class="fa-solid fa-chart-bar"></i>
+                        <span>Patient Reports</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../doctor/recommendations.html" class="sidebar-link">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>Recommendations</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Account</li>
+                
+                <li class="sidebar-item">
+                    <a href="../doctor/profile.html" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../settings/index.html" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle" aria-label="Toggle sidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1 class="page-title">Doctor Dashboard</h1>
+            </div>
+            
+            <div class="navbar-right">
+                <!-- Quick Actions -->
+                <a href="../consultations/video.html" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-video"></i>
+                    <span class="hide-mobile">Start Consultation</span>
+                </a>
+                
+                <!-- Dark Mode Toggle -->
+                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle" aria-label="Toggle dark mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-ghost btn-icon notification-btn" id="notification-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </button>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="user-menu-btn" id="user-menu-btn">
+                        <div class="avatar avatar-sm" id="user-avatar">
+                            <img src="../assets/images/avatars/default.svg" alt="User avatar" id="user-avatar-img">
+                        </div>
+                        <span class="user-name" id="user-name">Dr. Loading...</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <a href="../doctor/profile.html" class="dropdown-item">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="../settings/index.html" class="dropdown-item">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="dropdown-logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Dashboard Content -->
+        <div class="content-area">
+            <!-- Overview Stats -->
+            <section class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--color-primary-100); color: var(--color-primary);">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="total-patients">0</span>
+                        <span class="stat-label">Total Patients</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--color-success-100); color: var(--color-success);">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="active-today">0</span>
+                        <span class="stat-label">Active Today</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--color-warning-100); color: var(--color-warning);">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="consultations-today">0</span>
+                        <span class="stat-label">Consultations Today</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--color-info-100); color: var(--color-info);">
+                        <i class="fa-solid fa-message"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="unread-messages">0</span>
+                        <span class="stat-label">Unread Messages</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Live Activity Feed -->
+            <section class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <span class="live-indicator">
+                            <i class="fa-solid fa-circle"></i>
+                        </span>
+                        Live Patient Activity
+                    </h3>
+                    <a href="../doctor/live-monitoring.html" class="btn btn-ghost btn-sm">
+                        <i class="fa-solid fa-expand"></i>
+                        <span>Full View</span>
+                    </a>
+                </div>
+                <div class="live-activity-grid" id="live-activity-grid">
+                    <!-- Populated by realtime updates -->
+                    <div class="live-activity-empty" id="no-active">
+                        <i class="fa-solid fa-user-clock"></i>
+                        <p>No patients currently active</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Two Column Layout -->
+            <div class="two-column">
+                <!-- Today's Schedule -->
+                <section class="section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-calendar-day"></i>
+                            Today's Schedule
+                        </h3>
+                        <a href="../doctor/schedule.html" class="btn btn-ghost btn-sm">Full Schedule</a>
+                    </div>
+                    <div class="schedule-list" id="schedule-list">
+                        <!-- Populated by JS -->
+                        <div class="schedule-empty" id="no-schedule">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            <p>No consultations scheduled for today</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Recent Messages -->
+                <section class="section">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-message"></i>
+                            Recent Messages
+                        </h3>
+                        <a href="../doctor/messages.html" class="btn btn-ghost btn-sm">All Messages</a>
+                    </div>
+                    <div class="messages-list" id="messages-list">
+                        <!-- Populated by JS -->
+                        <div class="messages-empty" id="no-messages">
+                            <i class="fa-solid fa-inbox"></i>
+                            <p>No recent messages</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Patient Progress Overview -->
+            <section class="section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Patient Progress Overview
+                    </h3>
+                    <div class="section-actions">
+                        <select class="form-select form-select-sm" id="progress-period">
+                            <option value="7">Last 7 days</option>
+                            <option value="30" selected>Last 30 days</option>
+                            <option value="90">Last 3 months</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="patients-progress-grid" id="patients-progress-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+            
+            <!-- Attention Needed -->
+            <section class="section" id="attention-section" style="display: none;">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fa-solid fa-triangle-exclamation" style="color: var(--color-warning);"></i>
+                        Needs Attention
+                    </h3>
+                </div>
+                <div class="attention-list" id="attention-list">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+            
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <!-- Module Distribution -->
+                <section class="section section-chart">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            Patient Distribution by Module
+                        </h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="module-chart"></canvas>
+                    </div>
+                </section>
+                
+                <!-- Weekly Consultations -->
+                <section class="section section-chart">
+                    <div class="section-header">
+                        <h3 class="section-title">
+                            <i class="fa-solid fa-chart-bar"></i>
+                            Consultations This Week
+                        </h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="consultations-chart"></canvas>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notification-panel">
+        <div class="notification-panel-header">
+            <h4>Notifications</h4>
+            <button class="btn btn-ghost btn-sm" id="mark-all-read">Mark all read</button>
+        </div>
+        <div class="notification-list" id="notification-list">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+    
+    <!-- Quick Patient Card Modal -->
+    <div class="modal" id="patient-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 class="modal-title">Patient Details</h3>
+                <button class="modal-close" aria-label="Close modal">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="patient-modal-body">
+                <!-- Populated by JS -->
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-ghost" id="view-full-profile">View Full Profile</a>
+                <a href="#" class="btn btn-primary" id="start-consultation">
+                    <i class="fa-solid fa-video"></i>
+                    <span>Start Consultation</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <div class="bottom-nav">
+        <a href="./doctor-dashboard.html" class="nav-btn active">
+            <i class="fa-solid fa-house"></i>
+            Dashboard
+        </a>
+        <a href="../doctor/patients.html" class="nav-btn">
+            <i class="fa-solid fa-users"></i>
+            Patients
+        </a>
+        <a href="../doctor/schedule.html" class="nav-btn">
+            <i class="fa-solid fa-calendar"></i>
+            Schedule
+        </a>
+        <a href="../doctor/consultations.html" class="nav-btn">
+            <i class="fa-solid fa-video"></i>
+            Consult
+        </a>
+        <a href="../doctor/messages.html" class="nav-btn">
+            <i class="fa-solid fa-message"></i>
+            Messages
+        </a>
+        <a href="../doctor/reports.html" class="nav-btn">
+            <i class="fa-solid fa-chart-bar"></i>
+            Reports
+        </a>
+        <a href="../doctor/recommendations.html" class="nav-btn">
+            <i class="fa-solid fa-lightbulb"></i>
+            Plans
+        </a>
+    </div>
+    
+    <style>
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 0.5rem 0.75rem;
+            justify-content: center;
+            gap: 0.5rem;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .bottom-nav .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.4rem 0.6rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+            font-size: 0.6rem;
+            border-radius: 8px;
+            text-decoration: none;
+            min-width: 45px;
+        }
+        
+        .bottom-nav .nav-btn i {
+            font-size: 1rem;
+            margin-bottom: 0.15rem;
+        }
+        
+        .bottom-nav .nav-btn:hover { background: #f3f4f6; }
+        .bottom-nav .nav-btn.active { color: #3b82f6; background: #eff6ff; }
+        
+        @media (max-width: 768px) {
+            .bottom-nav { display: flex; }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; padding-bottom: 80px; }
+        }
+    </style>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/api-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/realtime.js"></script>
+    <script src="../js/charts.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./dashboard.js"></script>
+    
+    <script>
+        // Initialize doctor dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoDashboard.init('doctor');
+        });
+    </script>
+</body>
+</html>
