@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Reading Practice - Dyslexia Module">
+    <title>Reading Practice - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=OpenDyslexic:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Reading Practice</h1>
+    </header>
+
+    <div class="activity-container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar hide-xs" id="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>Cogno</span>
+                </a>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="../../dashboard/"><i class="fa-solid fa-home"></i><span>Dashboard</span></a></li>
+                    <li class="active"><a href="../../modules/dyslexia/"><i class="fa-solid fa-book-reader"></i><span>Dyslexia</span></a></li>
+                    <li><a href="../../modules/dyscalculia/"><i class="fa-solid fa-calculator"></i><span>Dyscalculia</span></a></li>
+                    <li><a href="../../modules/dysgraphia/"><i class="fa-solid fa-pen"></i><span>Dysgraphia</span></a></li>
+                    <li><a href="../../modules/dyspraxia/"><i class="fa-solid fa-person-walking"></i><span>Dyspraxia</span></a></li>
+                    <li><a href="../../progress/"><i class="fa-solid fa-chart-line"></i><span>Progress</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar hide-xs">
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                
+                <nav class="breadcrumb">
+                    <a href="../../modules/dyslexia/">Dyslexia</a>
+                    <span>/</span>
+                    <span>Reading Practice</span>
+                </nav>
+                
+                <div class="topbar-actions">
+                    <button class="btn btn-ghost" id="settings-btn">
+                        <i class="fa-solid fa-cog"></i> Settings
+                    </button>
+                </div>
+            </header>
+            
+            <div class="content-area">
+                <!-- Activity Header -->
+                <div class="activity-header">
+                    <div class="activity-info">
+                        <h1><i class="fa-solid fa-book-open"></i> Reading Practice</h1>
+                        <p>Improve your reading skills with guided exercises</p>
+                    </div>
+                    <div class="activity-progress">
+                        <span>Level 3</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                        <span>65%</span>
+                    </div>
+                </div>
+                
+                <!-- Reading Settings Panel -->
+                <div class="settings-panel card" id="settings-panel" style="display: none;">
+                    <div class="card-header">
+                        <h3>Reading Settings</h3>
+                        <button class="btn btn-ghost btn-sm close-settings">&times;</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="setting-group">
+                            <label>Font Style</label>
+                            <select id="font-style">
+                                <option value="inter">Standard (Inter)</option>
+                                <option value="opendyslexic">OpenDyslexic</option>
+                                <option value="arial">Arial</option>
+                                <option value="comic">Comic Sans MS</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>Font Size</label>
+                            <input type="range" id="font-size" min="14" max="28" value="18">
+                            <span id="font-size-value">18px</span>
+                        </div>
+                        <div class="setting-group">
+                            <label>Line Spacing</label>
+                            <input type="range" id="line-spacing" min="1.5" max="3" step="0.1" value="2">
+                            <span id="line-spacing-value">2</span>
+                        </div>
+                        <div class="setting-group">
+                            <label>Letter Spacing</label>
+                            <input type="range" id="letter-spacing" min="0" max="3" step="0.5" value="1">
+                            <span id="letter-spacing-value">1px</span>
+                        </div>
+                        <div class="setting-group">
+                            <label>
+                                <input type="checkbox" id="highlight-mode" checked>
+                                Highlight current line
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label>
+                                <input type="checkbox" id="text-to-speech">
+                                Enable text-to-speech
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reading Area -->
+                <div class="reading-card card">
+                    <div class="card-header">
+                        <div class="story-info">
+                            <h2>The Curious Cat</h2>
+                            <span class="badge badge-primary">Beginner</span>
+                        </div>
+                        <div class="reading-controls">
+                            <button class="btn btn-ghost btn-sm" id="play-audio" title="Listen">
+                                <i class="fa-solid fa-volume-up"></i>
+                            </button>
+                            <button class="btn btn-ghost btn-sm" id="increase-font" title="Larger text">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                            <button class="btn btn-ghost btn-sm" id="decrease-font" title="Smaller text">
+                                <i class="fa-solid fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="reading-text" id="reading-text">
+                            <p class="reading-line" data-line="1">Once upon a time, there was a curious little cat named Whiskers.</p>
+                            <p class="reading-line" data-line="2">Whiskers loved to explore the garden behind his house.</p>
+                            <p class="reading-line" data-line="3">One sunny morning, he discovered a beautiful butterfly.</p>
+                            <p class="reading-line" data-line="4">The butterfly had bright orange and yellow wings.</p>
+                            <p class="reading-line" data-line="5">Whiskers watched it dance from flower to flower.</p>
+                            <p class="reading-line" data-line="6">He tried to catch it, but the butterfly flew high into the sky.</p>
+                            <p class="reading-line" data-line="7">Whiskers sat down and smiled. He had made a new friend today.</p>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="word-helper">
+                            <span>Click on any word to hear it pronounced</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Comprehension Questions -->
+                <div class="questions-card card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-question-circle"></i> Comprehension Check</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="question-item" data-question="1">
+                            <p class="question-text">1. What was the cat's name?</p>
+                            <div class="answer-options">
+                                <label class="answer-option">
+                                    <input type="radio" name="q1" value="a">
+                                    <span>Fluffy</span>
+                                </label>
+                                <label class="answer-option">
+                                    <input type="radio" name="q1" value="b">
+                                    <span>Whiskers</span>
+                                </label>
+                                <label class="answer-option">
+                                    <input type="radio" name="q1" value="c">
+                                    <span>Shadow</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="question-item" data-question="2">
+                            <p class="question-text">2. What did Whiskers discover in the garden?</p>
+                            <div class="answer-options">
+                                <label class="answer-option">
+                                    <input type="radio" name="q2" value="a">
+                                    <span>A bird</span>
+                                </label>
+                                <label class="answer-option">
+                                    <input type="radio" name="q2" value="b">
+                                    <span>A butterfly</span>
+                                </label>
+                                <label class="answer-option">
+                                    <input type="radio" name="q2" value="c">
+                                    <span>A mouse</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="question-item" data-question="3">
+                            <p class="question-text">3. What colors were the butterfly's wings?</p>
+                            <div class="answer-options">
+                                <label class="answer-option">
+                                    <input type="radio" name="q3" value="a">
+                                    <span>Blue and purple</span>
+                                </label>
+                                <label class="answer-option">
+                                    <input type="radio" name="q3" value="b">
+                                    <span>Orange and yellow</span>
+                                </label>
+                                <label class="answer-option">
+                                    <input type="radio" name="q3" value="c">
+                                    <span>Red and green</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" id="check-answers">Check Answers</button>
+                        <button class="btn btn-outline" id="next-story">Next Story <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <!-- Feedback Section -->
+                <div class="feedback-card card" id="feedback-card" style="display: none;">
+                    <div class="card-body">
+                        <div class="feedback-content">
+                            <div class="feedback-icon success">
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                            <h3>Great job!</h3>
+                            <p>You answered <span id="correct-count">0</span> out of 3 questions correctly!</p>
+                            <div class="feedback-actions">
+                                <button class="btn btn-outline" onclick="location.reload()">Try Again</button>
+                                <button class="btn btn-primary" id="continue-btn">Continue</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/notifications.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 0 !important; }
+            .content-area { padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+            gap: var(--space-4);
+        }
+        
+        .activity-info h1 {
+            font-size: 1.5rem;
+            margin-bottom: var(--space-1);
+        }
+        
+        .activity-info p {
+            color: var(--color-text-secondary);
+        }
+        
+        .activity-progress {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .activity-progress .progress-bar {
+            width: 150px;
+        }
+        
+        .settings-panel {
+            margin-bottom: var(--space-4);
+        }
+        
+        .setting-group {
+            margin-bottom: var(--space-4);
+        }
+        
+        .setting-group label {
+            display: block;
+            margin-bottom: var(--space-2);
+            font-weight: 500;
+        }
+        
+        .setting-group select,
+        .setting-group input[type="range"] {
+            width: 100%;
+        }
+        
+        .reading-card {
+            margin-bottom: var(--space-6);
+        }
+        
+        .story-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .reading-controls {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .reading-text {
+            font-size: 18px;
+            line-height: 2;
+            letter-spacing: 1px;
+        }
+        
+        .reading-line {
+            padding: var(--space-2) var(--space-3);
+            margin: var(--space-2) 0;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .reading-line:hover {
+            background: var(--color-primary-100);
+        }
+        
+        .reading-line.active {
+            background: var(--color-primary-100);
+            border-left: 3px solid var(--color-primary);
+        }
+        
+        .word-helper {
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .questions-card {
+            margin-bottom: var(--space-6);
+        }
+        
+        .question-item {
+            margin-bottom: var(--space-5);
+            padding-bottom: var(--space-5);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .question-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            margin-bottom: var(--space-3);
+        }
+        
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+        
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .answer-option:hover {
+            border-color: var(--color-primary);
+            background: var(--color-primary-100);
+        }
+        
+        .answer-option.correct {
+            border-color: var(--color-success);
+            background: var(--color-success-100);
+        }
+        
+        .answer-option.incorrect {
+            border-color: var(--color-error);
+            background: #fee2e2;
+        }
+        
+        .feedback-card {
+            text-align: center;
+        }
+        
+        .feedback-content {
+            padding: var(--space-6);
+        }
+        
+        .feedback-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-4);
+            font-size: 2.5rem;
+        }
+        
+        .feedback-icon.success {
+            background: var(--color-success-100);
+            color: var(--color-success);
+        }
+        
+        .feedback-actions {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-3);
+            margin-top: var(--space-4);
+        }
+        
+        /* Font families */
+        .font-opendyslexic { font-family: 'OpenDyslexic', sans-serif; }
+        .font-arial { font-family: Arial, sans-serif; }
+        .font-comic { font-family: 'Comic Sans MS', cursive; }
+    </style>
+    
+    <script>
+        // Sidebar toggle
+        document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar')?.classList.toggle('collapsed');
+        });
+        
+        // Settings panel toggle
+        document.getElementById('settings-btn')?.addEventListener('click', () => {
+            const panel = document.getElementById('settings-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        document.querySelector('.close-settings')?.addEventListener('click', () => {
+            document.getElementById('settings-panel').style.display = 'none';
+        });
+        
+        // Reading settings
+        const readingText = document.getElementById('reading-text');
+        
+        document.getElementById('font-style')?.addEventListener('change', (e) => {
+            readingText.className = 'reading-text';
+            if (e.target.value !== 'inter') {
+                readingText.classList.add(`font-${e.target.value}`);
+            }
+        });
+        
+        document.getElementById('font-size')?.addEventListener('input', (e) => {
+            readingText.style.fontSize = `${e.target.value}px`;
+            document.getElementById('font-size-value').textContent = `${e.target.value}px`;
+        });
+        
+        document.getElementById('line-spacing')?.addEventListener('input', (e) => {
+            readingText.style.lineHeight = e.target.value;
+            document.getElementById('line-spacing-value').textContent = e.target.value;
+        });
+        
+        document.getElementById('letter-spacing')?.addEventListener('input', (e) => {
+            readingText.style.letterSpacing = `${e.target.value}px`;
+            document.getElementById('letter-spacing-value').textContent = `${e.target.value}px`;
+        });
+        
+        // Line highlighting
+        document.querySelectorAll('.reading-line').forEach(line => {
+            line.addEventListener('click', () => {
+                document.querySelectorAll('.reading-line').forEach(l => l.classList.remove('active'));
+                line.classList.add('active');
+                
+                // Text-to-speech if enabled
+                if (document.getElementById('text-to-speech')?.checked && 'speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(line.textContent);
+                    utterance.rate = 0.9;
+                    speechSynthesis.speak(utterance);
+                }
+            });
+        });
+        
+        // Play audio
+        document.getElementById('play-audio')?.addEventListener('click', () => {
+            if ('speechSynthesis' in window) {
+                const text = readingText.innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        });
+        
+        // Font size controls
+        let currentFontSize = 18;
+        document.getElementById('increase-font')?.addEventListener('click', () => {
+            currentFontSize = Math.min(currentFontSize + 2, 28);
+            readingText.style.fontSize = `${currentFontSize}px`;
+        });
+        
+        document.getElementById('decrease-font')?.addEventListener('click', () => {
+            currentFontSize = Math.max(currentFontSize - 2, 14);
+            readingText.style.fontSize = `${currentFontSize}px`;
+        });
+        
+        // Check answers
+        const correctAnswers = { q1: 'b', q2: 'b', q3: 'b' };
+        const quizStartTime = Date.now();
+        
+        document.getElementById('check-answers')?.addEventListener('click', async () => {
+            let correct = 0;
+            
+            Object.keys(correctAnswers).forEach(q => {
+                const selected = document.querySelector(`input[name="${q}"]:checked`);
+                const options = document.querySelectorAll(`input[name="${q}"]`);
+                
+                options.forEach(opt => {
+                    const label = opt.closest('.answer-option');
+                    if (opt.value === correctAnswers[q]) {
+                        label.classList.add('correct');
+                    } else if (opt === selected) {
+                        label.classList.add('incorrect');
+                    }
+                });
+                
+                if (selected?.value === correctAnswers[q]) {
+                    correct++;
+                }
+            });
+            
+            document.getElementById('correct-count').textContent = correct;
+            document.getElementById('feedback-card').style.display = 'block';
+            document.querySelector('.questions-card').style.display = 'none';
+            
+            // Save activity to CognoTracker
+            const duration = Math.floor((Date.now() - quizStartTime) / 1000);
+            try {
+                await CognoTracker.saveActivity({
+                    moduleId: 'dyslexia',
+                    activityId: 'reading-practice',
+                    score: correct,
+                    maxScore: 3,
+                    duration: duration,
+                    metadata: {
+                        storyTitle: 'The Curious Cat',
+                        totalQuestions: 3,
+                        correctAnswers: correct
+                    }
+                });
+            } catch (err) {
+                console.error('Failed to save activity:', err);
+            }
+        });
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

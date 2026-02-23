@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finger Tap - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        .game-box { background: var(--color-surface); border-radius: var(--radius-2xl); border: 2px solid var(--color-border); box-shadow: var(--shadow-xl); padding: 40px; max-width: 600px; width: 100%; margin: 0 auto; }
+        .tap-button {
+            width: 200px; height: 200px; margin: 40px auto; border: none; border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary), #f59e0b);
+            color: white; font-size: 2.5rem; font-weight: 700; cursor: pointer; transition: all 0.1s ease;
+            box-shadow: 0 10px 30px rgba(var(--color-primary-rgb), 0.3); display: flex; align-items: center; justify-content: center;
+        }
+        .tap-button:active { transform: scale(0.92); box-shadow: 0 5px 15px rgba(var(--color-primary-rgb), 0.5); }
+        .tap-button:disabled { background: #ccc !important; cursor: not-allowed; transform: none !important; }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Finger Tap</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">👆 Finger Tap</h1>
+                </div>
+                <p class="text-gray-500">Tap the button as fast as you can to test your coordination!</p>
+            </div>
+
+            <div class="game-box">
+                <div class="text-center timer-display mb-6">
+                    <span class="text-xs uppercase tracking-widest opacity-60">Time Left</span>
+                    <div class="text-4xl font-bold text-primary"><span id="timer">10</span>s</div>
+                </div>
+
+                <button class="tap-button" id="tapButton" disabled>TAP!</button>
+
+                <div class="grid grid-cols-2 gap-4 mt-8">
+                    <div class="card p-4 text-center bg-primary/5 border-primary/20">
+                        <div class="text-2xl font-bold text-primary" id="tapCount">0</div>
+                        <div class="text-xs opacity-60 uppercase">Total Taps</div>
+                    </div>
+                    <div class="card p-4 text-center bg-orange-500/5 border-orange-500/20">
+                        <div class="text-2xl font-bold text-orange-500" id="tapsPerSecond">0</div>
+                        <div class="text-xs opacity-60 uppercase">Taps/Sec</div>
+                    </div>
+                </div>
+
+                <button id="startBtn" class="btn btn-primary btn-lg w-full mt-8">Start 10s Challenge</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const tapButton = document.getElementById('tapButton');
+        const startBtn = document.getElementById('startBtn');
+        const timer = document.getElementById('timer');
+        const tapCountDisplay = document.getElementById('tapCount');
+        const tpsDisplay = document.getElementById('tapsPerSecond');
+        
+        let isActive = false;
+        let taps = 0;
+        let timeLeft = 10;
+        let intervalId = null;
+        
+        startBtn.addEventListener('click', startGame);
+        
+        tapButton.addEventListener('click', () => {
+            if (isActive) {
+                taps++;
+                tapCountDisplay.textContent = taps;
+                const elapsed = (10 - timeLeft) || 0.1;
+                tpsDisplay.textContent = (taps / elapsed).toFixed(1);
+            }
+        });
+        
+        function startGame() {
+            isActive = true;
+            taps = 0;
+            timeLeft = 10;
+            tapCountDisplay.textContent = '0';
+            tpsDisplay.textContent = '0.0';
+            timer.textContent = '10';
+            startBtn.disabled = true;
+            tapButton.disabled = false;
+            
+            CognoNotifications?.toast?.info('Challenge started! Tap fast!');
+            
+            intervalId = setInterval(() => {
+                timeLeft--;
+                timer.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(intervalId);
+                    isActive = false;
+                    tapButton.disabled = true;
+                    startBtn.disabled = false;
+                    const finalTps = (taps / 10).toFixed(1);
+                    CognoNotifications?.toast?.success(`Done! ${taps} taps at ${finalTps} taps/sec`);
+                    CognoTracker?.saveActivity({
+                        moduleId: 'dyspraxia', activityId: 'finger-tap',
+                        score: Math.min(100, taps * 2), maxScore: 100, duration: 10
+                    });
+                }
+            }, 1000);
+        }
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

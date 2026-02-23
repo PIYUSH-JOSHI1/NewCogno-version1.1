@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tapping Sequence - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        .game-area { background: var(--color-surface); border-radius: var(--radius-2xl); border: 2px solid var(--color-border); box-shadow: var(--shadow-xl); padding: 40px; max-width: 600px; width: 100%; margin: 0 auto; }
+        .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 32px 0; }
+        .sequence-button {
+            width: 100%; aspect-ratio: 1; border-radius: 20px; border: none; cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0.8;
+            display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .sequence-button:not(:disabled):hover { opacity: 1; transform: translateY(-3px); }
+        .sequence-button:not(:disabled):active { transform: scale(0.95); }
+        .sequence-button.active { opacity: 1; transform: scale(1.05); box-shadow: 0 0 25px currentColor; border: 4px solid white; }
+        
+        .btn-red { background: #ef4444; color: #ef4444; }
+        .btn-blue { background: #3b82f6; color: #3b82f6; }
+        .btn-green { background: #10b981; color: #10b981; }
+        .btn-yellow { background: #f59e0b; color: #f59e0b; }
+        
+        .sequence-button span { background: rgba(0,0,0,0.2); padding: 8px 16px; border-radius: 12px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Sequence</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">🧠 Tapping Sequence</h1>
+                </div>
+                <p class="text-gray-500">Watch the pattern and repeat it back. Tests memory and motor planning.</p>
+            </div>
+
+            <div class="game-area">
+                <div class="text-center mb-6">
+                    <div class="text-xs uppercase tracking-widest opacity-60">Current Level</div>
+                    <div class="text-3xl font-bold text-primary" id="level">0</div>
+                </div>
+
+                <div class="bg-surface-variant p-4 rounded-xl text-center mb-6" id="instruction">
+                    Click "Start" to begin the pattern!
+                </div>
+
+                <div class="button-grid">
+                    <button class="sequence-button btn-red" data-color="red" disabled><span>RED</span></button>
+                    <button class="sequence-button btn-blue" data-color="blue" disabled><span>BLUE</span></button>
+                    <button class="sequence-button btn-green" data-color="green" disabled><span>GREEN</span></button>
+                    <button class="sequence-button btn-yellow" data-color="yellow" disabled><span>YELLOW</span></button>
+                </div>
+
+                <button id="startBtn" class="btn btn-primary btn-lg w-full">🎮 Start Challenge</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const buttons = document.querySelectorAll('.sequence-button');
+        const startBtn = document.getElementById('startBtn');
+        const levelDisplay = document.getElementById('level');
+        const instruction = document.getElementById('instruction');
+        
+        let sequence = [], userSequence = [], level = 0, isPlaying = false;
+        const colors = ['red', 'blue', 'green', 'yellow'];
+
+        startBtn.addEventListener('click', () => {
+            level = 0; sequence = []; userSequence = [];
+            startBtn.classList.add('hidden');
+            buttons.forEach(b => b.disabled = false);
+            nextLevel();
+        });
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (isPlaying) return;
+                const color = btn.dataset.color;
+                userSequence.push(color);
+                flash(btn);
+                
+                if (userSequence[userSequence.length-1] !== sequence[userSequence.length-1]) {
+                    gameOver();
+                    return;
+                }
+                
+                if (userSequence.length === sequence.length) {
+                    CognoNotifications?.toast?.success('Perfect! Next level...');
+                    setTimeout(nextLevel, 1000);
+                }
+            });
+        });
+
+        function nextLevel() {
+            level++;
+            levelDisplay.textContent = level;
+            userSequence = [];
+            sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+            displaySequence();
+        }
+
+        async function displaySequence() {
+            isPlaying = true;
+            instruction.textContent = "Watch carefully...";
+            for (let i = 0; i < sequence.length; i++) {
+                await new Promise(r => setTimeout(r, 600));
+                const btn = Array.from(buttons).find(b => b.dataset.color === sequence[i]);
+                flash(btn);
+            }
+            isPlaying = false;
+            instruction.textContent = "Your turn! Repeat the pattern.";
+        }
+
+        function flash(btn) {
+            btn.classList.add('active');
+            setTimeout(() => btn.classList.remove('active'), 300);
+        }
+
+        function gameOver() {
+            CognoNotifications?.toast?.error(`Game Over! Level Reached: ${level}`);
+            CognoTracker?.saveActivity({
+                moduleId: 'dyspraxia', activityId: 'tapping-sequence',
+                score: level * 10, maxScore: 100,
+                metadata: { level }
+            });
+            startBtn.classList.remove('hidden');
+            startBtn.textContent = "Try Again";
+            buttons.forEach(b => b.disabled = true);
+            instruction.textContent = "Pattern missed! Press Try Again to restart.";
+        }
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Spelling Bee - Listen and type the correct spelling">
+    <title>Spelling Bee - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <!-- Supabase and Activity Tracker -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dyslexia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .listen-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .listen-btn {
+            padding: 15px 30px;
+            background: var(--color-dyslexia);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .listen-btn:hover {
+            background: var(--color-dyslexia-dark, #1e40af);
+            transform: translateY(-2px);
+        }
+        
+        .input-section {
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        #spellingInput {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.3rem;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+        
+        #spellingInput:focus {
+            outline: none;
+            border-color: var(--color-dyslexia);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .control-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dyslexia);
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: var(--color-dyslexia-dark, #1e40af);
+        }
+        
+        .hint-text {
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Spelling Bee</h1>
+    </header>
+
+    <div class="activity-container">
+        <div class="activity-header">
+            <h1><i class="fa-solid fa-keyboard"></i> Spelling Bee</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="game-content">
+            <div class="listen-section">
+                <button class="listen-btn" id="listenBtn">
+                    <i class="fa-solid fa-volume-high"></i> Listen to the Word
+                </button>
+                <p class="hint-text" id="hint">Click to hear the word pronounced</p>
+            </div>
+            
+            <div class="input-section">
+                <input type="text" id="spellingInput" placeholder="Type the word you heard..." autocomplete="off">
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn" id="submitBtn">
+                    <i class="fa-solid fa-check"></i> Check Spelling
+                </button>
+                <button class="control-btn" id="hintBtn" style="background: #f59e0b;">
+                    <i class="fa-solid fa-lightbulb"></i> Hint
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../js/tts.js"></script>
+    <script src="../../js/notifications.js"></script>
+    
+    <script>
+        const spellingWords = [
+            { word: 'APPLE', hint: 'A red or green fruit' },
+            { word: 'BEAUTIFUL', hint: 'Very pretty' },
+            { word: 'CHILDREN', hint: 'Young people' },
+            { word: 'DIFFERENT', hint: 'Not the same' },
+            { word: 'ELEPHANT', hint: 'A large animal' }
+        ];
+        
+        let currentIndex = 0;
+        let correctCount = 0;
+        const gameStartTime = Date.now();
+        
+        const listenBtn = document.getElementById('listenBtn');
+        const spellingInput = document.getElementById('spellingInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const hintBtn = document.getElementById('hintBtn');
+        const backBtn = document.getElementById('backBtn');
+        const hintText = document.getElementById('hint');
+        
+        function loadWord() {
+            spellingInput.value = '';
+            const word = spellingWords[currentIndex].word;
+            hintText.textContent = 'Click button or press Enter to hear';
+            
+            if (CognoTTS) {
+                CognoTTS.speak(word, { rate: 0.7 });
+            }
+        }
+        
+        listenBtn.addEventListener('click', () => {
+            const word = spellingWords[currentIndex].word;
+            if (CognoTTS) {
+                CognoTTS.speak(word, { rate: 0.7 });
+            }
+        });
+        
+        submitBtn.addEventListener('click', () => {
+            const word = spellingWords[currentIndex].word;
+            const entered = spellingInput.value.toUpperCase().trim();
+            
+            if (entered === word) {
+                correctCount++;
+                CognoNotifications?.toast?.success(`Correct! "${word}" is spelled correctly!`);
+                setTimeout(nextWord, 2000);
+            } else {
+                CognoNotifications?.toast?.error(`Not quite right. "${word}" is the correct spelling.`);
+            }
+        });
+        
+        hintBtn.addEventListener('click', () => {
+            const hint = spellingWords[currentIndex].hint;
+            hintText.textContent = `Hint: ${hint}`;
+            CognoNotifications?.toast?.info(hint);
+        });
+        
+        spellingInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+        
+        async function nextWord() {
+            if (currentIndex < spellingWords.length - 1) {
+                currentIndex++;
+                loadWord();
+            } else {
+                const gameDuration = Math.floor((Date.now() - gameStartTime) / 1000);
+                const score = Math.round((correctCount / spellingWords.length) * 100);
+                
+                await CognoTracker.saveActivity({
+                    moduleId: 'dyslexia',
+                    activityId: 'spelling-bee',
+                    score: score,
+                    maxScore: 100,
+                    duration: gameDuration,
+                    metadata: { wordsCompleted: spellingWords.length, correctAnswers: correctCount }
+                });
+                
+                CognoNotifications?.toast?.success('You completed Spelling Bee!');
+                correctCount = 0;
+                currentIndex = 0;
+                loadWord();
+            }
+        }
+        
+        backBtn.addEventListener('click', () => {
+            window.history.back();
+        });
+        
+        loadWord();
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

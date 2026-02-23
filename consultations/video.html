@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Video Consultation - Cogno Solution">
+    <title>Video Consultation - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Jitsi Meet API -->
+    <script src="https://meet.jit.si/external_api.js"></script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <link rel="stylesheet" href="../css/mobile-nav.css">
+
+    <style>
+        /* bottom-nav visible on all screens */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--color-background);
+            color: var(--color-text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .video-header {
+            background: var(--color-surface);
+            padding: var(--space-3) var(--space-6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .video-header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-btn:hover {
+            color: var(--color-primary);
+        }
+        
+        .consultation-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .doctor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .doctor-details h2 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .doctor-details p {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            background: var(--color-danger-100);
+            color: var(--color-danger);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .live-indicator .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--color-danger);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .video-container {
+            flex: 1;
+            display: flex;
+            gap: var(--space-4);
+            padding: var(--space-4);
+        }
+        
+        .video-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        #jitsi-container {
+            flex: 1;
+            background: #000;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            min-height: 400px;
+        }
+        
+        #jitsi-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .video-controls {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            display: flex;
+            justify-content: center;
+            gap: var(--space-3);
+            border: 1px solid var(--color-border);
+        }
+        
+        .control-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: all 0.2s;
+            background: var(--color-background);
+            color: var(--color-text);
+        }
+        
+        .control-btn:hover {
+            background: var(--color-primary-100);
+            color: var(--color-primary);
+        }
+        
+        .control-btn.active {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .control-btn.end-call {
+            background: var(--color-danger);
+            color: white;
+            width: 72px;
+        }
+        
+        .control-btn.end-call:hover {
+            background: var(--color-danger-dark);
+        }
+        
+        .video-sidebar {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .sidebar-panel {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--color-border);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .panel-body {
+            padding: var(--space-4);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .chat-message {
+            max-width: 85%;
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+        }
+        
+        .chat-message.received {
+            background: var(--color-background);
+            align-self: flex-start;
+        }
+        
+        .chat-message.sent {
+            background: var(--color-primary);
+            color: white;
+            align-self: flex-end;
+        }
+        
+        .chat-message .time {
+            font-size: 0.625rem;
+            opacity: 0.7;
+            margin-top: var(--space-1);
+        }
+        
+        .chat-input-container {
+            padding: var(--space-3);
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .chat-input-container input {
+            flex: 1;
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-background);
+            color: var(--color-text);
+            font-size: 0.875rem;
+        }
+        
+        .chat-input-container input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+        
+        .notes-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-background);
+            color: var(--color-text);
+            font-size: 0.875rem;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .notes-textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+        
+        /* Pre-call screen */
+        .pre-call-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--space-8);
+        }
+        
+        .pre-call-screen h1 {
+            font-size: 1.75rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .pre-call-screen p {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .pre-call-preview {
+            width: 400px;
+            max-width: 100%;
+            aspect-ratio: 4/3;
+            background: #1a1a1a;
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-6);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .pre-call-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .preview-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: var(--space-4);
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            display: flex;
+            justify-content: center;
+            gap: var(--space-3);
+        }
+        
+        .device-select {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+            width: 300px;
+            max-width: 100%;
+        }
+        
+        .device-select select {
+            padding: var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .video-container {
+                flex-direction: column;
+            }
+            
+            .video-sidebar {
+                width: 100%;
+                flex-direction: row;
+            }
+            
+            .sidebar-panel {
+                flex: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .video-header {
+                flex-direction: column;
+                gap: var(--space-3);
+                text-align: center;
+            }
+            
+            .video-header-left {
+                flex-direction: column;
+            }
+            
+            .video-sidebar {
+                flex-direction: column;
+            }
+            
+            .video-controls {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Pre-call Screen -->
+    <div id="pre-call-screen" class="pre-call-screen">
+        <h1>Join Consultation</h1>
+        <p>Check your camera and microphone before joining</p>
+        
+        <div class="pre-call-preview">
+            <video id="preview-video" autoplay muted playsinline></video>
+            <div class="preview-overlay">
+                <button class="control-btn" id="toggle-preview-video">
+                    <i class="fa-solid fa-video"></i>
+                </button>
+                <button class="control-btn" id="toggle-preview-audio">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="device-select">
+            <select id="camera-select">
+                <option value="">Select Camera</option>
+            </select>
+            <select id="mic-select">
+                <option value="">Select Microphone</option>
+            </select>
+        </div>
+        
+        <button class="btn btn-primary btn-lg" id="join-call-btn">
+            <i class="fa-solid fa-video"></i>
+            Join Consultation
+        </button>
+    </div>
+    
+    <!-- Video Call Screen -->
+    <div id="video-call-screen" style="display: none; flex: 1; flex-direction: column;">
+        <!-- Header -->
+        <header class="video-header">
+            <div class="video-header-left">
+                <a href="../consultations/" class="back-btn">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back
+                </a>
+                <div class="consultation-info">
+                    <div class="doctor-avatar">
+                        <span id="doctor-initials">DM</span>
+                    </div>
+                    <div class="doctor-details">
+                        <h2 id="doctor-name">Dr. Maria Johnson</h2>
+                        <p id="consultation-time">Consultation in progress</p>
+                    </div>
+                </div>
+            </div>
+            <div class="live-indicator">
+                <span class="dot"></span>
+                LIVE
+            </div>
+        </header>
+        
+        <!-- Video Area -->
+        <div class="video-container">
+            <div class="video-main">
+                <div id="jitsi-container"></div>
+                
+                <div class="video-controls">
+                    <button class="control-btn active" id="toggle-video" title="Toggle Video">
+                        <i class="fa-solid fa-video"></i>
+                    </button>
+                    <button class="control-btn active" id="toggle-audio" title="Toggle Audio">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <button class="control-btn" id="toggle-screen" title="Share Screen">
+                        <i class="fa-solid fa-display"></i>
+                    </button>
+                    <button class="control-btn" id="toggle-chat" title="Toggle Chat">
+                        <i class="fa-solid fa-comment"></i>
+                    </button>
+                    <button class="control-btn end-call" id="end-call" title="End Call">
+                        <i class="fa-solid fa-phone-slash"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <aside class="video-sidebar">
+                <!-- Chat Panel -->
+                <div class="sidebar-panel" id="chat-panel">
+                    <div class="panel-header">
+                        <i class="fa-solid fa-comment"></i>
+                        Chat
+                    </div>
+                    <div class="panel-body">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="chat-message received">
+                                <p>Hello! How are you feeling today?</p>
+                                <div class="time">10:02 AM</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Type a message...">
+                        <button class="btn btn-primary btn-sm" id="send-message">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Notes Panel -->
+                <div class="sidebar-panel">
+                    <div class="panel-header">
+                        <i class="fa-solid fa-note-sticky"></i>
+                        Notes
+                    </div>
+                    <div class="panel-body">
+                        <textarea id="session-notes" class="notes-textarea" placeholder="Take notes during the consultation..."></textarea>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    
+    <script>
+        let jitsiApi = null;
+        let localStream = null;
+        let videoEnabled = true;
+        let audioEnabled = true;
+        
+        let currentUser = null;
+        let consultationData = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check auth
+            const { session } = await CognoSupabase?.getSession() || {};
+            if (!session) {
+                window.location.href = CognoPaths?.auth?.login() || '../auth/login.html';
+                return;
+            }
+            
+            // Get current user profile
+            const { data: profile } = await CognoSupabase.client
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+            
+            currentUser = profile;
+
+            // Get consultation/room ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const consultationId = urlParams.get('id') || urlParams.get('consultation');
+            const roomId = urlParams.get('room');
+            
+            window.jitsiRoomId = roomId;
+
+            // Load consultation details to show who you're meeting with
+            if (consultationId && consultationId !== 'instant') {
+                loadConsultationDetails(consultationId);
+            } else if (roomId) {
+                // If it's an instant call, the details might need to be derived or left as generic
+                updateGenericHDR();
+            }
+            
+            // Initialize real-time consultation channel
+            const activeConsultationId = roomId || (consultationId && consultationId !== 'instant' ? consultationId : `instant-${Date.now()}`);
+            initRealtimeConsultation(activeConsultationId, currentUser);
+            
+            // Initialize preview
+            await initPreview();
+            
+            // Join call button
+            document.getElementById('join-call-btn')?.addEventListener('click', () => {
+                stopPreview();
+                startJitsiCall(consultationId);
+                
+                // Broadcast join event for real-time participant tracking
+                broadcastConsultationEvent('participant_joined', {
+                    userId: currentUser.id,
+                    name: currentUser.full_name || currentUser.email,
+                    role: currentUser.role,
+                    joinedAt: new Date().toISOString()
+                });
+                
+                // Update consultation status to in-progress
+                if (consultationId && consultationId !== 'instant') {
+                    logConsultationStart(consultationId);
+                }
+            });
+            
+            // Preview controls
+            document.getElementById('toggle-preview-video')?.addEventListener('click', togglePreviewVideo);
+            document.getElementById('toggle-preview-audio')?.addEventListener('click', togglePreviewAudio);
+            
+            // Call controls
+            document.getElementById('toggle-video')?.addEventListener('click', toggleVideo);
+            document.getElementById('toggle-audio')?.addEventListener('click', toggleAudio);
+            document.getElementById('toggle-screen')?.addEventListener('click', toggleScreenShare);
+            document.getElementById('end-call')?.addEventListener('click', endCall);
+            
+            // Chat - enhanced with real-time broadcast
+            document.getElementById('send-message')?.addEventListener('click', sendChatMessage);
+            document.getElementById('chat-input')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendChatMessage();
+            });
+            
+            // Device selection
+            document.getElementById('camera-select')?.addEventListener('change', switchCamera);
+            document.getElementById('mic-select')?.addEventListener('change', switchMicrophone);
+            
+            // Generate and show instant meeting share link
+            if (consultationId === 'instant' || !consultationId) {
+                showInstantMeetingLink(activeConsultationId);
+            }
+        });
+        
+        // =====================================================
+        // REAL-TIME CONSULTATION FEATURES
+        // =====================================================
+        let consultationChannel = null;
+        
+        /**
+         * Initialize real-time broadcast channel for the consultation
+         */
+        function initRealtimeConsultation(consultationId, user) {
+            if (!CognoSupabase?.client) return;
+            
+            consultationChannel = CognoSupabase.client
+                .channel(`consultation:${consultationId}`, {
+                    config: {
+                        broadcast: { self: false },
+                        presence: { key: user.id }
+                    }
+                });
+            
+            // Listen for participant events
+            consultationChannel.on('broadcast', { event: 'participant_joined' }, (payload) => {
+                const participant = payload.payload;
+                if (window.CognoNotifications?.toast) {
+                    CognoNotifications.toast.show(
+                        `${participant.name} joined the consultation`,
+                        'info',
+                        { duration: 4000 }
+                    );
+                }
+                updateParticipantCount(1);
+            });
+            
+            consultationChannel.on('broadcast', { event: 'participant_left' }, (payload) => {
+                const participant = payload.payload;
+                if (window.CognoNotifications?.toast) {
+                    CognoNotifications.toast.show(
+                        `${participant.name} left the consultation`,
+                        'warning',
+                        { duration: 3000 }
+                    );
+                }
+                updateParticipantCount(-1);
+            });
+            
+            // Listen for real-time chat messages (backup alongside Jitsi chat)
+            consultationChannel.on('broadcast', { event: 'chat_message' }, (payload) => {
+                const msg = payload.payload;
+                if (msg.senderId !== user.id) {
+                    appendChatMessage(msg.senderName, msg.text, msg.time, false);
+                }
+            });
+            
+            // Listen for call status updates
+            consultationChannel.on('broadcast', { event: 'call_status' }, (payload) => {
+                const status = payload.payload;
+                if (status.type === 'ended') {
+                    if (window.CognoNotifications?.toast) {
+                        CognoNotifications.toast.show(
+                            'The consultation has ended.',
+                            'info',
+                            { duration: 5000 }
+                        );
+                    }
+                }
+            });
+            
+            // Track presence
+            consultationChannel.on('presence', { event: 'sync' }, () => {
+                const state = consultationChannel.presenceState();
+                const participantCount = Object.keys(state).length;
+                const countEl = document.querySelector('.participant-count');
+                if (countEl) countEl.textContent = participantCount;
+            });
+            
+            // Subscribe to the channel
+            consultationChannel.subscribe(async (status) => {
+                if (status === 'SUBSCRIBED') {
+                    // Track user presence
+                    await consultationChannel.track({
+                        name: user.full_name || user.email,
+                        role: user.role,
+                        online_at: new Date().toISOString()
+                    });
+                    console.log('[Video] Real-time consultation channel connected');
+                }
+            });
+        }
+        
+        /**
+         * Broadcast an event to the consultation channel
+         */
+        function broadcastConsultationEvent(event, payload) {
+            if (!consultationChannel) return;
+            consultationChannel.send({
+                type: 'broadcast',
+                event: event,
+                payload: payload
+            });
+        }
+        
+        /**
+         * Append a chat message to the UI
+         */
+        function appendChatMessage(senderName, text, time, isSent) {
+            const chatMessages = document.getElementById('chat-messages');
+            if (!chatMessages) return;
+            
+            const messageEl = document.createElement('div');
+            messageEl.className = `chat-message ${isSent ? 'sent' : 'received'}`;
+            messageEl.innerHTML = `
+                <div class="sender-name" style="font-size: 0.75rem; font-weight: 600; color: var(--primary-blue); margin-bottom: 2px;">${isSent ? 'You' : senderName}</div>
+                <p>${escapeHtml(text)}</p>
+                <div class="time">${time}</div>
+            `;
+            chatMessages.appendChild(messageEl);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        /**
+         * Update participant count display
+         */
+        function updateParticipantCount(delta) {
+            const countEl = document.querySelector('.participant-count');
+            if (countEl) {
+                const current = parseInt(countEl.textContent) || 1;
+                countEl.textContent = Math.max(1, current + delta);
+            }
+        }
+        
+        /**
+         * Show instant meeting share link
+         */
+        function showInstantMeetingLink(consultationId) {
+            const roomName = `cogno-consultation-${consultationId}`;
+            const shareUrl = `${window.location.origin}${window.location.pathname}?room=${roomName}&id=instant`;
+            
+            // Add share link UI to pre-call screen
+            const preCallScreen = document.getElementById('pre-call-screen');
+            if (preCallScreen) {
+                const shareLinkEl = document.createElement('div');
+                shareLinkEl.className = 'share-link-container';
+                shareLinkEl.style.cssText = 'margin-top: 1rem; padding: 1rem; background: var(--bg-secondary, #f8fafc); border-radius: 12px; text-align: center;';
+                shareLinkEl.innerHTML = `
+                    <p style="font-size: 0.875rem; color: var(--text-secondary, #64748b); margin-bottom: 0.5rem;">
+                        <i class="fa-solid fa-link"></i> Share this link to invite others:
+                    </p>
+                    <div style="display: flex; gap: 0.5rem; align-items: center; justify-content: center;">
+                        <input type="text" value="${shareUrl}" readonly 
+                               style="flex: 1; max-width: 400px; padding: 0.5rem 0.75rem; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; font-size: 0.8rem; background: white;"
+                               id="meeting-share-link">
+                        <button onclick="copyMeetingLink()" class="btn btn-primary btn-sm" style="white-space: nowrap;">
+                            <i class="fa-solid fa-copy"></i> Copy
+                        </button>
+                    </div>
+                `;
+                
+                // Insert before the join button
+                const joinBtn = document.getElementById('join-call-btn');
+                if (joinBtn && joinBtn.parentElement) {
+                    joinBtn.parentElement.insertBefore(shareLinkEl, joinBtn);
+                }
+            }
+        }
+        
+        /**
+         * Copy the meeting link to clipboard
+         */
+        window.copyMeetingLink = function() {
+            const input = document.getElementById('meeting-share-link');
+            if (input) {
+                navigator.clipboard.writeText(input.value).then(() => {
+                    if (window.CognoNotifications?.toast) {
+                        CognoNotifications.toast.show('Meeting link copied!', 'success', { duration: 2000 });
+                    }
+                }).catch(() => {
+                    input.select();
+                    document.execCommand('copy');
+                });
+            }
+        };
+        
+        async function initPreview() {
+            try {
+                // Get devices
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                
+                const cameraSelect = document.getElementById('camera-select');
+                const micSelect = document.getElementById('mic-select');
+                
+                devices.forEach(device => {
+                    const option = document.createElement('option');
+                    option.value = device.deviceId;
+                    option.textContent = device.label || `${device.kind} ${device.deviceId.slice(0, 5)}`;
+                    
+                    if (device.kind === 'videoinput') {
+                        cameraSelect.appendChild(option);
+                    } else if (device.kind === 'audioinput') {
+                        micSelect.appendChild(option);
+                    }
+                });
+                
+                // Start preview stream
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true
+                });
+                
+                const previewVideo = document.getElementById('preview-video');
+                previewVideo.srcObject = localStream;
+                
+            } catch (error) {
+                console.error('Failed to initialize preview:', error);
+                CognoNotifications?.toast?.error('Unable to access camera or microphone');
+            }
+        }
+        
+        function stopPreview() {
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+        }
+        
+        function togglePreviewVideo() {
+            if (!localStream) return;
+            const videoTrack = localStream.getVideoTracks()[0];
+            if (videoTrack) {
+                videoTrack.enabled = !videoTrack.enabled;
+                const btn = document.getElementById('toggle-preview-video');
+                btn.classList.toggle('active', videoTrack.enabled);
+                btn.innerHTML = videoTrack.enabled 
+                    ? '<i class="fa-solid fa-video"></i>' 
+                    : '<i class="fa-solid fa-video-slash"></i>';
+            }
+        }
+        
+        function togglePreviewAudio() {
+            if (!localStream) return;
+            const audioTrack = localStream.getAudioTracks()[0];
+            if (audioTrack) {
+                audioTrack.enabled = !audioTrack.enabled;
+                const btn = document.getElementById('toggle-preview-audio');
+                btn.classList.toggle('active', audioTrack.enabled);
+                btn.innerHTML = audioTrack.enabled 
+                    ? '<i class="fa-solid fa-microphone"></i>' 
+                    : '<i class="fa-solid fa-microphone-slash"></i>';
+            }
+        }
+        
+        function startJitsiCall(consultationId) {
+            // Hide pre-call screen
+            document.getElementById('pre-call-screen').style.display = 'none';
+            
+            // Show video call screen
+            const videoCallScreen = document.getElementById('video-call-screen');
+            videoCallScreen.style.display = 'flex';
+            
+            // Use room ID from URL or generate one
+            const roomName = window.jitsiRoomId || `cogno-consultation-${consultationId || Date.now()}`;
+            
+            // Jitsi configuration
+            const domain = 'meet.jit.si';
+            const options = {
+                roomName: roomName,
+                width: '100%',
+                height: '100%',
+                parentNode: document.getElementById('jitsi-container'),
+                userInfo: {
+                    displayName: currentUser?.full_name || 'Cogno User'
+                },
+                configOverwrite: {
+                    startWithAudioMuted: !audioEnabled,
+                    startWithVideoMuted: !videoEnabled,
+                    prejoinPageEnabled: false,
+                    disableDeepLinking: true,
+                    toolbarButtons: [
+                        'microphone',
+                        'camera',
+                        'closedcaptions',
+                        'desktop',
+                        'fullscreen',
+                        'fodeviceselection',
+                        'hangup',
+                        'chat',
+                        'recording',
+                        'livestreaming',
+                        'settings',
+                        'raisehand',
+                        'videoquality',
+                        'filmstrip',
+                        'feedback',
+                        'stats',
+                        'shortcuts',
+                        'tileview',
+                        'download',
+                        'help'
+                    ]
+                },
+                interfaceConfigOverwrite: {
+                    SHOW_JITSI_WATERMARK: false,
+                    SHOW_BRAND_WATERMARK: false,
+                    DEFAULT_BACKGROUND: '#1a1a1a',
+                    TOOLBAR_BUTTONS: [
+                        'microphone', 'camera', 'desktop', 'fullscreen',
+                        'fodeviceselection', 'hangup', 'chat', 'settings',
+                        'raisehand', 'videoquality', 'tileview'
+                    ],
+                    SETTINGS_SECTIONS: ['devices', 'language'],
+                    MOBILE_APP_PROMO: false,
+                    DISABLE_JOIN_LEAVE_NOTIFICATIONS: true
+                }
+            };
+            
+            // Initialize Jitsi
+            jitsiApi = new JitsiMeetExternalAPI(domain, options);
+            
+            // Event listeners
+            jitsiApi.addListener('participantJoined', (participant) => {
+                console.log('Participant joined:', participant);
+                CognoNotifications?.toast?.info(`${participant.displayName} has joined the call`);
+            });
+            
+            jitsiApi.addListener('participantLeft', (participant) => {
+                console.log('Participant left:', participant);
+            });
+            
+            jitsiApi.addListener('videoConferenceJoined', (conference) => {
+                console.log('Joined conference:', conference);
+                if (consultationId && consultationId !== 'instant') {
+                    logConsultationStart(consultationId);
+                }
+            });
+            
+            jitsiApi.addListener('videoConferenceLeft', (conference) => {
+                console.log('Left conference:', conference);
+            });
+            
+            jitsiApi.addListener('readyToClose', () => {
+                endCall();
+            });
+        }
+        
+        function toggleVideo() {
+            if (!jitsiApi) return;
+            videoEnabled = !videoEnabled;
+            jitsiApi.executeCommand('toggleVideo');
+            
+            const btn = document.getElementById('toggle-video');
+            btn.classList.toggle('active', videoEnabled);
+            btn.innerHTML = videoEnabled 
+                ? '<i class="fa-solid fa-video"></i>' 
+                : '<i class="fa-solid fa-video-slash"></i>';
+        }
+        
+        function toggleAudio() {
+            if (!jitsiApi) return;
+            audioEnabled = !audioEnabled;
+            jitsiApi.executeCommand('toggleAudio');
+            
+            const btn = document.getElementById('toggle-audio');
+            btn.classList.toggle('active', audioEnabled);
+            btn.innerHTML = audioEnabled 
+                ? '<i class="fa-solid fa-microphone"></i>' 
+                : '<i class="fa-solid fa-microphone-slash"></i>';
+        }
+        
+        function toggleScreenShare() {
+            if (!jitsiApi) return;
+            jitsiApi.executeCommand('toggleShareScreen');
+            
+            const btn = document.getElementById('toggle-screen');
+            btn.classList.toggle('active');
+        }
+        
+        function endCall() {
+            const notes = document.getElementById('session-notes')?.value;
+            
+            // Broadcast leave event to other participants
+            broadcastConsultationEvent('participant_left', {
+                userId: currentUser?.id,
+                name: currentUser?.full_name || currentUser?.email || 'Participant',
+                leftAt: new Date().toISOString()
+            });
+            
+            // Broadcast call ended status
+            broadcastConsultationEvent('call_status', {
+                type: 'ended',
+                endedBy: currentUser?.full_name || 'Participant',
+                endedAt: new Date().toISOString()
+            });
+            
+            if (jitsiApi) {
+                jitsiApi.executeCommand('hangup');
+                jitsiApi.dispose();
+                jitsiApi = null;
+            }
+            
+            // Cleanup real-time channel
+            if (consultationChannel) {
+                consultationChannel.untrack();
+                CognoSupabase?.client?.removeChannel?.(consultationChannel);
+                consultationChannel = null;
+            }
+            
+            // Save notes if any
+            if (notes) {
+                saveConsultationNotes(notes);
+            }
+            
+            // Redirect back to consultations
+            window.location.href = './';
+        }
+        
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            // Add to local chat
+            appendChatMessage('You', message, timeStr, true);
+            
+            // Send via Jitsi chat
+            if (jitsiApi) {
+                jitsiApi.executeCommand('sendChatMessage', message);
+            }
+            
+            // Also broadcast via Supabase real-time channel
+            broadcastConsultationEvent('chat_message', {
+                senderId: currentUser?.id,
+                senderName: currentUser?.full_name || currentUser?.email || 'Participant',
+                text: message,
+                time: timeStr
+            });
+            
+            input.value = '';
+        }
+        
+        async function loadConsultationDetails(id) {
+            try {
+                const { data, error } = await CognoSupabase.client
+                    .from('consultations')
+                    .select(`
+                        *,
+                        doctor:doctor_id(full_name, avatar_url),
+                        patient:patient_id(full_name, avatar_url)
+                    `)
+                    .eq('id', id)
+                    .single();
+
+                if (error) throw error;
+                consultationData = data;
+
+                // Update UI based on who is viewing
+                const isDoctor = currentUser.role === 'doctor';
+                const otherParty = isDoctor ? data.patient : data.doctor;
+                
+                if (otherParty) {
+                    document.getElementById('doctor-name').textContent = isDoctor ? otherParty.full_name : `Dr. ${otherParty.full_name}`;
+                    const initials = otherParty.full_name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    document.getElementById('doctor-initials').textContent = initials;
+                    document.getElementById('consultation-time').textContent = isDoctor ? 'Patient is joining...' : 'Doctor is joining...';
+                }
+            } catch (err) {
+                console.error('Failed to load consultation details:', err);
+                updateGenericHDR();
+            }
+        }
+
+        function updateGenericHDR() {
+            document.getElementById('doctor-name').textContent = 'Live Consultation';
+            document.getElementById('doctor-initials').textContent = 'LC';
+            document.getElementById('consultation-time').textContent = 'Direct Session';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        async function logConsultationStart(id) {
+            try {
+                // Update status to 'in-progress'
+                await CognoSupabase.client
+                    .from('consultations')
+                    .update({ status: 'in-progress' })
+                    .eq('id', id);
+                
+                // Log activity
+                await CognoSupabase?.logActivity('consultation_start', {
+                    consultation_id: id,
+                    started_at: new Date().toISOString()
+                });
+            } catch (err) {
+                console.error('Failed to log consultation start:', err);
+            }
+        }
+
+        async function saveConsultationNotes(notes) {
+            if (!consultationData?.id || !notes) return;
+            try {
+                await CognoSupabase.client
+                    .from('consultations')
+                    .update({ notes: notes })
+                    .eq('id', consultationData.id);
+                console.log('Notes saved for:', consultationData.id);
+            } catch (err) {
+                console.error('Failed to save notes:', err);
+            }
+        }
+        
+        async function switchCamera(e) {
+            const deviceId = e.target.value;
+            if (!deviceId) return;
+            
+            try {
+                if (localStream) {
+                    localStream.getVideoTracks().forEach(track => track.stop());
+                }
+                
+                const newStream = await navigator.mediaDevices.getUserMedia({
+                    video: { deviceId: { exact: deviceId } }
+                });
+                
+                const previewVideo = document.getElementById('preview-video');
+                previewVideo.srcObject = newStream;
+                localStream = newStream;
+            } catch (error) {
+                console.error('Failed to switch camera:', error);
+            }
+        }
+        
+        async function switchMicrophone(e) {
+            const deviceId = e.target.value;
+            if (!deviceId) return;
+            
+            try {
+                if (localStream) {
+                    localStream.getAudioTracks().forEach(track => track.stop());
+                }
+                
+                const newStream = await navigator.mediaDevices.getUserMedia({
+                    audio: { deviceId: { exact: deviceId } }
+                });
+                
+                // Merge with existing video
+                if (localStream) {
+                    newStream.addTrack(localStream.getVideoTracks()[0]);
+                }
+                
+                localStream = newStream;
+            } catch (error) {
+                console.error('Failed to switch microphone:', error);
+            }
+        }
+        
+
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            stopPreview();
+            if (jitsiApi) {
+                jitsiApi.dispose();
+            }
+            // Cleanup real-time channel
+            if (consultationChannel) {
+                consultationChannel.untrack();
+                CognoSupabase?.client?.removeChannel?.(consultationChannel);
+            }
+        });
+    </script>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../learn/index.html" class="nav-item">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../doctors/index.html" class="nav-item active">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

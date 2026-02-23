@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Movement Games - Dyspraxia Support Module">
+    <title>Movement Games - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/cognitive-friendly.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        body { font-family: 'Lexend', sans-serif; }
+        
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            
+            .module-header {
+                padding: 1.5rem 1rem !important;
+                border-radius: 1.25rem !important;
+                text-align: center;
+            }
+            
+            .module-header-content {
+                flex-direction: column !important;
+                gap: 1rem !important;
+            }
+            
+            .module-icon-large {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 1.5rem !important;
+                margin: 0 auto;
+            }
+            
+            .module-header h1 {
+                font-size: 1.5rem !important;
+            }
+            
+            .module-stats {
+                flex-direction: row !important;
+                flex-wrap: wrap;
+                justify-content: center !important;
+                gap: 0.75rem !important;
+            }
+            
+            .module-stat {
+                background: rgba(255, 255, 255, 0.1);
+                padding: 0.5rem 0.75rem;
+                border-radius: 0.75rem;
+                min-width: 80px;
+            }
+            
+            .activities-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+            
+            .activity-card {
+                padding: 1.25rem !important;
+            }
+            
+            .navbar {
+                padding: 0 1rem !important;
+            }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .module-header {
+            background: linear-gradient(135deg, var(--color-dyspraxia) 0%, #4f46e5 100%);
+            color: white;
+            padding: 48px 32px;
+            border-radius: 20px;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3);
+        }
+        
+        .module-header-content {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .module-icon-large {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+        
+        .module-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .module-header p {
+            opacity: 0.9;
+            max-width: 500px;
+        }
+        
+        .module-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+        }
+        
+        .module-stat {
+            text-align: center;
+        }
+        
+        .module-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: block;
+        }
+        
+        .module-stat-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        .camera-notice {
+            background: #fffbeb;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .dark-mode .camera-notice {
+            background: #451a03;
+            border-color: #92400e;
+            color: #fef3c7;
+        }
+        
+        .activities-section {
+            margin-bottom: 48px;
+        }
+        
+        .activities-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--color-text-primary);
+        }
+        
+        .activities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .activity-card {
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 24px;
+            border: 2px solid var(--color-border);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .activity-card:hover {
+            border-color: var(--color-dyspraxia);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .activity-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .activity-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(var(--color-primary-rgb), 0.1);
+            color: var(--color-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .activity-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .activity-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .activity-difficulty {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 100px;
+        }
+        
+        .activity-difficulty.easy { background: #dcfce7; color: #166534; }
+        .activity-difficulty.medium { background: #fef3c7; color: #92400e; }
+        .activity-difficulty.hard { background: #fee2e2; color: #991b1b; }
+        
+        .activity-badge.camera {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 100px;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .activity-description {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 24px;
+            flex-grow: 1;
+            line-height: 1.5;
+        }
+        
+        .activity-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .activity-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--color-text-tertiary);
+        }
+        
+        .progress-bar {
+            width: 60px;
+            height: 6px;
+            background: var(--color-border);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--color-primary);
+        }
+        
+        .activity-play-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            transition: transform 0.2s;
+        }
+        
+        .activity-card:hover .activity-play-btn {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar (Same as Dashboard) -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="../../dashboard/child-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Learning Modules</li>
+                
+                <li class="sidebar-item">
+                    <a href="../dyslexia/" class="sidebar-link">
+                        <i class="fa-solid fa-book-open" style="color: var(--color-dyslexia);"></i>
+                        <span>Reading & Words</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../dyscalculia/" class="sidebar-link">
+                        <i class="fa-solid fa-calculator" style="color: var(--color-dyscalculia);"></i>
+                        <span>Numbers & Math</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../dysgraphia/" class="sidebar-link">
+                        <i class="fa-solid fa-pen" style="color: var(--color-dysgraphia);"></i>
+                        <span>Writing Practice</span>
+                    </a>
+                </li>
+                <li class="sidebar-item active">
+                    <a href="../dyspraxia/" class="sidebar-link">
+                        <i class="fa-solid fa-person-running" style="color: var(--color-dyspraxia);"></i>
+                        <span>Movement Games</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">More</li>
+                <li class="sidebar-item"><a href="../../learning-hub/" class="sidebar-link"><i class="fa-solid fa-graduation-cap"></i><span>Learning Hub</span></a></li>
+                <li class="sidebar-item"><a href="../../profile/" class="sidebar-link"><i class="fa-solid fa-user"></i><span>My Profile</span></a></li>
+                <li class="sidebar-item"><a href="../../settings/" class="sidebar-link"><i class="fa-solid fa-gear"></i><span>Settings</span></a></li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link logout-btn" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav class="breadcrumb">
+                    <a href="../../dashboard/child-dashboard.html">Dashboard</a>
+                    <span>/</span>
+                    <span class="text-primary font-bold">Movement Games</span>
+                </nav>
+            </div>
+            
+            <div class="navbar-right">
+                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+                <div class="avatar avatar-sm" id="user-avatar">
+                    <img src="../../assets/images/avatars/default.svg" alt="User" id="user-avatar-img">
+                </div>
+            </div>
+        </header>
+        
+        <div class="content-area">
+            <!-- Header -->
+            <header class="module-header">
+                <div class="module-header-content">
+                    <div class="module-icon-large">
+                        <i class="fa-solid fa-person-running"></i>
+                    </div>
+                    <div>
+                        <h1>Movement Games</h1>
+                        <p>Practice coordination and motor skills with fun, interactive games!</p>
+                        <div class="module-stats">
+                            <div class="module-stat">
+                                <span class="module-stat-value" id="completion-rate">0%</span>
+                                <span class="module-stat-label">Progress</span>
+                            </div>
+                            <div class="module-stat">
+                                <span class="module-stat-value" id="activities-done">0</span>
+                                <span class="module-stat-label">Completed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Camera Notice -->
+            <div class="camera-notice">
+                <i class="fa-solid fa-video"></i>
+                <div>
+                    <strong>Camera Ready?</strong>
+                    <p>Many games use your webcam to track movement. Stay in a well-lit area!</p>
+                </div>
+            </div>
+            
+            <!-- Body Movement -->
+            <section class="activities-section">
+                <h2><i class="fa-solid fa-child-reaching" style="color: #6366f1;"></i> Body Movement</h2>
+                <div class="activities-grid">
+                    <a href="balloon-pop.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-hand-sparkles"></i></div>
+                            <div>
+                                <h3 class="activity-title">Balloon Pop</h3>
+                                <div class="activity-badges"><span class="activity-difficulty easy">Easy</span><span class="activity-badge camera">Camera</span></div>
+                            </div>
+                        </div>
+                        <p class="activity-description">Pop floating balloons by reaching out and touching them!</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+                    
+                    <a href="catch-stars.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-star"></i></div>
+                            <div>
+                                <h3 class="activity-title">Catch the Stars</h3>
+                                <div class="activity-badges"><span class="activity-difficulty easy">Easy</span><span class="activity-badge camera">Camera</span></div>
+                            </div>
+                        </div>
+                        <p class="activity-description">Catch falling stars! Tests gross motor coordination.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+
+                    <a href="mirror-me.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-clone"></i></div>
+                            <div>
+                                <h3 class="activity-title">Mirror Me</h3>
+                                <div class="activity-badges"><span class="activity-difficulty medium">Medium</span><span class="activity-badge camera">Camera</span></div>
+                            </div>
+                        </div>
+                        <p class="activity-description">Copy the poses shown on screen accurately.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+
+                    <a href="freeze-dance.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-music"></i></div>
+                            <div>
+                                <h3 class="activity-title">Freeze Dance</h3>
+                                <div class="activity-badges"><span class="activity-difficulty easy">Easy</span><span class="activity-badge camera">Camera</span></div>
+                            </div>
+                        </div>
+                        <p class="activity-description">Dance when it plays, freeze when it stops!</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+                    
+                    <a href="body-movement.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-person-walking"></i></div>
+                            <div>
+                                <h3 class="activity-title">Movement Prep</h3>
+                                <div class="activity-badges"><span class="activity-difficulty medium">Medium</span></div>
+                            </div>
+                        </div>
+                        <p class="activity-description">Step-by-step movement exercises for warming up.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+                </div>
+            </section>
+            
+            <!-- Balance & Coordination -->
+            <section class="activities-section">
+                <h2><i class="fa-solid fa-scale-balanced" style="color: #10b981;"></i> Balance & Coordination</h2>
+                <div class="activities-grid">
+                    <a href="tightrope-walk.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-person-walking-dashed-line"></i></div>
+                            <div>
+                                <h3 class="activity-title">Tightrope Walk</h3>
+                                <div class="activity-badges"><span class="activity-difficulty medium">Medium</span><span class="activity-badge camera">Camera</span></div>
+                            </div>
+                        </div>
+                        <p class="activity-description">Keep your balance on a virtual tightrope!</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+                    
+                    <a href="obstacle-course.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-person-hiking"></i></div>
+                            <div>
+                                <h3 class="activity-title">Obstacle Course</h3>
+                                <div class="activity-badges"><span class="activity-difficulty hard">Hard</span><span class="activity-badge camera">Camera</span></div>
+                            </div>
+                        </div>
+                        <p class="activity-description">Jump and duck through virtual obstacles!</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+
+                    <a href="balance-beam.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-ruler-horizontal"></i></div>
+                            <div>
+                                <h3 class="activity-title">Balance Beam</h3>
+                                <div class="activity-badges"><span class="activity-difficulty hard">Hard</span><span class="activity-badge camera">Camera</span></div>
+                            </div>
+                        </div>
+                        <p class="activity-description">Walk the beam and stay centered!</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+
+                    <a href="balance.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-scale-unbalanced"></i></div>
+                            <div>
+                                <h3 class="activity-title">Balance Master</h3>
+                                <div class="activity-badges"><span class="activity-difficulty medium">Medium</span></div>
+                            </div>
+                        </div>
+                        <p class="activity-description">Test your stability and static balance.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+                </div>
+            </section>
+            
+            <!-- Hand & Fine Motor -->
+            <section class="activities-section">
+                <h2><i class="fa-solid fa-hand" style="color: #f59e0b;"></i> Hand & Fine Motor</h2>
+                <div class="activities-grid">
+                    <a href="finger-tap.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-hand-pointer"></i></div>
+                            <div><h3 class="activity-title">Finger Tap</h3><span class="activity-difficulty easy">Easy</span></div>
+                        </div>
+                        <p class="activity-description">Tap targets as they appear on screen.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+                    
+                    <a href="drag-drop.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-up-down-left-right"></i></div>
+                            <div><h3 class="activity-title">Drag & Drop</h3><span class="activity-difficulty easy">Easy</span></div>
+                        </div>
+                        <p class="activity-description">Drag objects to their matching target zones.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+                    
+                    <a href="track-path.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-route"></i></div>
+                            <div><h3 class="activity-title">Track Path</h3><span class="activity-difficulty medium">Medium</span></div>
+                        </div>
+                        <p class="activity-description">Trace complex paths with precision.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+
+                    <a href="rhythm-tap.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-drum"></i></div>
+                            <div><h3 class="activity-title">Rhythm Tap</h3><span class="activity-difficulty easy">Easy</span></div>
+                        </div>
+                        <p class="activity-description">Tap along to the beat of the music!</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+
+                    <a href="tapping-sequence.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-list-ol"></i></div>
+                            <div><h3 class="activity-title">Sequence Tap</h3><span class="activity-difficulty medium">Medium</span></div>
+                        </div>
+                        <p class="activity-description">Follow the pattern and repeat the taps.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+
+                    <a href="hand-exercises.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-hand-fist"></i></div>
+                            <div><h3 class="activity-title">Hand Exercises</h3><span class="activity-difficulty easy">Easy</span></div>
+                        </div>
+                        <p class="activity-description">Daily hand and finger strength exercises.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+
+                    <a href="mirror-moves.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-hand-dots"></i></div>
+                            <div><h3 class="activity-title">Mirror Moves</h3><span class="activity-difficulty medium">Medium</span></div>
+                        </div>
+                        <p class="activity-description">Copy hand gestures shown on screen.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+
+                    <a href="click-sequence.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-arrow-pointer-dots"></i></div>
+                            <div><h3 class="activity-title">Click Sequence</h3><span class="activity-difficulty hard">Hard</span></div>
+                        </div>
+                        <p class="activity-description">Click the dots in the specific order needed.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+
+                    <a href="catch-objects.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-hand-holding"></i></div>
+                            <div><h3 class="activity-title">Catch Objects</h3><span class="activity-difficulty easy">Easy</span></div>
+                        </div>
+                        <p class="activity-description">Catch the objects using the basket icon.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+
+                    <a href="drag-targets.html" class="activity-card">
+                        <div class="activity-card-header">
+                            <div class="activity-icon"><i class="fa-solid fa-bullseye-arrow"></i></div>
+                            <div><h3 class="activity-title">Drag Targets</h3><span class="activity-difficulty medium">Medium</span></div>
+                        </div>
+                        <p class="activity-description">Drag numbered blocks to their target zones.</p>
+                        <div class="activity-footer"><div class="activity-progress"><div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div><span>0%</span></div><div class="activity-play-btn"><i class="fa-solid fa-play"></i></div></div>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../modules/modules.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.init('dyspraxia');
+        });
+    </script>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
+        <a href="../learn/index.html" class="nav-item active"><i class="fa-solid fa-book-open"></i><span>Learn</span></a>
+        <a href="../doctors/index.html" class="nav-item"><i class="fa-solid fa-user-doctor"></i><span>Doctors</span></a>
+        <a href="../learning-hub/index.html" class="nav-item"><i class="fa-solid fa-graduation-cap"></i><span>Hub</span></a>
+        <a href="../progress/index.html" class="nav-item"><i class="fa-solid fa-chart-line"></i><span>Progress</span></a>
+        <a href="../profile/index.html" class="nav-item"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+    </nav>
+</body>
+</html>

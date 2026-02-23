@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Exercises - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        .exercise-card { background: var(--color-surface); border-radius: var(--radius-2xl); border: 2px solid var(--color-border); box-shadow: var(--shadow-xl); overflow: hidden; }
+        .hand-emoji { font-size: 5rem; transition: transform 0.5s ease; }
+        @keyframes squeeze { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.9); } }
+        @keyframes spread { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        @keyframes wave { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-15deg); } 75% { transform: rotate(15deg); } }
+        .squeeze { animation: squeeze 2s infinite; }
+        .spread { animation: spread 2s infinite; }
+        .wave { animation: wave 1s infinite; }
+        
+        .rep-indicator { width: 14px; height: 14px; border-radius: 50%; background: var(--color-border); transition: 0.3s; }
+        .rep-indicator.done { background: var(--color-success); }
+        .rep-indicator.current { background: var(--color-primary); box-shadow: 0 0 10px var(--color-primary); }
+        
+        .step-item { transition: 0.3s; cursor: pointer; border: 2px solid transparent; background: var(--color-surface-variant); border-radius: var(--radius-xl); }
+        .step-item:hover { border-color: var(--color-primary); }
+        .step-item.active { border-color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.05); }
+        .step-item.completed { background: rgba(var(--color-success-rgb), 0.05); border-color: var(--color-success); }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Hand Exercises</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">👐 Hand Exercises</h1>
+                </div>
+                <p class="text-gray-500">Guided exercises to improve fine motor strength and dexterity.</p>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-4 gap-4 mb-8">
+                <div class="card p-4 text-center bg-cyan-500/5 border-cyan-500/20">
+                    <div class="text-2xl font-bold text-cyan-600" id="exerciseNum">0/5</div>
+                    <div class="text-xs opacity-60 uppercase">Exercises</div>
+                </div>
+                <div class="card p-4 text-center bg-purple-500/5 border-purple-500/20">
+                    <div class="text-2xl font-bold text-purple-600" id="repCount">0</div>
+                    <div class="text-xs opacity-60 uppercase">Reps</div>
+                </div>
+                <div class="card p-4 text-center bg-green-500/5 border-green-500/20">
+                    <div class="text-2xl font-bold text-green-600" id="sessionTime">0:00</div>
+                    <div class="text-xs opacity-60 uppercase">Time</div>
+                </div>
+                <div class="card p-4 text-center bg-orange-500/5 border-orange-500/20">
+                    <div class="text-2xl font-bold text-orange-600" id="dayStreak">0</div>
+                    <div class="text-xs opacity-60 uppercase">Streak</div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-5 gap-8">
+                <!-- Exercise List -->
+                <div class="md:col-span-2 space-y-3" id="exerciseList">
+                    <div class="step-item p-4 flex items-center gap-4" onclick="selectExercise(0)" id="step-0">
+                        <span class="text-2xl">✊</span>
+                        <div><h3 class="font-bold text-sm">Finger Squeeze</h3><p class="text-xs opacity-60">10 reps</p></div>
+                    </div>
+                    <div class="step-item p-4 flex items-center gap-4" onclick="selectExercise(1)" id="step-1">
+                        <span class="text-2xl">🖐️</span>
+                        <div><h3 class="font-bold text-sm">Finger Spread</h3><p class="text-xs opacity-60">10 reps</p></div>
+                    </div>
+                    <div class="step-item p-4 flex items-center gap-4" onclick="selectExercise(2)" id="step-2">
+                        <span class="text-2xl">🤏</span>
+                        <div><h3 class="font-bold text-sm">Thumb to Tips</h3><p class="text-xs opacity-60">5 cycles</p></div>
+                    </div>
+                    <div class="step-item p-4 flex items-center gap-4" onclick="selectExercise(3)" id="step-3">
+                        <span class="text-2xl">👋</span>
+                        <div><h3 class="font-bold text-sm">Wrist Circles</h3><p class="text-xs opacity-60">10 reps</p></div>
+                    </div>
+                    <div class="step-item p-4 flex items-center gap-4" onclick="selectExercise(4)" id="step-4">
+                        <span class="text-2xl">🎹</span>
+                        <div><h3 class="font-bold text-sm">Piano Fingers</h3><p class="text-xs opacity-60">20 reps</p></div>
+                    </div>
+                </div>
+
+                <!-- Active View -->
+                <div class="md:col-span-3">
+                    <div id="activeView" class="exercise-card p-8 text-center hidden">
+                        <div class="hand-emoji mb-6" id="exerciseEmoji">✊</div>
+                        <h2 class="text-2xl font-bold mb-2" id="exerciseTitle">Select an Exercise</h2>
+                        <p class="text-gray-500 mb-8" id="exerciseDesc">Choose a task from the list to begin.</p>
+                        
+                        <div class="flex justify-center gap-3 mb-8" id="repIndicators"></div>
+
+                        <div class="bg-surface-variant rounded-2xl p-6 text-left mb-8">
+                            <h4 class="font-bold text-xs uppercase tracking-widest text-primary mb-3">How to do it:</h4>
+                            <ul class="text-sm space-y-2 opacity-80 list-decimal list-inside" id="instructions"></ul>
+                        </div>
+
+                        <div class="flex gap-4 justify-center">
+                            <button onclick="countRep()" class="btn btn-primary btn-lg px-8">Count Rep ✓</button>
+                            <button onclick="skipExercise()" class="btn btn-ghost btn-lg">Skip</button>
+                        </div>
+                    </div>
+
+                    <!-- Completion View -->
+                    <div id="completionView" class="exercise-card p-8 text-center hidden">
+                        <span class="text-6xl mb-4 block">🎉</span>
+                        <h2 class="text-2xl font-bold mb-4">You're All Done!</h2>
+                        <p class="text-gray-500 mb-8">Excellent work exercising your hands today.</p>
+                        <button onclick="restartRoutine()" class="btn btn-primary btn-lg w-full">Practice Again</button>
+                    </div>
+
+                    <!-- Placeholder -->
+                    <div id="placeholderView" class="exercise-card p-12 text-center opacity-40">
+                        <i class="fa-solid fa-hand-sparkles text-6xl mb-4 block text-primary"></i>
+                        <p>Select an exercise from the left to start your routine</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+            loadStreak();
+        });
+
+        const exerciseData = [
+            { emoji: '✊', title: 'Finger Squeeze', desc: 'Make a fist, squeeze tight, then release', reps: 10, animation: 'squeeze', inst: ['Curl fingers into a fist', 'Squeeze for 2 seconds', 'Release and spread wide'] },
+            { emoji: '🖐️', title: 'Finger Spread', desc: 'Spread fingers wide, then relax', reps: 10, animation: 'spread', inst: ['Start with hand relaxed', 'Spread fingers as wide as possible', 'Hold for 2 seconds and relax'] },
+            { emoji: '🤏', title: 'Thumb to Tips', desc: 'Touch thumb to each fingertip', reps: 5, animation: 'wave', inst: ['Touch thumb to index finger', 'Then middle, ring, and pinky', 'Repeat the sequence'] },
+            { emoji: '👋', title: 'Wrist Circles', desc: 'Rotate wrists in smooth circles', reps: 10, animation: 'wave', inst: ['Rotate wrists clockwise', 'Do 5 circles', 'Then rotate anti-clockwise'] },
+            { emoji: '🎹', title: 'Piano Fingers', desc: 'Tap fingers like playing a piano', reps: 20, animation: '', inst: ['Place hand on table', 'Tap each finger one by one', 'Speed up gradually'] }
+        ];
+
+        let currentIndex = -1, currentReps = 0, totalReps = 0, completedCount = 0;
+        let sessionStart = null, timerInt = null;
+
+        function selectExercise(idx) {
+            currentIndex = idx; currentReps = 0;
+            const ex = exerciseData[idx];
+            document.getElementById('activeView').classList.remove('hidden');
+            document.getElementById('placeholderView').classList.add('hidden');
+            document.getElementById('completionView').classList.add('hidden');
+            document.getElementById('exerciseEmoji').textContent = ex.emoji;
+            document.getElementById('exerciseEmoji').className = `hand-emoji mb-6 ${ex.animation}`;
+            document.getElementById('exerciseTitle').textContent = ex.title;
+            document.getElementById('exerciseDesc').textContent = ex.desc;
+            document.getElementById('instructions').innerHTML = ex.inst.map(i => `<li>${i}</li>`).join('');
+            
+            const repsEl = document.getElementById('repIndicators');
+            repsEl.innerHTML = '';
+            for(let i=0; i<ex.reps; i++) repsEl.innerHTML += `<div class="rep-indicator ${i===0?'current':''}"></div>`;
+
+            document.querySelectorAll('.step-item').forEach((s, i) => {
+                s.classList.remove('active');
+                if(i === idx) s.classList.add('active');
+            });
+
+            if(!sessionStart) { sessionStart = Date.now(); timerInt = setInterval(updateTime, 1000); }
+        }
+
+        function countRep() {
+            if(currentIndex === -1) return;
+            const ex = exerciseData[currentIndex];
+            const indicators = document.querySelectorAll('#repIndicators .rep-indicator');
+            indicators[currentReps].classList.remove('current');
+            indicators[currentReps].classList.add('done');
+            currentReps++; totalReps++;
+            document.getElementById('repCount').textContent = totalReps;
+            if(currentReps < ex.reps) indicators[currentReps].classList.add('current');
+            else finishExercise();
+        }
+
+        function finishExercise() {
+            document.getElementById(`step-${currentIndex}`).classList.add('completed');
+            completedCount++;
+            document.getElementById('exerciseNum').textContent = `${completedCount}/5`;
+            if(completedCount >= 5) endSession();
+            else {
+                 CognoNotifications?.toast?.success('Moving to next exercise!');
+                 setTimeout(() => { if(currentIndex < 4) selectExercise(currentIndex+1); }, 1000);
+            }
+        }
+
+        function skipExercise() { finishExercise(); }
+
+        function endSession() {
+            clearInterval(timerInt);
+            document.getElementById('activeView').classList.add('hidden');
+            document.getElementById('completionView').classList.remove('hidden');
+            const dur = Math.floor((Date.now() - sessionStart) / 1000);
+            CognoTracker?.saveActivity({ moduleId: 'dyspraxia', activityId: 'hand-exercises', score: 100, maxScore: 100, duration: dur });
+            saveStreak();
+        }
+
+        function updateTime() {
+            const sec = Math.floor((Date.now() - sessionStart) / 1000);
+            document.getElementById('sessionTime').textContent = `${Math.floor(sec/60)}:${(sec%60).toString().padStart(2,'0')}`;
+        }
+
+        function restartRoutine() { location.reload(); }
+
+        function loadStreak() {
+            const streak = localStorage.getItem('cogno_hand_streak') || 0;
+            document.getElementById('dayStreak').textContent = streak;
+        }
+
+        function saveStreak() {
+            let streak = parseInt(localStorage.getItem('cogno_hand_streak') || 0);
+            localStorage.setItem('cogno_hand_streak', streak + 1);
+            loadStreak();
+        }
+    </script>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

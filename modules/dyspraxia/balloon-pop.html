@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balloon Pop - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Supabase and Activity Tracker -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: #f8fafc; color: #1e293b; margin: 0; padding: 0; }
+        .activity-container { min-height: 100vh; display: flex; flex-direction: column; }
+        .activity-content { flex: 1; padding: 2rem; max-width: 1000px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 1.5rem; }
+        
+        @media (max-width: 768px) {
+            .activity-content { padding: 1rem; }
+            .hide-xs { display: none !important; }
+            video { height: 250px !important; }
+        }
+
+        #gameCanvas { width: 100%; height: 500px; background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 1.25rem; cursor: crosshair; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 2px solid #e2e8f0; }
+        .score-display { font-size: 2rem; font-weight: bold; color: #6366f1; text-align: center; margin: 20px 0; }
+        .instruction { color: #64748b; text-align: center; padding: 1.5rem; background: #f1f5f9; border-radius: 1rem; border: 1px dashed #6366f1; margin-bottom: 1.5rem; font-size: 0.875rem; }
+        .webcam-feed { position: relative; border-radius: 1.25rem; overflow: hidden; background: #000; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        video { 
+            width: 100%; 
+            height: 400px; 
+            background: black; 
+            transform: scaleX(-1);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Balloon Pop</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div class="activity-content">
+            <div class="hide-xs">
+                <a href="index.html" class="inline-flex items-center text-indigo-600 hover:text-indigo-700 transition font-medium mb-6">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Back to Movement Games
+                </a>
+            </div>
+
+            <div class="max-w-4xl mx-auto bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-gray-100">
+            <h1 class="text-4xl font-bold text-indigo-600 mb-2">🎈 Balloon Pop</h1>
+            <p class="text-gray-600 mb-6">Pop floating balloons by waving your hands at the camera!</p>
+
+            <div class="instruction">
+                ⚠️ <strong>Camera Required</strong> - Make sure your camera is enabled and you can see yourself in the preview below
+            </div>
+
+            <!-- Webcam Feed -->
+            <div class="webcam-feed mb-6">
+                <video id="videoElement" autoplay playsinline></video>
+                <div id="connectionStatus" class="text-center mt-2 text-sm font-semibold">
+                    <span class="text-yellow-600">⏳ Connecting to camera...</span>
+                </div>
+            </div>
+
+            <!-- Game Stats -->
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="bg-indigo-50 rounded-2xl p-4 text-center border border-indigo-100">
+                    <div class="text-3xl font-bold text-indigo-600" id="balloonScore">0</div>
+                    <div class="text-sm text-gray-600">Balloons Popped</div>
+                </div>
+                <div class="bg-blue-50 rounded-2xl p-4 text-center border border-blue-100">
+                    <div class="text-3xl font-bold text-blue-600" id="accuracy">100%</div>
+                    <div class="text-sm text-gray-600">Accuracy</div>
+                </div>
+                <div class="bg-emerald-50 rounded-2xl p-4 text-center border border-emerald-100">
+                    <div class="text-3xl font-bold text-green-600" id="gameTimer">30</div>
+                    <div class="text-sm text-gray-600">Seconds Left</div>
+                </div>
+            </div>
+
+            <!-- Game Canvas -->
+            <div class="game-container mb-6">
+                <canvas id="gameCanvas"></canvas>
+            </div>
+
+            <!-- Controls -->
+            <div class="flex gap-4 justify-center">
+                <button id="startBtn" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition transform hover:scale-105 active:scale-95">
+                    🎮 Start Game
+                </button>
+                <button id="resetBtn" class="bg-gray-400 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-500 transition" style="display:none;">
+                    🔄 Reset
+                </button>
+            </div>
+
+            <!-- Instructions -->
+            <div class="mt-8 bg-blue-50 rounded-lg p-6 border-l-4 border-blue-500">
+                <h3 class="font-bold text-blue-900 mb-3">📋 How to Play:</h3>
+                <ol class="text-blue-800 space-y-2 ml-4">
+                    <li>✅ Allow camera access when prompted</li>
+                    <li>✅ Click "Start Game" to begin</li>
+                    <li>✅ Wave your hands to pop balloons</li>
+                    <li>✅ Pop as many as you can in 30 seconds!</li>
+                    <li>✅ The hand detection will track your movements</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        // Backend API URL - Flask server running on port 5000
+        const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000'
+            : '';
+        
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const video = document.getElementById('videoElement');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const scoreDisplay = document.getElementById('balloonScore');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const timerDisplay = document.getElementById('gameTimer');
+        const connectionStatus = document.getElementById('connectionStatus');
+
+        let gameActive = false;
+        let balloons = [];
+        let score = 0;
+        let timeRemaining = 30;
+        let attempts = 0;
+        let successfulPops = 0;
+        let gameStartTime = 0;
+        let handLandmarks = [];
+        let backendConnected = false;
+        let frameAnalysisEnabled = true;
+        let lastFrameAnalysis = 0;
+        let isAnalyzing = false;
+        const FRAME_THROTTLE_MS = 100; // Limit to 10 FPS for API calls
+
+        // MediaPipe hand connections (pairs of landmark indices)
+        const HAND_CONNECTIONS = [
+            [0, 1], [1, 2], [2, 3], [3, 4],     // Thumb
+            [0, 5], [5, 6], [6, 7], [7, 8],     // Index
+            [0, 9], [9, 10], [10, 11], [11, 12], // Middle
+            [0, 13], [13, 14], [14, 15], [15, 16], // Ring
+            [0, 17], [17, 18], [18, 19], [19, 20], // Pinky
+            [5, 9], [9, 13], [13, 17]           // Palm
+        ];
+
+        // Draw hand skeleton on canvas
+        function drawHandSkeleton() {
+            if (!handLandmarks || handLandmarks.length === 0) return;
+
+            handLandmarks.forEach((hand, handIndex) => {
+                // Choose colors for different hands
+                const lineColor = handIndex === 0 ? '#00FF00' : '#FF00FF';
+                const pointColor = handIndex === 0 ? '#00FFFF' : '#FFFF00';
+                
+                // Draw connections (skeleton lines)
+                ctx.strokeStyle = lineColor;
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                
+                HAND_CONNECTIONS.forEach(([start, end]) => {
+                    if (hand[start] && hand[end]) {
+                        const startX = hand[start].x * canvas.width;
+                        const startY = hand[start].y * canvas.height;
+                        const endX = hand[end].x * canvas.width;
+                        const endY = hand[end].y * canvas.height;
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(startX, startY);
+                        ctx.lineTo(endX, endY);
+                        ctx.stroke();
+                    }
+                });
+                
+                // Draw landmark points
+                hand.forEach((landmark, idx) => {
+                    const x = landmark.x * canvas.width;
+                    const y = landmark.y * canvas.height;
+                    
+                    // Larger points for fingertips
+                    const isFingertip = [4, 8, 12, 16, 20].includes(idx);
+                    const radius = isFingertip ? 10 : 6;
+                    
+                    // Gradient effect for fingertips
+                    if (isFingertip) {
+                        const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+                        gradient.addColorStop(0, '#FF0000');
+                        gradient.addColorStop(0.5, '#FF6600');
+                        gradient.addColorStop(1, 'rgba(255, 100, 0, 0.3)');
+                        ctx.fillStyle = gradient;
+                    } else {
+                        ctx.fillStyle = pointColor;
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Add glow effect for fingertips
+                    if (isFingertip) {
+                        ctx.strokeStyle = 'rgba(255, 255, 0, 0.5)';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(x, y, radius + 5, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+                });
+
+                // Draw wrist indicator
+                if (hand[0]) {
+                    const wristX = hand[0].x * canvas.width;
+                    const wristY = hand[0].y * canvas.height;
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.font = 'bold 12px Lexend';
+                    ctx.fillText(handIndex === 0 ? 'Left' : 'Right', wristX - 15, wristY + 25);
+                }
+            });
+        }
+
+        // Canvas setup
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+
+        // Check backend connection
+        async function checkBackendConnection() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/health`, {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    backendConnected = true;
+                    console.log('✅ Backend connected:', data);
+                    
+                    if (!data.services?.mediapipe) {
+                        connectionStatus.innerHTML = '<span class="text-yellow-600">⚠️ Backend running but MediaPipe not available - Hand detection disabled</span>';
+                        frameAnalysisEnabled = false;
+                    }
+                    return true;
+                }
+            } catch (err) {
+                console.error('❌ Backend not reachable:', err.message);
+                connectionStatus.innerHTML = `
+                    <span class="text-red-600">❌ Backend server not running!</span>
+                    <br><small class="text-gray-500">Start the Flask server: <code>cd backend && python app.py</code></small>
+                `;
+                backendConnected = false;
+                frameAnalysisEnabled = false;
+            }
+            return false;
+        }
+
+        // Initialize camera
+        async function initCamera() {
+            // Check backend first
+            await checkBackendConnection();
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 640, height: 480 } 
+                });
+                video.srcObject = stream;
+                
+                if (backendConnected && frameAnalysisEnabled) {
+                    connectionStatus.innerHTML = '<span class="text-green-600">✅ Camera + Backend Connected - Ready to Play!</span>';
+                } else if (backendConnected) {
+                    connectionStatus.innerHTML = '<span class="text-yellow-600">⚠️ Camera ready but hand tracking unavailable</span>';
+                } else {
+                    connectionStatus.innerHTML = `
+                        <span class="text-yellow-600">📷 Camera Ready - but backend offline</span>
+                        <br><small class="text-gray-500">For hand tracking, start Flask: <code>cd backend && python app.py</code></small>
+                    `;
+                }
+                
+                video.onloadedmetadata = () => {
+                    video.play();
+                };
+            } catch (err) {
+                connectionStatus.innerHTML = '<span class="text-red-600">❌ Camera Access Denied</span>';
+                console.error('Camera access error:', err);
+            }
+        }
+
+        // Create balloon
+        function createBalloon() {
+            const x = Math.random() * (canvas.width - 60);
+            const y = Math.random() * (canvas.height - 60);
+            const balloon = {
+                x: x,
+                y: y,
+                radius: 25,
+                color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                velocity: Math.random() * 2 + 1
+            };
+            balloons.push(balloon);
+        }
+
+        // Draw balloons
+        function drawBalloons() {
+            balloons.forEach((balloon, index) => {
+                // Draw balloon body
+                ctx.fillStyle = balloon.color;
+                ctx.beginPath();
+                ctx.arc(balloon.x, balloon.y, balloon.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw balloon shine
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.beginPath();
+                ctx.arc(balloon.x - 8, balloon.y - 8, 8, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Move balloon up
+                balloon.y -= balloon.velocity;
+
+                // Remove if off screen
+                if (balloon.y < -50) {
+                    balloons.splice(index, 1);
+                }
+            });
+        }
+
+        // Check hand proximity to balloons
+        async function analyzeFrame() {
+            if (!video.srcObject || video.videoWidth === 0) return;
+            if (!frameAnalysisEnabled) return; // Skip if backend not available
+            if (isAnalyzing) return; // Prevent concurrent calls
+            
+            // Throttle API calls
+            const now = Date.now();
+            if (now - lastFrameAnalysis < FRAME_THROTTLE_MS) return;
+            lastFrameAnalysis = now;
+            isAnalyzing = true;
+
+            try {
+                const canvas_temp = document.createElement('canvas');
+                canvas_temp.width = video.videoWidth;
+                canvas_temp.height = video.videoHeight;
+                const ctx_temp = canvas_temp.getContext('2d');
+                
+                // Draw flipped video (since video element is mirrored)
+                ctx_temp.scale(-1, 1);
+                ctx_temp.drawImage(video, -canvas_temp.width, 0);
+                
+                const imageData = canvas_temp.toDataURL('image/jpeg', 0.7);
+                const base64Data = imageData.split(',')[1];
+                
+                const response = await fetch(`${BACKEND_URL}/api/dyspraxia/analyze-frame`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    mode: 'cors',
+                    body: JSON.stringify({
+                        frame_data: base64Data,
+                        exercise_type: 'hands'
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.frame_received) {
+                        video.style.borderColor = '#22c55e';
+                        video.style.boxShadow = '0 0 20px rgba(34, 197, 94, 0.5)';
+                    }
+                    if (data.hands_detected && data.hand_landmarks && data.hand_landmarks.length > 0) {
+                        handLandmarks = data.hand_landmarks;
+                        // Only check collisions if game is active
+                        if (gameActive) {
+                            checkCollisions();
+                        }
+                        // Show hand detection indicator
+                        video.style.borderColor = '#a855f7';
+                        video.style.boxShadow = '0 0 30px rgba(168, 85, 247, 0.6)';
+                    } else {
+                        handLandmarks = []; // Clear landmarks when no hands detected
+                        // Frame received but no hands detected
+                        video.style.borderColor = '#22c55e';
+                        video.style.boxShadow = '0 0 20px rgba(34, 197, 94, 0.3)';
+                    }
+                } else {
+                    video.style.borderColor = '#ef4444';
+                    console.error('Backend error:', response.status);
+                }
+            } catch (err) {
+                console.error('Frame analysis error:', err.message);
+                video.style.borderColor = '#f59e0b';
+            } finally {
+                isAnalyzing = false;
+            }
+        }
+
+        // Check if hands hit balloons
+        function checkCollisions() {
+            handLandmarks.forEach(hand => {
+                hand.forEach(landmark => {
+                    const handX = landmark.x * canvas.width;
+                    const handY = landmark.y * canvas.height;
+
+                    balloons.forEach((balloon, index) => {
+                        const dist = Math.sqrt(
+                            Math.pow(handX - balloon.x, 2) + 
+                            Math.pow(handY - balloon.y, 2)
+                        );
+
+                        if (dist < balloon.radius + 20) {
+                            score++;
+                            successfulPops++;
+                            attempts++;
+                            balloons.splice(index, 1);
+                            scoreDisplay.textContent = score;
+                            updateAccuracy();
+                        }
+                    });
+                });
+            });
+        }
+
+        // Update accuracy
+        function updateAccuracy() {
+            const accuracy = attempts > 0 ? Math.round((successfulPops / attempts) * 100) : 100;
+            accuracyDisplay.textContent = accuracy + '%';
+        }
+
+        // Game loop
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw instruction
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+            ctx.font = '16px Lexend';
+            ctx.fillText('Wave your hands at the camera to pop balloons!', 20, 30);
+
+            // Always analyze frames for hand tracking (even when game not active)
+            analyzeFrame();
+            
+            // Always draw hand skeleton for visual feedback
+            drawHandSkeleton();
+
+            if (gameActive) {
+                drawBalloons();
+
+                // Create new balloons periodically
+                if (Math.random() < 0.05) {
+                    createBalloon();
+                }
+            } else {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.font = 'bold 24px Lexend';
+                ctx.textAlign = 'center';
+                ctx.fillText('Press Start to Begin!', canvas.width / 2, canvas.height / 2);
+                ctx.textAlign = 'left';
+                
+                // Show calibration hint
+                if (handLandmarks.length > 0) {
+                    ctx.fillStyle = 'rgba(34, 197, 94, 0.8)';
+                    ctx.font = '14px Lexend';
+                    ctx.fillText('✓ Hand detected! Ready to play.', canvas.width / 2 - 90, canvas.height / 2 + 40);
+                } else {
+                    ctx.fillStyle = 'rgba(255, 165, 0, 0.8)';
+                    ctx.font = '14px Lexend';
+                    ctx.fillText('Show your hands to the camera...', canvas.width / 2 - 100, canvas.height / 2 + 40);
+                }
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Start game
+        startBtn.addEventListener('click', () => {
+            gameActive = true;
+            gameStartTime = Date.now();
+            score = 0;
+            attempts = 0;
+            successfulPops = 0;
+            balloons = [];
+            timeRemaining = 30;
+            scoreDisplay.textContent = '0';
+            accuracyDisplay.textContent = '100%';
+            startBtn.style.display = 'none';
+            resetBtn.style.display = 'inline-block';
+
+            // Timer
+            const timerInterval = setInterval(() => {
+                timeRemaining--;
+                timerDisplay.textContent = timeRemaining;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    gameActive = false;
+                    showGameOver();
+                }
+            }, 1000);
+        });
+
+        // Reset game
+        resetBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Show game over
+        async function showGameOver() {
+            const finalScore = score;
+            const gameDuration = Math.round((Date.now() - gameStartTime) / 1000);
+            const accuracyValue = attempts > 0 ? Math.round((successfulPops / attempts) * 100) : 100;
+            
+            // Save to Supabase via CognoTracker
+            const result = await CognoTracker.saveActivity({
+                moduleId: 'dyspraxia',
+                activityId: 'balloon-pop',
+                score: finalScore,
+                maxScore: 50, // Target score for 100%
+                duration: gameDuration,
+                accuracy: accuracyValue,
+                metadata: {
+                    balloonsPopped: finalScore,
+                    attempts: attempts,
+                    successfulPops: successfulPops
+                }
+            });
+            
+            if (result.success) {
+                console.log('✅ Score saved to Supabase!', result);
+            }
+            
+            alert(`🎮 Game Over!\n\nBalloons Popped: ${finalScore}\nAccuracy: ${accuracyDisplay.textContent}`);
+        }
+
+        // Initialize
+        initCamera();
+        gameLoop();
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

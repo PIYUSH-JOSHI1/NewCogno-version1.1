@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tightrope Walk - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        .game-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-2xl); box-shadow: var(--shadow-xl); }
+        #gameCanvas { width: 100%; height: 500px; background: #e0f6ff; border-radius: var(--radius-xl); border: 2px solid var(--color-primary); }
+        video { border-radius: var(--radius-xl); background: #000; height: 400px; width: 100%; object-fit: cover; border: 3px solid var(--color-border); }
+        
+        body.dark-mode video { border-color: #333; }
+        body.dark-mode #gameCanvas { background: #1a1a2e; }
+        
+        @media (max-width: 768px) {
+            video { height: 300px; }
+            #gameCanvas { height: 340px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Tightrope Walk</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">🧗 Tightrope Walk</h1>
+                </div>
+                <p class="text-gray-500">Walk along a virtual tightrope! Keep your balance and stay on the line.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto game-card p-6 md:p-8">
+                <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 mb-6 flex items-center gap-3">
+                    <span class="text-xl">⚠️</span>
+                    <p class="text-amber-600 font-medium text-sm">Camera Required - Stand where the camera can see your full body!</p>
+                </div>
+
+                <!-- Webcam Feed -->
+                <div class="relative mb-6">
+                    <video id="videoElement" autoplay playsinline style="transform: scaleX(-1);"></video>
+                    <div id="connectionStatus" class="absolute bottom-4 left-0 right-0 text-center">
+                        <span class="bg-black/60 text-yellow-400 px-3 py-1 rounded-full font-semibold text-xs">⏳ Connecting to camera...</span>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="card p-4 text-center bg-purple-500/5 border-purple-500/20">
+                        <div class="text-2xl font-bold text-purple-600" id="distanceScore">0</div>
+                        <div class="text-xs opacity-60 uppercase">Meters</div>
+                    </div>
+                    <div class="card p-4 text-center bg-blue-500/5 border-blue-500/20">
+                        <div class="text-2xl font-bold text-blue-600" id="balancePercent">100%</div>
+                        <div class="text-xs opacity-60 uppercase">Balance</div>
+                    </div>
+                    <div class="card p-4 text-center bg-green-500/5 border-green-500/20">
+                        <div class="text-2xl font-bold text-green-600" id="gameTimer">30</div>
+                        <div class="text-xs opacity-60 uppercase">Time</div>
+                    </div>
+                </div>
+
+                <!-- Game Canvas -->
+                <canvas id="gameCanvas" class="mb-6"></canvas>
+
+                <div class="flex gap-4 justify-center">
+                    <button id="startBtn" class="btn btn-primary btn-lg px-12">🎮 Start Game</button>
+                    <button id="resetBtn" class="btn btn-ghost btn-lg px-12 hidden">🔄 Reset</button>
+                </div>
+
+                <div class="mt-8 bg-surface-variant rounded-2xl p-6 border-l-4 border-primary">
+                    <h3 class="font-bold text-primary mb-3 text-sm uppercase">📋 How to Play:</h3>
+                    <ul class="text-sm space-y-2 opacity-80 list-disc list-inside">
+                        <li>Keep your body as close to the center line as possible</li>
+                        <li>The camera tracks your torso to check balance</li>
+                        <li>Stay balanced for 30 seconds!</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000'
+            : '';
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const video = document.getElementById('videoElement');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const distanceDisplay = document.getElementById('distanceScore');
+        const balanceDisplay = document.getElementById('balancePercent');
+        const timerDisplay = document.getElementById('gameTimer');
+        const connectionStatus = document.getElementById('connectionStatus');
+
+        let gameActive = false;
+        let timeRemaining = 30;
+        let distance = 0;
+        let balance = 100;
+        let bodyX = canvas.offsetWidth / 2;
+        let lastFrameTime = 0;
+        const FRAME_THROTTLE_MS = 100;
+
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                video.srcObject = stream;
+                connectionStatus.innerHTML = '<span class="bg-black/60 text-green-400 px-3 py-1 rounded-full text-xs">✅ Camera Ready</span>';
+            } catch (err) {
+                connectionStatus.innerHTML = '<span class="bg-black/60 text-red-400 px-3 py-1 rounded-full text-xs">❌ Camera Denied</span>';
+            }
+        }
+
+        async function analyzeFrame() {
+            if (!gameActive || !video.srcObject || video.videoWidth === 0 || lastFrameTime > Date.now() - FRAME_THROTTLE_MS) return;
+            lastFrameTime = Date.now();
+
+            try {
+                const canvas_temp = document.createElement('canvas');
+                canvas_temp.width = video.videoWidth;
+                canvas_temp.height = video.videoHeight;
+                const ctx_temp = canvas_temp.getContext('2d');
+                ctx_temp.scale(-1, 1);
+                ctx_temp.drawImage(video, -canvas_temp.width, 0);
+                const base64Data = canvas_temp.toDataURL('image/jpeg', 0.6).split(',')[1];
+                
+                const response = await fetch(`${BACKEND_URL}/api/dyspraxia/analyze-frame`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ frame_data: base64Data, exercise_type: 'body' })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.landmarks && data.landmarks.length > 0) {
+                        const lH = data.landmarks[23], rH = data.landmarks[24];
+                        if (lH && rH) {
+                            bodyX = ((lH.x + rH.x) / 2) * canvas.width;
+                            const deviation = Math.abs(bodyX - canvas.width / 2);
+                            balance = Math.max(0, 100 - (deviation / 2)); 
+                            balanceDisplay.textContent = Math.round(balance) + '%';
+                            
+                            if (balance <= 0) endGame(true);
+                            else {
+                                distance += 0.1;
+                                distanceDisplay.textContent = distance.toFixed(1);
+                            }
+                        }
+                    }
+                }
+            } catch (err) {}
+        }
+
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Rope
+            ctx.strokeStyle = '#8B4513';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            ctx.lineTo(canvas.width, canvas.height / 2);
+            ctx.stroke();
+
+            // Center Mark
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 5]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Character indicator
+            ctx.fillStyle = balance > 50 ? '#22c55e' : '#ef4444';
+            ctx.beginPath();
+            ctx.arc(bodyX, canvas.height / 2, 12, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        function gameLoop() {
+            if (gameActive) {
+                analyzeFrame();
+                drawGame();
+            }
+            requestAnimationFrame(gameLoop);
+        }
+
+        startBtn.addEventListener('click', () => {
+            gameActive = true;
+            timeRemaining = 30;
+            distance = 0;
+            balance = 100;
+            startBtn.classList.add('hidden');
+            resetBtn.classList.remove('hidden');
+            
+            const timer = setInterval(() => {
+                timeRemaining--;
+                timerDisplay.textContent = timeRemaining;
+                if (timeRemaining <= 0) {
+                    clearInterval(timer);
+                    endGame(false);
+                }
+            }, 1000);
+        });
+
+        async function endGame(fell) {
+            gameActive = false;
+            startBtn.classList.remove('hidden');
+            resetBtn.classList.add('hidden');
+            if (fell) CognoNotifications?.toast?.error('Whoops! You fell off!');
+            else CognoNotifications?.toast?.info(`Time's up! Walked ${distance.toFixed(1)}m`);
+            
+            await CognoTracker?.saveActivity({
+                moduleId: 'dyspraxia', activityId: 'tightrope-walk', 
+                score: Math.round(distance * 10), maxScore: 300
+            });
+        }
+
+        resetBtn.addEventListener('click', () => location.reload());
+        initCamera();
+        gameLoop();
+    </script>
+</body>
+</html>

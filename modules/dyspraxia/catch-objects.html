@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Catch Objects - Catch falling objects">
+    <title>Catch Objects - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dyspraxia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .game-area {
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 40px;
+            border: 3px solid var(--color-dyspraxia);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .instruction {
+            text-align: center;
+            color: var(--color-text-secondary);
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 8px;
+        }
+        
+        canvas {
+            width: 100%;
+            height: 300px;
+            border: 2px solid var(--color-dyspraxia);
+            border-radius: 8px;
+            background: linear-gradient(to bottom, #87ceeb, #e0f6ff);
+            cursor: crosshair;
+            margin: 20px 0;
+            display: block;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-label {
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .stat-value {
+            color: var(--color-dyspraxia);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .start-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dyspraxia);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .activity-container { padding: 1rem; }
+            .game-area { padding: 1.5rem; border-width: 2px; }
+            .title { font-size: 1.25rem; }
+            .info-value { font-size: 1.5rem; }
+            .hide-xs { display: none !important; }
+            canvas { height: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Catch Objects</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div class="activity-header hide-xs">
+            <h1><i class="fa-solid fa-basket-shopping"></i> Catch Objects</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="game-content">
+            <div class="game-area">
+                <div class="title">Catch the falling objects</div>
+                <div class="instruction">Move your basket to catch the objects before they hit the ground</div>
+                
+                <canvas id="gameCanvas"></canvas>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-label">Caught</div>
+                        <div class="stat-value" id="caught">0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Missed</div>
+                        <div class="stat-value" id="missed">0</div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="start-btn" id="startBtn">Start Game</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const caughtDisplay = document.getElementById('caught');
+        const missedDisplay = document.getElementById('missed');
+        const startBtn = document.getElementById('startBtn');
+        const backBtn = document.getElementById('backBtn');
+        
+        let dpr = window.devicePixelRatio || 1;
+        canvas.width = canvas.offsetWidth * dpr;
+        canvas.height = canvas.offsetHeight * dpr;
+        ctx.scale(dpr, dpr);
+        
+        const w = canvas.width / dpr;
+        const h = canvas.height / dpr;
+        
+        let gameActive = false;
+        let caught = 0;
+        let missed = 0;
+        let basketX = w / 2;
+        let targetX = w / 2;
+        
+        const objects = [];
+        
+        function handleMove(x) {
+            if (!gameActive) return;
+            const rect = canvas.getBoundingClientRect();
+            targetX = (x - rect.left);
+        }
+
+        canvas.addEventListener('mousemove', (e) => handleMove(e.clientX));
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            handleMove(e.touches[0].clientX);
+        }, { passive: false });
+        
+        function spawnObject() {
+            if (!gameActive) return;
+            
+            objects.push({
+                x: Math.random() * (w - 30) + 15,
+                y: 0,
+                size: 15,
+                vy: 2 + Math.random() * 2
+            });
+            
+            setTimeout(spawnObject, 800);
+        }
+        
+        function update() {
+            // Move basket
+            basketX += (targetX - basketX) * 0.2;
+            
+            // Keep basket in bounds
+            basketX = Math.max(40, Math.min(w - 40, basketX));
+            
+            // Update objects
+            for (let i = objects.length - 1; i >= 0; i--) {
+                const obj = objects[i];
+                obj.y += obj.vy;
+                
+                // Check collision with basket
+                if (obj.y > h - 40 && 
+                    obj.x > basketX - 40 && 
+                    obj.x < basketX + 40) {
+                    objects.splice(i, 1);
+                    caught++;
+                    caughtDisplay.textContent = caught;
+                    CognoNotifications?.toast?.success('Caught!');
+                } else if (obj.y > h) {
+                    objects.splice(i, 1);
+                    missed++;
+                    missedDisplay.textContent = missed;
+                }
+            }
+        }
+        
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = document.body.classList.contains('dark-mode') ? '#2d2d2d' : '#e0f6ff';
+            ctx.fillRect(0, 0, w, h);
+            
+            // Draw basket
+            ctx.fillStyle = '#f59e0b';
+            ctx.fillRect(basketX - 40, h - 30, 80, 20);
+            ctx.fillStyle = '#d97706';
+            ctx.fillRect(basketX - 35, h - 35, 10, 5);
+            ctx.fillRect(basketX + 25, h - 35, 10, 5);
+            
+            // Draw falling objects
+            ctx.fillStyle = '#6366f1';
+            objects.forEach(obj => {
+                ctx.beginPath();
+                ctx.arc(obj.x, obj.y, obj.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+        
+        function gameLoop() {
+            if (gameActive) {
+                update();
+                draw();
+                requestAnimationFrame(gameLoop);
+            }
+        }
+        
+        startBtn.addEventListener('click', () => {
+            gameActive = true;
+            caught = 0;
+            missed = 0;
+            basketX = w / 2;
+            startBtn.disabled = true;
+            caughtDisplay.textContent = '0';
+            missedDisplay.textContent = '0';
+            objects.length = 0;
+            
+            CognoNotifications?.toast?.info('Catch the falling objects!');
+            draw();
+            spawnObject();
+            gameLoop();
+            
+            // Stop after 30 seconds
+            setTimeout(async () => {
+                gameActive = false;
+                startBtn.disabled = false;
+                CognoNotifications?.toast?.success(`Game Over! Caught: ${caught}, Missed: ${missed}`);
+                
+                // Save activity to CognoTracker
+                try {
+                    await CognoTracker?.saveActivity({
+                        moduleId: 'dyspraxia',
+                        activityId: 'catch-objects',
+                        score: caught,
+                        maxScore: caught + missed,
+                        duration: 30,
+                        metadata: { caught, missed, accuracy: caught / (caught + missed) || 0 }
+                    });
+                } catch (e) { console.error(e); }
+            }, 30000);
+        });
+        
+        backBtn?.addEventListener('click', () => window.history.back());
+        
+        draw();
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

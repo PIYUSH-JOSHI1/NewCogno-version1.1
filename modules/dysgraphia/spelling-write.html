@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Spelling Write - Write words from spelling list">
+    <title>Spelling Write - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dysgraphia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .spelling-box {
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 40px;
+            border: 3px solid var(--color-dysgraphia);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .definition-box {
+            background: rgba(99, 102, 241, 0.05);
+            border-left: 4px solid var(--color-dysgraphia);
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+        }
+        
+        .definition-box strong {
+            color: var(--color-dysgraphia);
+            font-size: 1.1rem;
+        }
+        
+        .definition-box p {
+            color: var(--color-text-secondary);
+            margin: 8px 0 0 0;
+            font-size: 0.95rem;
+        }
+        
+        .input-group {
+            margin: 25px 0;
+        }
+        
+        .input-label {
+            display: block;
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .spelling-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            font-family: 'Comic Sans MS', 'Segoe Print', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+        
+        .spelling-input:focus {
+            outline: none;
+            border-color: var(--color-dysgraphia);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .submit-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dysgraphia);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .submit-btn:hover {
+            background: #5b4fac;
+        }
+        
+        .hint-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Spelling Write</h1>
+    </header>
+
+    <div class="activity-container">
+        <div class="activity-header">
+            <h1><i class="fa-solid fa-spell-check"></i> Spelling Write</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="game-content">
+            <div class="spelling-box">
+                <div class="title">Type the word shown below</div>
+                
+                <div class="definition-box">
+                    <strong id="wordDisplay">beautiful</strong>
+                    <p id="definition">A word to practice spelling</p>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">Write the word:</label>
+                    <input type="text" class="spelling-input" id="spellingInput" autocomplete="off" placeholder="Type here...">
+                </div>
+                
+                <div class="button-group">
+                    <button class="hint-btn" id="hintBtn">Hint</button>
+                    <button class="submit-btn" id="submitBtn">Check</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../js/notifications.js"></script>
+    <script>
+        const spellingWords = [
+            { word: 'beautiful', hint: 'Pretty or lovely' },
+            { word: 'necessary', hint: 'Something you need' },
+            { word: 'separate', hint: 'To divide or split apart' },
+            { word: 'friend', hint: 'Someone you like' },
+            { word: 'receive', hint: 'To get something' }
+        ];
+        
+        let currentIndex = 0;
+        let score = 0;
+        let hintsUsed = 0;
+        let wordsCompleted = 0;
+        const startTime = Date.now();
+        
+        const wordDisplay = document.getElementById('wordDisplay');
+        const definition = document.getElementById('definition');
+        const spellingInput = document.getElementById('spellingInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const hintBtn = document.getElementById('hintBtn');
+        const backBtn = document.getElementById('backBtn');
+        
+        function displayWord(index) {
+            const item = spellingWords[index];
+            wordDisplay.textContent = item.word;
+            definition.textContent = item.hint;
+            spellingInput.value = '';
+            hintsUsed = 0;
+            spellingInput.focus();
+        }
+        
+        submitBtn.addEventListener('click', () => {
+            const userAnswer = spellingInput.value.trim().toLowerCase();
+            const correctAnswer = spellingWords[currentIndex].word.toLowerCase();
+            
+            if (userAnswer === correctAnswer) {
+                const points = 10 - (hintsUsed * 2);
+                score += Math.max(points, 5);
+                CognoNotifications?.toast?.success(`Correct! Well spelled!`);
+                setTimeout(nextWord, 1500);
+            } else {
+                CognoNotifications?.toast?.error(`Not quite. Try again!`);
+            }
+        });
+        
+        hintBtn.addEventListener('click', () => {
+            hintsUsed++;
+            const word = spellingWords[currentIndex].word;
+            const hintText = word.substring(0, Math.ceil(word.length / 2)) + '*'.repeat(Math.floor(word.length / 2));
+            CognoNotifications?.toast?.info(`Hint: ${hintText}`);
+        });
+        
+        spellingInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') submitBtn.click();
+        });
+        
+        async function nextWord() {
+            wordsCompleted++;
+            if (currentIndex < spellingWords.length - 1) {
+                currentIndex++;
+                displayWord(currentIndex);
+            } else {
+                // Save activity when all words completed
+                const duration = Math.floor((Date.now() - startTime) / 1000);
+                try {
+                    await CognoTracker.saveActivity({
+                        moduleId: 'dysgraphia',
+                        activityId: 'spelling-write',
+                        score: score,
+                        maxScore: spellingWords.length * 10,
+                        duration: duration,
+                        metadata: { wordsCompleted: wordsCompleted, totalWords: spellingWords.length, finalScore: score }
+                    });
+                } catch (e) { console.error('Failed to save activity:', e); }
+                CognoNotifications?.toast?.success(`All words done! Score: ${score}`);
+                currentIndex = 0;
+                score = 0;
+                wordsCompleted = 0;
+                displayWord(0);
+            }
+        }
+        
+        backBtn.addEventListener('click', () => window.history.back());
+        
+        displayWord(0);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

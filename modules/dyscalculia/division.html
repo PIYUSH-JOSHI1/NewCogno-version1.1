@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Division - Learn division">
+    <title>Division - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <!-- Supabase and Activity Tracker -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 1024px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+            .activity-navbar { display: flex !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-navbar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-title-group { text-align: center; }
+        .activity-category { font-size: 0.7rem; font-weight: 700; color: var(--color-dyscalculia); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+        .activity-name { font-size: 0.9rem; font-weight: 700; color: var(--color-text); margin: 0; }
+        .back-btn, .action-btn { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text); }
+
+        @media (max-width: 1024px) {
+            .activity-container { padding: 0 !important; }
+            .activity-content { padding: 1.5rem 1rem !important; }
+            .hide-xs { display: none !important; }
+            .equation { font-size: 1.75rem !important; margin-bottom: 1.5rem !important; }
+            .math-area { padding: 1.5rem !important; width: 100% !important; }
+            .groups-container { gap: 1rem !important; }
+            .group { padding: 0.75rem !important; max-width: 100px !important; }
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dyscalculia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        .math-area {
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 40px;
+            border: 3px solid var(--color-dyscalculia);
+        }
+        
+        .equation {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-dyscalculia);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .groups-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .group {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            max-width: 150px;
+        }
+        
+        .item {
+            width: 30px;
+            height: 30px;
+            background: var(--color-dyscalculia);
+            border-radius: 4px;
+        }
+        
+        .answer-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .answer-btn {
+            padding: 12px 24px;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .answer-btn.correct {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+        
+        .answer-btn.incorrect {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyscalculia</span>
+                <h1 class="activity-name">Division</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div class="activity-content">
+            <div class="activity-header hide-xs">
+                <h1><i class="fa-solid fa-divide"></i> Division</h1>
+                <button class="button-control" id="backBtn">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </button>
+            </div>
+        
+        <div class="game-content">
+            <div class="math-area">
+                <div class="equation" id="equation">12 ÷ 3 = ?</div>
+                <div class="groups-container" id="groupsContainer"></div>
+                <p style="text-align: center; color: var(--color-text-secondary);">Items divided into equal groups</p>
+                <div class="answer-options" id="options"></div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const problems = [
+            { total: 12, divisor: 3 },
+            { total: 15, divisor: 5 },
+            { total: 8, divisor: 2 },
+            { total: 20, divisor: 4 },
+            { total: 9, divisor: 3 }
+        ];
+        
+        let currentIndex = 0;
+        let score = 0;
+        
+        const equation = document.getElementById('equation');
+        const groupsContainer = document.getElementById('groupsContainer');
+        const optionsDiv = document.getElementById('options');
+        const backBtn = document.getElementById('backBtn');
+        
+        function displayProblem(index) {
+            const problem = problems[index];
+            const answer = problem.total / problem.divisor;
+            
+            equation.textContent = `${problem.total} ÷ ${problem.divisor} = ?`;
+            
+            groupsContainer.innerHTML = '';
+            for (let g = 0; g < problem.divisor; g++) {
+                const group = document.createElement('div');
+                group.className = 'group';
+                for (let i = 0; i < answer; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'item';
+                    group.appendChild(item);
+                }
+                groupsContainer.appendChild(group);
+            }
+            
+            optionsDiv.innerHTML = '';
+            const wrongAnswers = [answer - 1, answer + 1, answer + 2].filter(n => n !== answer);
+            const options = [answer, ...wrongAnswers].sort(() => Math.random() - 0.5).slice(0, 4);
+            
+            options.forEach(num => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = num;
+                btn.addEventListener('click', () => checkAnswer(num, answer));
+                optionsDiv.appendChild(btn);
+            });
+        }
+        
+        function checkAnswer(selected, correct) {
+            const buttons = document.querySelectorAll('.answer-btn');
+            buttons.forEach(btn => {
+                if (parseInt(btn.textContent) === selected) {
+                    btn.classList.add(selected === correct ? 'correct' : 'incorrect');
+                    if (selected === correct) score += 10;
+                } else if (parseInt(btn.textContent) === correct) {
+                    btn.classList.add('correct');
+                }
+                btn.disabled = true;
+            });
+            
+            CognoNotifications?.toast?.[selected === correct ? 'success' : 'error']
+                (selected === correct ? 'Correct!' : `The answer is ${correct}`);
+            
+            setTimeout(async () => {
+                if (currentIndex < problems.length - 1) {
+                    currentIndex++;
+                    displayProblem(currentIndex);
+                } else {
+                    CognoNotifications?.toast?.success(`Complete! Score: ${score}`);
+                    // Save activity to Supabase
+                    await CognoTracker.saveActivity({
+                        moduleId: 'dyscalculia',
+                        activityId: 'division',
+                        score: score,
+                        maxScore: problems.length * 10,
+                        metadata: { problemsCompleted: problems.length }
+                    });
+                }
+            }, 1500);
+        }
+        
+        backBtn.addEventListener('click', () => window.history.back());
+        displayProblem(0);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

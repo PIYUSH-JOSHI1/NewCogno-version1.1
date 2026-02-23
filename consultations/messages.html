@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Messages - Chat with Doctors">
+    <title>Messages - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/cognitive-friendly.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <link rel="stylesheet" href="../css/mobile-nav.css">
+
+    <style>
+        /* Sidebar hidden globally, main-content full width - see style.css */
+        @media (min-width: 769px) { 
+            html, body { height: 100vh !important; overflow: hidden !important; }
+            
+            .main-content {
+                height: calc(100vh - 64px) !important;
+                display: flex !important;
+                flex-direction: column !important;
+                overflow: hidden !important;
+                margin-left: 0 !important;
+            }
+            
+            .content-area {
+                flex: 1 !important;
+                min-height: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                padding: var(--space-4) !important;
+                padding-bottom: 0 !important;
+            }
+        }
+
+        .messages-container {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            flex: 1;
+            height: 100%;
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+            min-height: 0;
+            position: relative;
+        }
+        
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .navbar {
+                display: none !important;
+            }
+
+            html, body {
+                height: 100vh !important;
+                overflow: hidden !important;
+            }
+
+            .main-content {
+                height: calc(100vh - 64px) !important; /* Account for bottom nav (64px) */
+                display: flex !important;
+                flex-direction: column !important;
+                overflow: hidden !important;
+                margin-left: 0 !important;
+                margin-top: 0 !important;
+            }
+
+            .content-area {
+                flex: 1 !important;
+                min-height: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                padding: 0 !important;
+            }
+
+            .messages-container {
+                grid-template-columns: 1fr !important;
+                border-radius: 0;
+                border: none;
+                height: 100%;
+            }
+            
+            .conversations-list {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 10;
+                background: var(--color-surface);
+            }
+            
+            .conversations-list.hidden-mobile {
+                display: none !important;
+            }
+            
+            .chat-area {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 20;
+                display: none;
+                background: var(--color-surface);
+            }
+            
+            .chat-area.active {
+                display: flex !important;
+            }
+            
+            .chat-header {
+                padding: 0.5rem 0.75rem;
+                height: 60px;
+                border-bottom: 1px solid var(--color-border);
+            }
+
+            .chat-header .back-btn {
+                display: flex !important;
+                color: var(--color-text);
+                margin-right: 0.25rem;
+            }
+
+            .chat-user-name {
+                font-size: 1rem;
+                font-weight: 700;
+                color: #ffffff !important; /* Force white for visibility */
+                margin-bottom: 2px;
+            }
+
+            .chat-messages {
+                padding: 0.75rem;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .chat-input-area {
+                padding: 0.5rem 0.75rem;
+                padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+                gap: 0.5rem;
+                background: var(--color-surface);
+                border-top: 1px solid var(--color-border);
+            }
+
+            .chat-input {
+                padding: 0.6rem 0.8rem;
+                font-size: 16px; 
+                min-width: 0;
+                width: 0; /* Force flex to determine width */
+                flex: 1;
+                color: var(--color-text);
+            }
+
+            .chat-send-btn {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+                padding: 0;
+            }
+
+            .chat-send-btn i {
+                margin: 0;
+            }
+
+            .chat-send-btn span {
+                display: none;
+            }
+
+            .no-chat-selected {
+                padding: var(--space-4);
+            }
+
+            .doctors-list-mini {
+                grid-template-columns: 1fr;
+            }
+            body.no-scroll { overflow: hidden !important; }
+        }
+        
+        /* Conversations List */
+        .conversations-list {
+            border-right: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .conversations-header {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .conversations-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        .conversation-search {
+            padding: var(--space-3);
+            border-bottom: 1px solid var(--color-border);
+            flex-shrink: 0;
+        }
+        
+        .conversation-search input {
+            width: 100%;
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            background: var(--color-background);
+            color: var(--color-text);
+        }
+        
+        .conversations-items {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .conversation-item {
+            display: flex;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            cursor: pointer;
+            border-bottom: 1px solid var(--color-border);
+            transition: background 0.2s;
+        }
+        
+        .conversation-item:hover {
+            background: var(--color-background);
+        }
+        
+        .conversation-item.active {
+            background: var(--color-primary-100);
+            border-left: 3px solid var(--color-primary);
+        }
+        
+        .conversation-avatar, #chat-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+            overflow: hidden; /* Important for <img> */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        #chat-avatar {
+            width: 40px;
+            height: 40px;
+        }
+
+        .chat-user-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .chat-user-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+        }
+        
+        .conversation-time {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .conversation-preview {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .conversation-badge {
+            background: var(--color-primary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+        
+        /* Chat Area */
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        #active-chat {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 0;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            flex-shrink: 0;
+            background: var(--color-surface);
+            position: relative;
+            z-index: 50;
+            color: var(--color-text);
+        }
+        
+        .chat-header .back-btn {
+            display: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: var(--color-text);
+            cursor: pointer;
+        }
+        
+        .chat-user-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .chat-user-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .chat-user-status {
+            font-size: 0.875rem;
+            color: var(--color-success);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-4);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .message {
+            display: flex;
+            gap: var(--space-2);
+            max-width: 70%;
+        }
+        
+        .message.sent {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .message-content {
+            background: var(--color-background);
+            padding: var(--space-3);
+            border-radius: var(--radius-lg);
+            border-top-left-radius: var(--radius-sm);
+            word-break: break-word;
+        }
+        
+        .message.sent .message-content {
+            background: var(--color-primary);
+            color: white;
+            border-top-left-radius: var(--radius-lg);
+            border-top-right-radius: var(--radius-sm);
+        }
+        
+        .message-text {
+            margin-bottom: var(--space-1);
+            line-height: 1.5;
+        }
+        
+        .message-time {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            text-align: right;
+        }
+        
+        /* Chat Input Area — consistent across desktop/mobile */
+        .chat-input-area {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--color-surface);
+            flex-shrink: 0;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 0.65rem 1rem;
+            border: 1.5px solid var(--color-border);
+            border-radius: 24px;
+            resize: none;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            max-height: 120px;
+            min-width: 0;
+            background: var(--color-background);
+            color: var(--color-text);
+            transition: all 0.2s;
+            outline: none;
+            line-height: 1.4;
+        }
+
+        .chat-input:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-primary-100);
+        }
+        
+        .chat-send-btn {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .chat-send-btn i {
+            font-size: 1rem;
+            margin-left: 1px;
+        }
+        
+        .chat-send-btn span {
+            display: none;
+        }
+        
+        .chat-send-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        }
+        
+        .chat-send-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        #attach-btn {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+            color: var(--color-text-secondary);
+            background: var(--color-background);
+            border: 1px solid var(--color-border);
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 0;
+        }
+        
+        #attach-btn:hover {
+            color: var(--color-primary);
+            border-color: var(--color-primary);
+            background: var(--color-primary-100);
+        }
+
+        /* Attachment Preview */
+        .attachment-preview {
+            padding: var(--space-2) var(--space-4);
+            background: var(--color-bg-secondary, var(--color-background));
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .attachment-preview-content {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2) var(--space-3);
+            background: var(--color-surface);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+        }
+        
+        .attachment-preview-content i {
+            color: var(--color-primary);
+        }
+        
+        /* Empty States */
+        .no-chat-selected {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--space-8);
+            color: var(--color-text-secondary);
+        }
+        
+        .no-chat-selected i {
+            font-size: 4rem;
+            margin-bottom: var(--space-4);
+            color: var(--color-border);
+        }
+        
+        .doctors-list-mini {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-3);
+            margin-top: var(--space-4);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .doctor-mini-card {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) var(--space-4);
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .doctor-mini-card:hover {
+            border-color: var(--color-primary);
+            background: var(--color-primary-100);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .doctor-mini-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .doctor-mini-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .doctor-mini-name {
+            font-weight: 600;
+            font-size: 0.9375rem;
+            color: var(--color-text);
+            margin-bottom: 2px;
+        }
+        
+        .doctor-mini-spec {
+            font-size: 0.8125rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .available-doctors-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-2);
+            margin-top: var(--space-6);
+        }
+    </style>
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="../dashboard/child-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Talk to Experts</li>
+                
+                <li class="sidebar-item">
+                    <a href="./" class="sidebar-link">
+                        <i class="fa-solid fa-user-doctor" style="color: var(--color-success);"></i>
+                        <span>Our Doctors</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./my-appointments.html" class="sidebar-link">
+                        <i class="fa-solid fa-calendar-check" style="color: var(--color-primary);"></i>
+                        <span>My Appointments</span>
+                    </a>
+                </li>
+                <li class="sidebar-item active">
+                    <a href="./messages.html" class="sidebar-link">
+                        <i class="fa-solid fa-comments" style="color: var(--color-warning);"></i>
+                        <span>Messages</span>
+                        <span class="sidebar-badge" id="unread-messages-badge" style="display: none;">0</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./my-reports.html" class="sidebar-link">
+                        <i class="fa-solid fa-file-medical" style="color: var(--color-info);"></i>
+                        <span>My Reports</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Learning Modules</li>
+                
+                <li class="sidebar-item">
+                    <a href="../modules/dyslexia/" class="sidebar-link">
+                        <i class="fa-solid fa-book-open" style="color: var(--color-dyslexia);"></i>
+                        <span>Reading & Words</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dyscalculia/" class="sidebar-link">
+                        <i class="fa-solid fa-calculator" style="color: var(--color-dyscalculia);"></i>
+                        <span>Numbers & Math</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dysgraphia/" class="sidebar-link">
+                        <i class="fa-solid fa-pen" style="color: var(--color-dysgraphia);"></i>
+                        <span>Writing Practice</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dyspraxia/" class="sidebar-link">
+                        <i class="fa-solid fa-person-running" style="color: var(--color-dyspraxia);"></i>
+                        <span>Movement Games</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">More</li>
+                
+                <li class="sidebar-item">
+                    <a href="../learning-hub/" class="sidebar-link">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Learning Hub</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../progress/" class="sidebar-link">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>My Progress</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../profile/" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../settings/" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="tts-toggle">
+                <i class="fa-solid fa-volume-high"></i>
+                <span>Read Aloud</span>
+            </button>
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav class="breadcrumb">
+                    <a href="../dashboard/child-dashboard.html">Dashboard</a>
+                    <span>/</span>
+                    <span>Messages</span>
+                </nav>
+            </div>
+            
+            <div class="navbar-right">
+                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Messages Content -->
+        <div class="content-area" style="padding: var(--space-4);">
+            <div class="messages-container">
+                <!-- Conversations List -->
+                <div class="conversations-list" id="conversations-list">
+                    <div class="conversations-header">
+                        <h3>Messages</h3>
+                    </div>
+                    <div class="conversation-search">
+                        <input type="text" placeholder="Search conversations..." id="search-conversations">
+                    </div>
+                    <div class="conversations-items" id="conversations-items">
+                        <!-- Loading state -->
+                        <div style="padding: var(--space-6); text-align: center; color: var(--color-text-secondary);">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            <p style="margin-top: var(--space-2);">Loading conversations...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chat Area -->
+                <div class="chat-area" id="chat-area">
+                    <div class="no-chat-selected" id="no-chat-selected">
+                        <i class="fa-solid fa-comments"></i>
+                        <h3>Select a conversation</h3>
+                        <p>Choose from your existing conversations or start a new chat</p>
+                        
+                        <div class="available-doctors-title">Available Doctors</div>
+                        <div class="doctors-list-mini" id="doctors-mini-list">
+                            <!-- Will be populated with doctors -->
+                        </div>
+                    </div>
+                    
+                    <!-- Active Chat (hidden by default) -->
+                    <div id="active-chat" style="display: none; flex-direction: column; height: 100%;">
+                        <div class="chat-header">
+                            <button class="btn btn-ghost btn-icon back-btn" id="back-to-list">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                            <div class="conversation-avatar" id="chat-avatar">DR</div>
+                            <div class="chat-user-info">
+                                <div class="chat-user-name" id="chat-user-name">Doctor Name</div>
+                                <div class="chat-user-status" id="chat-user-status">
+                                    <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i>
+                                    Online
+                                </div>
+                            </div>
+                            <button class="btn btn-ghost btn-icon" id="video-call-btn" title="Start video call">
+                                <i class="fa-solid fa-video"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="chat-messages" id="chat-messages">
+                            <!-- Messages will be inserted here -->
+                        </div>
+                        
+                        <!-- Attachment Preview -->
+                        <div class="attachment-preview" id="attachment-preview" style="display: none;">
+                            <div class="attachment-preview-content">
+                                <i class="fa-solid fa-file"></i>
+                                <span id="attachment-name">file.pdf</span>
+                                <button type="button" class="btn btn-ghost btn-icon" id="remove-attachment">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-input-area">
+                            <input type="file" id="file-input" style="display: none;" accept="image/*,.pdf,.doc,.docx,.txt">
+                            <button class="btn btn-ghost btn-icon" id="attach-btn" title="Attach file">
+                                <i class="fa-solid fa-paperclip"></i>
+                            </button>
+                            <textarea class="chat-input" id="message-input" placeholder="Type your message..." rows="1"></textarea>
+                            <button class="chat-send-btn" id="send-btn">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Send</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/api-client.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize sidebar
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarClose = document.getElementById('sidebar-close');
+            
+            sidebarToggle?.addEventListener('click', () => sidebar?.classList.toggle('open'));
+            sidebarClose?.addEventListener('click', () => sidebar?.classList.remove('open'));
+            
+            // Dark mode
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            if (localStorage.getItem('cogno-theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+            
+            darkModeToggle?.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('cogno-theme', isDark ? 'dark' : 'light');
+                darkModeToggle.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+            });
+            
+            // Check auth
+            const { session } = await CognoSupabase.getSession();
+            if (!session) {
+                window.location.href = CognoPaths.auth.login();
+                return;
+            }
+            
+            const currentUserId = session.user.id;
+            let selectedUserId = null;
+            let platformDoctors = [];
+            let realtimeSubscription = null;
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const doctorParam = urlParams.get('doctor');
+
+            // --- MOBILE UI EVENT LISTENERS (Move to top for reliability) ---
+            document.getElementById('back-to-list')?.addEventListener('click', () => {
+                console.log('Back to list clicked');
+                document.getElementById('conversations-list').classList.remove('hidden-mobile');
+                document.getElementById('chat-area').classList.remove('active');
+                document.body.classList.remove('no-scroll');
+            });
+            
+            // Load platform doctors (only assigned doctors)
+            async function loadDoctors() {
+                console.log('[Messages Debug] loadDoctors called for user:', currentUserId);
+                try {
+                    // Get doctors assigned to this patient
+                    const { data: assignments, error: assignError } = await CognoSupabase.client
+                        .from('doctor_patients')
+                        .select('doctor_id')
+                        .eq('patient_id', currentUserId);
+                    
+                    console.log('[Messages Debug] Doctor assignments:', { assignments, error: assignError });
+                    
+                    const assignedDoctorIds = (assignments || []).map(a => a.doctor_id);
+                    console.log('[Messages Debug] Assigned doctor IDs:', assignedDoctorIds);
+                    
+                    // Also get doctors from existing messages
+                    const { data: messages, error: msgError2 } = await CognoSupabase.client
+                        .from('messages')
+                        .select('sender_id, receiver_id')
+                        .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`);
+                    
+                    console.log('[Messages Debug] Messages for doctor IDs:', { count: messages?.length, error: msgError2 });
+                    
+                    const messageDoctorIds = new Set();
+                    for (const msg of (messages || [])) {
+                        const otherId = msg.sender_id === currentUserId ? msg.receiver_id : msg.sender_id;
+                        messageDoctorIds.add(otherId);
+                    }
+                    console.log('[Messages Debug] Doctor IDs from messages:', Array.from(messageDoctorIds));
+                    
+                    // Combine doctor IDs
+                    const allDoctorIds = [...new Set([...assignedDoctorIds, ...messageDoctorIds])];
+                    console.log('[Messages Debug] Combined doctor IDs:', allDoctorIds);
+                    
+                    // Get all doctors with role='doctor' for the new conversation panel
+                    const { data: allDoctors, error: allDocError } = await CognoSupabase.client
+                        .from('profiles')
+                        .select('id, full_name, avatar_url, email, role')
+                        .eq('role', 'doctor');
+                    
+                    console.log('[Messages Debug] All doctors query:', { count: allDoctors?.length, error: allDocError, doctors: allDoctors });
+                    
+                    platformDoctors = allDoctors || [];
+                    
+                    // Render mini cards
+                    const miniList = document.getElementById('doctors-mini-list');
+                    
+                    const doctorCards = platformDoctors.map(doc => {
+                        const initials = (doc.full_name || doc.display_name || 'DR').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                        const name = doc.full_name || doc.display_name || 'Doctor';
+                        const avatarHtml = doc.avatar_url 
+                            ? `<img src="${doc.avatar_url}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">` 
+                            : initials;
+                        return `
+                            <div class="doctor-mini-card" data-doctor-id="${doc.id}">
+                                <div class="doctor-mini-avatar">${avatarHtml}</div>
+                                <div class="doctor-mini-info">
+                                    <div class="doctor-mini-name">${name.startsWith('Dr.') ? '' : 'Dr. '}${name}</div>
+                                    <div class="doctor-mini-spec">${doc.specialization || 'Consultant'}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    miniList.innerHTML = doctorCards || '<div style="padding: 1rem; text-align: center; color: #6b7280;">No doctors available</div>';
+                    
+                    console.log('[Messages Debug] Doctor cards rendered:', platformDoctors.length, 'doctors');
+                    
+                    // Add click handlers
+                    document.querySelectorAll('.doctor-mini-card').forEach(card => {
+                        card.addEventListener('click', () => {
+                            const doctorId = card.dataset.doctorId;
+                            selectConversation(doctorId);
+                        });
+                    });
+                    
+                } catch (error) {
+                    console.error('[Messages Debug] Failed to load doctors:', error);
+                    console.error('[Messages Debug] Error stack:', error.stack);
+                }
+            }
+            
+            // Load conversations list
+            async function loadConversations() {
+                const container = document.getElementById('conversations-items');
+                console.log('[Messages Debug] loadConversations called for user:', currentUserId);
+                
+                try {
+                    // Step 1: Get ALL messages where this user is sender or receiver
+                    console.log('[Messages Debug] Step 1: Fetching messages...');
+                    const { data: allMessages, error: msgError } = await CognoSupabase.client
+                        .from('messages')
+                        .select('id, sender_id, receiver_id, content, created_at, is_read')
+                        .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
+                        .order('created_at', { ascending: false });
+                    
+                    console.log('[Messages Debug] Messages result:', { count: allMessages?.length, error: msgError });
+                    
+                    if (msgError) {
+                        console.error('[Messages Debug] Message query error:', msgError);
+                    }
+                    
+                    // Step 2: Extract unique other user IDs from messages
+                    console.log('[Messages Debug] Step 2: Extracting user IDs...');
+                    const otherUserIds = new Set();
+                    for (const msg of (allMessages || [])) {
+                        const otherId = msg.sender_id === currentUserId ? msg.receiver_id : msg.sender_id;
+                        if (otherId) otherUserIds.add(otherId);
+                    }
+                    console.log('[Messages Debug] Other user IDs from messages:', Array.from(otherUserIds));
+                    
+                    // Step 3: Also get assigned doctors from doctor_patients table
+                    console.log('[Messages Debug] Step 3: Checking doctor_patients...');
+                    const { data: doctorLinks, error: linkError } = await CognoSupabase.client
+                        .from('doctor_patients')
+                        .select('doctor_id')
+                        .eq('patient_id', currentUserId);
+                    
+                    console.log('[Messages Debug] Doctor links result:', { links: doctorLinks, error: linkError });
+                    
+                    for (const link of (doctorLinks || [])) {
+                        if (link.doctor_id) otherUserIds.add(link.doctor_id);
+                    }
+
+                    // Step 3.5: Also get doctors from consultations table
+                    console.log('[Messages Debug] Step 3.5: Checking consultations...');
+                    const { data: consultationDocs, error: consultError } = await CognoSupabase.client
+                        .from('consultations')
+                        .select('doctor_id')
+                        .eq('patient_id', currentUserId);
+                    
+                    console.log('[Messages Debug] Consultation docs result:', { docs: consultationDocs, error: consultError });
+                    for (const row of (consultationDocs || [])) {
+                        if (row.doctor_id) otherUserIds.add(row.doctor_id);
+                    }
+                    
+                    console.log('[Messages Debug] Total user IDs to fetch profiles:', Array.from(otherUserIds));
+                    
+                    // Step 4: Get profiles for all these users (they should be doctors)
+                    console.log('[Messages Debug] Step 4: Fetching profiles...');
+                    let allProfiles = [];
+                    if (otherUserIds.size > 0) {
+                        const { data: profiles, error: profError } = await CognoSupabase.client
+                            .from('profiles')
+                            .select('id, full_name, display_name, avatar_url, role')
+                            .in('id', Array.from(otherUserIds));
+                        
+                        if (profError) console.error('[Messages Debug] Profile query error:', profError);
+                        allProfiles = profiles || [];
+                        console.log('[Messages Debug] Profiles fetched:', allProfiles);
+                    } else {
+                        console.log('[Messages Debug] No user IDs to fetch - showing empty state');
+                    }
+                    
+                    // Step 5: Build conversations map
+                    console.log('[Messages Debug] Step 5: Building conversations map...');
+                    const conversationsMap = new Map();
+                    
+                    // Add all profiles first
+                    for (const profile of allProfiles) {
+                        conversationsMap.set(profile.id, {
+                            user_id: profile.id,
+                            user_name: profile.display_name || profile.full_name || 'User',
+                            user_avatar: profile.avatar_url,
+                            user_role: profile.role,
+                            last_message: null,
+                            last_message_time: null,
+                            unread_count: 0
+                        });
+                    }
+                    
+                    // Overlay with message data
+                    for (const msg of (allMessages || [])) {
+                        const otherId = msg.sender_id === currentUserId ? msg.receiver_id : msg.sender_id;
+                        
+                        if (conversationsMap.has(otherId)) {
+                            const conv = conversationsMap.get(otherId);
+                            if (!conv.last_message) {
+                                conv.last_message = msg.content;
+                                conv.last_message_time = msg.created_at;
+                            }
+                            if (msg.receiver_id === currentUserId && !msg.is_read) {
+                                conv.unread_count++;
+                            }
+                        }
+                    }
+                    
+                    let conversations = Array.from(conversationsMap.values());
+                    console.log('[Messages Debug] Final conversations:', conversations);
+                    
+                    // Sort: unread first, then by last message time, then by name
+                    conversations.sort((a, b) => {
+                        if (a.unread_count > 0 && b.unread_count === 0) return -1;
+                        if (b.unread_count > 0 && a.unread_count === 0) return 1;
+                        if (a.last_message_time && b.last_message_time) return new Date(b.last_message_time) - new Date(a.last_message_time);
+                        if (a.last_message_time) return -1;
+                        if (b.last_message_time) return 1;
+                        return (a.user_name || '').localeCompare(b.user_name || '');
+                    });
+                    
+                    if (conversations.length === 0) {
+                        container.innerHTML = `
+                            <div style="padding: var(--space-6); text-align: center; color: var(--color-text-secondary);">
+                                <i class="fa-solid fa-user-doctor" style="font-size: 2rem; margin-bottom: var(--space-2);"></i>
+                                <p>No doctors assigned yet</p>
+                                <p style="font-size: 0.875rem;">Book a consultation to connect with a doctor!</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    container.innerHTML = conversations.map(conv => {
+                        const rawName = conv.user_name || 'Doctor';
+                        const name = rawName.startsWith('Dr.') ? rawName : 'Dr. ' + rawName;
+                        const initials = rawName.replace('Dr. ', '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                        const time = conv.last_message_time ? formatTime(conv.last_message_time) : '';
+                        const preview = conv.last_message ? conv.last_message.substring(0, 30) + (conv.last_message.length > 30 ? '...' : '') : 'Start a conversation';
+                        
+                        const avatarHtml = conv.user_avatar 
+                            ? `<img src="${conv.user_avatar}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`
+                            : initials;
+
+                        return `
+                            <div class="conversation-item ${conv.user_id === selectedUserId ? 'active' : ''}" data-user-id="${conv.user_id}">
+                                <div class="conversation-avatar">${avatarHtml}</div>
+                                <div class="conversation-info">
+                                    <div class="conversation-name">
+                                        <span>${name}</span>
+                                        <span class="conversation-time">${time}</span>
+                                    </div>
+                                    <div class="conversation-preview">
+                                        ${preview}
+                                        ${conv.unread_count > 0 ? `<span class="conversation-badge">${conv.unread_count}</span>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    // Add click handlers
+                    document.querySelectorAll('.conversation-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            selectConversation(item.dataset.userId);
+                        });
+                    });
+                    
+                } catch (error) {
+                    console.error('[Messages Debug] CRITICAL - Failed to load conversations:', error);
+                    console.error('[Messages Debug] Error stack:', error.stack);
+                    container.innerHTML = `
+                        <div style="padding: var(--space-6); text-align: center; color: var(--color-danger);">
+                            <p>Failed to load conversations</p>
+                            <p style="font-size: 0.75rem;">${error.message || 'Unknown error'}</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Select a conversation
+            async function selectConversation(userId) {
+                selectedUserId = userId;
+                
+                // Update UI for selected
+                document.querySelectorAll('.conversation-item').forEach(item => {
+                    item.classList.toggle('active', item.dataset.userId === userId);
+                });
+                
+                // Show chat area
+                document.getElementById('no-chat-selected').style.display = 'none';
+                document.getElementById('active-chat').style.display = 'flex';
+                
+                // On mobile, show chat area and hide conversations list
+                document.getElementById('conversations-list').classList.add('hidden-mobile');
+                document.getElementById('chat-area').classList.add('active');
+                document.body.classList.add('no-scroll');
+                
+                // Get user info
+                const user = platformDoctors.find(d => d.id === userId);
+                const avatarEl = document.getElementById('chat-avatar');
+                const nameEl = document.getElementById('chat-user-name');
+                
+                if (user) {
+                    console.log('[Messages Debug] Setting header for user:', user);
+                    const rawName = user.full_name || user.display_name || 'Doctor';
+                    const name = rawName.startsWith('Dr.') ? rawName : 'Dr. ' + rawName;
+                    const initials = rawName.replace('Dr. ', '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                    
+                    if (user.avatar_url) {
+                        avatarEl.innerHTML = `<img src="${user.avatar_url}" alt="${user.full_name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                    } else {
+                        avatarEl.innerHTML = initials;
+                    }
+                    
+                    nameEl.textContent = name;
+                } else {
+                    console.log('[Messages Debug] User not found in platformDoctors, fetching...');
+                    // Fetch user info
+                    const { data: userData } = await CognoSupabase.client
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', userId)
+                        .single();
+                    
+                    if (userData) {
+                        const rawName = userData.full_name || userData.display_name || 'User';
+                        const name = userData.role === 'doctor' ? (rawName.startsWith('Dr.') ? rawName : 'Dr. ' + rawName) : rawName;
+                        const initials = rawName.replace('Dr. ', '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                        
+                        if (userData.avatar_url) {
+                            avatarEl.innerHTML = `<img src="${userData.avatar_url}" alt="${userData.full_name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                        } else {
+                            avatarEl.innerHTML = initials;
+                        }
+                        
+                        nameEl.textContent = name;
+                    }
+                }
+                
+                // Load messages
+                await loadMessages(userId);
+                
+                // Subscribe to realtime
+                subscribeToMessages(userId);
+            }
+            
+            // Load messages for a conversation
+            async function loadMessages(userId) {
+                const container = document.getElementById('chat-messages');
+                container.innerHTML = '<div style="text-align: center; padding: var(--space-4);"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+                
+                try {
+                    let messages = [];
+                    
+                    // Direct query without FK join for reliability
+                    const { data, error } = await CognoSupabase.client
+                        .from('messages')
+                        .select('*')
+                        .or(`and(sender_id.eq.${currentUserId},receiver_id.eq.${userId}),and(sender_id.eq.${userId},receiver_id.eq.${currentUserId})`)
+                        .order('created_at', { ascending: true });
+                    
+                    if (error) {
+                        console.error('Message query error:', error);
+                        throw error;
+                    }
+                    
+                    if (data) {
+                        messages = data.map(m => ({
+                            ...m,
+                            is_mine: m.sender_id === currentUserId
+                        }));
+                    }
+                    
+                    // Mark incoming messages as read
+                    const unreadIds = (data || [])
+                        .filter(m => m.receiver_id === currentUserId && !m.is_read)
+                        .map(m => m.id);
+                    
+                    if (unreadIds.length > 0) {
+                        await CognoSupabase.client
+                            .from('messages')
+                            .update({ is_read: true, read_at: new Date().toISOString() })
+                            .in('id', unreadIds);
+                        
+                        // Update sidebar badge
+                        updateUnreadBadge();
+                    }
+                    
+                    if (messages.length === 0) {
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: var(--space-8); color: var(--color-text-secondary);">
+                                <i class="fa-solid fa-comments" style="font-size: 2rem; margin-bottom: var(--space-2); color: var(--color-border);"></i>
+                                <p>No messages yet</p>
+                                <p style="font-size: 0.875rem;">Send a message to start the conversation!</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    container.innerHTML = messages.map(msg => {
+                        const doctor = platformDoctors.find(d => d.id === userId);
+                        const senderName = msg.is_mine ? 'Me' : (doctor?.full_name || 'Doctor');
+                        const initials = msg.is_mine ? 'ME' : (senderName.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0, 2) || 'DR');
+                        const time = formatTime(msg.created_at);
+                        
+                        // Avatar HTML
+                        let avatarHtml = `<div class="message-avatar">${initials}</div>`;
+                        if (!msg.is_mine && doctor?.avatar_url) {
+                            avatarHtml = `<div class="message-avatar"><img src="${doctor.avatar_url}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>`;
+                        }
+                        
+                        // ... existing attachment logic ...
+                        let attachmentHtml = '';
+                        if (msg.attachment_url) {
+                            const isImage = msg.attachment_type?.startsWith('image/');
+                            if (isImage) {
+                                attachmentHtml = `
+                                    <div class="message-attachment">
+                                        <a href="${msg.attachment_url}" target="_blank">
+                                            <img src="${msg.attachment_url}" alt="Attachment" style="max-width: 200px; max-height: 150px; border-radius: 8px;">
+                                        </a>
+                                    </div>
+                                `;
+                            } else {
+                                const fileName = msg.attachment_url.split('/').pop() || 'Download File';
+                                attachmentHtml = `
+                                    <div class="message-attachment" style="margin-bottom: 8px;">
+                                        <a href="${msg.attachment_url}" target="_blank" class="attachment-link" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--color-bg-secondary); border-radius: 8px; text-decoration: none; color: var(--color-primary);">
+                                            <i class="fa-solid fa-file-download"></i>
+                                            <span>${fileName}</span>
+                                        </a>
+                                    </div>
+                                `;
+                            }
+                        }
+                        
+                        return `
+                            <div class="message ${msg.is_mine ? 'sent' : ''}">
+                                ${avatarHtml}
+                                <div class="message-content">
+                                    ${attachmentHtml}
+                                    ${msg.content ? `<div class="message-text">${escapeHtml(msg.content)}</div>` : ''}
+                                    <div class="message-time">${time}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    // Scroll to bottom
+                    container.scrollTop = container.scrollHeight;
+                    
+                } catch (error) {
+                    console.error('Failed to load messages:', error);
+                    container.innerHTML = '<div style="text-align: center; color: var(--color-danger);">Failed to load messages</div>';
+                }
+            }
+            
+            // Subscribe to realtime messages
+            function subscribeToMessages(userId) {
+                // Unsubscribe from previous
+                if (realtimeSubscription) {
+                    realtimeSubscription.unsubscribe();
+                }
+                
+                realtimeSubscription = CognoSupabase.client
+                    .channel('messages:' + userId)
+                    .on('postgres_changes', {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'messages',
+                        filter: `receiver_id=eq.${currentUserId}`
+                    }, (payload) => {
+                        if (payload.new.sender_id === userId) {
+                            // Add message to chat
+                            addMessageToChat(payload.new, false);
+                            
+                            // Mark as read
+                            CognoSupabase.client
+                                .from('messages')
+                                .update({ is_read: true, read_at: new Date().toISOString() })
+                                .eq('id', payload.new.id);
+                        }
+                    })
+                    .subscribe();
+            }
+            
+            // Add message to chat
+            function addMessageToChat(message, isMine) {
+                const container = document.getElementById('chat-messages');
+                const emptyState = container.querySelector('.fa-comments')?.parentElement?.parentElement;
+                if (emptyState) emptyState.remove();
+                
+                const doctor = platformDoctors.find(d => d.id === selectedUserId);
+                const senderName = isMine ? 'Me' : (doctor?.full_name || 'Doctor');
+                const initials = isMine ? 'ME' : (senderName.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0, 2) || 'DR');
+                const time = formatTime(message.created_at || new Date().toISOString());
+                
+                // Build attachment HTML if present
+                let attachmentHtml = '';
+                if (message.attachment_url) {
+                    const isImage = message.attachment_type?.startsWith('image/');
+                    if (isImage) {
+                        attachmentHtml = `
+                            <div class="message-attachment">
+                                <a href="${message.attachment_url}" target="_blank">
+                                    <img src="${message.attachment_url}" alt="Attachment" style="max-width: 200px; max-height: 150px; border-radius: 8px;">
+                                </a>
+                            </div>
+                        `;
+                    } else {
+                        const fileName = message.attachment_url.split('/').pop() || 'Download File';
+                        attachmentHtml = `
+                            <div class="message-attachment" style="margin-bottom: 8px;">
+                                <a href="${message.attachment_url}" target="_blank" class="attachment-link" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--color-bg-secondary); border-radius: 8px; text-decoration: none; color: var(--color-primary);">
+                                    <i class="fa-solid fa-file-download"></i>
+                                    <span>${fileName}</span>
+                                </a>
+                            </div>
+                        `;
+                    }
+                }
+                
+                // Avatar HTML
+                let avatarHtml = `<div class="message-avatar">${initials}</div>`;
+                if (!isMine && doctor?.avatar_url) {
+                    avatarHtml = `<div class="message-avatar"><img src="${doctor.avatar_url}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"></div>`;
+                }
+                
+                const msgEl = document.createElement('div');
+                msgEl.className = `message ${isMine ? 'sent' : ''}`;
+                msgEl.innerHTML = `
+                    ${avatarHtml}
+                    <div class="message-content">
+                        ${attachmentHtml}
+                        ${message.content ? `<div class="message-text">${escapeHtml(message.content)}</div>` : ''}
+                        <div class="message-time">${time}</div>
+                    </div>
+                `;
+                
+                container.appendChild(msgEl);
+                container.scrollTop = container.scrollHeight;
+            }
+            
+            // Selected attachment
+            let selectedFile = null;
+            
+            // Send message
+            async function sendMessage() {
+                const input = document.getElementById('message-input');
+                const content = input.value.trim();
+                
+                if (!content && !selectedFile) return;
+                if (!selectedUserId) return;
+                
+                const sendBtn = document.getElementById('send-btn');
+                sendBtn.disabled = true;
+                
+                try {
+                    let attachmentUrl = null;
+                    let attachmentType = null;
+                    
+                    // Upload attachment if present
+                    if (selectedFile) {
+                        const fileExt = selectedFile.name.split('.').pop();
+                        const fileName = `${currentUserId}/${Date.now()}.${fileExt}`;
+                        
+                        const { data: uploadData, error: uploadError } = await CognoSupabase.client
+                            .storage
+                            .from('message-attachments')
+                            .upload(fileName, selectedFile);
+                        
+                        if (uploadError) {
+                            console.error('Upload error:', uploadError);
+                            throw new Error('Failed to upload file');
+                        }
+                        
+                        // Get public URL
+                        const { data: urlData } = CognoSupabase.client
+                            .storage
+                            .from('message-attachments')
+                            .getPublicUrl(fileName);
+                        
+                        attachmentUrl = urlData.publicUrl;
+                        attachmentType = selectedFile.type;
+                    }
+                    
+                    // Insert message with attachment
+                    const { data, error } = await CognoSupabase.client
+                        .from('messages')
+                        .insert({
+                            sender_id: currentUserId,
+                            receiver_id: selectedUserId,
+                            content: content || (selectedFile ? 'Sent an attachment' : ''),
+                            message_type: attachmentUrl ? 'file' : 'text',
+                            attachment_url: attachmentUrl,
+                            attachment_type: attachmentType
+                        })
+                        .select()
+                        .single();
+                    
+                    if (error) throw error;
+                    
+                    // Send notification to recipient (doctor) — non-blocking
+                    let senderName = 'Patient';
+                    let notifyContent = content ? content.substring(0, 50) : '';
+                    
+                    try {
+                        const { data: senderProfile } = await CognoSupabase.client
+                            .from('profiles')
+                            .select('full_name')
+                            .eq('id', currentUserId)
+                            .single();
+                        
+                        senderName = senderProfile?.full_name || 'Patient';
+                        notifyContent = attachmentUrl ? '📎 Sent an attachment' : content.substring(0, 50);
+                        
+                        // 1. In-app notification
+                        await CognoSupabase.client
+                            .from('notifications')
+                            .insert({
+                                user_id: selectedUserId,
+                                title: 'New Message',
+                                message: `${senderName}: ${notifyContent}${content.length > 50 ? '...' : ''}`,
+                                notification_type: 'message',
+                                action_url: `/doctor/messages.html?chat=${currentUserId}`
+                            });
+                    } catch (notifyErr) {
+                        console.warn('In-app notification skipped:', notifyErr.message || notifyErr);
+                    }
+                    
+                    // 2. Email notification if doctor has email (non-blocking)
+                    try {
+                        const doctor = platformDoctors.find(d => d.id === selectedUserId);
+                        if (doctor && doctor.email && typeof CognoAPI !== 'undefined' && CognoAPI.client) {
+                            CognoAPI.client.post('/email/send', {
+                                to: doctor.email,
+                                subject: `New message from patient: ${senderName}`,
+                                body: `
+                                    <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                                        <h2 style="color: #3b82f6;">New Patient Message</h2>
+                                        <p>Hello Dr. ${doctor.full_name || 'Specialist'},</p>
+                                        <p>Your patient <strong>${senderName}</strong> has sent you a new message:</p>
+                                        <div style="background: #f9fafb; padding: 15px; border-radius: 8px; font-style: italic; margin: 15px 0;">
+                                            "${notifyContent}${content.length > 50 ? '...' : ''}"
+                                        </div>
+                                        <p><a href="${window.location.origin}/frontend/doctor/messages.html?chat=${currentUserId}" style="background: #3b82f6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">View Chat &amp; Reply</a></p>
+                                        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                                        <p style="font-size: 0.8rem; color: #6b7280;">This is an automated notification from Cogno Solution. Please do not reply to this email.</p>
+                                    </div>
+                                `,
+                                is_html: true
+                            }).catch(err => console.warn('Email notification skipped:', err.message || err));
+                        }
+                    } catch (emailErr) {
+                        console.warn('Email notification skipped:', emailErr.message || emailErr);
+                    }
+                    
+                    
+                    // Add to chat
+                    addMessageToChat({ 
+                        content: content || '', 
+                        created_at: new Date().toISOString(),
+                        attachment_url: attachmentUrl,
+                        attachment_type: attachmentType
+                    }, true);
+                    
+                    // Clear input and file
+                    input.value = '';
+                    input.style.height = 'auto';
+                    clearAttachment();
+                    
+                    // Refresh conversations
+                    loadConversations();
+                    
+                } catch (error) {
+                    console.error('Failed to send message:', error);
+                    CognoNotifications?.toast?.error('Failed to send message: ' + error.message);
+                } finally {
+                    sendBtn.disabled = false;
+                }
+            }
+            
+            // File attachment handling
+            function clearAttachment() {
+                selectedFile = null;
+                document.getElementById('file-input').value = '';
+                document.getElementById('attachment-preview').style.display = 'none';
+            }
+            
+            document.getElementById('attach-btn').addEventListener('click', () => {
+                document.getElementById('file-input').click();
+            });
+            
+            document.getElementById('file-input').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+                        CognoNotifications?.toast?.error('File size must be less than 10MB');
+                        return;
+                    }
+                    selectedFile = file;
+                    document.getElementById('attachment-name').textContent = file.name;
+                    document.getElementById('attachment-preview').style.display = 'flex';
+                }
+            });
+            
+            document.getElementById('remove-attachment').addEventListener('click', clearAttachment);
+            
+            // Event listeners
+            document.getElementById('send-btn').addEventListener('click', sendMessage);
+            
+            document.getElementById('message-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            // Auto-resize textarea
+            document.getElementById('message-input').addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+            });
+            
+
+            
+            // Video call button
+            document.getElementById('video-call-btn').addEventListener('click', () => {
+                // Open video consultation page
+                window.location.href = `./video.html?doctor=${selectedUserId}`;
+            });
+            
+            // Update unread messages badge in sidebar
+            async function updateUnreadBadge() {
+                const badge = document.getElementById('unread-messages-badge');
+                if (!badge) return;
+                
+                try {
+                    const { count, error } = await CognoSupabase.client
+                        .from('messages')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('receiver_id', currentUserId)
+                        .eq('is_read', false);
+                    
+                    if (!error) {
+                        const unreadCount = count || 0;
+                        if (unreadCount > 0) {
+                            badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                            badge.style.display = 'flex';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Failed to update unread badge:', error);
+                }
+            }
+            
+            // Helper functions
+            function formatTime(dateStr) {
+                const date = new Date(dateStr);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+                
+                if (diffMins < 1) return 'Just now';
+                if (diffMins < 60) return `${diffMins}m ago`;
+                if (diffHours < 24) return `${diffHours}h ago`;
+                if (diffDays < 7) return date.toLocaleDateString('en-US', { weekday: 'short' });
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }
+            
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            // Initialize
+            console.log('[Messages Debug] ========== INITIALIZING MESSAGES PAGE ==========');
+            console.log('[Messages Debug] Current user ID:', currentUserId);
+            
+            try {
+                console.log('[Messages Debug] Calling loadDoctors...');
+                await loadDoctors();
+                console.log('[Messages Debug] loadDoctors completed');
+                
+                console.log('[Messages Debug] Calling loadConversations...');
+                await loadConversations();
+                console.log('[Messages Debug] loadConversations completed');
+                
+                await updateUnreadBadge();
+                console.log('[Messages Debug] updateUnreadBadge completed');
+            } catch (initError) {
+                console.error('[Messages Debug] INITIALIZATION ERROR:', initError);
+            }
+            
+            // Set up global realtime subscription for new messages
+            CognoSupabase.client
+                .channel('patient-all-messages')
+                .on('postgres_changes', {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'messages',
+                    filter: `receiver_id=eq.${currentUserId}`
+                }, async (payload) => {
+                    // Refresh conversations list
+                    await loadConversations();
+                    await updateUnreadBadge();
+                    
+                    // If this message is from another doctor (not currently selected), show notification
+                    if (!selectedUserId || payload.new.sender_id !== selectedUserId) {
+                        const { data: senderProfile } = await CognoSupabase.client
+                            .from('profiles')
+                            .select('full_name, display_name')
+                            .eq('id', payload.new.sender_id)
+                            .single();
+                        
+                        const senderName = senderProfile?.display_name || senderProfile?.full_name || 'Doctor';
+                        const previewText = payload.new.content?.substring(0, 40) + (payload.new.content?.length > 40 ? '...' : '');
+                        
+                        // Show notification
+                        if (window.CognoNotifications?.toast) {
+                            CognoNotifications.toast.show(`${senderName}: ${previewText}`, 'info', {
+                                title: 'New Message',
+                                action: () => selectConversation(payload.new.sender_id),
+                                actionText: 'View'
+                            });
+                        }
+                    }
+                })
+                .subscribe();
+            
+            // If doctor param in URL, open chat with that doctor
+            if (doctorParam) {
+                selectConversation(doctorParam);
+            }
+            
+            // Logout
+            document.getElementById('logout-btn')?.addEventListener('click', async () => {
+                if (realtimeSubscription) realtimeSubscription.unsubscribe();
+                await CognoSupabase.signOut();
+                window.location.href = CognoPaths.auth.login();
+            });
+        });
+    </script>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../learn/index.html" class="nav-item">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../doctors/index.html" class="nav-item active">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

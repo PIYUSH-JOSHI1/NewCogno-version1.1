@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Number Line - Visual number sequence learning">
+    <title>Number Line - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 1024px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+            .activity-navbar { display: flex !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: var(--color-background);
+        }
+        
+        .activity-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .activity-navbar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-title-group { text-align: center; }
+        .activity-category { font-size: 0.7rem; font-weight: 700; color: var(--color-dyscalculia); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+        .activity-name { font-size: 0.9rem; font-weight: 700; color: var(--color-text); margin: 0; }
+        .back-btn, .action-btn { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text); }
+
+        @media (max-width: 1024px) {
+            .activity-container { padding: 0 !important; }
+            .activity-content { padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+            .number-line-container { padding: 1.5rem 0.5rem !important; margin: 0 !important; width: 100% !important; }
+            .number-line { margin: 30px 0 !important; }
+            .number-marker { width: 28px !important; height: 28px !important; font-size: 0.7rem !important; }
+            .number-label { font-size: 0.65rem !important; }
+            .stat-value { font-size: 1.5rem !important; }
+            .stats-row { gap: 1.5rem !important; margin-bottom: 1rem !important; }
+            .option-btn { padding: 10px 15px !important; font-size: 0.9rem !important; }
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dyscalculia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 50px;
+        }
+        
+        .stats-row {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+        }
+        
+        .stat-box {
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: var(--color-text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-dyscalculia);
+        }
+        
+        .number-line-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 40px 30px;
+            border: 3px solid var(--color-dyscalculia);
+        }
+        
+        .number-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin: 50px 0;
+        }
+        
+        .number-line::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--color-dyscalculia);
+            z-index: 1;
+        }
+        
+        .number-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .number-marker {
+            width: 40px;
+            height: 40px;
+            background: var(--color-dyscalculia);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .number-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+        
+        .question-section {
+            text-align: center;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid var(--color-dyscalculia);
+            margin-top: 30px;
+        }
+        
+        .question-section p {
+            font-size: 1.3rem;
+            color: var(--color-text);
+            margin: 0;
+        }
+        
+        .options-row {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .option-btn {
+            padding: 15px 30px;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option-btn:hover {
+            border-color: var(--color-dyscalculia);
+            background: rgba(16, 185, 129, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .option-btn.correct {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+        
+        .option-btn.incorrect {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyscalculia</span>
+                <h1 class="activity-name">Number Line</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div class="activity-header hide-xs">
+            <h1><i class="fa-solid fa-ruler"></i> Number Line</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="activity-content">
+            <div class="game-content">
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <div class="stat-label">Score</div>
+                        <div class="stat-value" id="score">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Correct</div>
+                        <div class="stat-value" id="correct">0/5</div>
+                    </div>
+                </div>
+                
+                <div class="number-line-container">
+                    <div class="number-line" id="numberLine"></div>
+                    
+                    <div class="question-section" id="questionSection">
+                        <p id="question">Where is 5?</p>
+                        <div class="options-row" id="optionsRow"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const questions = [
+            { range: [0, 10], question: 'Where is 7?' },
+            { range: [0, 20], question: 'Where is 15?' },
+            { range: [0, 50], question: 'Where is 30?' },
+            { range: [10, 20], question: 'Where is 16?' },
+            { range: [0, 100], question: 'Where is 75?' }
+        ];
+        
+        let currentIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+        const gameStartTime = Date.now();
+        
+        const numberLine = document.getElementById('numberLine');
+        const questionText = document.getElementById('question');
+        const optionsRow = document.getElementById('optionsRow');
+        const scoreDisplay = document.getElementById('score');
+        const correctDisplay = document.getElementById('correct');
+        const backBtn = document.getElementById('backBtn');
+        
+        function displayQuestion(index) {
+            const q = questions[index];
+            const [start, end] = q.range;
+            const step = Math.max(1, Math.floor((end - start) / 10));
+            
+            // Create number line
+            numberLine.innerHTML = '';
+            for (let i = start; i <= end; i += step) {
+                const div = document.createElement('div');
+                div.className = 'number-item';
+                div.innerHTML = `
+                    <div class="number-marker">${i}</div>
+                    <div class="number-label">${i}</div>
+                `;
+                numberLine.appendChild(div);
+            }
+            
+            // Extract current question number
+            const currentNum = parseInt(q.question.match(/\d+/)[0]);
+            questionText.textContent = q.question;
+            
+            // Create options
+            optionsRow.innerHTML = '';
+            const wrongAnswers = [
+                currentNum - 5,
+                currentNum + 5,
+                currentNum - 2
+            ].filter(n => n >= start && n <= end && n !== currentNum);
+            
+            const options = [currentNum, ...wrongAnswers].sort(() => Math.random() - 0.5).slice(0, 4);
+            
+            options.forEach(num => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = num;
+                btn.addEventListener('click', () => checkAnswer(num, currentNum));
+                optionsRow.appendChild(btn);
+            });
+        }
+        
+        function checkAnswer(selected, correct) {
+            const buttons = document.querySelectorAll('.option-btn');
+            let selectedBtn;
+            
+            buttons.forEach(btn => {
+                if (parseInt(btn.textContent) === selected) {
+                    selectedBtn = btn;
+                    if (selected === correct) {
+                        btn.classList.add('correct');
+                        score += 10;
+                        correctCount++;
+                    } else {
+                        btn.classList.add('incorrect');
+                    }
+                }
+                if (parseInt(btn.textContent) === correct && selected !== correct) {
+                    btn.classList.add('correct');
+                }
+                btn.disabled = true;
+            });
+            
+            scoreDisplay.textContent = score;
+            correctDisplay.textContent = `${correctCount}/${questions.length}`;
+            
+            if (selected === correct) {
+                CognoNotifications?.toast?.success('Correct! Great number sense!');
+            } else {
+                CognoNotifications?.toast?.error('Look at the number line and try again!');
+            }
+            
+            setTimeout(async () => {
+                if (currentIndex < questions.length - 1) {
+                    currentIndex++;
+                    displayQuestion(currentIndex);
+                } else {
+                    const gameDuration = Math.floor((Date.now() - gameStartTime) / 1000);
+                    await CognoTracker.saveActivity({
+                        moduleId: 'dyscalculia',
+                        activityId: 'number-line',
+                        score: score,
+                        maxScore: questions.length * 10,
+                        duration: gameDuration,
+                        metadata: { questionsCompleted: questions.length, correctAnswers: correctCount }
+                    });
+                    CognoNotifications?.toast?.success(`You completed Number Line! Score: ${score}`);
+                }
+            }, 1500);
+        }
+        
+        backBtn.addEventListener('click', () => {
+            window.history.back();
+        });
+        
+        displayQuestion(0);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

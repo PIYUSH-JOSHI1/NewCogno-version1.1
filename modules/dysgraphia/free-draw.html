@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free Draw - Creative drawing and fine motor practice">
+    <title>Free Draw - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dysgraphia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .controls-box {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            background: var(--color-surface);
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid var(--color-border);
+        }
+        
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .control-label {
+            color: var(--color-text-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .color-picker {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .size-slider {
+            width: 150px;
+            cursor: pointer;
+        }
+        
+        .draw-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dysgraphia);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .draw-btn:hover {
+            background: #5b4fac;
+        }
+        
+        .canvas-wrapper {
+            canvas-wrapper {
+                flex: 1;
+                background: white;
+                border: 3px solid var(--color-dysgraphia);
+                border-radius: 12px;
+                overflow: hidden;
+            }
+        }
+        
+        canvas {
+            display: block;
+            cursor: crosshair;
+            touch-action: none;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .canvas-container {
+            flex: 1;
+            background: white;
+            border: 3px solid var(--color-dysgraphia);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Free Draw</h1>
+    </header>
+
+    <div class="activity-container">
+        <div class="activity-header">
+            <h1><i class="fa-solid fa-paintbrush"></i> Free Draw</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="controls-box">
+            <div class="control-group">
+                <span class="control-label">Color:</span>
+                <input type="color" class="color-picker" id="colorPicker" value="#6366f1">
+            </div>
+            
+            <div class="control-group">
+                <span class="control-label">Size:</span>
+                <input type="range" class="size-slider" id="sizSlider" min="2" max="20" value="8">
+                <span id="sizeDisplay">8</span>
+            </div>
+            
+            <button class="draw-btn" id="clearBtn">
+                <i class="fa-solid fa-trash"></i> Clear All
+            </button>
+            
+            <button class="draw-btn" id="saveBtn">
+                <i class="fa-solid fa-download"></i> Download
+            </button>
+        </div>
+        
+        <div class="canvas-container">
+            <canvas id="drawingCanvas"></canvas>
+        </div>
+    </div>
+    
+    <script src="../../js/notifications.js"></script>
+    <script>
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        const colorPicker = document.getElementById('colorPicker');
+        const sizeSlider = document.getElementById('sizSlider');
+        const sizeDisplay = document.getElementById('sizeDisplay');
+        const clearBtn = document.getElementById('clearBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const backBtn = document.getElementById('backBtn');
+        let drawingsCount = 0;
+        const startTime = Date.now();
+        
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        
+        let isDrawing = false;
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+            const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+            
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+            const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+            
+            ctx.lineWidth = sizeSlider.value;
+            ctx.strokeStyle = colorPicker.value;
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDrawing);
+        
+        sizeSlider.addEventListener('input', (e) => {
+            sizeDisplay.textContent = e.target.value;
+        });
+        
+        clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            CognoNotifications?.toast?.info('Canvas cleared!');
+        });
+        
+        saveBtn.addEventListener('click', async () => {
+            drawingsCount++;
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = `drawing-${new Date().getTime()}.png`;
+            link.click();
+            
+            // Save activity on each drawing save
+            const duration = Math.floor((Date.now() - startTime) / 1000);
+            try {
+                await CognoTracker.saveActivity({
+                    moduleId: 'dysgraphia',
+                    activityId: 'free-draw',
+                    score: drawingsCount,
+                    maxScore: drawingsCount,
+                    duration: duration,
+                    metadata: { drawingsCount: drawingsCount, sessionDuration: duration }
+                });
+            } catch (e) { console.error('Failed to save activity:', e); }
+            CognoNotifications?.toast?.success('Drawing saved!');
+        });
+        
+        backBtn.addEventListener('click', () => window.history.back());
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

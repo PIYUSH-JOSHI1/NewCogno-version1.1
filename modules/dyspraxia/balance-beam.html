@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Balance Beam - Maintain balance on the beam">
+    <title>Balance Beam - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dyspraxia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .game-area {
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 40px;
+            border: 3px solid var(--color-dyspraxia);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .instruction {
+            text-align: center;
+            color: var(--color-text-secondary);
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 8px;
+        }
+        
+        .beam-container {
+            background: white;
+            border: 2px solid var(--color-dyspraxia);
+            border-radius: 8px;
+            padding: 40px 20px;
+            margin: 30px 0;
+            position: relative;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        svg {
+            width: 100%;
+            height: 150px;
+        }
+        
+        .balance-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .info-card {
+            background: rgba(139, 92, 246, 0.05);
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .info-label {
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .info-value {
+            color: var(--color-dyspraxia);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .start-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dyspraxia);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .activity-container { padding: 1rem; }
+            .game-area { padding: 1.5rem; border-width: 2px; }
+            .title { font-size: 1.25rem; }
+            .info-value { font-size: 1.5rem; }
+            .hide-xs { display: none !important; }
+            .beam-container { margin: 15px 0; padding: 20px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Balance Beam</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div class="activity-header hide-xs">
+            <h1><i class="fa-solid fa-person"></i> Balance Beam</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="game-content">
+            <div class="game-area">
+                <div class="title">Keep your character balanced on the beam</div>
+                <div class="instruction">Move your mouse or finger left/right to balance</div>
+                
+                <div class="beam-container" id="beamContainer">
+                    <svg id="beamSVG" viewBox="0 0 600 150">
+                        <!-- Ground -->
+                        <rect x="0" y="120" width="600" height="30" fill="#8b4513"/>
+                        <!-- Beam -->
+                        <rect x="50" y="110" width="500" height="15" fill="#a0826d" rx="3"/>
+                        <!-- Character -->
+                        <g id="character" transform="translate(300, 90)">
+                            <circle cx="0" cy="0" r="12" fill="#6366f1"/>
+                            <rect x="-8" y="12" width="16" height="20" fill="#f59e0b"/>
+                            <rect x="-12" y="32" width="8" height="15" fill="#3b82f6"/>
+                            <rect x="4" y="32" width="8" height="15" fill="#3b82f6"/>
+                        </g>
+                    </svg>
+                </div>
+                
+                <div class="balance-info">
+                    <div class="info-card">
+                        <div class="info-label">Balance</div>
+                        <div class="info-value" id="balance">50%</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Time</div>
+                        <div class="info-value" id="time">0s</div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="start-btn" id="startBtn">Start Game</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const beamContainer = document.getElementById('beamContainer');
+        const character = document.getElementById('character');
+        const balanceDisplay = document.getElementById('balance');
+        const timeDisplay = document.getElementById('time');
+        const startBtn = document.getElementById('startBtn');
+        const backBtn = document.getElementById('backBtn');
+        
+        let charX = 300;
+        let gameActive = false;
+        let timeElapsed = 0;
+        let timerInterval = null;
+        let lastMouseX = 300;
+        
+        function handleBalance(x) {
+            if (!gameActive) return;
+            
+            // Move character towards input
+            const direction = x - lastMouseX;
+            charX += direction * 0.1;
+            
+            // Keep within beam bounds
+            charX = Math.max(70, Math.min(550, charX));
+            
+            character.setAttribute('transform', `translate(${charX}, 90)`);
+            
+            // Calculate balance (center = 300 = 50%)
+            const balance = Math.abs(charX - 300);
+            const balancePercent = Math.max(0, 100 - balance / 2);
+            balanceDisplay.textContent = Math.round(balancePercent) + '%';
+            
+            // Game over if falls off
+            if(balance > 125) {
+                gameActive = false;
+                clearInterval(timerInterval);
+                (async () => {
+                    try {
+                        await CognoTracker.saveActivity({
+                            moduleId: 'dyspraxia',
+                            activityId: 'balance-beam',
+                            score: timeElapsed,
+                            maxScore: 60,
+                            duration: timeElapsed,
+                            metadata: { timeBalanced: timeElapsed, finalBalance: balancePercent }
+                        });
+                    } catch (e) { console.error('Failed to save activity:', e); }
+                })();
+                CognoNotifications?.toast?.error(`You fell off! Time: ${timeElapsed}s`);
+                startBtn.disabled = false;
+            }
+            
+            lastMouseX = x;
+        }
+
+        beamContainer.addEventListener('mousemove', (e) => {
+            const rect = beamContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            handleBalance(x);
+        });
+
+        beamContainer.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const rect = beamContainer.getBoundingClientRect();
+            const x = e.touches[0].clientX - rect.left;
+            handleBalance(x);
+        }, { passive: false });
+        
+        startBtn.addEventListener('click', () => {
+            gameActive = true;
+            charX = 300;
+            timeElapsed = 0;
+            lastMouseX = 300;
+            startBtn.disabled = true;
+            character.setAttribute('transform', `translate(300, 90)`);
+            balanceDisplay.textContent = '50%';
+            timeDisplay.textContent = '0s';
+            
+            CognoNotifications?.toast?.info('Keep your balance!');
+            
+            timerInterval = setInterval(() => {
+                timeElapsed++;
+                timeDisplay.textContent = timeElapsed + 's';
+            }, 1000);
+        });
+        
+        backBtn?.addEventListener('click', () => window.history.back());
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

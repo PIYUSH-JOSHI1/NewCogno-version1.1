@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Math Pop - Pop bubbles with math answers">
+    <title>Math Pop - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <!-- Supabase and Activity Tracker -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 1024px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+            .activity-navbar { display: flex !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--color-background) 0%, rgba(16, 185, 129, 0.05) 100%);
+        }
+        
+        .activity-content {
+            flex: 1;
+            padding: 1rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-navbar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-title-group { text-align: center; }
+        .activity-category { font-size: 0.7rem; font-weight: 700; color: var(--color-dyscalculia); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+        .activity-name { font-size: 0.9rem; font-weight: 700; color: var(--color-text); margin: 0; }
+        .back-btn, .action-btn { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text); }
+
+        @media (max-width: 1024px) {
+            .activity-container { padding: 0 !important; }
+            .activity-content { padding: 0.5rem !important; }
+            .hide-xs { display: none !important; }
+            .problem-display { font-size: 1.25rem !important; padding: 10px 20px !important; top: 20px !important; }
+            .bubble { width: 55px !important; height: 55px !important; font-size: 1.1rem !important; }
+            .game-area { margin: 0 0 10px 0 !important; border-radius: 12px !important; }
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2rem;
+            color: var(--color-dyscalculia);
+            margin: 0;
+        }
+        
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .stat-display {
+            background: var(--color-surface);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .stat-display.score {
+            color: var(--color-dyscalculia);
+        }
+        
+        .stat-display.timer {
+            color: #f59e0b;
+        }
+        
+        .button-control {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-area {
+            flex: 1;
+            position: relative;
+            background: var(--color-surface);
+            border-radius: 16px;
+            border: 2px solid var(--color-border);
+            overflow: hidden;
+            margin: 0 20px 20px 20px;
+        }
+        
+        .game-zone {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .problem-display {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-dyscalculia);
+            background: rgba(16, 185, 129, 0.1);
+            padding: 15px 30px;
+            border-radius: 8px;
+            z-index: 10;
+        }
+        
+        .bubble {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.1s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .bubble:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .bubble.correct {
+            background: #10b981;
+        }
+        
+        .bubble.wrong {
+            background: #ef4444;
+        }
+        
+        .bubble.popped {
+            animation: pop 0.6s ease-out forwards;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        
+        .controls-bar {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            background: var(--color-background);
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyscalculia</span>
+                <h1 class="activity-name">Math Pop</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div class="activity-content">
+            <div class="activity-header hide-xs">
+                <h1><i class="fa-solid fa-burst"></i> Math Pop</h1>
+                <div class="header-controls">
+                    <div class="stat-display score">Score: <span id="score">0</span></div>
+                    <div class="stat-display timer">Time: <span id="timer">60</span>s</div>
+                    <button class="button-control" id="backBtn">
+                        <i class="fa-solid fa-arrow-left"></i> Back
+                    </button>
+                </div>
+            </div>
+        
+        <div class="game-area">
+            <div class="game-zone" id="gameZone">
+                <div class="problem-display" id="problemDisplay">5 + 3 = ?</div>
+            </div>
+        </div>
+        
+        <div class="controls-bar">
+            <button class="button-control" id="restartBtn" style="background: var(--color-dyscalculia);">
+                <i class="fa-solid fa-redo"></i> Restart
+            </button>
+        </div>
+    </div>
+</div>
+    
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const problems = [
+            { a: 2, b: 3, op: '+' },
+            { a: 5, b: 2, op: '+' },
+            { a: 8, b: 3, op: '-' },
+            { a: 4, b: 3, op: '+' },
+            { a: 10, b: 5, op: '-' },
+            { a: 3, b: 4, op: '+' },
+            { a: 9, b: 4, op: '-' }
+        ];
+        
+        let currentProblemIndex = 0;
+        let score = 0;
+        let timeLeft = 60;
+        let gameRunning = true;
+        
+        const gameZone = document.getElementById('gameZone');
+        const problemDisplay = document.getElementById('problemDisplay');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const backBtn = document.getElementById('backBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        
+        function generateBubbles() {
+            gameZone.querySelectorAll('.bubble').forEach(b => b.remove());
+            
+            const problem = problems[currentProblemIndex];
+            let answer;
+            
+            if (problem.op === '+') {
+                answer = problem.a + problem.b;
+            } else {
+                answer = problem.a - problem.b;
+            }
+            
+            // Update problem display
+            problemDisplay.textContent = `${problem.a} ${problem.op} ${problem.b} = ?`;
+            
+            // Create bubbles
+            const bubbles = [answer];
+            const wrongAnswers = [
+                answer - 1,
+                answer + 1,
+                answer - 2,
+                answer + 2
+            ].filter(n => n > 0 && n !== answer);
+            
+            bubbles.push(...wrongAnswers.sort(() => Math.random() - 0.5).slice(0, 5));
+            bubbles.sort(() => Math.random() - 0.5);
+            
+            bubbles.forEach((num, idx) => {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                bubble.textContent = num;
+                bubble.classList.add(num === answer ? 'correct' : 'wrong');
+                
+                // Random position
+                bubble.style.left = Math.random() * (gameZone.offsetWidth - 70) + 'px';
+                bubble.style.top = 150 + Math.random() * (gameZone.offsetHeight - 220) + 'px';
+                
+                bubble.addEventListener('click', () => popBubble(bubble, num === answer));
+                gameZone.appendChild(bubble);
+            });
+        }
+        
+        function popBubble(bubble, isCorrect) {
+            if (!gameRunning) return;
+            
+            bubble.classList.add('popped');
+            
+            if (isCorrect) {
+                score += 10;
+                scoreDisplay.textContent = score;
+                currentProblemIndex = (currentProblemIndex + 1) % problems.length;
+                
+                setTimeout(() => {
+                    generateBubbles();
+                }, 400);
+            } else {
+                CognoNotifications?.toast?.error('Wrong answer! Try again!');
+            }
+        }
+        
+        let gameStartTime = Date.now();
+        
+        function startTimer() {
+            const timer = setInterval(async () => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    gameRunning = false;
+                    
+                    // Save score to Supabase
+                    const gameDuration = Math.round((Date.now() - gameStartTime) / 1000);
+                    const result = await CognoTracker.saveActivity({
+                        moduleId: 'dyscalculia',
+                        activityId: 'math-pop',
+                        score: score,
+                        maxScore: 100, // Target for 100%
+                        duration: gameDuration,
+                        metadata: {
+                            finalScore: score,
+                            problemsSolved: Math.floor(score / 10)
+                        }
+                    });
+                    
+                    if (result.success) {
+                        console.log('✅ Math Pop score saved!', result);
+                    }
+                    
+                    CognoNotifications?.toast?.success(`Game Over! Final Score: ${score}`);
+                }
+            }, 1000);
+        }
+        
+        backBtn.addEventListener('click', () => {
+            gameRunning = false;
+            window.history.back();
+        });
+        
+        restartBtn.addEventListener('click', () => {
+            currentProblemIndex = 0;
+            score = 0;
+            timeLeft = 60;
+            gameRunning = true;
+            scoreDisplay.textContent = 0;
+            timerDisplay.textContent = 60;
+            generateBubbles();
+            startTimer();
+        });
+        
+        generateBubbles();
+        startTimer();
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

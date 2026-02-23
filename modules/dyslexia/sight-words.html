@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sight Words - Learn common sight words with flashcards">
+    <title>Sight Words - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <!-- Supabase and Activity Tracker -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dyslexia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .button-control:hover {
+            background: #4b5563;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        .progress-bar {
+            width: 400px;
+            height: 8px;
+            background: var(--color-border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--color-dyslexia);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .flashcard {
+            width: 300px;
+            height: 300px;
+            background: var(--color-surface);
+            border: 3px solid var(--color-dyslexia);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-dyslexia);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            user-select: none;
+        }
+        
+        .flashcard:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.2);
+        }
+        
+        .flashcard.flipped {
+            background: var(--color-dyslexia);
+            color: white;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .control-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dyslexia);
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: var(--color-dyslexia-dark, #1e40af);
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Sight Words</h1>
+    </header>
+
+    <div class="activity-container">
+        <div class="activity-header">
+            <h1><i class="fa-solid fa-eye"></i> Sight Words</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="game-content">
+            <div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p style="text-align: center; margin-top: 10px; color: var(--color-text-secondary);">
+                    <span id="current">1</span> / <span id="total">10</span> words
+                </p>
+            </div>
+            
+            <div class="flashcard" id="flashcard">
+                THE
+            </div>
+            
+            <p id="hint" style="font-size: 1.1rem; color: var(--color-text-secondary); text-align: center;">
+                Click the card to reveal the pronunciation
+            </p>
+            
+            <div class="controls">
+                <button class="control-btn" id="speakBtn">
+                    <i class="fa-solid fa-volume-high"></i> Speak
+                </button>
+                <button class="control-btn" id="skipBtn" style="background: #f59e0b;">
+                    <i class="fa-solid fa-arrow-right"></i> Next
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../js/tts.js"></script>
+    <script src="../../js/notifications.js"></script>
+    
+    <script>
+        const sightWords = ['THE', 'AND', 'HOW', 'THAT', 'WITH', 'HAVE', 'FROM', 'THEY', 'WHICH', 'ABOUT'];
+        let currentIndex = 0;
+        const gameStartTime = Date.now();
+        
+        const flashcard = document.getElementById('flashcard');
+        const speakBtn = document.getElementById('speakBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        const backBtn = document.getElementById('backBtn');
+        const progressFill = document.getElementById('progressFill');
+        const currentDisplay = document.getElementById('current');
+        const totalDisplay = document.getElementById('total');
+        
+        totalDisplay.textContent = sightWords.length;
+        
+        function displayWord(index) {
+            const word = sightWords[index];
+            flashcard.textContent = word;
+            flashcard.classList.remove('flipped');
+            
+            currentDisplay.textContent = index + 1;
+            progressFill.style.width = ((index + 1) / sightWords.length * 100) + '%';
+        }
+        
+        flashcard.addEventListener('click', () => {
+            flashcard.classList.toggle('flipped');
+        });
+        
+        speakBtn.addEventListener('click', () => {
+            const word = sightWords[currentIndex];
+            if (CognoTTS) {
+                CognoTTS.speak(word);
+            }
+        });
+        
+        skipBtn.addEventListener('click', async () => {
+            if (currentIndex < sightWords.length - 1) {
+                currentIndex++;
+                displayWord(currentIndex);
+            } else {
+                const gameDuration = Math.floor((Date.now() - gameStartTime) / 1000);
+                
+                await CognoTracker.saveActivity({
+                    moduleId: 'dyslexia',
+                    activityId: 'sight-words',
+                    score: 100,
+                    maxScore: 100,
+                    duration: gameDuration,
+                    metadata: { wordsLearned: sightWords.length }
+                });
+                
+                CognoNotifications?.toast?.success('Great! You learned all the sight words!');
+                currentIndex = 0;
+                displayWord(0);
+            }
+        });
+        
+        backBtn.addEventListener('click', () => {
+            window.history.back();
+        });
+        
+        displayWord(0);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

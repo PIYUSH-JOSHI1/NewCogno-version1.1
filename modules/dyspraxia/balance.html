@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balance Exercises - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); }
+        .exercise-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .exercise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .breathe {
+            animation: breathe 4s ease-in-out infinite;
+        }
+        
+        /* Dark Mode overrides for specific Tailwind-like gradients */
+        body.dark-mode .bg-cyan-50 { background-color: rgba(6, 182, 212, 0.1); }
+        body.dark-mode .text-cyan-800 { color: #67e8f9; }
+        body.dark-mode .text-cyan-700 { color: #a5f3fc; }
+        body.dark-mode .bg-white { background-color: var(--color-surface); }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Balance</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Header (Desktop) -->
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">Balance Exercises</h1>
+                </div>
+                <p class="text-gray-500">Improve coordination and stability with guided exercises</p>
+            </div>
+
+            <!-- Session Stats -->
+            <div class="grid grid-cols-3 gap-4 mb-8">
+                <div class="bg-white rounded-2xl p-4 shadow-sm text-center border border-gray-100">
+                    <div class="text-2xl font-bold text-primary" id="exercisesCompleted">0</div>
+                    <div class="text-xs text-secondary uppercase">Completed</div>
+                </div>
+                <div class="bg-white rounded-2xl p-4 shadow-sm text-center border border-gray-100">
+                    <div class="text-2xl font-bold text-success" id="totalTime">0:00</div>
+                    <div class="text-xs text-secondary uppercase">Time</div>
+                </div>
+                <div class="bg-white rounded-2xl p-4 shadow-sm text-center border border-gray-100">
+                    <div class="text-2xl font-bold text-warning" id="streak">0</div>
+                    <div class="text-xs text-secondary uppercase">Day Streak</div>
+                </div>
+            </div>
+
+            <!-- Exercise Selection -->
+            <div id="exerciseSelection" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Cards will be generated or are already there -->
+                <div onclick="startExercise('one-foot')" class="exercise-card bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-200">
+                    <div class="text-4xl mb-4">🦩</div>
+                    <h3 class="text-xl font-bold mb-2">One Foot Stand</h3>
+                    <p class="text-sm opacity-80">Practice standing on one foot. Start with 10 seconds!</p>
+                    <div class="mt-4 flex items-center text-xs gap-2">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">Beginner</span>
+                        <span class="opacity-60">30 sec</span>
+                    </div>
+                </div>
+                
+                <div onclick="startExercise('heel-toe')" class="exercise-card bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-200">
+                    <div class="text-4xl mb-4">👣</div>
+                    <h3 class="text-xl font-bold mb-2">Heel-to-Toe Walk</h3>
+                    <p class="text-sm opacity-80">Walk in a straight line, placing heel to toe</p>
+                    <div class="mt-4 flex items-center text-xs gap-2">
+                        <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-full">Beginner</span>
+                        <span class="opacity-60">1 min</span>
+                    </div>
+                </div>
+                
+                <div onclick="startExercise('balance-reach')" class="exercise-card bg-gradient-to-br from-green-500/10 to-teal-500/10 border-green-200">
+                    <div class="text-4xl mb-4">🙆</div>
+                    <h3 class="text-xl font-bold mb-2">Balance & Reach</h3>
+                    <p class="text-sm opacity-80">Stand on one foot and reach in different directions</p>
+                    <div class="mt-4 flex items-center text-xs gap-2">
+                        <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full">Intermediate</span>
+                        <span class="opacity-60">2 min</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise View (hidden by default) -->
+            <div id="exerciseView" class="hidden">
+                <div class="bg-surface rounded-3xl shadow-xl border border-border overflow-hidden p-6 md:p-10">
+                    <div class="flex flex-col md:flex-row gap-8 items-center">
+                        <div class="w-full md:w-1/2">
+                            <h2 class="text-3xl font-bold mb-2" id="exerciseTitle text-primary">One Foot Stand</h2>
+                            <p class="text-gray-500 mb-6" id="exerciseSubtitle">Practice your balance</p>
+                            
+                            <div class="timer-display flex flex-col items-center mb-8">
+                                <div class="relative">
+                                    <svg class="w-48 h-48 progress-ring">
+                                        <circle cx="96" cy="96" r="88" stroke="var(--color-border)" stroke-width="8" fill="none"/>
+                                        <circle id="progressCircle" cx="96" cy="96" r="88" stroke="var(--color-primary)" stroke-width="8" fill="none" 
+                                            stroke-dasharray="553" stroke-dashoffset="0" stroke-linecap="round"/>
+                                    </svg>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span class="text-5xl font-bold" id="timerDisplay">30</span>
+                                        <span class="text-sm opacity-60">seconds</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-center gap-4">
+                                <button onclick="startTimer()" id="startBtn" class="btn btn-primary btn-lg px-8">Start Exercise</button>
+                                <button onclick="pauseTimer()" id="pauseBtn" class="hidden btn btn-ghost btn-lg px-8">Pause</button>
+                                <button onclick="resetTimer()" id="resetBtn" class="hidden btn btn-ghost btn-lg px-8">Reset</button>
+                            </div>
+                        </div>
+
+                        <div class="w-full md:w-1/2">
+                            <div class="bg-primary/5 rounded-2xl p-6 mb-6">
+                                <h3 class="font-bold mb-4">Instructions:</h3>
+                                <ul id="exerciseInstructions" class="space-y-3 list-inside list-disc"></ul>
+                            </div>
+                            
+                            <div class="text-center p-8 bg-surface border border-border rounded-2xl shadow-inner">
+                                <div id="exerciseAnimation" class="text-8xl breathe mb-4">🦩</div>
+                                <p class="text-sm opacity-70" id="exerciseTip">Focus on a point in front of you</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="exitExercise()" class="btn btn-ghost mt-8 mx-auto flex items-center">
+                    <i class="fa-solid fa-times mr-2"></i> Cancel Exercise
+                </button>
+            </div>
+
+            <!-- Safety Tips -->
+            <div class="bg-warning/10 rounded-2xl p-6 mt-8 border border-warning/20">
+                <h3 class="font-bold text-warning-dark mb-4"><i class="fa-solid fa-shield-halved mr-2"></i> Safety First</h3>
+                <ul class="grid md:grid-cols-2 gap-3 text-sm opacity-80">
+                    <li>✓ Always have a wall or chair nearby for support</li>
+                    <li>✓ Practice on a flat, non-slippery surface</li>
+                    <li>✓ Stop immediately if you feel dizzy</li>
+                    <li>✓ Progress gradually - it's okay to use support!</li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <!-- Completion Modal -->
+    <div id="completionModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden p-4">
+        <div class="bg-surface rounded-3xl p-8 max-w-md w-full text-center shadow-2xl scale-in">
+            <div class="text-6xl mb-6 bounce">🎉</div>
+            <h3 class="text-2xl font-bold mb-2">Exercise Complete!</h3>
+            <p class="text-gray-500 mb-8" id="completionMessage">Great job maintaining your balance!</p>
+            <div class="flex gap-4">
+                <button onclick="repeatExercise()" class="btn btn-ghost flex-1">Repeat</button>
+                <button onclick="nextExercise()" class="btn btn-primary flex-1">Next Exercise</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+            
+            // Load streak and progress
+            const lastPractice = localStorage.getItem('cogno_balance_last');
+            const streak = parseInt(localStorage.getItem('cogno_balance_streak') || '0');
+            const today = new Date().toDateString();
+            
+            if (lastPractice === today) {
+                document.getElementById('streak').textContent = streak;
+            } else {
+                const yesterday = new Date(Date.now() - 86400000).toDateString();
+                document.getElementById('streak').textContent = (lastPractice === yesterday) ? streak : '0';
+            }
+        });
+
+        const exercises = {
+            'one-foot': {
+                title: 'One Foot Stand',
+                subtitle: 'Build foundational balance',
+                duration: 30,
+                emoji: '🦩',
+                instructions: ['Stand near a wall for support', 'Lift one foot off the ground', 'Hold the position steady', 'Keep eyes focused ahead'],
+                tip: 'Focus on a fixed point in front of you'
+            },
+            'heel-toe': {
+                title: 'Heel-to-Toe Walk',
+                subtitle: 'Improve coordination',
+                duration: 45,
+                emoji: '👣',
+                instructions: ['Stand at start of a straight line', 'Place heel directly in front of toe', 'Walk slowly, touching heel to toe', 'Arms out for balance'],
+                tip: 'Imagine you\'re a tightrope walker!'
+            },
+            'balance-reach': {
+                title: 'Balance & Reach',
+                subtitle: 'Challenge stability',
+                duration: 60,
+                emoji: '🙆',
+                instructions: ['Stand on one foot', 'Reach forward with opposite arm', 'Then reach left and right', 'Switch feet halfway'],
+                tip: 'Slow and controlled movements are best'
+            }
+        };
+
+        let currentExercise = null;
+        let timerInterval = null;
+        let timeRemaining = 0;
+        let isPaused = false;
+        let totalTimeElapsed = 0;
+        let exercisesCompletedCount = 0;
+
+        function startExercise(exerciseId) {
+            currentExercise = exercises[exerciseId];
+            if(!currentExercise) return;
+            timeRemaining = currentExercise.duration;
+            isPaused = false;
+            
+            document.getElementById('exerciseSelection').classList.add('hidden');
+            document.getElementById('exerciseView').classList.remove('hidden');
+            
+            document.getElementById('exerciseTitle').textContent = currentExercise.title;
+            document.getElementById('exerciseSubtitle').textContent = currentExercise.subtitle;
+            document.getElementById('timerDisplay').textContent = currentExercise.duration;
+            document.getElementById('exerciseAnimation').textContent = currentExercise.emoji;
+            document.getElementById('exerciseTip').textContent = currentExercise.tip;
+            
+            document.getElementById('exerciseInstructions').innerHTML = currentExercise.instructions.map(i => `<li>${i}</li>`).join('');
+            
+            document.getElementById('startBtn').classList.remove('hidden');
+            document.getElementById('pauseBtn').classList.add('hidden');
+            document.getElementById('resetBtn').classList.add('hidden');
+            updateProgressCircle(0);
+        }
+
+        function exitExercise() {
+            if (timerInterval) clearInterval(timerInterval);
+            document.getElementById('exerciseSelection').classList.remove('hidden');
+            document.getElementById('exerciseView').classList.add('hidden');
+        }
+
+        function startTimer() {
+            document.getElementById('startBtn').classList.add('hidden');
+            document.getElementById('pauseBtn').classList.remove('hidden');
+            document.getElementById('resetBtn').classList.remove('hidden');
+            isPaused = false;
+            
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (!isPaused) {
+                    timeRemaining--;
+                    totalTimeElapsed++;
+                    document.getElementById('timerDisplay').textContent = timeRemaining;
+                    updateProgressCircle((currentExercise.duration - timeRemaining) / currentExercise.duration);
+                    
+                    const m = Math.floor(totalTimeElapsed / 60);
+                    const s = totalTimeElapsed % 60;
+                    document.getElementById('totalTime').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+                    
+                    if (timeRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        exerciseComplete();
+                    }
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            isPaused = !isPaused;
+            document.getElementById('pauseBtn').textContent = isPaused ? 'Resume' : 'Pause';
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = currentExercise.duration;
+            document.getElementById('timerDisplay').textContent = timeRemaining;
+            updateProgressCircle(0);
+            document.getElementById('startBtn').classList.remove('hidden');
+            document.getElementById('pauseBtn').classList.add('hidden');
+            document.getElementById('resetBtn').classList.add('hidden');
+        }
+
+        function updateProgressCircle(progress) {
+            const circle = document.getElementById('progressCircle');
+            const circumference = 2 * Math.PI * 88;
+            circle.style.strokeDashoffset = circumference - (progress * circumference);
+        }
+
+        function exerciseComplete() {
+            exercisesCompletedCount++;
+            document.getElementById('exercisesCompleted').textContent = exercisesCompletedCount;
+            document.getElementById('completionModal').classList.remove('hidden');
+            
+            CognoTracker?.saveActivity({
+                moduleId: 'dyspraxia',
+                activityId: 'balance',
+                score: 100,
+                maxScore: 100,
+                duration: currentExercise.duration,
+                metadata: { exercise: currentExercise.title }
+            }).catch(console.error);
+        }
+
+        function repeatExercise() {
+            document.getElementById('completionModal').classList.add('hidden');
+            resetTimer();
+        }
+
+        function nextExercise() {
+            document.getElementById('completionModal').classList.add('hidden');
+            exitExercise();
+        }
+    </script>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

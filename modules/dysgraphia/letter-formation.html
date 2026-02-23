@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Letter Formation - Learn to form letters step by step">
+    <title>Letter Formation - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dysgraphia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .formation-box {
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 40px;
+            border: 3px solid var(--color-dysgraphia);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .formation-title {
+            font-size: 1.5rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .letter-display {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-dysgraphia);
+            margin-bottom: 20px;
+        }
+        
+        .steps-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .step-card {
+            background: rgba(99, 102, 241, 0.05);
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .step-card:hover {
+            border-color: var(--color-dysgraphia);
+            transform: translateY(-2px);
+        }
+        
+        .step-card.active {
+            background: rgba(99, 102, 241, 0.1);
+            border: 2px solid var(--color-dysgraphia);
+        }
+        
+        .step-number {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--color-dysgraphia);
+            margin-bottom: 8px;
+        }
+        
+        .step-icon {
+            font-size: 1.8rem;
+            color: var(--color-dysgraphia);
+            margin: 8px 0;
+        }
+        
+        .step-description {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .instruction-box {
+            background: rgba(99, 102, 241, 0.05);
+            border-left: 4px solid var(--color-dysgraphia);
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        
+        .instruction-box strong {
+            color: var(--color-dysgraphia);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .next-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dysgraphia);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .next-btn:hover {
+            background: #5b4fac;
+        }
+        
+        .next-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Letter Formation</h1>
+    </header>
+
+    <div class="activity-container">
+        <div class="activity-header">
+            <h1><i class="fa-solid fa-pen-fancy"></i> Letter Formation</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="game-content">
+            <div class="formation-box">
+                <div class="formation-title">Learn how to form letters step by step</div>
+                <div class="letter-display" id="letterDisplay">A</div>
+                
+                <div id="stepsContainer" class="steps-container"></div>
+                
+                <div class="instruction-box" id="instruction"></div>
+                
+                <div class="button-group">
+                    <button class="next-btn" id="nextBtn">Next Letter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../js/notifications.js"></script>
+    <script>
+        const letterFormations = {
+            'A': [
+                { icon: '↖️', desc: 'Start above, go down-right diagonal' },
+                { icon: '↗️', desc: 'Then go down-left diagonal to meet' },
+                { icon: '↔️', desc: 'Draw a line across the middle' }
+            ],
+            'L': [
+                { icon: '↓', desc: 'Draw a vertical line down' },
+                { icon: '→', desc: 'Draw a horizontal line to the right' }
+            ],
+            'T': [
+                { icon: '↔️', desc: 'Draw a horizontal line at top' },
+                { icon: '↓', desc: 'Draw a vertical line down from center' }
+            ],
+            'O': [
+                { icon: '◯', desc: 'Draw a circle or oval shape' }
+            ],
+            'S': [
+                { icon: '🌀', desc: 'Curve top-right, then bottom-left' }
+            ],
+            'H': [
+                { icon: '↓', desc: 'Draw left vertical line down' },
+                { icon: '↓', desc: 'Draw right vertical line down' },
+                { icon: '↔️', desc: 'Connect with a horizontal line in middle' }
+            ],
+            'E': [
+                { icon: '↓', desc: 'Draw vertical line down' },
+                { icon: '→', desc: 'Draw horizontal line at top' },
+                { icon: '→', desc: 'Draw horizontal line in middle' },
+                { icon: '→', desc: 'Draw horizontal line at bottom' }
+            ],
+            'M': [
+                { icon: '↓', desc: 'Draw left vertical line down' },
+                { icon: '↗️', desc: 'Curve up to point in middle' },
+                { icon: '↘️', desc: 'Curve down from middle point' },
+                { icon: '↓', desc: 'Draw right vertical line down' }
+            ],
+            'P': [
+                { icon: '↓', desc: 'Draw vertical line down' },
+                { icon: '🌀', desc: 'Draw bump at top right' }
+            ]
+        };
+        
+        const letters = Object.keys(letterFormations);
+        let currentIndex = 0;
+        let completedSteps = new Set();
+        let lettersCompleted = 0;
+        const startTime = Date.now();
+        
+        const letterDisplay = document.getElementById('letterDisplay');
+        const stepsContainer = document.getElementById('stepsContainer');
+        const instruction = document.getElementById('instruction');
+        const nextBtn = document.getElementById('nextBtn');
+        const backBtn = document.getElementById('backBtn');
+        
+        function displayLetter(index) {
+            const letter = letters[index];
+            letterDisplay.textContent = letter;
+            completedSteps.clear();
+            
+            stepsContainer.innerHTML = '';
+            const steps = letterFormations[letter];
+            
+            steps.forEach((step, idx) => {
+                const card = document.createElement('div');
+                card.className = 'step-card';
+                card.innerHTML = `
+                    <div class="step-number">Step ${idx + 1}</div>
+                    <div class="step-icon">${step.icon}</div>
+                    <div class="step-description">${step.desc}</div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    card.classList.add('active');
+                    completedSteps.add(idx);
+                    CognoNotifications?.toast?.success(`Step ${idx + 1}: ${step.desc}`);
+                    
+                    if (completedSteps.size === steps.length) {
+                        instruction.innerHTML = `<strong>Perfect!</strong> You've completed all steps for the letter <strong>"${letter}"</strong>. Ready to try the next letter?`;
+                    }
+                });
+            });
+            
+            instruction.innerHTML = `<strong>Click each step</strong> to see how to form the letter <strong>"${letter}"</strong>`;
+        }
+        
+        nextBtn.addEventListener('click', async () => {
+            if (completedSteps.size === 0) {
+                CognoNotifications?.toast?.warning('Complete the steps first!');
+                return;
+            }
+            lettersCompleted++;
+            
+            if (currentIndex < letters.length - 1) {
+                currentIndex++;
+                displayLetter(currentIndex);
+                CognoNotifications?.toast?.success(`Great! Now learning letter: ${letters[currentIndex]}`);
+            } else {
+                // Save activity when all letters completed
+                const duration = Math.floor((Date.now() - startTime) / 1000);
+                try {
+                    await CognoTracker.saveActivity({
+                        moduleId: 'dysgraphia',
+                        activityId: 'letter-formation',
+                        score: lettersCompleted,
+                        maxScore: letters.length,
+                        duration: duration,
+                        metadata: { lettersCompleted: lettersCompleted, totalLetters: letters.length }
+                    });
+                } catch (e) { console.error('Failed to save activity:', e); }
+                CognoNotifications?.toast?.success('All letters completed! Excellent work!');
+                currentIndex = 0;
+                lettersCompleted = 0;
+                displayLetter(0);
+            }
+        });
+        
+        backBtn.addEventListener('click', () => window.history.back());
+        
+        displayLetter(0);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

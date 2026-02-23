@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhythm Tap - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        .game-area { background: var(--color-surface); border-radius: var(--radius-2xl); border: 2px solid var(--color-border); box-shadow: var(--shadow-xl); padding: 40px; max-width: 600px; width: 100%; margin: 0 auto; }
+        .rhythm-display { display: flex; justify-content: center; gap: 8px; margin: 32px 0; }
+        .beat {
+            width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--color-border);
+            display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--color-text-secondary);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .beat.active { background: var(--color-primary); color: white; border-color: var(--color-primary); transform: scale(1.2); box-shadow: 0 0 15px var(--color-primary); }
+        .tap-btn {
+            width: 140px; height: 140px; margin: 40px auto; border: none; border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary), #f59e0b);
+            color: white; font-size: 2rem; font-weight: 700; cursor: pointer; transition: all 0.1s;
+            box-shadow: 0 10px 30px rgba(var(--color-primary-rgb), 0.3); display: flex; align-items: center; justify-content: center;
+        }
+        .tap-btn:active { transform: scale(0.92); box-shadow: 0 5px 15px rgba(var(--color-primary-rgb), 0.5); }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Rhythm Tap</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">🎵 Rhythm Tap</h1>
+                </div>
+                <p class="text-gray-500">Tap the button in sync with the rhythm to improve timing and coordination!</p>
+            </div>
+
+            <div class="game-area">
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="card p-4 text-center bg-primary/5 border-primary/20">
+                        <div class="text-2xl font-bold text-primary" id="correct">0</div>
+                        <div class="text-xs opacity-60 uppercase">Perfect</div>
+                    </div>
+                    <div class="card p-4 text-center bg-orange-500/5 border-orange-500/20">
+                        <div class="text-2xl font-bold text-orange-500" id="accuracy">0%</div>
+                        <div class="text-xs opacity-60 uppercase">Accuracy</div>
+                    </div>
+                </div>
+
+                <div class="rhythm-display" id="rhythmDisplay"></div>
+                
+                <button class="tap-btn" id="tapBtn">TAP!</button>
+                
+                <button id="startBtn" class="btn btn-primary btn-lg w-full mt-8">🎮 Start Rhythm</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+            const rd = document.getElementById('rhythmDisplay');
+            for(let i=0; i<8; i++) rd.innerHTML += `<div class="beat" id="beat-${i}">${i+1}</div>`;
+        });
+
+        const tapBtn = document.getElementById('tapBtn');
+        const startBtn = document.getElementById('startBtn');
+        const correctEl = document.getElementById('correct');
+        const accuracyEl = document.getElementById('accuracy');
+        
+        let gameActive = false, tapAllowed = false, correct = 0, total = 0;
+
+        tapBtn.addEventListener('click', () => {
+            if(!gameActive) return;
+            total++;
+            if(tapAllowed) {
+                correct++;
+                correctEl.textContent = correct;
+                CognoNotifications?.toast?.success('Perfect!');
+            } else {
+                CognoNotifications?.toast?.error('Off-beat!');
+            }
+            accuracyEl.textContent = Math.round((correct/total)*100) + '%';
+        });
+
+        startBtn.addEventListener('click', async () => {
+            gameActive = true; correct = 0; total = 0;
+            correctEl.textContent = '0'; accuracyEl.textContent = '0%';
+            startBtn.disabled = true;
+            
+            for(let i=0; i<8; i++) {
+                await new Promise(r => setTimeout(r, 600));
+                const b = document.getElementById(`beat-${i}`);
+                b.classList.add('active');
+                tapAllowed = true;
+                setTimeout(() => tapAllowed = false, 400);
+                setTimeout(() => b.classList.remove('active'), 250);
+            }
+            
+            gameActive = false;
+            startBtn.disabled = false;
+            CognoNotifications?.toast?.info(`Sequence done! Final accuracy: ${accuracyEl.textContent}`);
+            CognoTracker?.saveActivity({ moduleId: 'dyspraxia', activityId: 'rhythm-tap', score: correct, maxScore: 8 });
+        });
+    </script>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

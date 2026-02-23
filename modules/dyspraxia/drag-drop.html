@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag & Drop - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        .game-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-2xl); box-shadow: var(--shadow-xl); padding: 40px; }
+        .game-container { position: relative; width: 100%; height: 400px; background: rgba(var(--color-primary-rgb), 0.03); border: 2px dashed var(--color-border); border-radius: var(--radius-xl); overflow: hidden; }
+        
+        .drag-item {
+            position: absolute; width: 70px; height: 70px; border-radius: var(--radius-lg);
+            display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: move;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; z-index: 10;
+        }
+        .drag-item:hover { transform: scale(1.05); }
+        .drag-item.dragging { opacity: 0.6; transform: scale(1.1); }
+        
+        .drop-zone {
+            position: absolute; width: 90px; height: 90px; border: 2px dashed var(--color-primary);
+            border-radius: var(--radius-lg); background: rgba(var(--color-primary-rgb), 0.05);
+            display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--color-primary);
+        }
+        .drop-zone.filled { background: rgba(var(--color-success-rgb), 0.1); border: 2px solid var(--color-success); color: var(--color-success); }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Drag & Drop</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">🎯 Drag & Drop</h1>
+                </div>
+                <p class="text-gray-500">Drag objects to their target zones! Practice precision and control.</p>
+            </div>
+
+            <div class="max-w-3xl mx-auto game-card">
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="card p-4 text-center bg-primary/5 border-primary/20">
+                        <div class="text-2xl font-bold text-primary" id="matches">0</div>
+                        <div class="text-xs opacity-60 uppercase">Matches / 3</div>
+                    </div>
+                    <div class="card p-4 text-center bg-blue-500/5 border-blue-500/20">
+                        <div class="text-2xl font-bold text-blue-600" id="gameTimer">00:00</div>
+                        <div class="text-xs opacity-60 uppercase">Time</div>
+                    </div>
+                </div>
+
+                <div class="game-container" id="gameContainer"></div>
+
+                <div class="flex gap-4 justify-center mt-8">
+                    <button id="startBtn" class="btn btn-primary btn-lg px-12">🎮 Start Game</button>
+                    <button id="resetBtn" class="btn btn-ghost btn-lg px-12 hidden">🔄 Reset</button>
+                </div>
+
+                <div class="mt-8 bg-surface-variant rounded-2xl p-6 border-l-4 border-primary">
+                    <h3 class="font-bold text-primary mb-3 text-sm uppercase">📋 How to Play:</h3>
+                    <ul class="text-sm space-y-2 opacity-80 list-disc list-inside">
+                        <li>Drag the colored boxes to their matching target zones</li>
+                        <li>Release the box when it's over the correct zone</li>
+                        <li>Match all 3 items as fast as you can!</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const container = document.getElementById('gameContainer');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const matchesDisplay = document.getElementById('matches');
+        const timerDisplay = document.getElementById('gameTimer');
+
+        let gameActive = false;
+        let matches = 0;
+        let gameStartTime = 0;
+        let draggedItem = null;
+
+        const itemData = [
+            { color: '#FF6B6B', emoji: '🍎', id: 0 },
+            { color: '#4ECDC4', emoji: '🥦', id: 1 },
+            { color: '#FFE66D', emoji: '🍌', id: 2 }
+        ];
+
+        function setupGame() {
+            container.innerHTML = '';
+            matches = 0;
+            matchesDisplay.textContent = '0';
+            const rect = container.getBoundingClientRect();
+
+            itemData.forEach((item, i) => {
+                const el = document.createElement('div');
+                el.className = 'drag-item';
+                el.style.backgroundColor = item.color;
+                el.textContent = item.emoji;
+                el.draggable = true;
+                el.dataset.id = item.id;
+                el.style.left = Math.random() * (rect.width - 100) + 'px';
+                el.style.top = Math.random() * (rect.height / 2) + 'px';
+                el.addEventListener('dragstart', (e) => { draggedItem = el; el.classList.add('dragging'); });
+                el.addEventListener('dragend', () => el.classList.remove('dragging'));
+                container.appendChild(el);
+
+                const zone = document.createElement('div');
+                zone.className = 'drop-zone';
+                zone.dataset.id = item.id;
+                zone.textContent = item.emoji;
+                zone.style.opacity = '0.3';
+                zone.style.left = (i * 120) + 40 + 'px';
+                zone.style.bottom = '40px';
+                zone.addEventListener('dragover', (e) => e.preventDefault());
+                zone.addEventListener('drop', handleDrop);
+                container.appendChild(zone);
+            });
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            if (!draggedItem || !gameActive) return;
+            if (this.dataset.id === draggedItem.dataset.id) {
+                draggedItem.style.left = this.style.left;
+                draggedItem.style.top = (container.offsetHeight - 130) + 'px';
+                draggedItem.draggable = false;
+                draggedItem.style.opacity = '0.5';
+                this.classList.add('filled');
+                matches++;
+                matchesDisplay.textContent = matches;
+                if (matches === 3) finishGame();
+            } else {
+                CognoNotifications?.toast?.error('Wrong spot!');
+            }
+        }
+
+        function finishGame() {
+            gameActive = false;
+            const duration = Math.floor((Date.now() - gameStartTime) / 1000);
+            CognoNotifications?.toast?.success(`Matched all in ${duration}s!`);
+            CognoTracker?.saveActivity({
+                moduleId: 'dyspraxia', activityId: 'drag-drop', score: 100, maxScore: 100, duration
+            });
+            startBtn.classList.remove('hidden');
+            resetBtn.classList.add('hidden');
+        }
+
+        startBtn.addEventListener('click', () => {
+            gameActive = true; gameStartTime = Date.now(); setupGame();
+            startBtn.classList.add('hidden'); resetBtn.classList.remove('hidden');
+            const timer = setInterval(() => {
+                if (!gameActive) { clearInterval(timer); return; }
+                const sec = Math.floor((Date.now() - gameStartTime) / 1000);
+                timerDisplay.textContent = `${Math.floor(sec/60).toString().padStart(2,'0')}:${(sec%60).toString().padStart(2,'0')}`;
+            }, 1000);
+        });
+
+        resetBtn.addEventListener('click', () => location.reload());
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

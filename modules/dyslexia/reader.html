@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Text Reader - Interactive reading tool with text-to-speech">
+    <title>Text Reader - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/cognitive-friendly.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            height: calc(100vh - 80px);
+            gap: 20px;
+        }
+        
+        .activity-sidebar {
+            width: 280px;
+            background: var(--color-surface);
+            border-right: 1px solid var(--color-border);
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .activity-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--color-border);
+        }
+        
+        .activity-header h1 {
+            font-size: 2rem;
+            color: var(--color-dyslexia);
+            margin: 0;
+        }
+        
+        .activity-controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dyslexia);
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .button-control:hover {
+            background: var(--color-dyslexia-dark, #1e40af);
+            transform: translateY(-2px);
+        }
+        
+        .reading-content {
+            flex: 1;
+            background: var(--color-surface);
+            border: 2px solid var(--color-border);
+            border-radius: 12px;
+            padding: 30px;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            overflow-y: auto;
+        }
+        
+        .reading-content .highlight {
+            background: var(--color-dyslexia);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        .settings-section {
+            margin-bottom: 25px;
+        }
+        
+        .settings-section h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: var(--color-text-secondary);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--color-border);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--color-dyslexia);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--color-dyslexia);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+        
+        @media (max-width: 1024px) {
+            .activity-sidebar {
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .activity-container {
+                flex-direction: column;
+            }
+            
+            .activity-sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--color-border);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Text Reader</h1>
+    </header>
+
+    <div class="activity-container">
+        <!-- Sidebar -->
+        <aside class="activity-sidebar">
+            <div class="settings-section">
+                <h3>Font Size</h3>
+                <input type="range" min="14" max="24" value="18" class="slider" id="fontSizeSlider">
+                <div class="value-display">
+                    <span>Small</span>
+                    <span id="fontSizeValue">18px</span>
+                    <span>Large</span>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h3>Line Height</h3>
+                <input type="range" min="1.4" max="2.2" value="1.8" step="0.1" class="slider" id="lineHeightSlider">
+                <div class="value-display">
+                    <span>Compact</span>
+                    <span id="lineHeightValue">1.8</span>
+                    <span>Spacious</span>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h3>Speech Rate</h3>
+                <input type="range" min="0.5" max="2" value="1" step="0.1" class="slider" id="speechRateSlider">
+                <div class="value-display">
+                    <span>Slow</span>
+                    <span id="speechRateValue">Normal</span>
+                    <span>Fast</span>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="activity-main">
+            <div class="activity-header">
+                <h1><i class="fa-solid fa-book-open-reader"></i> Text Reader</h1>
+                <div class="activity-controls">
+                    <button class="button-control" id="langBtn" style="background: #10b981;">
+                        <i class="fa-solid fa-language"></i> हिंदी
+                    </button>
+                    <button class="button-control" id="playBtn">
+                        <i class="fa-solid fa-play"></i> Read Aloud
+                    </button>
+                    <button class="button-control" id="pauseBtn" style="display: none; background: #f59e0b;">
+                        <i class="fa-solid fa-pause"></i> Pause
+                    </button>
+                    <button class="button-control" id="resetBtn" style="background: #6b7280;">
+                        <i class="fa-solid fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+            
+            <div class="reading-content" id="readingContent">
+                <div id="englishContent">
+                    <h2>Sample Reading: The Festival Journey</h2>
+                    <p>Once upon a time, in a beautiful village near the Himalayas, there lived a young girl named Priya. Priya loved to explore the green fields and mango orchards near her home. She enjoyed watching peacocks dance in the rain and listening to the songs of koels in the morning. One bright Diwali morning, while helping her mother make rangoli, she noticed a golden butterfly flying towards the old banyan tree.</p>
+                    
+                    <p>Curious, Priya followed the butterfly through the village lanes. She passed by the temple where the priest was ringing bells, crossed the bridge over the small river, and reached the ancient banyan tree at the edge of their farmland. Under the tree, she found a beautiful brass lamp buried in the soil. When she cleaned it, she discovered it was decorated with images of elephants and lotus flowers. Her grandfather told her it belonged to their ancestors and was used during special pujas.</p>
+                    
+                    <p>That evening, Priya's whole family gathered to celebrate Diwali. They lit diyas all around the house, burst colourful crackers, and shared delicious sweets like gulab jamun and jalebi with their neighbours. Priya placed the ancient lamp at the centre of their home shrine. As its warm glow filled the room, she felt connected to all the generations of her family who had celebrated this festival of lights before her.</p>
+                </div>
+                <div id="hindiContent" style="display: none;">
+                    <h2>पढ़ने का उदाहरण: त्योहार की यात्रा</h2>
+                    <p>एक बार की बात है, हिमालय के पास एक सुंदर गाँव में प्रिया नाम की एक लड़की रहती थी। प्रिया को अपने घर के पास के हरे-भरे खेतों और आम के बागों में घूमना बहुत पसंद था। उसे बारिश में मोर का नाचना और सुबह कोयल की आवाज़ सुनना अच्छा लगता था। एक दिवाली की सुबह, जब वह अपनी माँ की रंगोली बनाने में मदद कर रही थी, उसने एक सुनहरी तितली देखी जो पुराने बरगद के पेड़ की ओर उड़ रही थी।</p>
+                    
+                    <p>उत्सुक होकर, प्रिया तितली के पीछे गाँव की गलियों से होकर गई। वह मंदिर के पास से गुज़री जहाँ पुजारी घंटी बजा रहे थे, छोटी नदी पर बने पुल को पार किया, और अपने खेत के किनारे पुराने बरगद के पेड़ तक पहुँची। पेड़ के नीचे, उसे मिट्टी में दबा एक सुंदर पीतल का दीपक मिला। जब उसने इसे साफ़ किया, तो उसने देखा कि इस पर हाथी और कमल के फूलों की सुंदर कलाकारी थी। उसके दादाजी ने बताया कि यह उनके पूर्वजों का था और विशेष पूजा के दौरान इस्तेमाल होता था।</p>
+                    
+                    <p>उस शाम, प्रिया का पूरा परिवार दिवाली मनाने के लिए इकट्ठा हुआ। उन्होंने पूरे घर में दीये जलाए, रंग-बिरंगे पटाखे फोड़े, और अपने पड़ोसियों के साथ गुलाब जामुन और जलेबी जैसी स्वादिष्ट मिठाइयाँ बाँटीं। प्रिया ने उस प्राचीन दीपक को अपने घर की पूजा के बीच में रखा। जब उसकी गर्म रोशनी से कमरा भर गया, तो उसे लगा कि वह अपने परिवार की उन सभी पीढ़ियों से जुड़ी हुई है जिन्होंने उससे पहले इस रोशनी के त्योहार को मनाया था।</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="../../js/notifications.js"></script>
+    
+    <script>
+        // DOM Elements
+        const fontSizeSlider = document.getElementById('fontSizeSlider');
+        const lineHeightSlider = document.getElementById('lineHeightSlider');
+        const speechRateSlider = document.getElementById('speechRateSlider');
+        const readingContent = document.getElementById('readingContent');
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const backBtn = document.getElementById('backBtn');
+        const langBtn = document.getElementById('langBtn');
+        const englishContent = document.getElementById('englishContent');
+        const hindiContent = document.getElementById('hindiContent');
+        
+        // State
+        let currentLang = 'en';
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let voices = [];
+        
+        // Load voices
+        function loadVoices() {
+            voices = synth.getVoices();
+            console.log('Loaded voices:', voices.length);
+        }
+        
+        // Load voices on init and when they change
+        loadVoices();
+        if (synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = loadVoices;
+        }
+        
+        // Update font size
+        fontSizeSlider.addEventListener('input', function(e) {
+            const size = e.target.value + 'px';
+            readingContent.style.fontSize = size;
+            document.getElementById('fontSizeValue').textContent = size;
+            localStorage.setItem('textReaderFontSize', e.target.value);
+        });
+        
+        // Update line height
+        lineHeightSlider.addEventListener('input', function(e) {
+            readingContent.style.lineHeight = e.target.value;
+            document.getElementById('lineHeightValue').textContent = e.target.value;
+            localStorage.setItem('textReaderLineHeight', e.target.value);
+        });
+        
+        // Update speech rate display
+        speechRateSlider.addEventListener('input', function(e) {
+            const val = parseFloat(e.target.value);
+            let label = 'Normal';
+            if (val < 0.9) label = 'Slow';
+            else if (val > 1.1) label = 'Fast';
+            document.getElementById('speechRateValue').textContent = label;
+            localStorage.setItem('textReaderSpeechRate', e.target.value);
+        });
+        
+        // Get current text based on language
+        function getCurrentText() {
+            if (currentLang === 'hi') {
+                return hindiContent.innerText;
+            }
+            return englishContent.innerText;
+        }
+        
+        // Get appropriate voice
+        function getVoice() {
+            if (voices.length === 0) {
+                voices = synth.getVoices();
+            }
+            
+            if (currentLang === 'hi') {
+                // Find Hindi voice
+                const hindiVoice = voices.find(v => v.lang.startsWith('hi'));
+                if (hindiVoice) return hindiVoice;
+            }
+            
+            // Find English voice
+            const englishVoice = voices.find(v => v.lang.startsWith('en'));
+            return englishVoice || voices[0] || null;
+        }
+        
+        // Reset UI to initial state
+        function resetUI() {
+            playBtn.style.display = 'flex';
+            playBtn.innerHTML = '<i class="fa-solid fa-play"></i> Read Aloud';
+            pauseBtn.style.display = 'none';
+        }
+        
+        // Language toggle
+        langBtn.addEventListener('click', function() {
+            // Stop any speech
+            synth.cancel();
+            resetUI();
+            
+            if (currentLang === 'en') {
+                currentLang = 'hi';
+                englishContent.style.display = 'none';
+                hindiContent.style.display = 'block';
+                langBtn.innerHTML = '<i class="fa-solid fa-language"></i> English';
+            } else {
+                currentLang = 'en';
+                englishContent.style.display = 'block';
+                hindiContent.style.display = 'none';
+                langBtn.innerHTML = '<i class="fa-solid fa-language"></i> हिंदी';
+            }
+        });
+        
+        // Play/Resume button
+        playBtn.addEventListener('click', function() {
+            // If paused, resume
+            if (synth.paused) {
+                synth.resume();
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'flex';
+                return;
+            }
+            
+            // Cancel any existing speech
+            synth.cancel();
+            
+            // Create new utterance
+            const text = getCurrentText();
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            
+            // Set properties
+            currentUtterance.rate = parseFloat(speechRateSlider.value);
+            currentUtterance.pitch = 1;
+            currentUtterance.volume = 1;
+            
+            // Set voice
+            const voice = getVoice();
+            if (voice) {
+                currentUtterance.voice = voice;
+            }
+            
+            // Events
+            currentUtterance.onstart = function() {
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'flex';
+            };
+            
+            currentUtterance.onend = function() {
+                resetUI();
+            };
+            
+            currentUtterance.onerror = function(e) {
+                console.error('Speech error:', e.error);
+                resetUI();
+            };
+            
+            // Speak
+            synth.speak(currentUtterance);
+        });
+        
+        // Pause button
+        pauseBtn.addEventListener('click', function() {
+            if (synth.speaking && !synth.paused) {
+                synth.pause();
+                pauseBtn.style.display = 'none';
+                playBtn.style.display = 'flex';
+                playBtn.innerHTML = '<i class="fa-solid fa-play"></i> Resume';
+            }
+        });
+        
+        // Reset button
+        resetBtn.addEventListener('click', function() {
+            synth.cancel();
+            resetUI();
+        });
+        
+        // Back button
+        backBtn.addEventListener('click', function() {
+            synth.cancel();
+            window.history.back();
+        });
+        
+        // Initialize sliders with saved values
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set saved values
+            const savedFontSize = localStorage.getItem('textReaderFontSize') || '18';
+            const savedLineHeight = localStorage.getItem('textReaderLineHeight') || '1.8';
+            const savedSpeechRate = localStorage.getItem('textReaderSpeechRate') || '1';
+            
+            fontSizeSlider.value = savedFontSize;
+            lineHeightSlider.value = savedLineHeight;
+            speechRateSlider.value = savedSpeechRate;
+            
+            // Apply values
+            readingContent.style.fontSize = savedFontSize + 'px';
+            readingContent.style.lineHeight = savedLineHeight;
+            
+            document.getElementById('fontSizeValue').textContent = savedFontSize + 'px';
+            document.getElementById('lineHeightValue').textContent = savedLineHeight;
+            
+            const rateVal = parseFloat(savedSpeechRate);
+            let rateLabel = 'Normal';
+            if (rateVal < 0.9) rateLabel = 'Slow';
+            else if (rateVal > 1.1) rateLabel = 'Fast';
+            document.getElementById('speechRateValue').textContent = rateLabel;
+        });
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

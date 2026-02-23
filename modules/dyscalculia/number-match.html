@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Number Match - Match numbers to quantities">
+    <title>Number Match - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <!-- Supabase and Activity Tracker -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 1024px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+            .activity-navbar { display: flex !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-navbar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-title-group { text-align: center; }
+        .activity-category { font-size: 0.7rem; font-weight: 700; color: var(--color-dyscalculia); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+        .activity-name { font-size: 0.9rem; font-weight: 700; color: var(--color-text); margin: 0; }
+        .back-btn, .action-btn { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text); }
+
+        @media (max-width: 1024px) {
+            .activity-container { padding: 0 !important; }
+            .activity-content { padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+            .game-content { flex-direction: column !important; gap: 2rem !important; padding-top: 1rem; }
+            .arrow-spacer { transform: rotate(90deg) !important; font-size: 2rem !important; margin: -1rem 0 !important; }
+            .match-section { min-width: auto !important; width: 100% !important; }
+            .match-btn { padding: 1rem !important; font-size: 1.25rem !important; }
+            .items-grid { grid-template-columns: repeat(3, 1fr) !important; justify-items: center !important; }
+            .item { width: 40px !important; height: 40px !important; }
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dyscalculia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+        }
+        
+        .match-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 300px;
+        }
+        
+        .match-section h3 {
+            text-align: center;
+            color: var(--color-text);
+            margin: 0;
+        }
+        
+        .match-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .match-btn {
+            padding: 20px;
+            border: 3px solid var(--color-border);
+            border-radius: 12px;
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .match-btn:hover {
+            border-color: var(--color-dyscalculia);
+            background: rgba(16, 185, 129, 0.05);
+            transform: translateX(5px);
+        }
+        
+        .match-btn.selected {
+            border-color: var(--color-dyscalculia);
+            background: RGB(16, 185, 129, 0.1);
+        }
+        
+        .match-btn.correct {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+        
+        .match-btn.incorrect {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 50px);
+            gap: 15px;
+        }
+        
+        .item {
+            width: 50px;
+            height: 50px;
+            background: var(--color-dyscalculia);
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyscalculia</span>
+                <h1 class="activity-name">Number Match</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div class="activity-content">
+            <div class="activity-header hide-xs">
+                <h1><i class="fa-solid fa-object-group"></i> Number Match</h1>
+                <button class="button-control" id="backBtn">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </button>
+            </div>
+            
+            <div class="game-content">
+                <div class="match-section">
+                    <h3>Pick the Number</h3>
+                    <div class="match-buttons" id="numbersContainer"></div>
+                </div>
+                
+                <div class="arrow-spacer" style="font-size: 3rem; color: #999;">→</div>
+                
+                <div class="match-section">
+                    <h3>Items</h3>
+                    <div class="items-grid" id="itemsGrid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const rounds = [
+            { count: 3 },
+            { count: 5 },
+            { count: 2 },
+            { count: 4 },
+            { count: 6 }
+        ];
+        
+        let currentIndex = 0;
+        let score = 0;
+        
+        const numbersContainer = document.getElementById('numbersContainer');
+        const itemsGrid = document.getElementById('itemsGrid');
+        const backBtn = document.getElementById('backBtn');
+        
+        function displayRound(index) {
+            const round = rounds[index];
+            const itemCount = round.count;
+            
+            // Create numbers
+            numbersContainer.innerHTML = '';
+            const wrongNumbers = [
+                itemCount - 1,
+                itemCount + 1,
+                itemCount - 2
+            ].filter(n => n > 0 && n !== itemCount);
+            
+            const numbers = [itemCount, ...wrongNumbers].sort(() => Math.random() - 0.5).slice(0, 4);
+            
+            numbers.forEach(num => {
+                const btn = document.createElement('button');
+                btn.className = 'match-btn';
+                btn.textContent = num;
+                btn.dataset.value = num;
+                btn.addEventListener('click', () => selectNumber(btn, num, itemCount));
+                numbersContainer.appendChild(btn);
+            });
+            
+            // Create items
+            itemsGrid.innerHTML = '';
+            for (let i = 0; i < itemCount; i++) {
+                const item = document.createElement('div');
+                item.className = 'item';
+                itemsGrid.appendChild(item);
+            }
+        }
+        
+        function selectNumber(btn, selected, correct) {
+            const allButtons = document.querySelectorAll('.match-btn');
+            
+            allButtons.forEach(b => {
+                if (parseInt(b.dataset.value) === selected) {
+                    if (selected === correct) {
+                        b.classList.add('correct');
+                        score += 10;
+                    } else {
+                        b.classList.add('incorrect');
+                    }
+                } else if (parseInt(b.dataset.value) === correct) {
+                    b.classList.add('correct');
+                }
+                b.disabled = true;
+            });
+            
+            if (selected === correct) {
+                CognoNotifications?.toast?.success('Correct match!');
+            } else {
+                CognoNotifications?.toast?.error(`The correct number is ${correct}`);
+            }
+            
+            setTimeout(async () => {
+                if (currentIndex < rounds.length - 1) {
+                    currentIndex++;
+                    displayRound(currentIndex);
+                } else {
+                    // Save score to Supabase
+                    await CognoTracker.saveActivity({
+                        moduleId: 'dyscalculia',
+                        activityId: 'number-match',
+                        score: score,
+                        maxScore: rounds.length * 10,
+                        duration: 0,
+                        metadata: { roundsCompleted: rounds.length }
+                    });
+                    
+                    CognoNotifications?.toast?.success(`Number Match Complete! Score: ${score}`);
+                }
+            }, 1500);
+        }
+        
+        backBtn.addEventListener('click', () => {
+            window.history.back();
+        });
+        
+        displayRound(0);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

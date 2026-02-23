@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirror Moves - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        .game-area { background: var(--color-surface); border-radius: var(--radius-2xl); border: 2px solid var(--color-border); box-shadow: var(--shadow-xl); padding: 40px; max-width: 600px; width: 100%; margin: 0 auto; }
+        .display-card { background: rgba(var(--color-primary-rgb), 0.05); border: 2px solid var(--color-border); border-radius: var(--radius-xl); padding: 24px; text-align: center; }
+        .move-emoji { font-size: 3rem; min-height: 80px; display: flex; align-items: center; justify-content: center; }
+        .move-btn {
+            padding: 16px; border: 2px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface-variant);
+            font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .move-btn:hover:not(:disabled) { border-color: var(--color-primary); background: rgba(var(--color-primary-rgb), 0.05); }
+        .move-btn:active:not(:disabled) { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Mirror Moves</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">🪞 Mirror Moves</h1>
+                </div>
+                <p class="text-gray-500">Copy the hand movements shown. Practice switching between different motor patterns!</p>
+            </div>
+
+            <div class="game-area">
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="display-card">
+                        <div class="text-xs uppercase tracking-widest opacity-60 mb-2">Model</div>
+                        <div class="move-emoji" id="modelDisplay">👆</div>
+                    </div>
+                    <div class="display-card">
+                        <div class="text-xs uppercase tracking-widest opacity-60 mb-2">You</div>
+                        <div class="move-emoji" id="playerDisplay">—</div>
+                    </div>
+                </div>
+
+                <div class="text-center mb-6" id="feedback">Click "Start Game" to begin</div>
+
+                <div class="grid grid-cols-2 gap-3 mb-8">
+                    <button class="move-btn" data-move="👆" disabled>UP</button>
+                    <button class="move-btn" data-move="👇" disabled>DOWN</button>
+                    <button class="move-btn" data-move="👈" disabled>LEFT</button>
+                    <button class="move-btn" data-move="👉" disabled>RIGHT</button>
+                </div>
+
+                <button id="startBtn" class="btn btn-primary btn-lg w-full">🎮 Start Game</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const modelDisplay = document.getElementById('modelDisplay');
+        const playerDisplay = document.getElementById('playerDisplay');
+        const feedback = document.getElementById('feedback');
+        const moveBtns = document.querySelectorAll('.move-btn');
+        const startBtn = document.getElementById('startBtn');
+        
+        let currentMove = '', gameActive = false, score = 0, round = 0, startTime = 0;
+        const moves = ['👆', '👇', '👈', '👉'];
+
+        moveBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if(!gameActive) return;
+                const m = btn.dataset.move;
+                playerDisplay.textContent = m;
+                if(m === currentMove) {
+                    score++;
+                    CognoNotifications?.toast?.success('Correct!');
+                    feedback.textContent = `Correct! Round ${round}/5`;
+                    setTimeout(nextRound, 800);
+                } else {
+                    CognoNotifications?.toast?.error('Try again!');
+                    feedback.textContent = 'Oops! Copy the model.';
+                }
+            });
+        });
+
+        function nextRound() {
+            round++;
+            if(round <= 5) {
+                currentMove = moves[Math.floor(Math.random()*4)];
+                modelDisplay.textContent = currentMove;
+                playerDisplay.textContent = '—';
+                feedback.textContent = `Round ${round}/5: Copy the move!`;
+            } else {
+                finishGame();
+            }
+        }
+
+        function finishGame() {
+            gameActive = false;
+            const dur = Math.floor((Date.now() - startTime) / 1000);
+            CognoNotifications?.toast?.success(`Done! Final Score: ${score}/5`);
+            CognoTracker?.saveActivity({ moduleId: 'dyspraxia', activityId: 'mirror-moves', score, maxScore: 5, duration: dur });
+            startBtn.classList.remove('hidden');
+            moveBtns.forEach(b => b.disabled = true);
+        }
+
+        startBtn.addEventListener('click', () => {
+            gameActive = true; score = 0; round = 0; startTime = Date.now();
+            startBtn.classList.add('hidden');
+            moveBtns.forEach(b => b.disabled = false);
+            nextRound();
+        });
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>
