@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Word Tracing - Trace words for spelling practice">
+    <title>Word Tracing - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <!-- Supabase and Activity Tracker -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dysgraphia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .tracing-box {
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 40px;
+            border: 3px solid var(--color-dysgraphia);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .word-title {
+            font-size: 1.5rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .word-display {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-dysgraphia);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        
+        .canvas-wrapper {
+            background: white;
+            border: 2px dashed var(--color-dysgraphia);
+            border-radius: 8px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        canvas {
+            display: block;
+            cursor: crosshair;
+            touch-action: none;
+            width: 100%;
+            height: auto;
+        }
+        
+        .faded-word {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: rgba(99, 102, 241, 0.15);
+            font-family: 'Comic Sans MS', 'Segoe Print', sans-serif;
+            pointer-events: none;
+            z-index: 0;
+            white-space: nowrap;
+            letter-spacing: 1px;
+        }
+        
+        .instructions {
+            color: var(--color-text-secondary);
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 8px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .submit-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dysgraphia);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .submit-btn:hover {
+            background: #5b4fac;
+        }
+        
+        .clear-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Word Tracing</h1>
+    </header>
+
+    <div class="activity-container">
+        <div class="activity-header">
+            <h1><i class="fa-solid fa-pen-to-square"></i> Word Tracing</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="game-content">
+            <div class="tracing-box">
+                <div class="word-title">Trace the word carefully</div>
+                <div class="word-display" id="wordDisplay">cat</div>
+                <div class="instructions">Trace over the faded word below with your finger or mouse</div>
+                <div class="canvas-wrapper">
+                    <div class="faded-word" id="fadedWord">cat</div>
+                    <canvas id="tracingCanvas" width="500" height="180"></canvas>
+                </div>
+                <div class="button-group">
+                    <button class="clear-btn" id="clearBtn">Clear</button>
+                    <button class="submit-btn" id="nextBtn">Next Word</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../js/notifications.js"></script>
+    <script>
+        const words = ['cat', 'dog', 'sun', 'tree', 'book', 'happy', 'water', 'friend'];
+        let currentIndex = 0;
+        let isDrawing = false;
+        let pixelsDrawn = 0;
+        
+        const canvas = document.getElementById('tracingCanvas');
+        const ctx = canvas.getContext('2d');
+        const wordDisplay = document.getElementById('wordDisplay');
+        const fadedWord = document.getElementById('fadedWord');
+        const clearBtn = document.getElementById('clearBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const backBtn = document.getElementById('backBtn');
+        
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = 500 * dpr;
+        canvas.height = 180 * dpr;
+        ctx.scale(dpr, dpr);
+        
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#6366f1';
+        
+        function displayWord(index) {
+            const word = words[index];
+            wordDisplay.textContent = word;
+            fadedWord.textContent = word;
+            pixelsDrawn = 0;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+            const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+            const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+            
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            pixelsDrawn++;
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDrawing);
+        
+        clearBtn.addEventListener('click', () => {
+            pixelsDrawn = 0;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            CognoNotifications?.toast?.info('Canvas cleared. Try again!');
+        });
+        
+        nextBtn.addEventListener('click', async () => {
+            if (pixelsDrawn < 80) {
+                CognoNotifications?.toast?.warning('Write more to continue');
+                return;
+            }
+            CognoNotifications?.toast?.success('Great! Word: ' + words[currentIndex]);
+            if (currentIndex < words.length - 1) {
+                currentIndex++;
+                displayWord(currentIndex);
+            } else {
+                CognoNotifications?.toast?.success('All words traced! Well done!');
+                // Save activity to Supabase
+                await CognoTracker.saveActivity({
+                    moduleId: 'dysgraphia',
+                    activityId: 'word-tracing',
+                    score: 100,
+                    maxScore: 100,
+                    metadata: { wordsCompleted: words.length }
+                });
+                currentIndex = 0;
+                displayWord(0);
+            }
+        });
+        
+        backBtn.addEventListener('click', () => window.history.back());
+        
+        displayWord(0);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

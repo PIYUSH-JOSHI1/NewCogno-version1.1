@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="My Appointments - View and manage your consultations">
+    <title>My Appointments - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/cognitive-friendly.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <link rel="stylesheet" href="../css/mobile-nav.css">
+    
+    <style>
+        /* Sidebar hidden globally, main-content full width - see style.css */
+        /* bottom-nav visible on all screens */
+        .page-header {
+            margin-bottom: var(--space-6);
+        }
+        
+        .page-header h1 {
+            font-size: 1.75rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .page-header p {
+            color: var(--color-text-secondary);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: var(--space-1);
+            background: var(--color-surface);
+            padding: var(--space-1);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-6);
+            border: 1px solid var(--color-border);
+        }
+        
+        .tab {
+            padding: var(--space-3) var(--space-5);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .tab:hover {
+            background: var(--color-background);
+        }
+        
+        .tab.active {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .tab-badge {
+            background: var(--color-danger);
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        .tab.active .tab-badge {
+            background: white;
+            color: var(--color-primary);
+        }
+        
+        .appointments-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .appointment-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            border: 1px solid var(--color-border);
+            display: flex;
+            gap: var(--space-4);
+            align-items: flex-start;
+        }
+        
+        .appointment-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .appointment-date-box {
+            background: var(--color-primary-100);
+            border-radius: var(--radius-md);
+            padding: var(--space-3);
+            text-align: center;
+            min-width: 70px;
+            flex-shrink: 0;
+        }
+        
+        .appointment-day {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        
+        .appointment-month {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+        
+        .appointment-time {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-top: var(--space-1);
+        }
+        
+        .appointment-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .appointment-info {
+            flex: 1;
+        }
+        
+        .appointment-doctor {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: var(--space-1);
+        }
+        
+        .appointment-specialty {
+            color: var(--color-primary);
+            font-size: 0.875rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .appointment-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-4);
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .appointment-meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+        }
+        
+        .appointment-meta-item i {
+            color: var(--color-primary);
+        }
+        
+        .appointment-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: var(--space-2);
+        }
+        
+        .appointment-status.pending {
+            background: var(--color-warning-100);
+            color: var(--color-warning);
+        }
+        
+        .appointment-status.confirmed {
+            background: var(--color-success-100);
+            color: var(--color-success);
+        }
+        
+        .appointment-status.completed {
+            background: var(--color-text-100);
+            color: var(--color-text-secondary);
+        }
+        
+        .appointment-status.cancelled {
+            background: var(--color-danger-100);
+            color: var(--color-danger);
+        }
+        
+        .appointment-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            align-items: flex-end;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--space-12);
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--color-border);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--color-border);
+            margin-bottom: var(--space-4);
+        }
+        
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .empty-state p {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-4);
+        }
+        
+        @media (max-width: 768px) {
+            .appointment-card {
+                flex-direction: column;
+            }
+            
+            .appointment-actions {
+                flex-direction: row;
+                width: 100%;
+            }
+            
+            .appointment-actions .btn {
+                flex: 1;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="../dashboard/child-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Talk to Experts</li>
+                
+                <li class="sidebar-item">
+                    <a href="./" class="sidebar-link">
+                        <i class="fa-solid fa-user-doctor" style="color: var(--color-success);"></i>
+                        <span>Our Doctors</span>
+                    </a>
+                </li>
+                <li class="sidebar-item active">
+                    <a href="./my-appointments.html" class="sidebar-link">
+                        <i class="fa-solid fa-calendar-check" style="color: var(--color-primary);"></i>
+                        <span>My Appointments</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./messages.html" class="sidebar-link">
+                        <i class="fa-solid fa-comments" style="color: var(--color-warning);"></i>
+                        <span>Messages</span>
+                        <span class="sidebar-badge" id="unread-messages-badge" style="display: none;">0</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./my-reports.html" class="sidebar-link">
+                        <i class="fa-solid fa-file-medical" style="color: var(--color-info);"></i>
+                        <span>My Reports</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Learning Modules</li>
+                
+                <li class="sidebar-item">
+                    <a href="../modules/dyslexia/" class="sidebar-link">
+                        <i class="fa-solid fa-book-open" style="color: var(--color-dyslexia);"></i>
+                        <span>Reading & Words</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dyscalculia/" class="sidebar-link">
+                        <i class="fa-solid fa-calculator" style="color: var(--color-dyscalculia);"></i>
+                        <span>Numbers & Math</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dysgraphia/" class="sidebar-link">
+                        <i class="fa-solid fa-pen" style="color: var(--color-dysgraphia);"></i>
+                        <span>Writing Practice</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dyspraxia/" class="sidebar-link">
+                        <i class="fa-solid fa-person-running" style="color: var(--color-dyspraxia);"></i>
+                        <span>Movement Games</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">More</li>
+                
+                <li class="sidebar-item">
+                    <a href="../learning-hub/" class="sidebar-link">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Learning Hub</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../progress/" class="sidebar-link">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>My Progress</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../profile/" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../settings/" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="tts-toggle">
+                <i class="fa-solid fa-volume-high"></i>
+                <span>Read Aloud</span>
+            </button>
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav class="breadcrumb">
+                    <a href="../dashboard/child-dashboard.html">Dashboard</a>
+                    <span>/</span>
+                    <span>My Appointments</span>
+                </nav>
+            </div>
+            
+            <div class="navbar-right">
+                <!-- Accessibility Toggle -->
+                <button class="btn btn-ghost btn-icon" id="accessibility-btn" title="Accessibility options">
+                    <i class="fa-solid fa-universal-access"></i>
+                </button>
+                
+                <!-- Settings Quick Link -->
+                <a href="../settings/" class="btn btn-ghost btn-icon" title="Settings">
+                    <i class="fa-solid fa-gear"></i>
+                </a>
+
+                <!-- Dark Mode Toggle -->
+                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle" title="Toggle dark mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-ghost btn-icon notification-btn" id="notification-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </button>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="user-menu-btn" id="user-menu-btn">
+                        <div class="avatar avatar-sm">
+                            <img src="../assets/images/defaults/avatar.png" alt="User" id="user-avatar-img">
+                        </div>
+                        <span class="user-name" id="user-name">Loading...</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <a href="../profile/index.html" class="dropdown-item">
+                            <i class="fa-solid fa-user"></i>
+                            My Profile
+                        </a>
+                        <a href="../settings/index.html" class="dropdown-item">
+                            <i class="fa-solid fa-gear"></i>
+                            Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="dropdown-logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        
+        <!-- Appointments Content -->
+        <div class="content-area">
+            <header class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4);">
+                <div>
+                    <h1>My Appointments</h1>
+                    <p>View and manage your consultation appointments</p>
+                </div>
+                <a href="./" class="btn btn-primary btn-hero">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    Schedule New Appointment
+                </a>
+            </header>
+
+            
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" data-tab="upcoming">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    Upcoming
+                    <span class="tab-badge" id="upcoming-count" style="display: none;">0</span>
+                </div>
+                <div class="tab" data-tab="past">
+                    <i class="fa-solid fa-history"></i>
+                    Past
+                </div>
+                <div class="tab" data-tab="cancelled">
+                    <i class="fa-solid fa-ban"></i>
+                    Cancelled
+                </div>
+            </div>
+            
+            <!-- Appointments List -->
+            <div class="appointments-list" id="appointments-list">
+                <!-- Loading state -->
+                <div class="loading-state" style="text-align: center; padding: var(--space-8);">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--color-primary);"></i>
+                    <p style="margin-top: var(--space-4);">Loading appointments...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Reschedule Modal -->
+    <div class="modal" id="reschedule-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Reschedule Appointment</h3>
+                <button class="btn btn-ghost btn-icon modal-close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Select New Date</label>
+                    <input type="date" id="reschedule-date" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Select New Time</label>
+                    <div class="time-slots" id="reschedule-time-slots" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2);">
+                        <!-- Will be populated -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost modal-close">Cancel</button>
+                <button class="btn btn-primary" id="confirm-reschedule">Confirm</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cancel Modal -->
+    <div class="modal" id="cancel-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Cancel Appointment</h3>
+                <button class="btn btn-ghost btn-icon modal-close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: var(--space-4);">Are you sure you want to cancel this appointment?</p>
+                <div class="form-group">
+                    <label class="form-label">Reason for cancellation (optional)</label>
+                    <textarea id="cancel-reason" class="form-textarea" rows="3" placeholder="Let us know why you're cancelling..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost modal-close">Keep Appointment</button>
+                <button class="btn btn-danger" id="confirm-cancel">Cancel Appointment</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize sidebar
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarClose = document.getElementById('sidebar-close');
+            
+            sidebarToggle?.addEventListener('click', () => sidebar?.classList.toggle('open'));
+            sidebarClose?.addEventListener('click', () => sidebar?.classList.remove('open'));
+            
+            // Dark mode
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            if (localStorage.getItem('cogno-theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+            
+            darkModeToggle?.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('cogno-theme', isDark ? 'dark' : 'light');
+                darkModeToggle.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+            });
+            
+            // Check auth
+            const { session } = await CognoSupabase.getSession();
+            if (!session) {
+                window.location.href = CognoPaths.auth.login();
+                return;
+            }
+
+            const { user, profile } = await CognoSupabase.getCurrentUser();
+            
+            // Update UI with user info
+            const userNameEl = document.getElementById('user-name');
+            const avatarEl = document.getElementById('user-avatar-img');
+            
+            if (userNameEl) userNameEl.textContent = profile?.full_name || user.email.split('@')[0];
+            if (avatarEl && profile?.avatar_url) avatarEl.src = profile.avatar_url;
+
+            // Profile dropdown logic
+            const userMenuBtn = document.getElementById('user-menu-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            userMenuBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                userDropdown?.classList.toggle('show');
+            });
+            document.addEventListener('click', () => userDropdown?.classList.remove('show'));
+
+            // Logout
+            const logoutBtns = document.querySelectorAll('#logout-btn, #dropdown-logout');
+            logoutBtns.forEach(btn => {
+                btn?.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to sign out?')) {
+                        await CognoSupabase.signOut();
+                        window.location.href = CognoPaths.auth.login();
+                    }
+                });
+            });
+
+            let currentTab = 'upcoming';
+            let allAppointments = [];
+            let selectedAppointmentId = null;
+
+            // Load initial data
+            loadAppointments();
+
+            // Real-time updates for appointments
+            CognoSupabase.client
+                .channel('appointment-updates')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'consultations',
+                    filter: `patient_id=eq.${user.id}`
+                }, (payload) => {
+                    loadAppointments();
+                    if (payload.eventType === 'INSERT') {
+                        CognoNotifications.info('A new consultation has been scheduled.');
+                    } else if (payload.new.status === 'in_progress' && payload.old.status !== 'in_progress') {
+                        CognoNotifications.show({
+                            title: 'Consultation Started',
+                            content: 'Your appointment is live! Click to join.',
+                            type: 'success',
+                            icon: 'fa-solid fa-video',
+                            autoClose: false,
+                            onClick: () => window.location.href = `room.html?id=${payload.new.id}`
+                        });
+                    }
+                })
+                .subscribe();
+
+
+            
+            // Tab navigation
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentTab = tab.dataset.tab;
+                    renderAppointments();
+                });
+            });
+            
+            // Load appointments
+            async function loadAppointments() {
+                const container = document.getElementById('appointments-list');
+                
+                try {
+                    const { data: appointments, error } = await CognoSupabase.client
+                        .from('consultations')
+                        .select(`
+                            *,
+                            doctor:profiles!consultations_doctor_id_fkey(id, full_name, display_name, avatar_url, specialization)
+                        `)
+                        .eq('patient_id', session.user.id)
+                        .order('scheduled_at', { ascending: false });
+                    
+                    if (error) throw error;
+                    
+                    allAppointments = appointments || [];
+                    
+                    // Count upcoming
+                    const upcoming = allAppointments.filter(a => 
+                        ['pending', 'confirmed'].includes(a.status) && 
+                        new Date(a.scheduled_at) >= new Date()
+                    );
+                    const upcomingCount = document.getElementById('upcoming-count');
+                    if (upcoming.length > 0) {
+                        upcomingCount.textContent = upcoming.length;
+                        upcomingCount.style.display = 'block';
+                    }
+                    
+                    renderAppointments();
+                    
+                } catch (error) {
+                    console.error('Failed to load appointments:', error);
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fa-solid fa-exclamation-triangle"></i>
+                            <h3>Failed to Load</h3>
+                            <p>There was an error loading your appointments. Please try again.</p>
+                            <button class="btn btn-primary" onclick="location.reload()">Retry</button>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Render appointments based on current tab
+            function renderAppointments() {
+                const container = document.getElementById('appointments-list');
+                const now = new Date();
+                
+                let filtered = allAppointments;
+                
+                if (currentTab === 'upcoming') {
+                    filtered = allAppointments.filter(a => 
+                        ['pending', 'confirmed', 'in_progress'].includes(a.status) && 
+                        new Date(a.scheduled_at) >= now
+                    );
+                } else if (currentTab === 'past') {
+                    filtered = allAppointments.filter(a => 
+                        a.status === 'completed' || 
+                        (['pending', 'confirmed'].includes(a.status) && new Date(a.scheduled_at) < now)
+                    );
+                } else if (currentTab === 'cancelled') {
+                    filtered = allAppointments.filter(a => 
+                        a.status === 'cancelled' || a.status === 'no_show'
+                    );
+                }
+                
+                if (filtered.length === 0) {
+                    const emptyMessages = {
+                        upcoming: {
+                            icon: 'fa-calendar-plus',
+                            title: 'No Upcoming Appointments',
+                            message: 'You don\'t have any upcoming appointments. Book one with our specialists!',
+                            action: '<a href="./" class="btn btn-primary">Book Appointment</a>'
+                        },
+                        past: {
+                            icon: 'fa-history',
+                            title: 'No Past Appointments',
+                            message: 'Your completed appointments will appear here.',
+                            action: ''
+                        },
+                        cancelled: {
+                            icon: 'fa-calendar-xmark',
+                            title: 'No Cancelled Appointments',
+                            message: 'You haven\'t cancelled any appointments.',
+                            action: ''
+                        }
+                    };
+                    
+                    const empty = emptyMessages[currentTab];
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fa-solid ${empty.icon}"></i>
+                            <h3>${empty.title}</h3>
+                            <p>${empty.message}</p>
+                            ${empty.action}
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = filtered.map(apt => {
+                    const doctor = apt.doctor;
+                    const initials = (doctor?.full_name || doctor?.display_name || 'DR')
+                        .split(' ')
+                        .map(n => n[0])
+                        .join('')
+                        .toUpperCase()
+                        .slice(0, 2);
+                    
+                    const date = new Date(apt.scheduled_at);
+                    const day = date.getDate();
+                    const month = date.toLocaleDateString('en-US', { month: 'short' });
+                    const time = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                    const isToday = date.toDateString() === now.toDateString();
+                    const isTomorrow = date.toDateString() === new Date(Date.now() + 86400000).toDateString();
+                    
+                    // Can join if within 15 minutes of appointment time
+                    const canJoin = date.getTime() - now.getTime() <= 15 * 60 * 1000 && date.getTime() > now.getTime() - 30 * 60 * 1000;
+                    
+                    const statusClasses = {
+                        pending: 'pending',
+                        confirmed: 'confirmed',
+                        completed: 'completed',
+                        cancelled: 'cancelled',
+                        no_show: 'cancelled',
+                        in_progress: 'confirmed'
+                    };
+                    
+                    const statusLabels = {
+                        pending: 'Pending Confirmation',
+                        confirmed: 'Confirmed',
+                        completed: 'Completed',
+                        cancelled: 'Cancelled',
+                        no_show: 'No Show',
+                        in_progress: 'In Progress'
+                    };
+                    
+                    let actions = '';
+                    if (currentTab === 'upcoming') {
+                        actions = `
+                            <button class="btn btn-primary btn-sm join-btn" data-meeting="${apt.meeting_url}" ${canJoin ? '' : 'disabled'}>
+                                <i class="fa-solid fa-video"></i>
+                                ${canJoin ? 'Join Now' : 'Join Call'}
+                            </button>
+                            <button class="btn btn-ghost btn-sm reschedule-btn" data-id="${apt.id}" data-doctor="${doctor?.id}">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                Reschedule
+                            </button>
+                            <button class="btn btn-ghost btn-sm cancel-btn" data-id="${apt.id}" style="color: var(--color-danger);">
+                                <i class="fa-solid fa-xmark"></i>
+                                Cancel
+                            </button>
+                        `;
+                    } else if (currentTab === 'past' && apt.status === 'completed') {
+                        actions = `
+                            <button class="btn btn-ghost btn-sm">
+                                <i class="fa-solid fa-file-lines"></i>
+                                View Notes
+                            </button>
+                            <a href="./" class="btn btn-primary btn-sm">
+                                <i class="fa-solid fa-rotate-right"></i>
+                                Book Again
+                            </a>
+                        `;
+                    }
+                    
+                    return `
+                        <div class="appointment-card">
+                            <div class="appointment-date-box">
+                                <div class="appointment-day">${day}</div>
+                                <div class="appointment-month">${month}</div>
+                                <div class="appointment-time">${time}</div>
+                            </div>
+                            
+                            <div class="appointment-avatar">${initials}</div>
+                            
+                            <div class="appointment-info">
+                                <div class="appointment-doctor">${doctor?.full_name || doctor?.display_name}</div>
+                                <div class="appointment-specialty">${doctor?.specialization || 'Specialist'}</div>
+                                <div class="appointment-meta">
+                                    <div class="appointment-meta-item">
+                                        <i class="fa-solid fa-video"></i>
+                                        Video Consultation
+                                    </div>
+                                    <div class="appointment-meta-item">
+                                        <i class="fa-solid fa-clock"></i>
+                                        30 minutes
+                                    </div>
+                                    ${isToday ? '<div class="appointment-meta-item" style="color: var(--color-primary);"><i class="fa-solid fa-star"></i> Today</div>' : ''}
+                                    ${isTomorrow ? '<div class="appointment-meta-item" style="color: var(--color-warning);"><i class="fa-solid fa-sun"></i> Tomorrow</div>' : ''}
+                                </div>
+                                ${apt.reason ? `<div style="font-size: 0.875rem; color: var(--color-text-secondary); margin-top: var(--space-2);"><strong>Reason:</strong> ${apt.reason}</div>` : ''}
+                                <span class="appointment-status ${statusClasses[apt.status] || 'pending'}">
+                                    <i class="fa-solid fa-circle" style="font-size: 0.5rem;"></i>
+                                    ${statusLabels[apt.status] || apt.status}
+                                </span>
+                            </div>
+                            
+                            <div class="appointment-actions">
+                                ${actions}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                // Add event listeners
+                document.querySelectorAll('.join-btn:not([disabled])').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        window.open(btn.dataset.meeting, '_blank');
+                    });
+                });
+                
+                document.querySelectorAll('.cancel-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        selectedAppointmentId = btn.dataset.id;
+                        document.getElementById('cancel-modal').classList.add('open');
+                    });
+                });
+                
+                document.querySelectorAll('.reschedule-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        selectedAppointmentId = btn.dataset.id;
+                        openRescheduleModal(btn.dataset.doctor);
+                    });
+                });
+            }
+            
+            // Reschedule modal
+            function openRescheduleModal(doctorId) {
+                const modal = document.getElementById('reschedule-modal');
+                const dateInput = document.getElementById('reschedule-date');
+                
+                // Set min date to tomorrow
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                dateInput.min = tomorrow.toISOString().split('T')[0];
+                dateInput.value = tomorrow.toISOString().split('T')[0];
+                
+                // Generate time slots
+                const slotsContainer = document.getElementById('reschedule-time-slots');
+                const defaultSlots = [];
+                for (let h = 9; h < 18; h++) {
+                    defaultSlots.push(`${h.toString().padStart(2, '0')}:00`);
+                    defaultSlots.push(`${h.toString().padStart(2, '0')}:30`);
+                }
+                
+                slotsContainer.innerHTML = defaultSlots.map(slot => {
+                    const hour = parseInt(slot.split(':')[0]);
+                    const minute = slot.split(':')[1];
+                    const ampm = hour >= 12 ? 'PM' : 'AM';
+                    const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+                    return `
+                        <div class="time-slot" data-time="${slot}" style="padding: var(--space-2); border: 1px solid var(--color-border); border-radius: var(--radius-md); text-align: center; cursor: pointer;">
+                            ${displayHour}:${minute} ${ampm}
+                        </div>
+                    `;
+                }).join('');
+                
+                // Time slot selection
+                slotsContainer.querySelectorAll('.time-slot').forEach(slot => {
+                    slot.addEventListener('click', () => {
+                        slotsContainer.querySelectorAll('.time-slot').forEach(s => {
+                            s.style.background = '';
+                            s.style.color = '';
+                            s.style.borderColor = 'var(--color-border)';
+                        });
+                        slot.style.background = 'var(--color-primary)';
+                        slot.style.color = 'white';
+                        slot.style.borderColor = 'var(--color-primary)';
+                    });
+                });
+                
+                modal.classList.add('open');
+            }
+            
+            // Confirm reschedule
+            document.getElementById('confirm-reschedule').addEventListener('click', async () => {
+                const date = document.getElementById('reschedule-date').value;
+                const selectedSlot = document.querySelector('#reschedule-time-slots .time-slot[style*="background"]');
+                
+                if (!date || !selectedSlot) {
+                    CognoNotifications?.toast?.warning('Please select a date and time');
+                    return;
+                }
+                
+                const time = selectedSlot.dataset.time;
+                const newScheduledAt = new Date(`${date}T${time}:00`);
+                
+                try {
+                    const { error } = await CognoSupabase.client
+                        .from('consultations')
+                        .update({ 
+                            scheduled_at: newScheduledAt.toISOString(),
+                            status: 'pending' // Reset to pending for re-confirmation
+                        })
+                        .eq('id', selectedAppointmentId);
+                    
+                    if (error) throw error;
+                    
+                    document.getElementById('reschedule-modal').classList.remove('open');
+                    CognoNotifications?.toast?.success('Appointment rescheduled successfully');
+                    await loadAppointments();
+                    
+                } catch (error) {
+                    console.error('Failed to reschedule:', error);
+                    CognoNotifications?.toast?.error('Failed to reschedule appointment');
+                }
+            });
+            
+            // Confirm cancel
+            document.getElementById('confirm-cancel').addEventListener('click', async () => {
+                const reason = document.getElementById('cancel-reason').value;
+                
+                try {
+                    const { error } = await CognoSupabase.client
+                        .from('consultations')
+                        .update({ 
+                            status: 'cancelled',
+                            cancelled_at: new Date().toISOString(),
+                            cancellation_reason: reason || null
+                        })
+                        .eq('id', selectedAppointmentId);
+                    
+                    if (error) throw error;
+                    
+                    document.getElementById('cancel-modal').classList.remove('open');
+                    document.getElementById('cancel-reason').value = '';
+                    CognoNotifications?.toast?.success('Appointment cancelled');
+                    await loadAppointments();
+                    
+                } catch (error) {
+                    console.error('Failed to cancel:', error);
+                    CognoNotifications?.toast?.error('Failed to cancel appointment');
+                }
+            });
+            
+            // Modal close handlers
+            document.querySelectorAll('.modal-overlay, .modal-close').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    e.target.closest('.modal').classList.remove('open');
+                });
+            });
+            
+            // Initialize
+            await loadAppointments();
+            await loadUnreadMessagesCount();
+            
+            // Load unread messages count for sidebar badge
+            async function loadUnreadMessagesCount() {
+                const badge = document.getElementById('unread-messages-badge');
+                if (!badge) return;
+                
+                try {
+                    const { count, error } = await CognoSupabase.client
+                        .from('messages')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('receiver_id', session.user.id)
+                        .eq('is_read', false);
+                    
+                    if (!error) {
+                        const unreadCount = count || 0;
+                        if (unreadCount > 0) {
+                            badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                            badge.style.display = 'flex';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Failed to load unread messages:', error);
+                }
+            }
+        });
+    </script>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../learn/index.html" class="nav-item">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../doctors/index.html" class="nav-item active">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

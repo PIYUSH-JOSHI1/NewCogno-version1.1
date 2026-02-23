@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Number Basics - Dyscalculia Module">
+    <title>Number Basics - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo"><i class="fa-solid fa-brain"></i><span>Cogno</span></a>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="../../dashboard/"><i class="fa-solid fa-home"></i><span>Dashboard</span></a></li>
+                    <li class="active"><a href="../../modules/dyscalculia/"><i class="fa-solid fa-calculator"></i><span>Dyscalculia</span></a></li>
+                    <li><a href="../../progress/"><i class="fa-solid fa-chart-line"></i><span>Progress</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <header class="activity-navbar">
+                <button class="back-btn" onclick="window.history.back()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="activity-title-group">
+                    <span class="activity-category">Dyscalculia</span>
+                    <h1 class="activity-name">Number Basics</h1>
+                </div>
+                <div class="activity-actions">
+                    <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+                </div>
+            </header>
+            
+            <header class="topbar hide-xs">
+                <button class="sidebar-toggle" id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
+                <nav class="breadcrumb">
+                    <a href="../../modules/dyscalculia/">Dyscalculia</a><span>/</span><span>Number Basics</span>
+                </nav>
+            </header>
+            
+            <div class="content-area">
+                <div class="activity-header hide-xs">
+                    <h1><i class="fa-solid fa-hashtag"></i> Number Basics</h1>
+                    <p>Learn number recognition and counting with visual aids</p>
+                </div>
+                
+                <!-- Number Line -->
+                <div class="card number-line-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-ruler-horizontal"></i> Number Line</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="number-line">
+                            <div class="number-point" data-value="0">0</div>
+                            <div class="number-point" data-value="1">1</div>
+                            <div class="number-point" data-value="2">2</div>
+                            <div class="number-point" data-value="3">3</div>
+                            <div class="number-point" data-value="4">4</div>
+                            <div class="number-point" data-value="5">5</div>
+                            <div class="number-point" data-value="6">6</div>
+                            <div class="number-point" data-value="7">7</div>
+                            <div class="number-point" data-value="8">8</div>
+                            <div class="number-point" data-value="9">9</div>
+                            <div class="number-point" data-value="10">10</div>
+                        </div>
+                        <p class="instruction">Click on a number to see it represented with objects</p>
+                    </div>
+                </div>
+                
+                <!-- Visual Representation -->
+                <div class="card visual-card">
+                    <div class="card-header">
+                        <h2 id="current-number-title">Number: <span id="selected-number">5</span></h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="objects-display" id="objects-display">
+                            <span class="object">🍎</span>
+                            <span class="object">🍎</span>
+                            <span class="object">🍎</span>
+                            <span class="object">🍎</span>
+                            <span class="object">🍎</span>
+                        </div>
+                        <div class="number-word">
+                            <span id="number-word">Five</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Counting Exercise -->
+                <div class="card exercise-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-question-circle"></i> Counting Exercise</h2>
+                        <span class="score-display">Score: <span id="score">0</span>/5</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="exercise-prompt">
+                            <p>How many objects do you see?</p>
+                            <div class="counting-objects" id="counting-objects">
+                                <span>🌟</span><span>🌟</span><span>🌟</span>
+                            </div>
+                        </div>
+                        <div class="answer-buttons" id="answer-buttons">
+                            <button class="number-btn" data-value="1">1</button>
+                            <button class="number-btn" data-value="2">2</button>
+                            <button class="number-btn" data-value="3">3</button>
+                            <button class="number-btn" data-value="4">4</button>
+                            <button class="number-btn" data-value="5">5</button>
+                        </div>
+                        <div class="feedback" id="feedback"></div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary" id="next-question">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <style>
+        .activity-navbar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-title-group { text-align: center; }
+        .activity-category { font-size: 0.7rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+        .activity-name { font-size: 0.9rem; font-weight: 700; color: var(--color-text); margin: 0; }
+        .back-btn, .action-btn { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text); }
+
+        /* Mobile Navigation Styles */
+        @media (max-width: 1024px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 0 !important; }
+            .content-area { padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+            .number-point { width: 30px !important; height: 30px !important; font-size: 0.8rem !important; }
+            .object { font-size: 2rem !important; }
+            .counting-objects { font-size: 2rem !important; }
+            .number-btn { width: 45px !important; height: 45px !important; font-size: 1.1rem !important; }
+            .number-word { font-size: 1.5rem !important; }
+            .activity-navbar { display: flex !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-header { margin-bottom: var(--space-6); }
+        .activity-header h1 { font-size: 1.5rem; margin-bottom: var(--space-1); }
+        .activity-header p { color: var(--color-text-secondary); }
+        
+        .number-line-card { margin-bottom: var(--space-6); }
+        .number-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4);
+            background: linear-gradient(to right, var(--color-primary-100), var(--color-success-100));
+            border-radius: var(--radius-lg);
+            position: relative;
+        }
+        .number-line::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            right: 5%;
+            height: 4px;
+            background: var(--color-primary);
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+        .number-point {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 3px solid var(--color-primary);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+        .number-point:hover, .number-point.active {
+            background: var(--color-primary);
+            color: white;
+            transform: scale(1.2);
+        }
+        .instruction { text-align: center; margin-top: var(--space-4); color: var(--color-text-secondary); }
+        
+        .visual-card { margin-bottom: var(--space-6); text-align: center; }
+        .objects-display {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: var(--space-3);
+            padding: var(--space-6);
+            min-height: 100px;
+        }
+        .object { font-size: 3rem; animation: pop 0.3s ease-out; }
+        @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        .number-word { font-size: 2rem; font-weight: 700; color: var(--color-primary); }
+        
+        .exercise-card { margin-bottom: var(--space-6); }
+        .score-display { font-weight: 600; color: var(--color-primary); }
+        .exercise-prompt { text-align: center; margin-bottom: var(--space-4); }
+        .exercise-prompt p { font-size: 1.125rem; margin-bottom: var(--space-4); }
+        .counting-objects { font-size: 3rem; display: flex; justify-content: center; gap: var(--space-2); }
+        .answer-buttons {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-3);
+            margin: var(--space-6) 0;
+        }
+        .number-btn {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--color-surface);
+        }
+        .number-btn:hover { border-color: var(--color-primary); background: var(--color-primary-100); }
+        .number-btn.correct { background: var(--color-success); color: white; border-color: var(--color-success); }
+        .number-btn.incorrect { background: var(--color-error); color: white; border-color: var(--color-error); }
+        .feedback { text-align: center; font-size: 1.25rem; font-weight: 600; min-height: 30px; }
+        .feedback.correct { color: var(--color-success); }
+        .feedback.incorrect { color: var(--color-error); }
+    </style>
+    
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const numberWords = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+        const emojis = ['🍎', '🌟', '🎈', '🐱', '🌻', '🚀', '🎨', '📚'];
+        let score = 0, currentAnswer = 3;
+        
+        // Number line interaction
+        document.querySelectorAll('.number-point').forEach(point => {
+            point.addEventListener('click', () => {
+                document.querySelectorAll('.number-point').forEach(p => p.classList.remove('active'));
+                point.classList.add('active');
+                const num = parseInt(point.dataset.value);
+                displayNumber(num);
+            });
+        });
+        
+        function displayNumber(num) {
+            document.getElementById('selected-number').textContent = num;
+            document.getElementById('number-word').textContent = numberWords[num];
+            const display = document.getElementById('objects-display');
+            const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+            display.innerHTML = Array(num).fill(`<span class="object">${emoji}</span>`).join('');
+        }
+        
+        // Generate counting question
+        function generateQuestion() {
+            currentAnswer = Math.floor(Math.random() * 5) + 1;
+            const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+            document.getElementById('counting-objects').innerHTML = Array(currentAnswer).fill(`<span>${emoji}</span>`).join('');
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+            document.querySelectorAll('.number-btn').forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+                btn.disabled = false;
+            });
+        }
+        
+        // Check answer
+        document.querySelectorAll('.number-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const value = parseInt(btn.dataset.value);
+                document.querySelectorAll('.number-btn').forEach(b => b.disabled = true);
+                if (value === currentAnswer) {
+                    btn.classList.add('correct');
+                    document.getElementById('feedback').textContent = '🎉 Correct!';
+                    document.getElementById('feedback').className = 'feedback correct';
+                    score++;
+                    document.getElementById('score').textContent = score;
+                } else {
+                    btn.classList.add('incorrect');
+                    document.querySelector(`[data-value="${currentAnswer}"]`).classList.add('correct');
+                    document.getElementById('feedback').textContent = `The answer was ${currentAnswer}`;
+                    document.getElementById('feedback').className = 'feedback incorrect';
+                }
+            });
+        });
+        
+        document.getElementById('next-question')?.addEventListener('click', generateQuestion);
+        document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar')?.classList.toggle('collapsed');
+        });
+        
+        generateQuestion();
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

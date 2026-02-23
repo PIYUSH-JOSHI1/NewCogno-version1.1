@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Multiplication - Learn multiplication with visual blocks">
+    <title>Multiplication - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <!-- Supabase and Activity Tracker -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 1024px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+            .activity-navbar { display: flex !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-content {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .activity-navbar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-title-group { text-align: center; }
+        .activity-category { font-size: 0.7rem; font-weight: 700; color: var(--color-dyscalculia); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+        .activity-name { font-size: 0.9rem; font-weight: 700; color: var(--color-text); margin: 0; }
+        .back-btn, .action-btn { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-text); }
+
+        @media (max-width: 1024px) {
+            .activity-container { padding: 0 !important; }
+            .activity-content { padding: 1.5rem 1rem !important; }
+            .hide-xs { display: none !important; }
+            .equation { font-size: 1.75rem !important; margin-bottom: 1.5rem !important; }
+            .math-area { padding: 1.5rem !important; width: 100% !important; }
+            .array-item { width: 30px !important; height: 30px !important; font-size: 0.9rem !important; }
+            .array-box { padding: 10px !important; gap: 4px !important; }
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dyscalculia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        .math-area {
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 40px;
+            border: 3px solid var(--color-dyscalculia);
+        }
+        
+        .equation {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-dyscalculia);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .array-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .array-box {
+            display: inline-grid;
+            gap: 8px;
+            padding: 20px;
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: 12px;
+        }
+        
+        .array-item {
+            width: 40px;
+            height: 40px;
+            background: var(--color-dyscalculia);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .answer-section {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid var(--color-dyscalculia);
+        }
+        
+        .answer-question {
+            font-size: 1.2rem;
+            color: var(--color-text);
+            margin-bottom: 15px;
+        }
+        
+        .answer-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .answer-btn {
+            padding: 12px 24px;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .answer-btn:hover {
+            border-color: var(--color-dyscalculia);
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        .answer-btn.correct {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+        
+        .answer-btn.incorrect {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyscalculia</span>
+                <h1 class="activity-name">Multiplication</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <div class="activity-content">
+            <div class="activity-header hide-xs">
+                <h1><i class="fa-solid fa-calculator"></i> Multiplication</h1>
+                <button class="button-control" id="backBtn">
+                    <i class="fa-solid fa-arrow-left"></i> Back
+                </button>
+            </div>
+        
+        <div class="game-content">
+            <div class="math-area">
+                <div class="equation" id="equation">3 × 4 = ?</div>
+                
+                <div class="array-container">
+                    <div class="array-box" id="arrayBox"></div>
+                </div>
+                
+                <div class="answer-section">
+                    <div class="answer-question">How many items are there?</div>
+                    <div class="answer-options" id="options"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const problems = [
+            { rows: 2, cols: 3 },
+            { rows: 3, cols: 4 },
+            { rows: 4, cols: 2 },
+            { rows: 3, cols: 5 },
+            { rows: 4, cols: 4 }
+        ];
+        
+        let currentIndex = 0;
+        let score = 0;
+        
+        const equation = document.getElementById('equation');
+        const arrayBox = document.getElementById('arrayBox');
+        const optionsDiv = document.getElementById('options');
+        const backBtn = document.getElementById('backBtn');
+        
+        function displayProblem(index) {
+            const problem = problems[index];
+            const answer = problem.rows * problem.cols;
+            
+            equation.textContent = `${problem.rows} × ${problem.cols} = ?`;
+            
+            // Create array
+            arrayBox.innerHTML = '';
+            arrayBox.style.gridTemplateColumns = `repeat(${problem.cols}, 1fr)`;
+            arrayBox.style.gridTemplateRows = `repeat(${problem.rows}, 1fr)`;
+            
+            for (let i = 0; i < answer; i++) {
+                const item = document.createElement('div');
+                item.className = 'array-item';
+                item.textContent = i + 1;
+                arrayBox.appendChild(item);
+            }
+            
+            // Create options
+            optionsDiv.innerHTML = '';
+            const wrongAnswers = [
+                answer - 2,
+                answer + 2,
+                answer - 1
+            ].filter(n => n > 0 && n !== answer);
+            
+            const options = [answer, ...wrongAnswers].sort(() => Math.random() - 0.5).slice(0, 4);
+            
+            options.forEach(num => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = num;
+                btn.addEventListener('click', () => checkAnswer(num, answer));
+                optionsDiv.appendChild(btn);
+            });
+        }
+        
+        function checkAnswer(selected, correct) {
+            const buttons = document.querySelectorAll('.answer-btn');
+            
+            buttons.forEach(btn => {
+                if (parseInt(btn.textContent) === selected) {
+                    if (selected === correct) {
+                        btn.classList.add('correct');
+                        score += 10;
+                    } else {
+                        btn.classList.add('incorrect');
+                    }
+                } else if (parseInt(btn.textContent) === correct) {
+                    btn.classList.add('correct');
+                }
+                btn.disabled = true;
+            });
+            
+            if (selected === correct) {
+                CognoNotifications?.toast?.success('Perfect! Great multiplication!');
+            } else {
+                CognoNotifications?.toast?.error(`The correct answer is ${correct}`);
+            }
+            
+            setTimeout(async () => {
+                if (currentIndex < problems.length - 1) {
+                    currentIndex++;
+                    displayProblem(currentIndex);
+                } else {
+                    CognoNotifications?.toast?.success(`Multiplication Complete! Score: ${score}`);
+                    // Save activity to Supabase
+                    await CognoTracker.saveActivity({
+                        moduleId: 'dyscalculia',
+                        activityId: 'multiplication',
+                        score: score,
+                        maxScore: problems.length * 10,
+                        metadata: { problemsCompleted: problems.length }
+                    });
+                }
+            }, 1500);
+        }
+        
+        backBtn.addEventListener('click', () => {
+            window.history.back();
+        });
+        
+        displayProblem(0);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

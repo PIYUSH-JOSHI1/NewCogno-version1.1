@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Progress Tracking - Cogno Solution">
+    <title>My Progress - Cogno Solution</title>
+    
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <link rel="stylesheet" href="../css/mobile-nav.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        @media (max-width: 768px) {
+            body, .app-container {
+                padding-bottom: calc(var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px) + 16px);
+            }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            
+            .progress-hero-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 2rem;
+            }
+            
+            .progress-stats {
+                grid-template-columns: repeat(2, 1fr) !important;
+                width: 100%;
+            }
+            
+            .stat-item {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .modules-grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .topbar {
+                padding: 0 1rem;
+            }
+            
+            .chart-card .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .progress-stats {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .stat-item {
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 0.75rem;
+                background: var(--bg-secondary);
+                border-radius: var(--radius-md);
+            }
+        }
+        
+        /* bottom-nav visible on all screens */
+    </style>
+</head>
+<body class="has-sidebar">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+                <span class="sidebar-brand">Cogno Solution</span>
+                <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <a href="../dashboard/child-dashboard.html" class="sidebar-link">
+                            <i class="fa-solid fa-house"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">Learning Modules</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="../modules/dyslexia/" class="sidebar-link">
+                            <i class="fa-solid fa-book-open" style="color: var(--color-dyslexia);"></i>
+                            <span>Reading &amp; Words</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../modules/dyscalculia/" class="sidebar-link">
+                            <i class="fa-solid fa-calculator" style="color: var(--color-dyscalculia);"></i>
+                            <span>Numbers &amp; Math</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../modules/dysgraphia/" class="sidebar-link">
+                            <i class="fa-solid fa-pen" style="color: var(--color-dysgraphia);"></i>
+                            <span>Writing Practice</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../modules/dyspraxia/" class="sidebar-link">
+                            <i class="fa-solid fa-person-running" style="color: var(--color-dyspraxia);"></i>
+                            <span>Movement Games</span>
+                        </a>
+                    </li>
+                    
+                    <li class="sidebar-section">More</li>
+                    
+                    <li class="sidebar-item">
+                        <a href="../learning-hub/" class="sidebar-link">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span>Learning Hub</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item active">
+                        <a href="../progress/" class="sidebar-link">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>My Progress</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../profile/" class="sidebar-link">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="../settings/" class="sidebar-link">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="sidebar-link" id="tts-toggle" aria-label="Toggle text-to-speech">
+                    <i class="fa-solid fa-volume-high"></i>
+                    <span>Read Aloud</span>
+                </button>
+                <button class="sidebar-link" id="logout-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation -->
+            <header class="navbar">
+                <div class="navbar-left">
+                    <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">My Progress</h1>
+                </div>
+                
+                <div class="navbar-right">
+                    <!-- Export Button -->
+                    <button class="btn btn-primary btn-sm" onclick="ProgressTracker.exportReport()" style="gap: 0.5rem;">
+                        <i class="fa-solid fa-file-export"></i> Share Report
+                    </button>
+
+                    <!-- Time Range Filter -->
+                    <select id="time-range" class="form-select" style="min-width: 130px; font-size: 0.875rem;">
+                        <option value="week">This Week</option>
+                        <option value="month" selected>This Month</option>
+                        <option value="year">This Year</option>
+                        <option value="all">All Time</option>
+                    </select>
+
+                    <!-- Accessibility Toggle -->
+                    <button class="btn btn-ghost btn-icon" id="accessibility-btn" title="Accessibility options">
+                        <i class="fa-solid fa-universal-access"></i>
+                    </button>
+                    
+                    <!-- Settings Quick Link -->
+                    <a href="../settings/" class="btn btn-ghost btn-icon" title="Settings">
+                        <i class="fa-solid fa-gear"></i>
+                    </a>
+
+                    <!-- Dark Mode Toggle -->
+                    <button class="btn btn-ghost btn-icon" id="dark-mode-toggle" title="Toggle dark mode">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+
+                    <!-- Notifications -->
+                    <div class="dropdown">
+                        <button class="btn btn-ghost btn-icon notification-btn" id="notification-btn">
+                            <i class="fa-solid fa-bell"></i>
+                            <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                        </button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="dropdown">
+                        <button class="user-menu-btn" id="user-menu-btn">
+                            <div class="avatar avatar-sm" id="user-avatar">
+                                <img src="../assets/images/avatars/default.svg" alt="User avatar" id="user-avatar-img">
+                            </div>
+                            <span class="user-name" id="user-name">Loading...</span>
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="user-dropdown">
+                            <a href="../profile/" class="dropdown-item">
+                                <i class="fa-solid fa-user"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <a href="../settings/" class="dropdown-item">
+                                <i class="fa-solid fa-gear"></i>
+                                <span>Settings</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" id="dropdown-logout">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                <span>Sign Out</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content-area">
+                <!-- Overall Progress Summary -->
+                <div class="progress-hero card">
+                    <div class="progress-hero-content">
+                        <div class="overall-progress">
+                            <div class="circular-progress" id="overall-progress-circle">
+                                <svg viewBox="0 0 100 100">
+                                    <circle class="bg" cx="50" cy="50" r="45"></circle>
+                                    <circle class="progress" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="79"></circle>
+                                </svg>
+                                <div class="progress-value">72%</div>
+                            </div>
+                            <div class="progress-label">Overall Progress</div>
+                        </div>
+                        <div class="progress-stats">
+                            <div class="stat-item">
+                                <i class="fa-solid fa-trophy"></i>
+                                <div>
+                                    <span class="stat-value">156</span>
+                                    <span class="stat-label">Activities Completed</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fa-solid fa-clock"></i>
+                                <div>
+                                    <span class="stat-value">24.5h</span>
+                                    <span class="stat-label">Total Learning Time</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fa-solid fa-fire"></i>
+                                <div>
+                                    <span class="stat-value">12</span>
+                                    <span class="stat-label">Day Streak</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fa-solid fa-star"></i>
+                                <div>
+                                    <span class="stat-value">2,450</span>
+                                    <span class="stat-label">Points Earned</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Progress Chart -->
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-chart-area"></i> Progress Over Time</h2>
+                        <div class="chart-legend" id="chart-legend"></div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="progress-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Module Breakdown -->
+                <div class="modules-progress">
+                    <h2><i class="fa-solid fa-puzzle-piece"></i> Module Progress</h2>
+                    <div class="modules-grid">
+                        <div class="module-progress-card dyslexia">
+                            <div class="module-header">
+                                <div class="module-icon">
+                                    <i class="fa-solid fa-book-reader"></i>
+                                </div>
+                                <h3>Dyslexia</h3>
+                            </div>
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 80 80">
+                                    <circle class="bg" cx="40" cy="40" r="35"></circle>
+                                    <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="55"></circle>
+                                </svg>
+                                <span>75%</span>
+                            </div>
+                            <div class="module-stats">
+                                <span><i class="fa-solid fa-check"></i> 45 activities</span>
+                                <span><i class="fa-solid fa-clock"></i> 8.2h</span>
+                            </div>
+                            <a href="../modules/dyslexia/" class="btn btn-sm btn-outline">View Details</a>
+                        </div>
+                        
+                        <div class="module-progress-card dyscalculia">
+                            <div class="module-header">
+                                <div class="module-icon">
+                                    <i class="fa-solid fa-calculator"></i>
+                                </div>
+                                <h3>Dyscalculia</h3>
+                            </div>
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 80 80">
+                                    <circle class="bg" cx="40" cy="40" r="35"></circle>
+                                    <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="88"></circle>
+                                </svg>
+                                <span>60%</span>
+                            </div>
+                            <div class="module-stats">
+                                <span><i class="fa-solid fa-check"></i> 38 activities</span>
+                                <span><i class="fa-solid fa-clock"></i> 6.5h</span>
+                            </div>
+                            <a href="../modules/dyscalculia/" class="btn btn-sm btn-outline">View Details</a>
+                        </div>
+                        
+                        <div class="module-progress-card dysgraphia">
+                            <div class="module-header">
+                                <div class="module-icon">
+                                    <i class="fa-solid fa-pen"></i>
+                                </div>
+                                <h3>Dysgraphia</h3>
+                            </div>
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 80 80">
+                                    <circle class="bg" cx="40" cy="40" r="35"></circle>
+                                    <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="44"></circle>
+                                </svg>
+                                <span>80%</span>
+                            </div>
+                            <div class="module-stats">
+                                <span><i class="fa-solid fa-check"></i> 52 activities</span>
+                                <span><i class="fa-solid fa-clock"></i> 5.8h</span>
+                            </div>
+                            <a href="../modules/dysgraphia/" class="btn btn-sm btn-outline">View Details</a>
+                        </div>
+                        
+                        <div class="module-progress-card dyspraxia">
+                            <div class="module-header">
+                                <div class="module-icon">
+                                    <i class="fa-solid fa-person-walking"></i>
+                                </div>
+                                <h3>Dyspraxia</h3>
+                            </div>
+                            <div class="progress-ring">
+                                <svg viewBox="0 0 80 80">
+                                    <circle class="bg" cx="40" cy="40" r="35"></circle>
+                                    <circle class="progress" cx="40" cy="40" r="35" stroke-dasharray="220" stroke-dashoffset="66"></circle>
+                                </svg>
+                                <span>70%</span>
+                            </div>
+                            <div class="module-stats">
+                                <span><i class="fa-solid fa-check"></i> 21 activities</span>
+                                <span><i class="fa-solid fa-clock"></i> 4.0h</span>
+                            </div>
+                            <a href="../modules/dyspraxia/" class="btn btn-sm btn-outline">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-history"></i> Recent Activity</h2>
+                        <a href="#" class="btn btn-ghost btn-sm">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="activity-timeline" id="activity-timeline">
+                            <div class="activity-item">
+                                <div class="activity-icon success">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Completed "Letter Recognition" activity</h4>
+                                    <p>Dyslexia Module • Score: 95%</p>
+                                    <span class="activity-time">2 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon primary">
+                                    <i class="fa-solid fa-trophy"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Earned "Quick Learner" badge</h4>
+                                    <p>Completed 5 activities in one day</p>
+                                    <span class="activity-time">5 hours ago</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon info">
+                                    <i class="fa-solid fa-play"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Started "Number Patterns" activity</h4>
+                                    <p>Dyscalculia Module</p>
+                                    <span class="activity-time">Yesterday</span>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon success">
+                                    <i class="fa-solid fa-star"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Reached Level 5 in Writing exercises</h4>
+                                    <p>Dysgraphia Module</p>
+                                    <span class="activity-time">2 days ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Achievements -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-medal"></i> Recent Achievements</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="achievements-grid">
+                            <div class="achievement-badge earned">
+                                <div class="badge-icon">
+                                    <i class="fa-solid fa-fire"></i>
+                                </div>
+                                <span>7-Day Streak</span>
+                            </div>
+                            <div class="achievement-badge earned">
+                                <div class="badge-icon">
+                                    <i class="fa-solid fa-book"></i>
+                                </div>
+                                <span>Bookworm</span>
+                            </div>
+                            <div class="achievement-badge earned">
+                                <div class="badge-icon">
+                                    <i class="fa-solid fa-bolt"></i>
+                                </div>
+                                <span>Quick Learner</span>
+                            </div>
+                            <div class="achievement-badge locked">
+                                <div class="badge-icon">
+                                    <i class="fa-solid fa-crown"></i>
+                                </div>
+                                <span>Master</span>
+                            </div>
+                            <div class="achievement-badge locked">
+                                <div class="badge-icon">
+                                    <i class="fa-solid fa-gem"></i>
+                                </div>
+                                <span>Perfectionist</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../auth/auth.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./progress.js"></script>
+    
+    <style>
+        .time-select {
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-surface);
+        }
+        
+        .progress-hero {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: white;
+        }
+        
+        .progress-hero-content {
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+            padding: var(--space-6);
+        }
+        
+        .overall-progress {
+            text-align: center;
+        }
+        
+        .circular-progress {
+            width: 150px;
+            height: 150px;
+            position: relative;
+        }
+        
+        .circular-progress svg {
+            transform: rotate(-90deg);
+        }
+        
+        .circular-progress circle {
+            fill: none;
+            stroke-width: 8;
+        }
+        
+        .circular-progress .bg {
+            stroke: rgba(255,255,255,0.2);
+        }
+        
+        .circular-progress .progress {
+            stroke: white;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s;
+        }
+        
+        .progress-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .progress-label {
+            margin-top: var(--space-2);
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .progress-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-4);
+            flex: 1;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-4);
+            background: rgba(255,255,255,0.1);
+            border-radius: var(--radius-lg);
+        }
+        
+        .stat-item i {
+            font-size: 1.5rem;
+        }
+        
+        .stat-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        .chart-card {
+            margin-top: var(--space-6);
+        }
+        
+        .chart-container {
+            height: 300px;
+        }
+        
+        .modules-progress {
+            margin-top: var(--space-6);
+        }
+        
+        .modules-progress h2 {
+            margin-bottom: var(--space-4);
+        }
+        
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-4);
+        }
+        
+        .module-progress-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+        }
+        
+        .module-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+        
+        .module-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .dyslexia .module-icon { background: var(--color-primary-100); color: var(--color-primary); }
+        .dyscalculia .module-icon { background: var(--color-success-100); color: var(--color-success); }
+        .dysgraphia .module-icon { background: var(--color-warning-100); color: var(--color-warning); }
+        .dyspraxia .module-icon { background: var(--color-info-100); color: var(--color-info); }
+        
+        .progress-ring {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--space-4);
+        }
+        
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 6;
+        }
+        
+        .progress-ring .bg {
+            stroke: var(--color-border);
+        }
+        
+        .dyslexia .progress-ring .progress { stroke: var(--color-primary); }
+        .dyscalculia .progress-ring .progress { stroke: var(--color-success); }
+        .dysgraphia .progress-ring .progress { stroke: var(--color-warning); }
+        .dyspraxia .progress-ring .progress { stroke: var(--color-info); }
+        
+        .progress-ring span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .module-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .activity-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .activity-item {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .activity-icon.success { background: var(--color-success-100); color: var(--color-success); }
+        .activity-icon.primary { background: var(--color-primary-100); color: var(--color-primary); }
+        .activity-icon.info { background: var(--color-info-100); color: var(--color-info); }
+        
+        .activity-content h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .activity-content p {
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .activity-time {
+            font-size: 0.7rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .achievements-grid {
+            display: flex;
+            gap: var(--space-4);
+            flex-wrap: wrap;
+        }
+        
+        .achievement-badge {
+            text-align: center;
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            min-width: 100px;
+        }
+        
+        .achievement-badge.earned {
+            background: var(--color-primary-100);
+        }
+        
+        .achievement-badge.locked {
+            background: var(--color-background);
+            opacity: 0.5;
+        }
+        
+        .badge-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-full);
+            background: var(--color-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-2);
+            font-size: 1.25rem;
+        }
+        
+        .achievement-badge.locked .badge-icon {
+            background: var(--color-border);
+        }
+        
+        .achievement-badge span {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+    </style>
+    
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize sidebar
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarClose = document.getElementById('sidebar-close');
+            
+            sidebarToggle?.addEventListener('click', () => sidebar?.classList.toggle('open'));
+            sidebarClose?.addEventListener('click', () => sidebar?.classList.remove('open'));
+            
+            // Initialize dark mode
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const savedTheme = localStorage.getItem('cogno-theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                if (darkModeToggle) darkModeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+            
+            darkModeToggle?.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('cogno-theme', isDark ? 'dark' : 'light');
+                darkModeToggle.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+            });
+            
+            // Initialize user menu dropdown
+            const userMenuBtn = document.getElementById('user-menu-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            
+            userMenuBtn?.addEventListener('click', () => {
+                userDropdown?.classList.toggle('show');
+            });
+            
+            // Close dropdowns on outside click
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => menu.classList.remove('show'));
+                }
+            });
+            
+            // Check auth and update user display
+            try {
+                const { session } = await CognoSupabase.getSession();
+                if (session) {
+                    const user = session.user;
+                    const navUserName = document.getElementById('user-name');
+                    const navAvatarImg = document.getElementById('user-avatar-img');
+                    const userMeta = user.user_metadata;
+                    
+                    if (navUserName) {
+                        navUserName.textContent = userMeta?.full_name || user.email?.split('@')[0] || 'User';
+                    }
+                    if (navAvatarImg && userMeta?.avatar_url) {
+                        navAvatarImg.src = userMeta.avatar_url;
+                    }
+                }
+            } catch (err) {
+                console.error('Auth check failed:', err);
+            }
+            
+            // Logout
+            const logoutBtns = document.querySelectorAll('#logout-btn, #dropdown-logout');
+            logoutBtns.forEach(btn => {
+                btn?.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to sign out?')) {
+                        await CognoSupabase.signOut();
+                        window.location.href = CognoPaths.auth.login();
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../learn/index.html" class="nav-item">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="index.html" class="nav-item active">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

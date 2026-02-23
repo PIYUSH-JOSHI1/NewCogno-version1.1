@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track the Path - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        .game-area { background: var(--color-surface); border-radius: var(--radius-2xl); border: 2px solid var(--color-border); box-shadow: var(--shadow-xl); padding: 40px; max-width: 700px; width: 100%; margin: 0 auto; }
+        canvas { background: #1a1a2e; border-radius: var(--radius-lg); border: 2px solid var(--color-border); cursor: crosshair; display: block; margin: 0 auto; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Track Path</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">🌀 Track the Path</h1>
+                </div>
+                <p class="text-gray-500">Trace the paths without going outside the lines. Tests spatial awareness and motor control.</p>
+            </div>
+
+            <div class="game-area">
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="card p-4 text-center bg-primary/5 border-primary/20">
+                        <div class="text-2xl font-bold text-primary" id="pathScore">0</div>
+                        <div class="text-xs opacity-60 uppercase">Paths Done</div>
+                    </div>
+                    <div class="card p-4 text-center bg-orange-500/5 border-orange-500/20">
+                        <div class="text-2xl font-bold text-orange-500" id="accuracy">100%</div>
+                        <div class="text-xs opacity-60 uppercase">Accuracy</div>
+                    </div>
+                    <div class="card p-4 text-center bg-blue-500/5 border-blue-500/20">
+                        <div class="text-2xl font-bold text-blue-600" id="gameTimer">0.0s</div>
+                        <div class="text-xs opacity-60 uppercase">Time</div>
+                    </div>
+                </div>
+
+                <div class="bg-surface-variant p-3 rounded-xl text-center mb-4 text-sm" id="progress">
+                    Press "Start" to begin tracing!
+                </div>
+
+                <canvas id="gameCanvas" width="600" height="400" class="w-full h-auto"></canvas>
+
+                <div class="flex gap-4 justify-center mt-8">
+                    <button id="startBtn" class="btn btn-primary btn-lg w-full">🎮 Start Tracing</button>
+                    <button id="resetBtn" class="btn btn-ghost btn-lg w-full hidden">🔄 Reset</button>
+                </div>
+
+                <div class="mt-8 opacity-60 text-xs italic text-center">
+                    Drag your mouse or finger from the green start point to the orange end point.
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+            drawPath();
+        });
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const scoreDisplay = document.getElementById('pathScore');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const timerDisplay = document.getElementById('gameTimer');
+        const progressDisplay = document.getElementById('progress');
+
+        let gameActive = false, score = 0, pathIndex = 0, startTime = 0, userPath = [], isTracing = false, errorDist = 0, totalDist = 0;
+
+        const pathGenerators = [
+            () => { let p=[]; for(let x=50; x<550; x+=5) p.push({x, y: 200 + Math.sin((x-50)/40)*70}); return p; },
+            () => { let p=[]; for(let a=0; a<Math.PI*6; a+=0.1) p.push({x: 300+Math.cos(a)*(15+a*12), y: 200+Math.sin(a)*(15+a*12)}); return p; },
+            () => { let p=[]; for(let a=0; a<Math.PI*2; a+=0.05) p.push({x: 300+Math.cos(a)*180, y: 200+Math.sin(a)*120}); return p; }
+        ];
+
+        function drawPath() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const p = pathGenerators[pathIndex]();
+            
+            // Background Path
+            ctx.strokeStyle = '#2d3748'; ctx.lineWidth = 14; ctx.lineCap='round'; ctx.beginPath();
+            ctx.moveTo(p[0].x, p[0].y); p.forEach(pt => ctx.lineTo(pt.x, pt.y)); ctx.stroke();
+            
+            // Target
+            ctx.strokeStyle = '#48bb78'; ctx.lineWidth = 8; ctx.lineCap='round'; ctx.beginPath();
+            ctx.moveTo(p[0].x, p[0].y); p.forEach(pt => ctx.lineTo(pt.x, pt.y)); ctx.stroke();
+
+            // User
+            if(userPath.length > 0) {
+                ctx.strokeStyle = '#4299e1'; ctx.lineWidth = 4; ctx.beginPath();
+                ctx.moveTo(userPath[0].x, userPath[0].y); userPath.forEach(pt => ctx.lineTo(pt.x, pt.y)); ctx.stroke();
+            }
+
+            // Points
+            ctx.fillStyle = '#48bb78'; ctx.beginPath(); ctx.arc(p[0].x, p[0].y, 10, 0, 7); ctx.fill();
+            ctx.fillStyle = '#ed8936'; ctx.beginPath(); ctx.arc(p[p.length-1].x, p[p.length-1].y, 10, 0, 7); ctx.fill();
+        }
+
+        function getPos(e) {
+            const r = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: (clientX - r.left) * (canvas.width / r.width), y: (clientY - r.top) * (canvas.height / r.height) };
+        }
+
+        canvas.addEventListener('mousedown', (e) => { if(gameActive) { isTracing = true; userPath = [getPos(e)]; } });
+        canvas.addEventListener('mousemove', (e) => {
+            if(!isTracing || !gameActive) return;
+            const pos = getPos(e); userPath.push(pos);
+            const pts = pathGenerators[pathIndex]();
+            let min = Infinity; pts.forEach(p => min = Math.min(min, Math.hypot(pos.x-p.x, pos.y-p.y)));
+            if(min > 20) errorDist += min; totalDist++;
+            accuracyDisplay.textContent = Math.max(0, Math.round(100 - (errorDist/(totalDist||1))*2)) + '%';
+            drawPath();
+        });
+        window.addEventListener('mouseup', () => {
+            if(!isTracing) return; isTracing = false;
+            const pts = pathGenerators[pathIndex]();
+            const last = userPath[userPath.length-1];
+            if(Math.hypot(last.x - pts[pts.length-1].x, last.y - pts[pts.length-1].y) < 30) {
+                score++; scoreDisplay.textContent = score;
+                if(pathIndex < 2) { pathIndex++; userPath = []; CognoNotifications?.toast?.success('Path complete!'); drawPath(); }
+                else finishGame();
+            }
+        });
+
+        function finishGame() {
+            gameActive = false;
+            CognoNotifications?.toast?.success(`Tracing complete! Score: ${score}/3`);
+            CognoTracker?.saveActivity({ moduleId: 'dyspraxia', activityId: 'track-path', score: Math.round(parseInt(accuracyDisplay.textContent) * score/3), maxScore: 100 });
+            startBtn.classList.remove('hidden'); resetBtn.classList.add('hidden');
+        }
+
+        startBtn.addEventListener('click', () => {
+            gameActive = true; startTime = Date.now(); score = 0; pathIndex = 0; userPath = []; errorDist = 0; totalDist = 0;
+            startBtn.classList.add('hidden'); resetBtn.classList.remove('hidden');
+            setInterval(() => { if(gameActive) timerDisplay.textContent = ((Date.now()-startTime)/1000).toFixed(1) + 's'; }, 100);
+            drawPath();
+        });
+        resetBtn.addEventListener('click', () => location.reload());
+    </script>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

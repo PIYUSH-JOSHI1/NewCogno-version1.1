@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Letter Match - Match uppercase with lowercase letters">
+    <title>Letter Match - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <!-- Supabase and Activity Tracker -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dyslexia);
+            margin: 0;
+            flex: 1;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .button-control:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+        
+        .stats {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .stat-box {
+            text-align: center;
+        }
+        
+        .stat-box label {
+            display: block;
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        
+        .stat-box .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-dyslexia);
+        }
+        
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            flex: 1;
+            align-items: center;
+            justify-items: center;
+        }
+        
+        .letter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .letter-group h3 {
+            font-size: 1.2rem;
+            color: var(--color-text);
+            margin: 0;
+        }
+        
+        .letters-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 15px;
+        }
+        
+        .letter-btn {
+            width: 100px;
+            height: 100px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            border: 3px solid var(--color-border);
+            border-radius: 12px;
+            background: var(--color-surface);
+            color: var(--color-text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .letter-btn:hover:not(.matched) {
+            border-color: var(--color-dyslexia);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.2);
+        }
+        
+        .letter-btn.matched {
+            background: var(--color-dyslexia);
+            color: white;
+            border-color: var(--color-dyslexia);
+            cursor: default;
+        }
+        
+        .letter-btn.selected {
+            border-color: var(--color-dyslexia);
+            background: rgba(0, 102, 204, 0.1);
+        }
+        
+        @media (max-width: 1024px) {
+            .game-area {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Letter Match</h1>
+    </header>
+
+    <div class="activity-container">
+        <div class="activity-header">
+            <h1><i class="fa-solid fa-font"></i> Letter Match</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <label>Score</label>
+                <div class="value" id="score">0</div>
+            </div>
+            <div class="stat-box">
+                <label>Matched</label>
+                <div class="value" id="matched">0/13</div>
+            </div>
+            <div class="stat-box">
+                <label>Time</label>
+                <div class="value" id="timer">00:00</div>
+            </div>
+        </div>
+        
+        <div class="game-area">
+            <div class="letter-group">
+                <h3>Uppercase</h3>
+                <div class="letters-grid" id="uppercaseLetters"></div>
+            </div>
+            
+            <div class="letter-group">
+                <h3>Lowercase</h3>
+                <div class="letters-grid" id="lowercaseLetters"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../js/notifications.js"></script>
+    
+    <script>
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
+        const uppercaseContainer = document.getElementById('uppercaseLetters');
+        const lowercaseContainer = document.getElementById('lowercaseLetters');
+        const scoreDisplay = document.getElementById('score');
+        const matchedDisplay = document.getElementById('matched');
+        const timerDisplay = document.getElementById('timer');
+        const backBtn = document.getElementById('backBtn');
+        
+        let selectedUpper = null;
+        let selectedLower = null;
+        let score = 0;
+        let matched = 0;
+        let seconds = 0;
+        const matchedPairs = new Set();
+        
+        // Create letter buttons
+        function createLetters() {
+            uppercaseContainer.innerHTML = '';
+            lowercaseContainer.innerHTML = '';
+            
+            const shuffledLower = [...letters].sort(() => Math.random() - 0.5);
+            
+            letters.forEach(letter => {
+                const btn = document.createElement('button');
+                btn.textContent = letter;
+                btn.className = 'letter-btn';
+                btn.dataset.letter = letter;
+                btn.addEventListener('click', () => selectUpper(btn, letter));
+                uppercaseContainer.appendChild(btn);
+            });
+            
+            shuffledLower.forEach(letter => {
+                const btn = document.createElement('button');
+                btn.textContent = letter.toLowerCase();
+                btn.className = 'letter-btn';
+                btn.dataset.letter = letter;
+                btn.addEventListener('click', () => selectLower(btn, letter));
+                lowercaseContainer.appendChild(btn);
+            });
+        }
+        
+        function selectUpper(btn, letter) {
+            if (matchedPairs.has(letter)) return;
+            
+            if (selectedUpper) {
+                selectedUpper.classList.remove('selected');
+            }
+            
+            selectedUpper = btn;
+            btn.classList.add('selected');
+            
+            if (selectedLower && selectedLower.dataset.letter === letter) {
+                matchPair(letter);
+            }
+        }
+        
+        function selectLower(btn, letter) {
+            if (matchedPairs.has(letter)) return;
+            
+            if (selectedLower) {
+                selectedLower.classList.remove('selected');
+            }
+            
+            selectedLower = btn;
+            btn.classList.add('selected');
+            
+            if (selectedUpper && selectedUpper.dataset.letter === letter) {
+                matchPair(letter);
+            }
+        }
+        
+        let gameStartTime = Date.now();
+        
+        async function matchPair(letter) {
+            matchedPairs.add(letter);
+            selectedUpper.classList.add('matched');
+            selectedLower.classList.add('matched');
+            score += 10;
+            matched++;
+            
+            scoreDisplay.textContent = score;
+            matchedDisplay.textContent = `${matched}/${letters.length}`;
+            
+            selectedUpper.classList.remove('selected');
+            selectedLower.classList.remove('selected');
+            selectedUpper = null;
+            selectedLower = null;
+            
+            if (matched === letters.length) {
+                // Save score when all matched
+                const gameDuration = Math.round((Date.now() - gameStartTime) / 1000);
+                const result = await CognoTracker.saveActivity({
+                    moduleId: 'dyslexia',
+                    activityId: 'letter-match',
+                    score: score,
+                    maxScore: letters.length * 10, // 130 for 13 letters
+                    duration: gameDuration,
+                    accuracy: 100, // Perfect match
+                    metadata: {
+                        lettersMatched: matched,
+                        totalLetters: letters.length,
+                        timeSeconds: seconds
+                    }
+                });
+                
+                if (result.success) {
+                    console.log('✅ Letter Match score saved!', result);
+                }
+                
+                setTimeout(() => {
+                    CognoNotifications?.toast?.success(`Perfect! You matched all ${letters.length} letters!`);
+                }, 300);
+            }
+        }
+        
+        // Timer
+        setInterval(() => {
+            seconds++;
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            timerDisplay.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }, 1000);
+        
+        backBtn.addEventListener('click', () => {
+            window.history.back();
+        });
+        
+        createLetters();
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

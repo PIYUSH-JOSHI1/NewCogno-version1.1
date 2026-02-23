@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch the Stars - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        .game-area { background: var(--color-surface); border-radius: var(--radius-2xl); border: 2px solid var(--color-border); box-shadow: var(--shadow-xl); overflow: hidden; }
+        #camera-container { position: relative; width: 100%; aspect-ratio: 4/3; background: #000; border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 24px; }
+        #webcam { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+        #game-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Catch Stars</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">⭐ Catch the Stars</h1>
+                </div>
+                <p class="text-gray-500">Reach out and catch the falling stars! Tests gross motor coordination and balance.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="grid grid-cols-3 gap-4 mb-6 text-center">
+                    <div class="card p-4 bg-primary/5 border-primary/20">
+                        <div class="text-2xl font-bold text-primary" id="starScore">0</div>
+                        <div class="text-xs opacity-60 uppercase">Caught</div>
+                    </div>
+                    <div class="card p-4 bg-orange-500/5 border-orange-500/20">
+                        <div class="text-2xl font-bold text-orange-500" id="posAccuracy">100%</div>
+                        <div class="text-xs opacity-60 uppercase">Accuracy</div>
+                    </div>
+                    <div class="card p-4 bg-blue-500/5 border-blue-500/20">
+                        <div class="text-2xl font-bold text-blue-600" id="gameTimer">30</div>
+                        <div class="text-xs opacity-60 uppercase">Time Left</div>
+                    </div>
+                </div>
+
+                <div class="game-area p-4">
+                    <div id="camera-container">
+                        <video id="webcam" autoplay playsinline></video>
+                        <canvas id="game-canvas"></canvas>
+                    </div>
+
+                    <div class="flex gap-4 justify-center">
+                        <button id="startBtn" class="btn btn-primary btn-lg px-12">🎮 Start Game</button>
+                        <button id="resetBtn" class="btn btn-ghost btn-lg px-12 hidden">🔄 Reset</button>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-blue-50 dark:bg-blue-900/10 rounded-2xl p-6 border-l-4 border-blue-500">
+                    <h3 class="font-bold text-blue-900 dark:text-blue-100 mb-3 text-sm uppercase">📋 How to Play:</h3>
+                    <ul class="text-sm space-y-2 opacity-80 list-disc list-inside">
+                        <li>Stand back so your whole body is visible to the camera.</li>
+                        <li>Reach out your arms to touch the falling stars.</li>
+                        <li>Catch as many as you can before time runs out!</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+            initCamera();
+        });
+
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const startBtn = document.getElementById('startBtn');
+        const scoreEl = document.getElementById('starScore');
+        const timerEl = document.getElementById('gameTimer');
+
+        let gameActive = false, score = 0, timer = 30, stars = [];
+
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                video.srcObject = stream;
+            } catch (err) {
+                CognoNotifications?.toast?.error('Camera access denied. Please enable it to play.');
+            }
+        }
+
+        function createStar() {
+            stars.push({ x: Math.random() * canvas.width, y: -20, r: 20, speed: 2 + Math.random()*3 });
+        }
+
+        function gameLoop() {
+            if(!gameActive) return;
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            
+            stars.forEach((s, i) => {
+                s.y += s.speed;
+                ctx.fillStyle = '#ffd700';
+                ctx.font = '30px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('⭐', s.x, s.y);
+                
+                // Static collision for now (as demonstration requires camera analysis backend)
+                // In full implementation, we'd check against hand landmarks from the backend
+                if(s.y > canvas.height) stars.splice(i, 1);
+            });
+
+            if(Math.random() < 0.05) createStar();
+            requestAnimationFrame(gameLoop);
+        }
+
+        startBtn.addEventListener('click', () => {
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            gameActive = true; score = 0; timer = 30; stars = [];
+            scoreEl.textContent = '0'; timerEl.textContent = '30';
+            startBtn.classList.add('hidden');
+            gameLoop();
+            
+            const int = setInterval(() => {
+                timer--;
+                timerEl.textContent = timer;
+                if(timer <= 0) {
+                    clearInterval(int);
+                    gameActive = false;
+                    CognoNotifications?.toast?.success(`Game Over! Score: ${score}`);
+                    CognoTracker?.saveActivity({ moduleId: 'dyspraxia', activityId: 'catch-stars', score });
+                    startBtn.classList.remove('hidden');
+                }
+            }, 1000);
+        });
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

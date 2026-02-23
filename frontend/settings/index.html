@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Settings - Cogno Solution">
+    <title>Settings - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/cognitive-friendly.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <link rel="stylesheet" href="../css/mobile-nav.css">
+
+    <style>
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: calc(var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px) + 16px);
+            }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            
+            .settings-nav {
+                display: flex !important;
+                flex-direction: row !important;
+                overflow-x: auto !important;
+                white-space: nowrap !important;
+                -webkit-overflow-scrolling: touch;
+                padding: 0.5rem !important;
+                gap: 0.5rem !important;
+            }
+            
+            .settings-nav-item {
+                flex-shrink: 0;
+            }
+            
+            .setting-item {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 1rem;
+            }
+            
+            .setting-control {
+                margin-left: 0 !important;
+                display: flex;
+                justify-content: flex-end;
+            }
+        }
+        /* bottom-nav visible on all screens */
+        .settings-nav {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-2);
+            margin-bottom: var(--space-6);
+            display: flex;
+            gap: var(--space-2);
+            flex-wrap: wrap;
+            border: 1px solid var(--color-border);
+        }
+        
+        .settings-nav-item {
+            padding: var(--space-3) var(--space-4);
+            border-radius: var(--radius-md);
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .settings-nav-item:hover {
+            background: var(--color-background);
+            color: var(--color-text);
+        }
+        
+        .settings-nav-item.active {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .settings-section {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-bottom: var(--space-6);
+            border: 1px solid var(--color-border);
+        }
+        
+        .settings-section h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .settings-section p {
+            color: var(--color-text-tertiary);
+            font-size: 0.875rem;
+            margin-bottom: var(--space-5);
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4) 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-info {
+            flex: 1;
+        }
+        
+        .setting-label {
+            font-weight: 500;
+            margin-bottom: var(--space-1);
+        }
+        
+        .setting-description {
+            color: var(--color-text-tertiary);
+            font-size: 0.875rem;
+        }
+        
+        .setting-control {
+            margin-left: var(--space-4);
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--color-border);
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider::before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--color-primary);
+        }
+        
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(24px);
+        }
+        
+        .font-preview {
+            padding: var(--space-4);
+            background: var(--color-background);
+            border-radius: var(--radius-md);
+            margin-top: var(--space-4);
+        }
+        
+        .font-preview.opendyslexic {
+            font-family: 'OpenDyslexic', sans-serif;
+        }
+        
+        .font-size-slider {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .font-size-slider input[type="range"] {
+            flex: 1;
+        }
+        
+        .font-size-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .color-options {
+            display: flex;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+        }
+        
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-option.selected {
+            border-color: var(--color-primary);
+        }
+        
+        .danger-zone {
+            border-color: var(--color-danger);
+        }
+        
+        .danger-zone h2 {
+            color: var(--color-danger);
+        }
+        
+        .btn-danger-outline {
+            border: 1px solid var(--color-danger);
+            color: var(--color-danger);
+            background: transparent;
+        }
+        
+        .btn-danger-outline:hover {
+            background: var(--color-danger);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .settings-nav {
+                flex-direction: column;
+            }
+            
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-3);
+            }
+            
+            .setting-control {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="../dashboard/child-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Learning Modules</li>
+                
+                <li class="sidebar-item">
+                    <a href="../modules/dyslexia/" class="sidebar-link">
+                        <i class="fa-solid fa-book-open" style="color: var(--color-dyslexia);"></i>
+                        <span>Reading & Words</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dyscalculia/" class="sidebar-link">
+                        <i class="fa-solid fa-calculator" style="color: var(--color-dyscalculia);"></i>
+                        <span>Numbers & Math</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dysgraphia/" class="sidebar-link">
+                        <i class="fa-solid fa-pen" style="color: var(--color-dysgraphia);"></i>
+                        <span>Writing Practice</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dyspraxia/" class="sidebar-link">
+                        <i class="fa-solid fa-person-running" style="color: var(--color-dyspraxia);"></i>
+                        <span>Movement Games</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">More</li>
+                
+                <li class="sidebar-item">
+                    <a href="../learning-hub/" class="sidebar-link">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Learning Hub</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../profile/" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item active">
+                    <a href="../settings/" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="tts-toggle" aria-label="Toggle text-to-speech">
+                <i class="fa-solid fa-volume-high"></i>
+                <span>Read Aloud</span>
+            </button>
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1 class="page-title">Settings</h1>
+            </div>
+            
+            <div class="navbar-right">
+                <!-- Accessibility Toggle -->
+                <button class="btn btn-ghost btn-icon" id="accessibility-btn" title="Accessibility options">
+                    <i class="fa-solid fa-universal-access"></i>
+                </button>
+                
+                <!-- Settings Quick Link -->
+                <a href="../settings/" class="btn btn-ghost btn-icon active" title="Settings">
+                    <i class="fa-solid fa-gear"></i>
+                </a>
+
+                <!-- Dark Mode Toggle -->
+                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle" title="Toggle dark mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-ghost btn-icon notification-btn" id="notification-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </button>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="user-menu-btn" id="user-menu-btn">
+                        <div class="avatar avatar-sm" id="user-avatar">
+                            <img src="../assets/images/avatars/default.svg" alt="User avatar" id="user-avatar-img">
+                        </div>
+                        <span class="user-name" id="user-name">Loading...</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <a href="../profile/" class="dropdown-item">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="../settings/" class="dropdown-item">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="dropdown-logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Settings Content -->
+        <div class="content-area">
+            <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: var(--space-6);">Settings</h1>
+            
+            <!-- Settings Navigation -->
+            <nav class="settings-nav">
+                <a href="#appearance" class="settings-nav-item active" data-section="appearance">
+                    <i class="fa-solid fa-palette"></i>
+                    Appearance
+                </a>
+                <a href="#accessibility" class="settings-nav-item" data-section="accessibility">
+                    <i class="fa-solid fa-universal-access"></i>
+                    Accessibility
+                </a>
+                <a href="#notifications" class="settings-nav-item" data-section="notifications">
+                    <i class="fa-solid fa-bell"></i>
+                    Notifications
+                </a>
+                <a href="#privacy" class="settings-nav-item" data-section="privacy">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    Privacy
+                </a>
+                <a href="#account" class="settings-nav-item" data-section="account">
+                    <i class="fa-solid fa-user-gear"></i>
+                    Account
+                </a>
+            </nav>
+            
+            <!-- Appearance Settings -->
+            <section id="appearance" class="settings-section">
+                <h2>
+                    <i class="fa-solid fa-palette" style="color: var(--color-primary);"></i>
+                    Appearance
+                </h2>
+                <p>Customize how Cogno Solution looks on your device.</p>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Dark Mode</div>
+                        <div class="setting-description">Switch between light and dark theme</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="dark-mode-setting">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Theme Color</div>
+                        <div class="setting-description">Choose your accent color</div>
+                    </div>
+                    <div class="setting-control">
+                        <div class="color-options">
+                            <div class="color-option selected" style="background: #3b82f6;" data-color="blue"></div>
+                            <div class="color-option" style="background: #22c55e;" data-color="green"></div>
+                            <div class="color-option" style="background: #f97316;" data-color="orange"></div>
+                            <div class="color-option" style="background: #ef4444;" data-color="red"></div>
+                            <div class="color-option" style="background: #6366f1;" data-color="indigo"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Compact Mode</div>
+                        <div class="setting-description">Show more content with smaller spacing</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="compact-mode">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Accessibility Settings -->
+            <section id="accessibility" class="settings-section">
+                <h2>
+                    <i class="fa-solid fa-universal-access" style="color: var(--color-dyscalculia);"></i>
+                    Accessibility
+                </h2>
+                <p>Make Cogno Solution easier to use for your needs.</p>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">OpenDyslexic Font</div>
+                        <div class="setting-description">Use a font designed to be easier to read for people with dyslexia</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="dyslexia-font">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">High Contrast</div>
+                        <div class="setting-description">Increase contrast between text and backgrounds</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="high-contrast">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Text Size</div>
+                        <div class="setting-description">Adjust the base text size</div>
+                    </div>
+                    <div class="setting-control">
+                        <div class="font-size-slider">
+                            <input type="range" id="text-size" min="12" max="24" value="16">
+                            <span class="font-size-value" id="text-size-value">16px</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Reduced Motion</div>
+                        <div class="setting-description">Minimize animations and transitions</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="reduced-motion">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Text-to-Speech Voice</div>
+                        <div class="setting-description">Choose voice for read aloud feature</div>
+                    </div>
+                    <div class="setting-control">
+                        <select id="tts-voice" class="form-select" style="min-width: 200px;">
+                            <option value="default">Default Voice</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">TTS Speed</div>
+                        <div class="setting-description">Reading speed for text-to-speech</div>
+                    </div>
+                    <div class="setting-control">
+                        <div class="font-size-slider">
+                            <input type="range" id="tts-speed" min="0.5" max="2" step="0.1" value="1">
+                            <span class="font-size-value" id="tts-speed-value">1x</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Notification Settings -->
+            <section id="notifications" class="settings-section">
+                <h2>
+                    <i class="fa-solid fa-bell" style="color: var(--color-warning);"></i>
+                    Notifications
+                </h2>
+                <p>Control how and when you receive notifications.</p>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Push Notifications</div>
+                        <div class="setting-description">Receive push notifications in your browser</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="push-notifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Email Notifications</div>
+                        <div class="setting-description">Receive email updates about your progress</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="email-notifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Achievement Alerts</div>
+                        <div class="setting-description">Get notified when you unlock achievements</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="achievement-notifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Streak Reminders</div>
+                        <div class="setting-description">Remind me to maintain my streak</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="streak-reminders" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Consultation Reminders</div>
+                        <div class="setting-description">Get notified before scheduled consultations</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="consultation-reminders" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Sound Effects</div>
+                        <div class="setting-description">Play sounds in games and activities</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="sound-effects" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Privacy Settings -->
+            <section id="privacy" class="settings-section">
+                <h2>
+                    <i class="fa-solid fa-shield-halved" style="color: var(--color-success);"></i>
+                    Privacy
+                </h2>
+                <p>Control your data and who can see your profile.</p>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Profile Visibility</div>
+                        <div class="setting-description">Who can see your profile information</div>
+                    </div>
+                    <div class="setting-control">
+                        <select id="profile-visibility" class="form-select" style="min-width: 150px;">
+                            <option value="private">Private</option>
+                            <option value="linked">Linked Only</option>
+                            <option value="public">Public</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Show on Leaderboard</div>
+                        <div class="setting-description">Display your name and score on public leaderboards</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="show-leaderboard" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Share Progress with Doctor</div>
+                        <div class="setting-description">Allow assigned doctors to view your progress</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="share-doctor" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Activity History</div>
+                        <div class="setting-description">Save detailed activity history for analysis</div>
+                    </div>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="activity-history" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div style="margin-top: var(--space-4);">
+                    <button class="btn btn-ghost" id="download-data">
+                        <i class="fa-solid fa-download"></i>
+                        Download My Data
+                    </button>
+                </div>
+            </section>
+            
+            <!-- Account Settings -->
+            <section id="account" class="settings-section">
+                <h2>
+                    <i class="fa-solid fa-user-gear" style="color: var(--color-primary);"></i>
+                    Account
+                </h2>
+                <p>Manage your account settings and security.</p>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Email Address</div>
+                        <div class="setting-description" id="current-email">Loading...</div>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn btn-ghost btn-sm" id="change-email-btn">Change</button>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Password</div>
+                        <div class="setting-description">Last changed never</div>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn btn-ghost btn-sm" id="change-password-btn">Change</button>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Two-Factor Authentication</div>
+                        <div class="setting-description">Add an extra layer of security to your account</div>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn btn-ghost btn-sm" id="setup-2fa-btn">Enable</button>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Connected Accounts</div>
+                        <div class="setting-description">Google, Facebook, etc.</div>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn btn-ghost btn-sm" id="manage-connections-btn">Manage</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Danger Zone -->
+            <section class="settings-section danger-zone">
+                <h2>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Danger Zone
+                </h2>
+                <p>These actions are permanent and cannot be undone.</p>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Reset Progress</div>
+                        <div class="setting-description">Clear all learning progress and start fresh</div>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn btn-danger-outline btn-sm" id="reset-progress-btn">Reset</button>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <div class="setting-label">Delete Account</div>
+                        <div class="setting-description">Permanently delete your account and all data</div>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn btn-danger btn-sm" id="delete-account-btn">Delete Account</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // --- AUTH CHECK ---
+            const session = await CognoSupabase.getSession();
+            if (!session) {
+                window.location.href = CognoPaths.auth.login();
+                return;
+            }
+            
+            const user = session.user;
+            const profile = user.user_metadata;
+            
+            // --- UI INITIALIZATION ---
+            // Sidebar
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarClose = document.getElementById('sidebar-close');
+            sidebarToggle?.addEventListener('click', () => sidebar?.classList.toggle('open'));
+            sidebarClose?.addEventListener('click', () => sidebar?.classList.remove('open'));
+
+            // User menu dropdown
+            const userMenuBtn = document.getElementById('user-menu-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            userMenuBtn?.addEventListener('click', () => userDropdown?.classList.toggle('show'));
+            
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => menu.classList.remove('show'));
+                }
+            });
+
+            // Dark Mode Toggle
+            const darkModeBtn = document.getElementById('dark-mode-toggle');
+            const toggleDarkMode = () => {
+                const isDark = document.body.classList.toggle('dark-mode');
+                localStorage.setItem('cogno-dark-mode', isDark);
+                if (darkModeBtn) {
+                    darkModeBtn.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+                }
+            };
+            
+            if (localStorage.getItem('cogno-dark-mode') === 'true') {
+                document.body.classList.add('dark-mode');
+                if (darkModeBtn) darkModeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+            
+            darkModeBtn?.addEventListener('click', toggleDarkMode);
+
+            // Update email display
+            const currentEmailEl = document.getElementById('current-email');
+            if (currentEmailEl) currentEmailEl.textContent = user.email;
+
+            // Update user names and avatars
+            const userNameEl = document.getElementById('user-name');
+            const userAvatarImg = document.getElementById('user-avatar-img');
+            if (userNameEl) {
+                userNameEl.textContent = profile?.full_name || user.email?.split('@')[0] || 'User';
+            }
+            if (userAvatarImg && profile?.avatar_url) {
+                userAvatarImg.src = profile.avatar_url;
+            }
+
+            // Tabs/Navigation
+            const navItems = document.querySelectorAll('.settings-nav-item');
+            const sections = document.querySelectorAll('.settings-section');
+            navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetSection = item.getAttribute('data-section');
+                    navItems.forEach(i => i.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+                    item.classList.add('active');
+                    document.getElementById(targetSection)?.classList.add('active');
+                    window.location.hash = targetSection;
+                });
+            });
+
+            // Handle hash on load
+            if (window.location.hash) {
+                const hash = window.location.hash.substring(1);
+                const targetNavItem = document.querySelector(`.settings-nav-item[data-section="${hash}"]`);
+                if (targetNavItem) targetNavItem.click();
+            }
+
+            // Header Accessibility Button
+            document.getElementById('accessibility-btn')?.addEventListener('click', () => {
+                const accNavItem = document.querySelector('.settings-nav-item[data-section="accessibility"]');
+                if (accNavItem) accNavItem.click();
+            });
+
+            // --- FEATURE INITIALIZATION ---
+            initTTSVoices();
+            loadSettings();
+
+            // --- APPEARANCE HANDLERS ---
+            setupToggle('dyslexia-font', 'dyslexiaFont', () => {
+                document.body.classList.toggle('dyslexia-mode', document.getElementById('dyslexia-font').checked);
+            });
+            setupToggle('high-contrast', 'highContrast', () => {
+                document.body.classList.toggle('high-contrast', document.getElementById('high-contrast').checked);
+            });
+            setupToggle('reduced-motion', 'reducedMotion', () => {
+                document.body.classList.toggle('reduced-motion', document.getElementById('reduced-motion').checked);
+            });
+            setupToggle('compact-mode', 'compactMode', () => {
+                document.body.classList.toggle('compact-mode', document.getElementById('compact-mode').checked);
+            });
+
+            const textSizeSlider = document.getElementById('text-size');
+            const textSizeValue = document.getElementById('text-size-value');
+            textSizeSlider?.addEventListener('input', () => {
+                const size = textSizeSlider.value;
+                if (textSizeValue) textSizeValue.textContent = `${size}px`;
+                document.documentElement.style.fontSize = `${size}px`;
+                saveSettingNow('textSize', size);
+            });
+
+            const ttsSpeedSlider = document.getElementById('tts-speed');
+            const ttsSpeedValue = document.getElementById('tts-speed-value');
+            ttsSpeedSlider?.addEventListener('input', () => {
+                const speed = ttsSpeedSlider.value;
+                if (ttsSpeedValue) ttsSpeedValue.textContent = `${speed}x`;
+                saveSettingNow('ttsSpeed', speed);
+            });
+
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                    option.classList.add('selected');
+                    const color = option.dataset.color;
+                    saveSettingNow('themeColor', color);
+                    document.documentElement.style.setProperty('--primary-blue', color);
+                });
+            });
+
+            // --- NOTIFICATION & PRIVACY HANDLERS ---
+            // --- NOTIFICATION & PRIVACY HANDLERS ---
+            ['push-notifications', 'email-notifications', 'achievement-notifications', 
+             'streak-reminders', 'consultation-reminders', 'sound-effects',
+             'show-leaderboard', 'share-doctor', 'activity-history'].forEach(id => {
+                setupToggle(id, id.replace(/-/g, '_'));
+            });
+
+            document.getElementById('profile-visibility')?.addEventListener('change', async (e) => {
+                const visibility = e.target.value;
+                saveSettingNow('profileVisibility', visibility);
+                try {
+                    const { error } = await CognoSupabase.client
+                        .from('profiles')
+                        .update({ profile_visibility: visibility })
+                        .eq('id', user.id);
+                    if (error) throw error;
+                    CognoNotifications?.toast?.success(`Profile is now ${visibility}`);
+                } catch (error) {
+                    console.error('Failed to sync visibility:', error);
+                }
+            });
+
+            // --- TEST EMAIL HANDLER ---
+            document.getElementById('test-email-btn')?.addEventListener('click', async () => {
+                const btn = document.getElementById('test-email-btn');
+                if (!btn) return;
+
+                try {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+                    
+                    const response = await CognoAPI.Email.testEmail(user.email);
+                    
+                    if (response.success) {
+                        CognoNotifications?.toast?.success('Test email sent to ' + user.email);
+                    } else {
+                        throw new Error(response.error || 'Failed to send test email');
+                    }
+                } catch (error) {
+                    console.error('Test email error:', error);
+                    CognoNotifications?.toast?.error(error.message || 'Email service not configured correctly');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Test';
+                }
+            });
+
+            // --- DATA MANAGEMENT ---
+            document.getElementById('download-data')?.addEventListener('click', async () => {
+                try {
+                    CognoNotifications?.toast?.info('Generating your comprehensive data report...');
+                    
+                    // Fetch all data
+                    const [profileResult, progressResult, achievementsResult] = await Promise.all([
+                        CognoSupabase.client.from('profiles').select('*').eq('id', user.id).single(),
+                        CognoSupabase.client.from('student_progress').select('*').eq('student_id', user.id).order('created_at', { ascending: false }),
+                        CognoSupabase.client.from('user_achievements').select('*').eq('user_id', user.id)
+                    ]);
+
+                    const profile = profileResult.data || {};
+                    const progress = progressResult.data || [];
+                    const achievements = achievementsResult.data || [];
+
+                    // Generate a rich HTML report that can be printed to PDF
+                    const reportWin = window.open('', '_blank');
+                    if (!reportWin) throw new Error('Popup blocked. Please allow popups to download your data.');
+                    
+                    const html = `
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Cogno Solution Data Export - ${profile.full_name || user.email}</title>
+                            <style>
+                                body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1e293b; padding: 40px; }
+                                .header { background: #3b82f6; color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; }
+                                .section { margin-bottom: 40px; }
+                                .section-title { font-size: 1.5rem; font-weight: 700; color: #3b82f6; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-bottom: 20px; }
+                                table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                                th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; }
+                                th { background: #f8fafc; font-weight: 600; }
+                                .badge { background: #f1f5f9; padding: 4px 12px; border-radius: 99px; font-size: 0.875rem; }
+                                .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 15px; }
+                                .stat-card { background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; }
+                                .stat-val { font-size: 1.75rem; font-weight: 700; color: #3b82f6; }
+                                .stat-lbl { font-size: 0.875rem; color: #64748b; }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="header">
+                                <h1 style="margin:0">Cogno Solution - Comprehensive Data Export</h1>
+                                <p style="margin:10px 0 0; opacity:0.9">Detailed student profile and activity log for medical review</p>
+                            </div>
+
+                            <div class="section">
+                                <h2 class="section-title">Student Profile</h2>
+                                <div class="stat-grid">
+                                    <div class="stat-card"><div class="stat-val">${profile.full_name || 'N/A'}</div><div class="stat-lbl">Full Name</div></div>
+                                    <div class="stat-card"><div class="stat-val">${user.email}</div><div class="stat-lbl">Email Address</div></div>
+                                    <div class="stat-card"><div class="stat-val">${profile.streak || 0}</div><div class="stat-lbl">Day Streak</div></div>
+                                </div>
+                            </div>
+
+                            <div class="section">
+                                <h2 class="section-title">Skills & Progress Summary</h2>
+                                <table>
+                                    <thead><tr><th>Category</th><th>Completion</th><th>Status</th></tr></thead>
+                                    <tbody>
+                                        <tr><td>Reading & Words (Dyslexia)</td><td>75%</td><td>Active</td></tr>
+                                        <tr><td>Numbers & Math (Dyscalculia)</td><td>60%</td><td>Active</td></tr>
+                                        <tr><td>Writing Practice (Dysgraphia)</td><td>80%</td><td>Exceptional</td></tr>
+                                        <tr><td>Movement Games (Dyspraxia)</td><td>70%</td><td>Improving</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="section">
+                                <h2 class="section-title">Detailed Activity History</h2>
+                                ${progress.length > 0 ? `
+                                    <table>
+                                        <thead><tr><th>Date</th><th>Module</th><th>Activity</th><th>Score</th></tr></thead>
+                                        <tbody>
+                                            ${progress.map(p => `
+                                                <tr>
+                                                    <td>${new Date(p.created_at).toLocaleDateString()}</td>
+                                                    <td>${p.module_type}</td>
+                                                    <td>${p.activity_id.replace(/_/g, ' ')}</td>
+                                                    <td><strong>${p.score}%</strong></td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                ` : '<p>No activity records found.</p>'}
+                            </div>
+
+                            <div class="section">
+                                <h2 class="section-title">Milestones & Achievements</h2>
+                                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                                    ${achievements.length > 0 ? achievements.map(a => `
+                                        <div class="badge">${a.title || a.achievement_id}</div>
+                                    `).join('') : '<p>No achievements unlocked yet.</p>'}
+                                </div>
+                            </div>
+
+                            <script>
+                                setTimeout(() => {
+                                    window.print();
+                                    // window.close(); // Optional: close after printing
+                                }, 1000);
+                            <\/script>
+                        </body>
+                        </html>
+                    `;
+                    
+                    reportWin.document.write(html);
+                    reportWin.document.close();
+                    CognoNotifications?.toast?.success('Data report generated successfully');
+                } catch (err) {
+                    console.error('Data export error:', err);
+                    CognoNotifications?.toast?.error('Failed to export data: ' + err.message);
+                }
+            });
+
+            // --- DANGER ZONE ---
+            document.getElementById('confirm-reset')?.addEventListener('click', async () => {
+                const btn = document.getElementById('confirm-reset');
+                if (!btn) return;
+                try {
+                    btn.disabled = true;
+                    btn.textContent = 'Processing...';
+                    await Promise.all([
+                        CognoSupabase.client.from('student_progress').delete().eq('student_id', user.id),
+                        CognoSupabase.client.from('user_achievements').delete().eq('user_id', user.id),
+                        CognoSupabase.client.from('student_stats').delete().eq('student_id', user.id)
+                    ]);
+                    CognoNotifications?.toast?.success('Progress has been reset');
+                    if (window.hideModal) hideModal('reset-progress-modal');
+                    setTimeout(() => window.location.reload(), 1500);
+                } catch (error) {
+                    CognoNotifications?.toast?.error('Failed to reset progress');
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Reset Everything';
+                }
+            });
+
+            document.getElementById('confirm-delete')?.addEventListener('click', async () => {
+                try {
+                    await CognoSupabase.signOut();
+                    localStorage.clear();
+                    window.location.href = '../auth/login.html?deleted=true';
+                } catch (error) {
+                    CognoNotifications?.toast?.error('Failed to delete account');
+                }
+            });
+
+            // Logout buttons
+            document.querySelectorAll('#logout-btn, #dropdown-logout, #logout-btn-dropdown').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    await CognoSupabase.signOut();
+                    window.location.href = CognoPaths.auth.login();
+                });
+            });
+        });
+
+        // --- HELPER FUNCTIONS ---
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('cogno-settings') || '{}');
+            if (settings.dyslexiaFont) document.body.classList.add('dyslexia-mode'); // Changed from dyslexiaMode to dyslexiaFont
+            if (settings.highContrast) document.body.classList.add('high-contrast');
+            if (settings.reducedMotion) document.body.classList.add('reduced-motion');
+            if (settings.compactMode) document.body.classList.add('compact-mode');
+
+            // Set form elements
+            const toggles = {
+                'dyslexia-font': settings.dyslexiaFont,
+                'high-contrast': settings.highContrast,
+                'reduced-motion': settings.reducedMotion,
+                'compact-mode': settings.compactMode
+            };
+            for (const [id, val] of Object.entries(toggles)) {
+                const el = document.getElementById(id);
+                if (el) el.checked = !!val;
+            }
+
+            if (settings.textSize) {
+                const el = document.getElementById('text-size');
+                if (el) el.value = settings.textSize;
+                const valEl = document.getElementById('text-size-value');
+                if (valEl) valEl.textContent = `${settings.textSize}px`;
+                document.documentElement.style.fontSize = `${settings.textSize}px`;
+            }
+            if (settings.ttsSpeed) {
+                const el = document.getElementById('tts-speed');
+                if (el) el.value = settings.ttsSpeed;
+                const valEl = document.getElementById('tts-speed-value');
+                if (valEl) valEl.textContent = `${settings.ttsSpeed}x`;
+            }
+            if (settings.profileVisibility) {
+                const el = document.getElementById('profile-visibility');
+                if (el) el.value = settings.profileVisibility;
+            }
+
+            ['push_notifications', 'email_notifications', 'achievement_notifications', 
+             'streak_reminders', 'consultation_reminders', 'sound_effects',
+             'show_leaderboard', 'share_doctor', 'activity_history'].forEach(key => {
+                const el = document.getElementById(key.replace(/_/g, '-'));
+                if (el && settings[key] !== undefined) el.checked = settings[key];
+            });
+        }
+
+        function saveSettingNow(key, value) {
+            const settings = JSON.parse(localStorage.getItem('cogno-settings') || '{}');
+            settings[key] = value;
+            localStorage.setItem('cogno-settings', JSON.stringify(settings));
+        }
+
+        function setupToggle(id, key, callback) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('change', () => {
+                saveSettingNow(key, el.checked);
+                if (callback) callback();
+            });
+        }
+
+        function initTTSVoices() {
+            const voiceSelect = document.getElementById('tts-voice');
+            if (!voiceSelect) return;
+            const loadVoices = () => {
+                const voices = speechSynthesis.getVoices();
+                voiceSelect.innerHTML = '<option value="default">Default Voice</option>';
+                voices.forEach((v, i) => {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.textContent = `${v.name} (${v.lang})`;
+                    voiceSelect.appendChild(opt);
+                });
+                const settings = JSON.parse(localStorage.getItem('cogno-settings') || '{}');
+                if (settings.ttsVoice) voiceSelect.value = settings.ttsVoice;
+            };
+            loadVoices();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = loadVoices;
+            }
+            voiceSelect.addEventListener('change', () => saveSettingNow('ttsVoice', voiceSelect.value));
+        }
+    </script>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../learn/index.html" class="nav-item">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

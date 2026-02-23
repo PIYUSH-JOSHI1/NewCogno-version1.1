@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freeze Dance - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        
+        .game-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .video-container { 
+            position: relative; border-radius: var(--radius-xl); overflow: hidden; background: #000;
+        }
+        
+        video { width: 100%; height: 400px; object-fit: cover; border-radius: var(--radius-xl); }
+        #skeletonCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        
+        .status-display {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 3rem; font-weight: 800; text-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 10;
+            animation: pulse 0.5s ease-in-out infinite;
+        }
+        .status-display.dance { color: var(--color-success); }
+        .status-display.freeze { color: var(--color-primary); }
+        .status-display.fail { color: var(--color-danger); animation: shake 0.5s; }
+        .status-display.success { color: var(--color-warning); }
+        
+        @keyframes pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.05); } }
+        @keyframes shake { 0%, 100% { transform: translate(-50%, -50%); } 25% { transform: translate(-45%, -50%); } 75% { transform: translate(-55%, -50%); } }
+        
+        .music-indicator {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.7); color: white; padding: 10px 24px; border-radius: 30px;
+            font-weight: 600; display: flex; align-items: center; gap: 10px;
+        }
+        
+        .music-bars { display: flex; gap: 3px; align-items: flex-end; height: 20px; }
+        .music-bar { width: 4px; background: var(--color-success); border-radius: 2px; animation: musicBar 0.5s ease-in-out infinite; }
+        @keyframes musicBar { 0%, 100% { height: 5px; } 50% { height: 20px; } }
+        .music-bars.paused .music-bar { animation: none; height: 5px; background: #94a3b8; }
+        
+        @media (max-width: 768px) {
+            video { height: 300px; }
+            .status-display { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Freeze Dance</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">💃 Freeze Dance</h1>
+                </div>
+                <p class="text-gray-500">Dance when the music plays, freeze when it stops!</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto game-card p-6 md:p-8">
+                <!-- Status Notice -->
+                <div class="bg-primary/10 border border-primary/20 rounded-2xl p-4 mb-6 flex items-center gap-3">
+                    <span class="text-2xl">🔊</span>
+                    <p class="text-primary-dark font-medium text-sm">Turn up your volume! Make sure you have space to dance safely.</p>
+                </div>
+
+                <!-- Video Container -->
+                <div class="video-container mb-6">
+                    <video id="videoElement" autoplay playsinline style="transform: scaleX(-1);"></video>
+                    <canvas id="skeletonCanvas"></canvas>
+                    <div id="gameStatus" class="status-display" style="display: none;">💃 DANCE!</div>
+                    <div class="music-indicator" id="musicIndicator">
+                        <div class="music-bars paused" id="musicBars">
+                            <div class="music-bar"></div>
+                            <div class="music-bar"></div>
+                            <div class="music-bar"></div>
+                            <div class="music-bar"></div>
+                            <div class="music-bar"></div>
+                        </div>
+                        <span id="musicLabel" class="text-xs uppercase tracking-wider">Music Off</span>
+                    </div>
+                </div>
+
+                <div id="connectionStatus" class="text-center mb-6">
+                    <span class="text-warning font-semibold text-sm">⏳ Connecting to camera...</span>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-4 mb-8">
+                    <div class="card p-4 text-center bg-purple-500/5 border-purple-500/20">
+                        <div class="text-2xl font-bold text-purple-600" id="freezeScore">0</div>
+                        <div class="text-xs opacity-60 uppercase">Freezes</div>
+                    </div>
+                    <div class="card p-4 text-center bg-blue-500/5 border-blue-500/20">
+                        <div class="text-2xl font-bold text-blue-600" id="round">1</div>
+                        <div class="text-xs opacity-60 uppercase">Round</div>
+                    </div>
+                    <div class="card p-4 text-center bg-green-500/5 border-green-500/20">
+                        <div class="text-2xl font-bold text-green-600" id="gameTimer">00:00</div>
+                        <div class="text-xs opacity-60 uppercase">Time</div>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 justify-center">
+                    <button id="startBtn" class="btn btn-primary btn-lg px-12">🎵 Start Dancing!</button>
+                    <button id="resetBtn" class="btn btn-ghost btn-lg px-12 hidden">🔄 Play Again</button>
+                </div>
+
+                <!-- Instructions -->
+                <div class="mt-8 bg-surface-variant rounded-2xl p-6 border-l-4 border-primary">
+                    <h3 class="font-bold text-primary mb-3 text-sm uppercase tracking-wider">📋 How to Play:</h3>
+                    <ul class="text-sm space-y-2 opacity-80 list-disc list-inside">
+                        <li>When music plays → Dance and move!</li>
+                        <li>When music stops → FREEZE completely!</li>
+                        <li>Hold still for 3 seconds</li>
+                        <li>Complete 5 rounds!</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000'
+            : '';
+
+        const video = document.getElementById('videoElement');
+        const skeletonCanvas = document.getElementById('skeletonCanvas');
+        const skeletonCtx = skeletonCanvas.getContext('2d');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const scoreDisplay = document.getElementById('freezeScore');
+        const roundDisplay = document.getElementById('round');
+        const gameStatusDisplay = document.getElementById('gameStatus');
+        const timerDisplay = document.getElementById('gameTimer');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const musicBars = document.getElementById('musicBars');
+        const musicLabel = document.getElementById('musicLabel');
+
+        let gameActive = false;
+        let round = 1;
+        let score = 0;
+        let gameStartTime = 0;
+        let isFreezingPhase = false;
+        let poseLandmarks = [];
+        let previousLandmarks = [];
+        let lastFrameTime = 0;
+        const FRAME_THROTTLE_MS = 100;
+
+        let audioContext = null;
+        let isPlaying = false;
+        let beatInterval = null;
+
+        function initAudio() {
+            if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playBeat() {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.frequency.setValueAtTime(150, audioContext.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            gain.gain.setValueAtTime(0.5, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.start();
+            osc.stop(audioContext.currentTime + 0.5);
+        }
+
+        function startMusic() {
+            initAudio();
+            if (audioContext.state === 'suspended') audioContext.resume();
+            isPlaying = true;
+            musicBars.classList.remove('paused');
+            musicLabel.textContent = '♪ Dancing!';
+            beatInterval = setInterval(() => { if (isPlaying) playBeat(); }, 250);
+        }
+
+        function stopMusic() {
+            isPlaying = false;
+            if (beatInterval) { clearInterval(beatInterval); beatInterval = null; }
+            musicBars.classList.add('paused');
+            musicLabel.textContent = '🧊 FROZEN!';
+        }
+
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                video.srcObject = stream;
+                connectionStatus.innerHTML = '<span class="text-success font-semibold text-sm">✅ Camera Ready</span>';
+            } catch (err) {
+                connectionStatus.innerHTML = '<span class="text-danger font-semibold text-sm">❌ Camera Denied</span>';
+            }
+        }
+
+        function calculateMotion() {
+            if (!poseLandmarks.length || !previousLandmarks.length) return 0;
+            let motion = 0;
+            [11, 12, 13, 14, 23, 24].forEach(idx => {
+                const c = poseLandmarks[idx], p = previousLandmarks[idx];
+                if (c && p) motion += Math.sqrt((c.x - p.x)**2 + (c.y - p.y)**2);
+            });
+            return motion;
+        }
+
+        async function analyzeFrame() {
+            if (!video.srcObject || video.videoWidth === 0 || lastFrameTime > Date.now() - FRAME_THROTTLE_MS) return;
+            lastFrameTime = Date.now();
+            try {
+                const canvas_temp = document.createElement('canvas');
+                canvas_temp.width = video.videoWidth;
+                canvas_temp.height = video.videoHeight;
+                const ctx = canvas_temp.getContext('2d');
+                ctx.scale(-1, 1);
+                ctx.drawImage(video, -canvas_temp.width, 0);
+                const base64Data = canvas_temp.toDataURL('image/jpeg', 0.6).split(',')[1];
+                const res = await fetch(`${BACKEND_URL}/api/dyspraxia/analyze-frame`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ frame_data: base64Data, exercise_type: 'body' })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    previousLandmarks = [...poseLandmarks];
+                    poseLandmarks = data.landmarks || [];
+                    if (isFreezingPhase && gameActive && calculateMotion() > 0.02) failRound();
+                }
+            } catch (e) {}
+        }
+
+        function failRound() {
+            isFreezingPhase = false;
+            stopMusic();
+            gameStatusDisplay.className = 'status-display fail';
+            gameStatusDisplay.innerHTML = '❌ MOVED!';
+            setTimeout(() => { if (gameActive) nextRound(); }, 2000);
+        }
+
+        function successRound() {
+            score++;
+            scoreDisplay.textContent = score;
+            gameStatusDisplay.className = 'status-display success';
+            gameStatusDisplay.innerHTML = '✅ PERFECT!';
+            setTimeout(() => { if (gameActive) nextRound(); }, 2000);
+        }
+
+        function nextRound() {
+            round++;
+            roundDisplay.textContent = Math.min(5, round);
+            if (round > 5) endGame();
+            else startDancePhase();
+        }
+
+        function startDancePhase() {
+            isFreezingPhase = false;
+            gameStatusDisplay.style.display = 'block';
+            gameStatusDisplay.className = 'status-display dance';
+            gameStatusDisplay.innerHTML = '💃 DANCE!';
+            startMusic();
+            setTimeout(() => { if (gameActive) startFreezePhase(); }, 4000 + Math.random() * 2000);
+        }
+
+        function startFreezePhase() {
+            isFreezingPhase = true;
+            stopMusic();
+            gameStatusDisplay.className = 'status-display freeze';
+            gameStatusDisplay.innerHTML = '🧊 FREEZE!';
+            setTimeout(() => { if (gameActive && isFreezingPhase) successRound(); }, 3000);
+        }
+
+        async function endGame() {
+            gameActive = false;
+            stopMusic();
+            gameStatusDisplay.style.display = 'none';
+            startBtn.classList.remove('hidden');
+            resetBtn.classList.add('hidden');
+            CognoNotifications?.toast?.info(`Game Over! Perfect freezes: ${score}/5`);
+            await CognoTracker?.saveActivity({ moduleId: 'dyspraxia', activityId: 'freeze-dance', score, maxScore: 5 });
+        }
+
+        function gameLoop() {
+            if (gameActive) analyzeFrame();
+            requestAnimationFrame(gameLoop);
+        }
+
+        startBtn.addEventListener('click', () => {
+            gameActive = true;
+            round = 1; score = 0; gameStartTime = Date.now();
+            scoreDisplay.textContent = '0'; roundDisplay.textContent = '1';
+            startBtn.classList.add('hidden');
+            startDancePhase();
+        });
+
+        resetBtn.addEventListener('click', () => location.reload());
+        initCamera();
+        gameLoop();
+    </script>
+</body>
+</html>

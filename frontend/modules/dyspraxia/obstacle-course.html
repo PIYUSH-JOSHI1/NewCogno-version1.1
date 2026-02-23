@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obstacle Course - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        .game-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-2xl); box-shadow: var(--shadow-xl); }
+        #gameCanvas { width: 100%; height: 500px; background: #87CEEB; border-radius: var(--radius-xl); border: 2px solid var(--color-primary); }
+        video { border-radius: var(--radius-xl); background: #000; height: 400px; width: 100%; object-fit: cover; border: 3px solid var(--color-border); }
+        
+        body.dark-mode video { border-color: #333; }
+        body.dark-mode #gameCanvas { background: #0c0c1d; }
+        
+        @media (max-width: 768px) {
+            video { height: 300px; }
+            #gameCanvas { height: 340px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Obstacle Course</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">🏃 Obstacle Course</h1>
+                </div>
+                <p class="text-gray-500">Navigate through virtual obstacles by jumping, ducking, and moving side to side!</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto game-card p-6 md:p-8">
+                <div class="bg-primary/10 border border-primary/20 rounded-2xl p-4 mb-6 flex items-center gap-3">
+                    <span class="text-xl">⚠️</span>
+                    <p class="text-primary-dark font-medium text-sm">Camera Required - You need full body visibility and space to move!</p>
+                </div>
+
+                <!-- Webcam Feed -->
+                <div class="relative mb-6">
+                    <video id="videoElement" autoplay playsinline style="transform: scaleX(-1);"></video>
+                    <div id="connectionStatus" class="absolute bottom-4 left-0 right-0 text-center">
+                        <span class="bg-black/60 text-yellow-400 px-3 py-1 rounded-full font-semibold text-xs">⏳ Connecting to camera...</span>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="card p-4 text-center bg-purple-500/5 border-purple-500/20">
+                        <div class="text-2xl font-bold text-purple-600" id="obstacleScore">0</div>
+                        <div class="text-xs opacity-60 uppercase">Passed</div>
+                    </div>
+                    <div class="card p-4 text-center bg-blue-500/5 border-blue-500/20">
+                        <div class="text-2xl font-bold text-blue-600" id="successRate">100%</div>
+                        <div class="text-xs opacity-60 uppercase">Success</div>
+                    </div>
+                    <div class="card p-4 text-center bg-green-500/5 border-green-500/20">
+                        <div class="text-2xl font-bold text-green-600" id="gameTimer">30</div>
+                        <div class="text-xs opacity-60 uppercase">Time</div>
+                    </div>
+                </div>
+
+                <!-- Game Canvas -->
+                <canvas id="gameCanvas" class="mb-6"></canvas>
+
+                <div class="flex gap-4 justify-center">
+                    <button id="startBtn" class="btn btn-primary btn-lg px-12">🎮 Start Game</button>
+                    <button id="resetBtn" class="btn btn-ghost btn-lg px-12 hidden">🔄 Reset</button>
+                </div>
+
+                <div class="mt-8 bg-surface-variant rounded-2xl p-6 border-l-4 border-primary">
+                    <h3 class="font-bold text-primary mb-3 text-sm uppercase">📋 How to Play:</h3>
+                    <ul class="text-sm space-y-2 opacity-80 list-disc list-inside">
+                        <li>Obstacles will move toward you</li>
+                        <li>Jump over HIGH obstacles (raise your body)</li>
+                        <li>Duck under LOW obstacles (bend down)</li>
+                        <li>Pass as many as you can in 30 seconds!</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000'
+            : '';
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const video = document.getElementById('videoElement');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const scoreDisplay = document.getElementById('obstacleScore');
+        const successDisplay = document.getElementById('successRate');
+        const timerDisplay = document.getElementById('gameTimer');
+        const connectionStatus = document.getElementById('connectionStatus');
+
+        let gameActive = false;
+        let obstacles = [];
+        let score = 0;
+        let attempts = 0;
+        let timeRemaining = 30;
+        let bodyHeight = 0.5;
+        let lastFrameTime = 0;
+        const FRAME_THROTTLE_MS = 100;
+
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+
+        function createObstacle() {
+            const type = Math.random();
+            obstacles.push({
+                x: canvas.width,
+                y: type < 0.5 ? canvas.height * 0.3 : canvas.height * 0.7,
+                width: 60, height: 80,
+                velocity: -6,
+                type: type < 0.5 ? 'high' : 'low',
+                passed: false
+            });
+        }
+
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                video.srcObject = stream;
+                connectionStatus.innerHTML = '<span class="bg-black/60 text-green-400 px-3 py-1 rounded-full text-xs">✅ Camera Ready</span>';
+            } catch (err) {
+                connectionStatus.innerHTML = '<span class="bg-black/60 text-red-400 px-3 py-1 rounded-full text-xs">❌ Camera Denied</span>';
+            }
+        }
+
+        async function analyzeFrame() {
+            if (!gameActive || !video.srcObject || video.videoWidth === 0 || lastFrameTime > Date.now() - FRAME_THROTTLE_MS) return;
+            lastFrameTime = Date.now();
+            try {
+                const canvas_temp = document.createElement('canvas');
+                canvas_temp.width = video.videoWidth;
+                canvas_temp.height = video.videoHeight;
+                const ctx_t = canvas_temp.getContext('2d');
+                ctx_t.scale(-1, 1);
+                ctx_t.drawImage(video, -canvas_temp.width, 0);
+                const base64Data = canvas_temp.toDataURL('image/jpeg', 0.6).split(',')[1];
+                const res = await fetch(`${BACKEND_URL}/api/dyspraxia/analyze-frame`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ frame_data: base64Data, exercise_type: 'body' })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.landmarks && data.landmarks.length > 0) {
+                        const s = data.landmarks[11], h = data.landmarks[23];
+                        if (s && h) bodyHeight = s.y; 
+                    }
+                }
+            } catch (e) {}
+        }
+
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#8B7355';
+            ctx.fillRect(0, canvas.height * 0.8, canvas.width, canvas.height * 0.2);
+
+            obstacles.forEach((o, i) => {
+                ctx.fillStyle = '#FF6B6B';
+                ctx.fillRect(o.x, o.y, o.width, o.height);
+                o.x += o.velocity;
+                if (!o.passed && o.x < 100) {
+                    o.passed = true;
+                    attempts++;
+                    const hit = (o.type === 'high' && bodyHeight > 0.4) || (o.type === 'low' && bodyHeight < 0.3);
+                    if (!hit) { score++; scoreDisplay.textContent = score; }
+                    successDisplay.textContent = Math.round((score/attempts)*100) + '%';
+                }
+                if (o.x < -100) obstacles.splice(i, 1);
+            });
+
+            // Player avatar simplified
+            ctx.fillStyle = '#4CAF50';
+            ctx.fillRect(50, bodyHeight * canvas.height, 40, 60);
+        }
+
+        function gameLoop() {
+            if (gameActive) {
+                analyzeFrame();
+                drawGame();
+                if (Math.random() < 0.03) createObstacle();
+            }
+            requestAnimationFrame(gameLoop);
+        }
+
+        startBtn.addEventListener('click', () => {
+            gameActive = true; score = 0; attempts = 0; timeRemaining = 30; obstacles = [];
+            startBtn.classList.add('hidden'); resetBtn.classList.remove('hidden');
+            const timer = setInterval(() => {
+                timeRemaining--; timerDisplay.textContent = timeRemaining;
+                if (timeRemaining <= 0) { clearInterval(timer); endGame(); }
+            }, 1000);
+        });
+
+        async function endGame() {
+            gameActive = false; startBtn.classList.remove('hidden'); resetBtn.classList.add('hidden');
+            CognoNotifications?.toast?.info(`Game Over! Passed ${score} obstacles.`);
+            await CognoTracker?.saveActivity({ moduleId: 'dyspraxia', activityId: 'obstacle-course', score, maxScore: attempts });
+        }
+
+        resetBtn.addEventListener('click', () => location.reload());
+        initCamera();
+        gameLoop();
+    </script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Word Scramble - Unscramble letters to form words">
+    <title>Word Scramble - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dyslexia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        .scrambled-word {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--color-dyslexia);
+            letter-spacing: 8px;
+            background: var(--color-surface);
+            padding: 40px 60px;
+            border-radius: 12px;
+            border: 3px dashed var(--color-dyslexia);
+            text-transform: uppercase;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .hint-section {
+            text-align: center;
+        }
+        
+        .hint-section p {
+            font-size: 1.1rem;
+            color: var(--color-text);
+            margin-bottom: 10px;
+        }
+        
+        .hint-text {
+            font-size: 1rem;
+            color: var(--color-dyslexia);
+            font-weight: 600;
+            min-height: 30px;
+        }
+        
+        .input-section {
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        #answerInput {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.3rem;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        #answerInput:focus {
+            outline: none;
+            border-color: var(--color-dyslexia);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .control-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dyslexia);
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: var(--color-dyslexia-dark, #1e40af);
+        }
+        
+        .control-btn.secondary {
+            background: #f59e0b;
+        }
+        
+        .control-btn.secondary:hover {
+            background: #d97706;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Word Scramble</h1>
+    </header>
+
+    <div class="activity-container">
+        <div class="activity-header">
+            <h1><i class="fa-solid fa-shuffle"></i> Word Scramble</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="game-content">
+            <div class="scrambled-word" id="scrambledWord">LPAPE</div>
+            
+            <div class="hint-section">
+                <p>Unscramble the letters to form a word</p>
+                <div class="hint-text" id="hintText">Picture hint will appear here</div>
+            </div>
+            
+            <div class="input-section">
+                <input type="text" id="answerInput" placeholder="Type your answer..." autocomplete="off">
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn" id="submitBtn">
+                    <i class="fa-solid fa-check"></i> Check Answer
+                </button>
+                <button class="control-btn secondary" id="hintBtn">
+                    <i class="fa-solid fa-lightbulb"></i> Hint
+                </button>
+                <button class="control-btn" style="background: #6b7280;" id="skipBtn">
+                    <i class="fa-solid fa-arrow-right"></i> Skip
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../js/notifications.js"></script>
+    
+    <script>
+        const scrambleWords = [
+            { word: 'APPLE', hint: 'A red or green fruit' },
+            { word: 'BOOKS', hint: 'You read these to learn stories' },
+            { word: 'CLOCK', hint: 'It tells you what time it is' },
+            { word: 'FLOWER', hint: 'A plant that smells pretty' },
+            { word: 'GUITAR', hint: 'A musical instrument' }
+        ];
+        
+        let currentIndex = 0;
+        let hintsUsed = 0;
+        let totalScore = 0;
+        let correctAnswers = 0;
+        const gameStartTime = Date.now();
+        
+        const scrambledWord = document.getElementById('scrambledWord');
+        const answerInput = document.getElementById('answerInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const hintBtn = document.getElementById('hintBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        const backBtn = document.getElementById('backBtn');
+        const hintText = document.getElementById('hintText');
+        
+        function shuffleWord(word) {
+            return word.split('').sort(() => Math.random() - 0.5).join('');
+        }
+        
+        function loadWord(index) {
+            answerInput.value = '';
+            hintsUsed = 0;
+            const word = scrambleWords[index].word;
+            let scrambled = shuffleWord(word);
+            
+            // Make sure it's not the same as original
+            while (scrambled === word) {
+                scrambled = shuffleWord(word);
+            }
+            
+            scrambledWord.textContent = scrambled;
+            hintText.textContent = scrambleWords[index].hint;
+        }
+        
+        submitBtn.addEventListener('click', () => {
+            const word = scrambleWords[currentIndex].word;
+            const answer = answerInput.value.toUpperCase().trim();
+            
+            if (answer === word) {
+                correctAnswers++;
+                totalScore += Math.max(10 - hintsUsed * 2, 5);
+                CognoNotifications?.toast?.success(`Correct! "${word}" is the answer!`);
+                setTimeout(nextWord, 2000);
+            } else {
+                CognoNotifications?.toast?.error(`Not quite. Try again!`);
+            }
+        });
+        
+        hintBtn.addEventListener('click', () => {
+            const word = scrambleWords[currentIndex].word;
+            const hint = word.substring(0, Math.min(hintsUsed + 2, word.length));
+            hintText.textContent = `Starts with: ${hint}...`;
+            hintsUsed++;
+            CognoNotifications?.toast?.info(`Hint: The word starts with "${hint}"`);
+        });
+        
+        skipBtn.addEventListener('click', () => {
+            const word = scrambleWords[currentIndex].word;
+            CognoNotifications?.toast?.info(`The word was: ${word}`);
+            nextWord();
+        });
+        
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitBtn.click();
+            }
+        });
+        
+        async function nextWord() {
+            if (currentIndex < scrambleWords.length - 1) {
+                currentIndex++;
+                loadWord(currentIndex);
+            } else {
+                CognoNotifications?.toast?.success('You completed Word Scramble!');
+                
+                // Save activity to CognoTracker
+                const duration = Math.floor((Date.now() - gameStartTime) / 1000);
+                try {
+                    await CognoTracker.saveActivity({
+                        moduleId: 'dyslexia',
+                        activityId: 'word-scramble',
+                        score: totalScore,
+                        maxScore: scrambleWords.length * 10,
+                        duration: duration,
+                        metadata: {
+                            totalWords: scrambleWords.length,
+                            correctAnswers: correctAnswers,
+                            hintsUsed: hintsUsed
+                        }
+                    });
+                } catch (err) {
+                    console.error('Failed to save activity:', err);
+                }
+                
+                // Reset for replay
+                currentIndex = 0;
+                correctAnswers = 0;
+                totalScore = 0;
+                loadWord(0);
+            }
+        }
+        
+        backBtn.addEventListener('click', () => {
+            window.history.back();
+        });
+        
+        loadWord(0);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

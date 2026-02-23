@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Letter Tracing - Trace letters for handwriting practice">
+    <title>Letter Tracing - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <!-- Supabase and Activity Tracker -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dysgraphia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .tracing-box {
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 40px;
+            border: 3px solid var(--color-dysgraphia);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .tracing-title {
+            font-size: 1.5rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .letter-display {
+            text-align: center;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--color-dysgraphia);
+            margin-bottom: 30px;
+        }
+        
+        .canvas-wrapper {
+            background: white;
+            border: 2px dashed var(--color-dysgraphia);
+            border-radius: 8px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        canvas {
+            display: block;
+            cursor: crosshair;
+            touch-action: none;
+        }
+        
+        .instructions {
+            color: var(--color-text-secondary);
+            font-size: 1rem;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 8px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .submit-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dysgraphia);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .submit-btn:hover {
+            background: #5b4fac;
+        }
+        
+        .clear-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .faded-letter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: 700;
+            color: rgba(99, 102, 241, 0.15);
+            font-family: 'Comic Sans MS', 'Segoe Print', sans-serif;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        canvas {
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Letter Tracing</h1>
+    </header>
+
+    <div class="activity-container">
+        <div class="activity-header">
+            <h1><i class="fa-solid fa-pen"></i> Letter Tracing</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="game-content">
+            <div class="tracing-box">
+                <div class="tracing-title">Trace the letter carefully</div>
+                <div class="letter-display" id="letterDisplay">A</div>
+                <div class="instructions">Use your finger or mouse to trace over the faded letter</div>
+                <div class="canvas-wrapper">
+                    <div class="faded-letter" id="fadedLetter">A</div>
+                    <canvas id="tracingCanvas" width="500" height="250"></canvas>
+                </div>
+                <div class="button-group">
+                    <button class="clear-btn" id="clearBtn">Clear</button>
+                    <button class="submit-btn" id="nextBtn">Next Letter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../js/notifications.js"></script>
+    <script>
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+        let currentIndex = 0;
+        let isDrawing = false;
+        let pixelsDrawn = 0;
+        let lettersCompleted = 0;
+        let gameStartTime = Date.now();
+        
+        const canvas = document.getElementById('tracingCanvas');
+        const ctx = canvas.getContext('2d');
+        const letterDisplay = document.getElementById('letterDisplay');
+        const fadedLetter = document.getElementById('fadedLetter');
+        const clearBtn = document.getElementById('clearBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const backBtn = document.getElementById('backBtn');
+        
+        // Set up canvas for higher DPI
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = 500 * dpr;
+        canvas.height = 250 * dpr;
+        ctx.scale(dpr, dpr);
+        
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#6366f1';
+        
+        function displayLetter(index) {
+            const letter = letters[index];
+            letterDisplay.textContent = letter;
+            fadedLetter.textContent = letter;
+            pixelsDrawn = 0;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+            const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+            const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+            
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            pixelsDrawn++;
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDrawing);
+        
+        clearBtn.addEventListener('click', () => {
+            pixelsDrawn = 0;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            CognoNotifications?.toast?.info('Canvas cleared. Try again!');
+        });
+        
+        nextBtn.addEventListener('click', async () => {
+            if (pixelsDrawn < 50) {
+                CognoNotifications?.toast?.warning('Write more on the canvas to continue');
+                return;
+            }
+            lettersCompleted++;
+            CognoNotifications?.toast?.success('Great tracing! ' + letters[currentIndex]);
+            
+            if (currentIndex < letters.length - 1) {
+                currentIndex++;
+                displayLetter(currentIndex);
+            } else {
+                // All letters traced - save score!
+                const gameDuration = Math.round((Date.now() - gameStartTime) / 1000);
+                const score = Math.round((lettersCompleted / letters.length) * 100);
+                
+                const result = await CognoTracker.saveActivity({
+                    moduleId: 'dysgraphia',
+                    activityId: 'letter-tracing',
+                    score: score,
+                    maxScore: 100,
+                    duration: gameDuration,
+                    accuracy: 100,
+                    metadata: {
+                        lettersTraced: lettersCompleted,
+                        totalLetters: letters.length
+                    }
+                });
+                
+                if (result.success) {
+                    console.log('✅ Letter Tracing score saved!', result);
+                }
+                
+                CognoNotifications?.toast?.success('All letters traced! Well done!');
+                currentIndex = 0;
+                lettersCompleted = 0;
+                gameStartTime = Date.now();
+                displayLetter(0);
+            }
+        });
+        
+        backBtn.addEventListener('click', () => window.history.back());
+        
+        displayLetter(0);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

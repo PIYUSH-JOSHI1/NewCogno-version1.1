@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Verify your email - Cogno Solution">
+    <title>Verify Email - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    
+    <style>
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-bg) 50%, var(--color-info-50) 100%);
+            padding: var(--space-6);
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 480px;
+        }
+        
+        .auth-logo {
+            text-align: center;
+            margin-bottom: var(--space-8);
+        }
+        
+        .auth-logo img {
+            height: 48px;
+            margin-bottom: var(--space-2);
+        }
+        
+        .auth-logo h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-xl);
+            text-align: center;
+        }
+        
+        .dark-mode .auth-card {
+            background: var(--color-surface);
+        }
+        
+        .auth-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto var(--space-4);
+        }
+        
+        .auth-icon.pending {
+            background: var(--color-info-100);
+            color: var(--color-info);
+        }
+        
+        .auth-icon.success {
+            background: var(--color-success-100);
+            color: var(--color-success);
+        }
+        
+        .auth-icon.error {
+            background: var(--color-danger-100);
+            color: var(--color-danger);
+        }
+        
+        .auth-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+        }
+        
+        .auth-card .subtitle {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .email-display {
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+        
+        .verification-steps {
+            text-align: left;
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+        
+        .verification-steps h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: var(--space-3);
+        }
+        
+        .verification-steps ol {
+            padding-left: var(--space-5);
+            margin: 0;
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .verification-steps li {
+            margin-bottom: var(--space-2);
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .resend-timer {
+            font-size: 0.875rem;
+            color: var(--color-text-tertiary);
+            margin-top: var(--space-4);
+        }
+        
+        .auth-footer {
+            margin-top: var(--space-6);
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .auth-footer a {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+        
+        /* States */
+        .state {
+            display: none;
+        }
+        
+        .state.active {
+            display: block;
+        }
+        
+        /* Loading animation */
+        .loading-spinner {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <!-- Logo -->
+            <div class="auth-logo">
+                <img src="../assets/images/icons/logo.svg" alt="Cogno Solution Logo">
+                <h2>Cogno Solution</h2>
+            </div>
+            
+            <!-- Verification Card -->
+            <div class="auth-card">
+                <!-- Pending State -->
+                <div class="state active" id="pending-state">
+                    <div class="auth-icon pending">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    
+                    <h3>Verify Your Email</h3>
+                    <p class="subtitle">
+                        We've sent a verification link to<br>
+                        <span class="email-display" id="user-email">your email</span>
+                    </p>
+                    
+                    <div class="verification-steps">
+                        <h4>Next steps:</h4>
+                        <ol>
+                            <li>Check your email inbox (and spam folder)</li>
+                            <li>Click the verification link in the email</li>
+                            <li>Return here to continue to your dashboard</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-ghost" id="resend-btn">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>Resend Verification Email</span>
+                        </button>
+                        
+                        <button type="button" class="btn btn-primary" id="check-btn">
+                            <span class="btn-text">I've Verified My Email</span>
+                            <span class="btn-loader hidden">
+                                <i class="fa-solid fa-spinner fa-spin"></i>
+                            </span>
+                        </button>
+                    </div>
+                    
+                    <p class="resend-timer" id="resend-timer" style="display: none;">
+                        You can resend in <span id="timer-count">60</span> seconds
+                    </p>
+                </div>
+                
+                <!-- Verifying State -->
+                <div class="state" id="verifying-state">
+                    <div class="auth-icon pending">
+                        <i class="fa-solid fa-spinner loading-spinner"></i>
+                    </div>
+                    
+                    <h3>Verifying...</h3>
+                    <p class="subtitle">Please wait while we verify your email</p>
+                </div>
+                
+                <!-- Success State -->
+                <div class="state" id="success-state">
+                    <div class="auth-icon success">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    
+                    <h3>Email Verified!</h3>
+                    <p class="subtitle">Your email has been successfully verified. You can now access all features.</p>
+                    
+                    <a href="../dashboard/" class="btn btn-primary btn-lg w-full" id="continue-btn">
+                        <span>Continue to Dashboard</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <!-- Error State -->
+                <div class="state" id="error-state">
+                    <div class="auth-icon error">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </div>
+                    
+                    <h3>Verification Failed</h3>
+                    <p class="subtitle" id="error-message">The verification link is invalid or has expired.</p>
+                    
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" id="retry-btn">
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>Send New Verification Link</span>
+                        </button>
+                        
+                        <a href="login.html" class="btn btn-ghost">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span>Back to Sign In</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Footer -->
+                <div class="auth-footer">
+                    <p>Wrong email? <a href="register.html">Sign up with a different email</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Cogno Scripts -->
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script src="./auth.js"></script>
+    
+    <script>
+        // Initialize verify email page
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoAuth.initVerifyEmailPage();
+        });
+    </script>
+</body>
+</html>

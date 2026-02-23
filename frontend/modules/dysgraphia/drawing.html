@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drawing Exercises - Dysgraphia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; }
+        #drawingCanvas {
+            touch-action: none;
+            cursor: crosshair;
+        }
+        .shape-card {
+            transition: all 0.3s;
+        }
+        .shape-card:hover {
+            transform: scale(1.05);
+        }
+        .shape-card.active {
+            box-shadow: 0 0 0 4px #8b5cf6;
+            background: #f3e8ff;
+        }
+        .tool-btn {
+            transition: all 0.2s;
+        }
+        .tool-btn:hover {
+            transform: scale(1.1);
+        }
+        .tool-btn.active {
+            background: #8b5cf6;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-white to-purple-50 min-h-screen">
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Drawing Exercises</h1>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform lg:translate-x-0 -translate-x-full" id="sidebar">
+        <div class="p-6 border-b border-gray-100">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-purple-500 rounded-xl flex items-center justify-center">
+                    <span class="text-white font-bold text-lg">C</span>
+                </div>
+                <span class="text-xl font-bold text-gray-800">Cogno</span>
+            </div>
+        </div>
+        
+        <nav class="p-4 space-y-2">
+            <a href="../../dashboard/index.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="index.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-orange-100 text-orange-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                <span>Dysgraphia Module</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 p-6">
+        <!-- Mobile Header -->
+        <div class="lg:hidden hidden items-center justify-between mb-6">
+            <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')" class="p-2 rounded-lg bg-white shadow">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <span class="font-semibold text-gray-800">Drawing Exercises</span>
+            <div class="w-10"></div>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <div>
+                <div class="flex items-center space-x-3 mb-2">
+                    <a href="index.html" class="text-orange-600 hover:text-orange-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    </a>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Drawing Exercises</h1>
+                </div>
+                <p class="text-gray-600">Practice fine motor skills with fun drawing activities</p>
+            </div>
+        </div>
+
+        <!-- Exercise Types -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <button onclick="setExercise('shapes')" class="exercise-btn bg-gradient-to-br from-blue-500 to-cyan-500 text-white rounded-xl p-4 text-left hover:shadow-lg transition-all" data-type="shapes">
+                <span class="text-3xl mb-2 block">⭕</span>
+                <span class="font-semibold">Trace Shapes</span>
+                <p class="text-sm text-blue-100">Follow the dotted lines</p>
+            </button>
+            <button onclick="setExercise('patterns')" class="exercise-btn bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-xl p-4 text-left hover:shadow-lg transition-all" data-type="patterns">
+                <span class="text-3xl mb-2 block">〰️</span>
+                <span class="font-semibold">Draw Patterns</span>
+                <p class="text-sm text-purple-100">Continue the pattern</p>
+            </button>
+            <button onclick="setExercise('connect')" class="exercise-btn bg-gradient-to-br from-green-500 to-teal-500 text-white rounded-xl p-4 text-left hover:shadow-lg transition-all" data-type="connect">
+                <span class="text-3xl mb-2 block">🔗</span>
+                <span class="font-semibold">Connect Dots</span>
+                <p class="text-sm text-green-100">Join numbered dots</p>
+            </button>
+            <button onclick="setExercise('free')" class="exercise-btn bg-gradient-to-br from-orange-500 to-red-500 text-white rounded-xl p-4 text-left hover:shadow-lg transition-all" data-type="free">
+                <span class="text-3xl mb-2 block">🎨</span>
+                <span class="font-semibold">Free Draw</span>
+                <p class="text-sm text-orange-100">Express yourself!</p>
+            </button>
+        </div>
+
+        <!-- Drawing Area -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+            <!-- Toolbar -->
+            <div class="bg-gray-50 border-b border-gray-200 p-4 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <!-- Drawing Tools -->
+                    <div class="flex gap-2">
+                        <button onclick="setTool('pen')" class="tool-btn p-3 bg-white rounded-lg shadow-sm" data-tool="pen" title="Pen">
+                            ✏️
+                        </button>
+                        <button onclick="setTool('brush')" class="tool-btn p-3 bg-white rounded-lg shadow-sm" data-tool="brush" title="Brush">
+                            🖌️
+                        </button>
+                        <button onclick="setTool('eraser')" class="tool-btn p-3 bg-white rounded-lg shadow-sm" data-tool="eraser" title="Eraser">
+                            🧽
+                        </button>
+                    </div>
+                    
+                    <!-- Size -->
+                    <div class="flex items-center gap-2 ml-4">
+                        <span class="text-sm text-gray-500">Size:</span>
+                        <input type="range" id="brushSize" min="2" max="20" value="4" class="w-20" onchange="updateBrushSize()">
+                    </div>
+                    
+                    <!-- Colors -->
+                    <div class="flex gap-1 ml-4">
+                        <button onclick="setColor('#1e293b')" class="w-8 h-8 rounded-full bg-gray-800 color-btn ring-2 ring-offset-2 ring-transparent hover:ring-gray-400" data-color="#1e293b"></button>
+                        <button onclick="setColor('#ef4444')" class="w-8 h-8 rounded-full bg-red-500 color-btn ring-2 ring-offset-2 ring-transparent hover:ring-red-400" data-color="#ef4444"></button>
+                        <button onclick="setColor('#f97316')" class="w-8 h-8 rounded-full bg-orange-500 color-btn ring-2 ring-offset-2 ring-transparent hover:ring-orange-400" data-color="#f97316"></button>
+                        <button onclick="setColor('#eab308')" class="w-8 h-8 rounded-full bg-yellow-500 color-btn ring-2 ring-offset-2 ring-transparent hover:ring-yellow-400" data-color="#eab308"></button>
+                        <button onclick="setColor('#22c55e')" class="w-8 h-8 rounded-full bg-green-500 color-btn ring-2 ring-offset-2 ring-transparent hover:ring-green-400" data-color="#22c55e"></button>
+                        <button onclick="setColor('#3b82f6')" class="w-8 h-8 rounded-full bg-blue-500 color-btn ring-2 ring-offset-2 ring-transparent hover:ring-blue-400" data-color="#3b82f6"></button>
+                        <button onclick="setColor('#8b5cf6')" class="w-8 h-8 rounded-full bg-purple-500 color-btn ring-2 ring-offset-2 ring-transparent hover:ring-purple-400" data-color="#8b5cf6"></button>
+                    </div>
+                </div>
+                
+                <div class="flex gap-2">
+                    <button onclick="undo()" class="px-4 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-100 text-sm">Undo</button>
+                    <button onclick="clearCanvas()" class="px-4 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-100 text-sm">Clear</button>
+                    <button onclick="saveDrawing()" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg shadow-sm hover:from-purple-600 hover:to-blue-600 text-sm">Save</button>
+                </div>
+            </div>
+            
+            <!-- Canvas Container -->
+            <div class="relative" style="height: 500px;">
+                <!-- Guide Canvas (for shapes/patterns) -->
+                <canvas id="guideCanvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+                <!-- Drawing Canvas -->
+                <canvas id="drawingCanvas" class="absolute inset-0 w-full h-full"></canvas>
+            </div>
+        </div>
+
+        <!-- Shape Selection (for trace exercise) -->
+        <div id="shapeSelector" class="bg-white rounded-2xl shadow-lg p-6 hidden">
+            <h3 class="font-semibold text-gray-700 mb-4">Choose a Shape to Trace</h3>
+            <div class="flex flex-wrap gap-4">
+                <button onclick="loadShape('circle')" class="shape-card p-6 bg-gray-50 rounded-xl hover:bg-purple-50">
+                    <div class="w-16 h-16 border-4 border-dashed border-purple-300 rounded-full"></div>
+                    <p class="mt-2 text-sm text-gray-600">Circle</p>
+                </button>
+                <button onclick="loadShape('square')" class="shape-card p-6 bg-gray-50 rounded-xl hover:bg-purple-50">
+                    <div class="w-16 h-16 border-4 border-dashed border-purple-300"></div>
+                    <p class="mt-2 text-sm text-gray-600">Square</p>
+                </button>
+                <button onclick="loadShape('triangle')" class="shape-card p-6 bg-gray-50 rounded-xl hover:bg-purple-50">
+                    <div class="w-0 h-0 border-l-8 border-r-8 border-b-16 border-l-transparent border-r-transparent border-b-purple-300" style="border-bottom-width: 56px; border-left-width: 32px; border-right-width: 32px;"></div>
+                    <p class="mt-2 text-sm text-gray-600">Triangle</p>
+                </button>
+                <button onclick="loadShape('star')" class="shape-card p-6 bg-gray-50 rounded-xl hover:bg-purple-50">
+                    <div class="text-5xl text-purple-300">☆</div>
+                    <p class="mt-2 text-sm text-gray-600">Star</p>
+                </button>
+                <button onclick="loadShape('heart')" class="shape-card p-6 bg-gray-50 rounded-xl hover:bg-purple-50">
+                    <div class="text-5xl text-purple-300">♡</div>
+                    <p class="mt-2 text-sm text-gray-600">Heart</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- Pattern Selector -->
+        <div id="patternSelector" class="bg-white rounded-2xl shadow-lg p-6 hidden">
+            <h3 class="font-semibold text-gray-700 mb-4">Choose a Pattern</h3>
+            <div class="flex flex-wrap gap-4">
+                <button onclick="loadPattern('zigzag')" class="shape-card p-4 bg-gray-50 rounded-xl hover:bg-purple-50 text-2xl">
+                    〰️ Zigzag
+                </button>
+                <button onclick="loadPattern('waves')" class="shape-card p-4 bg-gray-50 rounded-xl hover:bg-purple-50 text-2xl">
+                    🌊 Waves
+                </button>
+                <button onclick="loadPattern('loops')" class="shape-card p-4 bg-gray-50 rounded-xl hover:bg-purple-50 text-2xl">
+                    ∞ Loops
+                </button>
+                <button onclick="loadPattern('spiral')" class="shape-card p-4 bg-gray-50 rounded-xl hover:bg-purple-50 text-2xl">
+                    🌀 Spiral
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let canvas, ctx, guideCanvas, guideCtx;
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let currentTool = 'pen';
+        let currentColor = '#1e293b';
+        let brushSize = 4;
+        let strokes = [];
+        let currentStroke = [];
+        let currentExercise = 'free';
+
+        function init() {
+            canvas = document.getElementById('drawingCanvas');
+            ctx = canvas.getContext('2d');
+            guideCanvas = document.getElementById('guideCanvas');
+            guideCtx = guideCanvas.getContext('2d');
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Touch events
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
+            canvas.addEventListener('touchend', stopDrawing);
+            
+            setTool('pen');
+            setColor('#1e293b');
+            setExercise('free');
+        }
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            guideCanvas.width = rect.width;
+            guideCanvas.height = rect.height;
+            redrawStrokes();
+            drawGuide();
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = getCoordinates(e);
+            currentStroke = [{
+                x: lastX,
+                y: lastY,
+                tool: currentTool,
+                color: currentTool === 'eraser' ? '#ffffff' : currentColor,
+                size: currentTool === 'eraser' ? brushSize * 3 : brushSize
+            }];
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            const [x, y] = getCoordinates(e);
+            
+            ctx.beginPath();
+            ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : currentColor;
+            ctx.lineWidth = currentTool === 'eraser' ? brushSize * 3 : brushSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            if (currentTool === 'brush') {
+                ctx.globalAlpha = 0.3;
+            } else {
+                ctx.globalAlpha = 1;
+            }
+            
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            
+            currentStroke.push({
+                x, y,
+                tool: currentTool,
+                color: currentTool === 'eraser' ? '#ffffff' : currentColor,
+                size: currentTool === 'eraser' ? brushSize * 3 : brushSize
+            });
+            
+            [lastX, lastY] = [x, y];
+        }
+
+        function stopDrawing() {
+            if (isDrawing && currentStroke.length > 0) {
+                strokes.push([...currentStroke]);
+            }
+            isDrawing = false;
+            currentStroke = [];
+            ctx.globalAlpha = 1;
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            isDrawing = true;
+            [lastX, lastY] = [x, y];
+            currentStroke = [{
+                x, y,
+                tool: currentTool,
+                color: currentTool === 'eraser' ? '#ffffff' : currentColor,
+                size: currentTool === 'eraser' ? brushSize * 3 : brushSize
+            }];
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (!isDrawing) return;
+            
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            ctx.beginPath();
+            ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : currentColor;
+            ctx.lineWidth = currentTool === 'eraser' ? brushSize * 3 : brushSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            if (currentTool === 'brush') {
+                ctx.globalAlpha = 0.3;
+            }
+            
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            
+            currentStroke.push({
+                x, y,
+                tool: currentTool,
+                color: currentTool === 'eraser' ? '#ffffff' : currentColor,
+                size: currentTool === 'eraser' ? brushSize * 3 : brushSize
+            });
+            
+            [lastX, lastY] = [x, y];
+        }
+
+        function getCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            return [e.clientX - rect.left, e.clientY - rect.top];
+        }
+
+        function redrawStrokes() {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            strokes.forEach(stroke => {
+                if (stroke.length < 2) return;
+                
+                ctx.beginPath();
+                ctx.strokeStyle = stroke[0].color;
+                ctx.lineWidth = stroke[0].size;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                
+                if (stroke[0].tool === 'brush') {
+                    ctx.globalAlpha = 0.3;
+                } else {
+                    ctx.globalAlpha = 1;
+                }
+                
+                ctx.moveTo(stroke[0].x, stroke[0].y);
+                stroke.forEach(point => {
+                    ctx.lineTo(point.x, point.y);
+                });
+                ctx.stroke();
+            });
+            
+            ctx.globalAlpha = 1;
+        }
+
+        function clearCanvas() {
+            strokes = [];
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function undo() {
+            if (strokes.length > 0) {
+                strokes.pop();
+                redrawStrokes();
+            }
+        }
+
+        function setTool(tool) {
+            currentTool = tool;
+            document.querySelectorAll('.tool-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-purple-500', 'text-white');
+                if (btn.dataset.tool === tool) {
+                    btn.classList.add('active', 'bg-purple-500');
+                }
+            });
+            
+            canvas.style.cursor = tool === 'eraser' ? 'cell' : 'crosshair';
+        }
+
+        function setColor(color) {
+            currentColor = color;
+            document.querySelectorAll('.color-btn').forEach(btn => {
+                btn.classList.remove('ring-gray-800');
+                if (btn.dataset.color === color) {
+                    btn.classList.add('ring-gray-800');
+                }
+            });
+        }
+
+        function updateBrushSize() {
+            brushSize = parseInt(document.getElementById('brushSize').value);
+        }
+
+        function setExercise(type) {
+            currentExercise = type;
+            
+            // Update buttons
+            document.querySelectorAll('.exercise-btn').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-white');
+                if (btn.dataset.type === type) {
+                    btn.classList.add('ring-4', 'ring-white');
+                }
+            });
+            
+            // Show/hide selectors
+            document.getElementById('shapeSelector').classList.add('hidden');
+            document.getElementById('patternSelector').classList.add('hidden');
+            
+            if (type === 'shapes') {
+                document.getElementById('shapeSelector').classList.remove('hidden');
+            } else if (type === 'patterns') {
+                document.getElementById('patternSelector').classList.remove('hidden');
+            } else if (type === 'connect') {
+                loadConnectDots();
+            } else {
+                clearGuide();
+            }
+            
+            clearCanvas();
+        }
+
+        function drawGuide() {
+            guideCtx.clearRect(0, 0, guideCanvas.width, guideCanvas.height);
+        }
+
+        function clearGuide() {
+            guideCtx.clearRect(0, 0, guideCanvas.width, guideCanvas.height);
+        }
+
+        function loadShape(shape) {
+            clearGuide();
+            clearCanvas();
+            
+            const centerX = guideCanvas.width / 2;
+            const centerY = guideCanvas.height / 2;
+            const size = Math.min(guideCanvas.width, guideCanvas.height) * 0.4;
+            
+            guideCtx.setLineDash([10, 10]);
+            guideCtx.strokeStyle = '#c4b5fd';
+            guideCtx.lineWidth = 4;
+            
+            switch(shape) {
+                case 'circle':
+                    guideCtx.beginPath();
+                    guideCtx.arc(centerX, centerY, size / 2, 0, Math.PI * 2);
+                    guideCtx.stroke();
+                    break;
+                    
+                case 'square':
+                    guideCtx.strokeRect(centerX - size/2, centerY - size/2, size, size);
+                    break;
+                    
+                case 'triangle':
+                    guideCtx.beginPath();
+                    guideCtx.moveTo(centerX, centerY - size/2);
+                    guideCtx.lineTo(centerX + size/2, centerY + size/2);
+                    guideCtx.lineTo(centerX - size/2, centerY + size/2);
+                    guideCtx.closePath();
+                    guideCtx.stroke();
+                    break;
+                    
+                case 'star':
+                    drawStar(centerX, centerY, 5, size/2, size/4);
+                    break;
+                    
+                case 'heart':
+                    drawHeart(centerX, centerY, size);
+                    break;
+            }
+        }
+
+        function drawStar(cx, cy, spikes, outerRadius, innerRadius) {
+            let rot = Math.PI / 2 * 3;
+            let step = Math.PI / spikes;
+            
+            guideCtx.beginPath();
+            guideCtx.moveTo(cx, cy - outerRadius);
+            
+            for (let i = 0; i < spikes; i++) {
+                let x = cx + Math.cos(rot) * outerRadius;
+                let y = cy + Math.sin(rot) * outerRadius;
+                guideCtx.lineTo(x, y);
+                rot += step;
+                
+                x = cx + Math.cos(rot) * innerRadius;
+                y = cy + Math.sin(rot) * innerRadius;
+                guideCtx.lineTo(x, y);
+                rot += step;
+            }
+            
+            guideCtx.closePath();
+            guideCtx.stroke();
+        }
+
+        function drawHeart(cx, cy, size) {
+            guideCtx.beginPath();
+            const topCurveHeight = size * 0.3;
+            guideCtx.moveTo(cx, cy + size * 0.3);
+            
+            // Left curve
+            guideCtx.bezierCurveTo(
+                cx - size/2, cy - topCurveHeight,
+                cx - size, cy + topCurveHeight,
+                cx, cy + size * 0.6
+            );
+            
+            // Right curve
+            guideCtx.bezierCurveTo(
+                cx + size, cy + topCurveHeight,
+                cx + size/2, cy - topCurveHeight,
+                cx, cy + size * 0.3
+            );
+            
+            guideCtx.stroke();
+        }
+
+        function loadPattern(pattern) {
+            clearGuide();
+            clearCanvas();
+            
+            const startX = 50;
+            const endX = guideCanvas.width - 50;
+            const centerY = guideCanvas.height / 2;
+            
+            guideCtx.setLineDash([8, 8]);
+            guideCtx.strokeStyle = '#c4b5fd';
+            guideCtx.lineWidth = 3;
+            
+            guideCtx.beginPath();
+            
+            switch(pattern) {
+                case 'zigzag':
+                    const zigzagHeight = 80;
+                    const segments = 10;
+                    const segmentWidth = (endX - startX) / segments;
+                    
+                    guideCtx.moveTo(startX, centerY);
+                    for (let i = 1; i <= segments; i++) {
+                        const y = i % 2 === 1 ? centerY - zigzagHeight : centerY + zigzagHeight;
+                        guideCtx.lineTo(startX + i * segmentWidth, y);
+                    }
+                    break;
+                    
+                case 'waves':
+                    guideCtx.moveTo(startX, centerY);
+                    for (let x = startX; x <= endX; x += 5) {
+                        const y = centerY + Math.sin((x - startX) * 0.05) * 60;
+                        guideCtx.lineTo(x, y);
+                    }
+                    break;
+                    
+                case 'loops':
+                    const loopCount = 5;
+                    const loopWidth = (endX - startX) / loopCount;
+                    
+                    guideCtx.moveTo(startX, centerY);
+                    for (let i = 0; i < loopCount; i++) {
+                        const loopX = startX + i * loopWidth + loopWidth/2;
+                        guideCtx.bezierCurveTo(
+                            loopX - loopWidth/4, centerY - 60,
+                            loopX + loopWidth/4, centerY - 60,
+                            loopX + loopWidth/2, centerY
+                        );
+                    }
+                    break;
+                    
+                case 'spiral':
+                    const spiralCenterX = guideCanvas.width / 2;
+                    const spiralCenterY = guideCanvas.height / 2;
+                    
+                    guideCtx.moveTo(spiralCenterX, spiralCenterY);
+                    for (let i = 0; i < 720; i++) {
+                        const angle = (i / 180) * Math.PI;
+                        const radius = i * 0.3;
+                        const x = spiralCenterX + Math.cos(angle) * radius;
+                        const y = spiralCenterY + Math.sin(angle) * radius;
+                        guideCtx.lineTo(x, y);
+                    }
+                    break;
+            }
+            
+            guideCtx.stroke();
+        }
+
+        function loadConnectDots() {
+            clearGuide();
+            clearCanvas();
+            
+            const dots = [];
+            const padding = 80;
+            const numDots = 10;
+            
+            // Create a simple shape path
+            const centerX = guideCanvas.width / 2;
+            const centerY = guideCanvas.height / 2;
+            const radius = Math.min(guideCanvas.width, guideCanvas.height) * 0.35;
+            
+            for (let i = 0; i < numDots; i++) {
+                const angle = (i / numDots) * Math.PI * 2 - Math.PI / 2;
+                dots.push({
+                    x: centerX + Math.cos(angle) * radius,
+                    y: centerY + Math.sin(angle) * radius,
+                    num: i + 1
+                });
+            }
+            
+            // Draw dots
+            guideCtx.setLineDash([]);
+            dots.forEach((dot, i) => {
+                // Circle
+                guideCtx.fillStyle = '#8b5cf6';
+                guideCtx.beginPath();
+                guideCtx.arc(dot.x, dot.y, 15, 0, Math.PI * 2);
+                guideCtx.fill();
+                
+                // Number
+                guideCtx.fillStyle = 'white';
+                guideCtx.font = 'bold 14px Lexend';
+                guideCtx.textAlign = 'center';
+                guideCtx.textBaseline = 'middle';
+                guideCtx.fillText(dot.num, dot.x, dot.y);
+            });
+            
+            // Draw faint connecting lines
+            guideCtx.setLineDash([5, 5]);
+            guideCtx.strokeStyle = '#e9d5ff';
+            guideCtx.lineWidth = 2;
+            guideCtx.beginPath();
+            guideCtx.moveTo(dots[0].x, dots[0].y);
+            dots.forEach(dot => guideCtx.lineTo(dot.x, dot.y));
+            guideCtx.closePath();
+            guideCtx.stroke();
+        }
+
+        function saveDrawing() {
+            const link = document.createElement('a');
+            link.download = `cogno-drawing-${Date.now()}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        // Initialize on load
+        window.addEventListener('load', init);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

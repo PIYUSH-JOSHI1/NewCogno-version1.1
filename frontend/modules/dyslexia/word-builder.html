@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Word Builder - Build words by arranging letters">
+    <title>Word Builder - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <!-- Supabase and Activity Tracker -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dyslexia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .button-control:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        .word-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-dyslexia);
+            text-align: center;
+            letter-spacing: 8px;
+            background: var(--color-surface);
+            padding: 30px;
+            border-radius: 12px;
+            min-width: 300px;
+            border: 3px dashed var(--color-dyslexia);
+        }
+        
+        .letters-to-arrange {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 600px;
+        }
+        
+        .letter-tile {
+            width: 60px;
+            height: 60px;
+            background: var(--color-dyslexia);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .letter-tile:hover:not(.used) {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
+        }
+        
+        .letter-tile.used {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .primary-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dyslexia);
+            color: white;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .primary-btn:hover {
+            background: var(--color-dyslexia-dark, #1e40af);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Word Builder</h1>
+    </header>
+
+    <div class="activity-container">
+        <div class="activity-header">
+            <h1><i class="fa-solid fa-puzzle-piece"></i> Word Builder</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="game-content">
+            <div class="word-display" id="wordDisplay">_ _ _ _ _</div>
+            
+            <div class="letters-to-arrange" id="lettersContainer"></div>
+            
+            <div class="controls">
+                <button class="primary-btn" id="submitBtn">
+                    <i class="fa-solid fa-check"></i> Check Word
+                </button>
+                <button class="primary-btn" id="nextBtn" style="background: #10b981; display: none;">
+                    <i class="fa-solid fa-arrow-right"></i> Next Word
+                </button>
+                <button class="primary-btn" style="background: #6b7280;" id="clearBtn">
+                    <i class="fa-solid fa-redo"></i> Start Over
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../js/tts.js"></script>
+    <script src="../../js/notifications.js"></script>
+    
+    <script>
+        const words = [
+            { word: 'APPLE', hint: 'A red or green fruit' },
+            { word: 'BOOKS', hint: 'Stories to read' },
+            { word: 'CLOCK', hint: 'Tells you the time' },
+            { word: 'DANCE', hint: 'Move to music' },
+            { word: 'EARTH', hint: 'Our planet' }
+        ];
+        
+        let currentWord = 0;
+        let selectedLetters = [];
+        const wordDisplay = document.getElementById('wordDisplay');
+        const lettersContainer = document.getElementById('lettersContainer');
+        const submitBtn = document.getElementById('submitBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const backBtn = document.getElementById('backBtn');
+        
+        function loadWord(index) {
+            selectedLetters = [];
+            const word = words[index];
+            const letters = word.word.split('').sort(() => Math.random() - 0.5);
+            
+            wordDisplay.textContent = '_'.repeat(word.word.length);
+            lettersContainer.innerHTML = '';
+            
+            letters.forEach((letter, idx) => {
+                const btn = document.createElement('button');
+                btn.textContent = letter;
+                btn.className = 'letter-tile';
+                btn.dataset.letter = letter;
+                btn.dataset.index = idx;
+                btn.addEventListener('click', () => selectLetter(btn, letter));
+                lettersContainer.appendChild(btn);
+            });
+            
+            submitBtn.style.display = 'flex';
+            nextBtn.style.display = 'none';
+        }
+        
+        function selectLetter(btn, letter) {
+            if (btn.classList.contains('used')) return;
+            
+            btn.classList.add('used');
+            selectedLetters.push({ btn, letter });
+            updateDisplay();
+        }
+        
+        function updateDisplay() {
+            const word = words[currentWord].word;
+            const display = selectedLetters.map(item => item.letter).join('');
+            const padded = display + '_'.repeat(word.length - display.length);
+            wordDisplay.textContent = padded.split('').join(' ');
+            
+            if (CognoTTS && display.length > 0) {
+                // Optional: Speak each letter as it's added
+            }
+        }
+        
+        submitBtn.addEventListener('click', () => {
+            const word = words[currentWord].word;
+            const entered = selectedLetters.map(item => item.letter).join('');
+            
+            if (entered === word) {
+                CognoNotifications?.toast?.success(`Correct! "${word}" is correct!`);
+                submitBtn.style.display = 'none';
+                nextBtn.style.display = 'flex';
+            } else if (entered.length === word.length) {
+                CognoNotifications?.toast?.error(`Not quite right. Try again!`);
+                clearBtn.click();
+            } else {
+                CognoNotifications?.toast?.error(`Complete the word first!`);
+            }
+        });
+        
+        clearBtn.addEventListener('click', () => {
+            loadWord(currentWord);
+        });
+        
+        nextBtn.addEventListener('click', async () => {
+            if (currentWord < words.length - 1) {
+                currentWord++;
+                loadWord(currentWord);
+            } else {
+                // Save score to Supabase
+                await CognoTracker.saveActivity({
+                    moduleId: 'dyslexia',
+                    activityId: 'word-builder',
+                    score: 100,
+                    maxScore: 100,
+                    duration: 0,
+                    metadata: { wordsCompleted: words.length }
+                });
+                
+                CognoNotifications?.toast?.success(`You've completed all words!`);
+                currentWord = 0;
+                loadWord(0);
+            }
+        });
+        
+        backBtn.addEventListener('click', () => {
+            window.history.back();
+        });
+        
+        loadWord(0);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

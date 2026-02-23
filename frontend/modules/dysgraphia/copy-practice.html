@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Copy Practice - Copy text from a model">
+    <title>Copy Practice - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 40px;
+            background: var(--color-background);
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .activity-header h1 {
+            font-size: 2.5rem;
+            color: var(--color-dysgraphia);
+            margin: 0;
+        }
+        
+        .button-control {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .copy-box {
+            background: var(--color-surface);
+            border-radius: 16px;
+            padding: 40px;
+            border: 3px solid var(--color-dysgraphia);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .title {
+            font-size: 1.5rem;
+            color: var(--color-text-secondary);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .model-section {
+            background: rgba(99, 102, 241, 0.05);
+            border: 2px solid var(--color-dysgraphia);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .model-label {
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .model-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: var(--color-dysgraphia);
+            font-family: 'Comic Sans MS', 'Segoe Print', sans-serif;
+            padding: 15px;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        .canvas-wrapper {
+            background: white;
+            border: 2px dashed var(--color-dysgraphia);
+            border-radius: 8px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        canvas {
+            display: block;
+            cursor: crosshair;
+            touch-action: none;
+            width: 100%;
+            height: auto;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .submit-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--color-dysgraphia);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .submit-btn:hover {
+            background: #5b4fac;
+        }
+        
+        .clear-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #6b7280;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Copy Practice</h1>
+    </header>
+
+    <div class="activity-container">
+        <div class="activity-header">
+            <h1><i class="fa-solid fa-copy"></i> Copy Practice</h1>
+            <button class="button-control" id="backBtn">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+        </div>
+        
+        <div class="game-content">
+            <div class="copy-box">
+                <div class="title">Copy the text shown below</div>
+                
+                <div class="model-section">
+                    <div class="model-label">Model to copy:</div>
+                    <div class="model-text" id="modelText">The cat sat on the mat.</div>
+                </div>
+                
+                <div class="canvas-wrapper">
+                    <canvas id="copyCanvas" width="500" height="200"></canvas>
+                </div>
+                
+                <div class="button-group">
+                    <button class="clear-btn" id="clearBtn">Clear</button>
+                    <button class="submit-btn" id="nextBtn">Next Text</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../../js/notifications.js"></script>
+    <script>
+        const textSamples = [
+            'The cat sat on the mat.',
+            'I like to read books.',
+            'The sun is bright today.',
+            'Hello, my name is John.',
+            'Writing is fun and easy.'
+        ];
+        
+        let currentIndex = 0;
+        let isDrawing = false;
+        let pixelsDrawn = 0;
+        let textsCompleted = 0;
+        const startTime = Date.now();
+        
+        const canvas = document.getElementById('copyCanvas');
+        const ctx = canvas.getContext('2d');
+        const modelText = document.getElementById('modelText');
+        const clearBtn = document.getElementById('clearBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const backBtn = document.getElementById('backBtn');
+        
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = 500 * dpr;
+        canvas.height = 200 * dpr;
+        ctx.scale(dpr, dpr);
+        
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#6366f1';
+        
+        function displayText(index) {
+            modelText.textContent = textSamples[index];
+            pixelsDrawn = 0;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+            const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+            const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+            
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            pixelsDrawn++;
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stopDrawing);
+        
+        clearBtn.addEventListener('click', () => {
+            pixelsDrawn = 0;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+        
+        nextBtn.addEventListener('click', async () => {
+            if (pixelsDrawn < 100) {
+                CognoNotifications?.toast?.warning('Write more to continue');
+                return;
+            }
+            textsCompleted++;
+            CognoNotifications?.toast?.success('Great copying!');
+            if (currentIndex < textSamples.length - 1) {
+                currentIndex++;
+                displayText(currentIndex);
+            } else {
+                // Save activity when all texts completed
+                const duration = Math.floor((Date.now() - startTime) / 1000);
+                try {
+                    await CognoTracker.saveActivity({
+                        moduleId: 'dysgraphia',
+                        activityId: 'copy-practice',
+                        score: textsCompleted,
+                        maxScore: textSamples.length,
+                        duration: duration,
+                        metadata: { textsCompleted: textsCompleted, totalTexts: textSamples.length }
+                    });
+                } catch (e) { console.error('Failed to save activity:', e); }
+                CognoNotifications?.toast?.success('All texts copied! Well done!');
+                currentIndex = 0;
+                textsCompleted = 0;
+                displayText(0);
+            }
+        });
+        
+        backBtn.addEventListener('click', () => window.history.back());
+        
+        displayText(0);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your Profile - Cogno Solution">
+    <title>Profile - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/cognitive-friendly.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <link rel="stylesheet" href="../css/mobile-nav.css">
+    
+    <style>
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: calc(var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px) + 16px);
+            }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+        .profile-header {
+            background: var(--color-surface);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            margin-bottom: var(--space-6);
+            border: 1px solid var(--color-border);
+        }
+        
+        .profile-header-content {
+            display: flex;
+            align-items: center;
+            gap: var(--space-6);
+        }
+        
+        .profile-avatar-wrapper {
+            position: relative;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            font-weight: 700;
+            overflow: hidden;
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-avatar-edit {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 36px;
+            height: 36px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 3px solid var(--color-surface);
+        }
+        
+        .profile-info h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: var(--space-1);
+        }
+        
+        .profile-info .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-1) var(--space-3);
+            background: var(--color-primary-100);
+            color: var(--color-primary);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: var(--space-2);
+        }
+        
+        .profile-info .member-since {
+            color: var(--color-text-tertiary);
+            font-size: 0.875rem;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: var(--space-6);
+            margin-top: var(--space-4);
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .profile-stat {
+            text-align: center;
+        }
+        
+        .profile-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        
+        .profile-stat-label {
+            font-size: 0.75rem;
+            color: var(--color-text-tertiary);
+        }
+        
+        .profile-section {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            margin-bottom: var(--space-4);
+            border: 1px solid var(--color-border);
+        }
+        
+        .profile-section h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: var(--space-4);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-4);
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: var(--space-3);
+        }
+        
+        .achievement-item {
+            text-align: center;
+            padding: var(--space-3);
+            background: var(--color-background);
+            border-radius: var(--radius-md);
+        }
+        
+        .achievement-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto var(--space-2);
+            font-size: 2rem;
+        }
+        
+        .achievement-icon.locked {
+            filter: grayscale(100%);
+            opacity: 0.3;
+        }
+        
+        .achievement-name {
+            font-size: 0.75rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .module-progress-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .module-progress-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            background: var(--color-background);
+            border-radius: var(--radius-md);
+        }
+        
+        .module-progress-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            color: white;
+        }
+        
+        .module-progress-icon.dyslexia { background: var(--color-dyslexia); }
+        .module-progress-icon.dyscalculia { background: var(--color-dyscalculia); }
+        .module-progress-icon.dysgraphia { background: var(--color-dysgraphia); }
+        .module-progress-icon.dyspraxia { background: var(--color-dyspraxia); }
+        
+        .module-progress-info {
+            flex: 1;
+        }
+        
+        .module-progress-name {
+            font-weight: 500;
+            margin-bottom: var(--space-1);
+        }
+        
+        .module-progress-bar-container {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .module-progress-bar-container .progress-bar {
+            flex: 1;
+            height: 6px;
+        }
+        
+        .module-progress-percentage {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-text-secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-stats {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="../dashboard/child-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Learning Modules</li>
+                
+                <li class="sidebar-item">
+                    <a href="../modules/dyslexia/" class="sidebar-link">
+                        <i class="fa-solid fa-book-open" style="color: var(--color-dyslexia);"></i>
+                        <span>Reading & Words</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dyscalculia/" class="sidebar-link">
+                        <i class="fa-solid fa-calculator" style="color: var(--color-dyscalculia);"></i>
+                        <span>Numbers & Math</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dysgraphia/" class="sidebar-link">
+                        <i class="fa-solid fa-pen" style="color: var(--color-dysgraphia);"></i>
+                        <span>Writing Practice</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dyspraxia/" class="sidebar-link">
+                        <i class="fa-solid fa-person-running" style="color: var(--color-dyspraxia);"></i>
+                        <span>Movement Games</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">More</li>
+                
+                <li class="sidebar-item">
+                    <a href="../learning-hub/" class="sidebar-link">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Learning Hub</span>
+                    </a>
+                </li>
+                <li class="sidebar-item active">
+                    <a href="../profile/" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../settings/" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="tts-toggle" aria-label="Toggle text-to-speech">
+                <i class="fa-solid fa-volume-high"></i>
+                <span>Read Aloud</span>
+            </button>
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1 class="page-title">My Profile</h1>
+            </div>
+            
+            <div class="navbar-right">
+                <!-- Accessibility Toggle -->
+                <button class="btn btn-ghost btn-icon" id="accessibility-btn" title="Accessibility options">
+                    <i class="fa-solid fa-universal-access"></i>
+                </button>
+                
+                <!-- Settings Quick Link -->
+                <a href="../settings/" class="btn btn-ghost btn-icon" title="Settings">
+                    <i class="fa-solid fa-gear"></i>
+                </a>
+
+                <!-- Dark Mode Toggle -->
+                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle" title="Toggle dark mode">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-ghost btn-icon notification-btn" id="notification-btn">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                    </button>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="user-menu-btn" id="user-menu-btn">
+                        <div class="avatar avatar-sm">
+                            <img src="../assets/images/avatars/default.svg" alt="User avatar" id="user-avatar-img">
+                        </div>
+                        <span class="user-name" id="user-name">Loading...</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="user-dropdown">
+                        <a href="../profile/" class="dropdown-item">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="../settings/" class="dropdown-item">
+                            <i class="fa-solid fa-gear"></i>
+                            <span>Settings</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" id="dropdown-logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Profile Content -->
+        <div class="content-area">
+            <!-- Profile Header -->
+            <header class="profile-header">
+                <div class="profile-header-content">
+                    <div class="profile-avatar-wrapper">
+                        <div class="profile-avatar" id="profile-avatar">
+                            <span id="avatar-initials">--</span>
+                        </div>
+                        <label class="profile-avatar-edit" for="avatar-upload">
+                            <i class="fa-solid fa-camera"></i>
+                            <input type="file" id="avatar-upload" accept="image/*" hidden>
+                        </label>
+                    </div>
+                    <div class="profile-info">
+                        <h1 id="profile-name">Loading...</h1>
+                        <span class="role-badge" id="profile-role">
+                            <i class="fa-solid fa-user"></i>
+                            <span>Member</span>
+                        </span>
+                        <p class="member-since">Member since <span id="member-since">---</span></p>
+                        <div class="profile-stats">
+                            <div class="profile-stat">
+                                <span class="profile-stat-value" id="stat-streak">0</span>
+                                <span class="profile-stat-label">Day Streak</span>
+                            </div>
+                            <div class="profile-stat">
+                                <span class="profile-stat-value" id="stat-points">0</span>
+                                <span class="profile-stat-label">Total Points</span>
+                            </div>
+                            <div class="profile-stat">
+                                <span class="profile-stat-value" id="stat-achievements">0</span>
+                                <span class="profile-stat-label">Achievements</span>
+                            </div>
+                            <div class="profile-stat">
+                                <span class="profile-stat-value" id="stat-activities">0</span>
+                                <span class="profile-stat-label">Activities</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="grid grid-2 gap-4">
+                <!-- Personal Information -->
+                <section class="profile-section">
+                    <h2>
+                        <i class="fa-solid fa-user" style="color: var(--color-primary);"></i>
+                        Personal Information
+                    </h2>
+                    <form id="profile-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="full-name" class="form-label">Full Name</label>
+                                <input type="text" id="full-name" name="full_name" class="form-input" placeholder="Your full name">
+                            </div>
+                            <div class="form-group">
+                                <label for="display-name" class="form-label">Display Name</label>
+                                <input type="text" id="display-name" name="display_name" class="form-input" placeholder="Display name">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" id="email" name="email" class="form-input" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Phone (Optional)</label>
+                                <input type="tel" id="phone" name="phone" class="form-input" placeholder="Phone number">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="date-of-birth" class="form-label">Date of Birth</label>
+                            <input type="date" id="date-of-birth" name="date_of_birth" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="bio" class="form-label">Bio</label>
+                            <textarea id="bio" name="bio" class="form-textarea" rows="3" placeholder="Tell us a little about yourself..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-save"></i>
+                            Save Changes
+                        </button>
+                    </form>
+                </section>
+                
+                <!-- Module Progress -->
+                <section class="profile-section">
+                    <h2>
+                        <i class="fa-solid fa-chart-line" style="color: var(--color-success);"></i>
+                        Learning Progress
+                    </h2>
+                    <div class="module-progress-list" id="module-progress">
+                        <div class="module-progress-item">
+                            <div class="module-progress-icon dyslexia">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                            <div class="module-progress-info">
+                                <div class="module-progress-name">Reading & Words</div>
+                                <div class="module-progress-bar-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="dyslexia-progress" style="width: 0%; background: var(--color-dyslexia);"></div>
+                                    </div>
+                                    <span class="module-progress-percentage" id="dyslexia-percentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-progress-item">
+                            <div class="module-progress-icon dyscalculia">
+                                <i class="fa-solid fa-calculator"></i>
+                            </div>
+                            <div class="module-progress-info">
+                                <div class="module-progress-name">Numbers & Math</div>
+                                <div class="module-progress-bar-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="dyscalculia-progress" style="width: 0%; background: var(--color-dyscalculia);"></div>
+                                    </div>
+                                    <span class="module-progress-percentage" id="dyscalculia-percentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-progress-item">
+                            <div class="module-progress-icon dysgraphia">
+                                <i class="fa-solid fa-pen"></i>
+                            </div>
+                            <div class="module-progress-info">
+                                <div class="module-progress-name">Writing Practice</div>
+                                <div class="module-progress-bar-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="dysgraphia-progress" style="width: 0%; background: var(--color-dysgraphia);"></div>
+                                    </div>
+                                    <span class="module-progress-percentage" id="dysgraphia-percentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-progress-item">
+                            <div class="module-progress-icon dyspraxia">
+                                <i class="fa-solid fa-person-running"></i>
+                            </div>
+                            <div class="module-progress-info">
+                                <div class="module-progress-name">Movement Games</div>
+                                <div class="module-progress-bar-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="dyspraxia-progress" style="width: 0%; background: var(--color-dyspraxia);"></div>
+                                    </div>
+                                    <span class="module-progress-percentage" id="dyspraxia-percentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Achievements -->
+            <section class="profile-section">
+                <h2>
+                    <i class="fa-solid fa-trophy" style="color: var(--color-warning);"></i>
+                    Achievements
+                </h2>
+                <div class="achievements-grid" id="achievements-grid">
+                    <div class="achievement-item">
+                        <div class="achievement-icon">🌟</div>
+                        <div class="achievement-name">First Steps</div>
+                    </div>
+                    <div class="achievement-item">
+                        <div class="achievement-icon">🔥</div>
+                        <div class="achievement-name">7 Day Streak</div>
+                    </div>
+                    <div class="achievement-item">
+                        <div class="achievement-icon">💯</div>
+                        <div class="achievement-name">Perfect Score</div>
+                    </div>
+                    <div class="achievement-item">
+                        <div class="achievement-icon">📚</div>
+                        <div class="achievement-name">Bookworm</div>
+                    </div>
+                    <div class="achievement-item">
+                        <div class="achievement-icon">🧮</div>
+                        <div class="achievement-name">Math Whiz</div>
+                    </div>
+                    <div class="achievement-item">
+                        <div class="achievement-icon">✍️</div>
+                        <div class="achievement-name">Writer</div>
+                    </div>
+                    <div class="achievement-item">
+                        <div class="achievement-icon locked">🏃</div>
+                        <div class="achievement-name">Athlete</div>
+                    </div>
+                    <div class="achievement-item">
+                        <div class="achievement-icon locked">🎯</div>
+                        <div class="achievement-name">Sharpshooter</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Recent Activity Section -->
+            <section class="profile-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                    <h2 style="margin: 0;">
+                        <i class="fa-solid fa-clock-rotate-left" style="color: var(--color-primary);"></i>
+                        Recent Activity
+                    </h2>
+                    <a href="certificates.html" class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-certificate"></i> My Certificates
+                    </a>
+                </div>
+                <div class="activity-feed" id="activity-feed">
+                    <!-- Populated by JS -->
+                    <div class="activity-empty" style="text-align: center; padding: var(--space-6); color: var(--color-text-secondary);">
+                        <i class="fa-solid fa-sparkles" style="font-size: 2rem; margin-bottom: var(--space-3);"></i>
+                        <p>No recent activity yet. Start learning to track your progress!</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize sidebar
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarClose = document.getElementById('sidebar-close');
+            
+            sidebarToggle?.addEventListener('click', () => sidebar?.classList.toggle('open'));
+            sidebarClose?.addEventListener('click', () => sidebar?.classList.remove('open'));
+            
+            // Initialize dark mode
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const savedTheme = localStorage.getItem('cogno-theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+            
+            darkModeToggle?.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('cogno-theme', isDark ? 'dark' : 'light');
+                darkModeToggle.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+            });
+            
+            // Initialize user menu dropdown
+            const userMenuBtn = document.getElementById('user-menu-btn');
+            const userDropdown = document.getElementById('user-dropdown');
+            
+            userMenuBtn?.addEventListener('click', () => {
+                userDropdown?.classList.toggle('show');
+            });
+            
+            // Close dropdowns on outside click
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(menu => menu.classList.remove('show'));
+                }
+            });
+            
+            // Check auth
+            const { session } = await CognoSupabase.getSession();
+            if (!session) {
+                window.location.href = CognoPaths.auth.login();
+                return;
+            }
+            
+            const user = session.user;
+            console.log('Profile page - User:', user);
+            
+            // Update navbar user display
+            const navUserName = document.getElementById('user-name');
+            const navAvatarImg = document.getElementById('user-avatar-img');
+            const userMeta = user.user_metadata;
+            
+            if (navUserName) {
+                navUserName.textContent = userMeta?.full_name || user.email?.split('@')[0] || 'User';
+            }
+            if (navAvatarImg && userMeta?.avatar_url) {
+                navAvatarImg.src = userMeta.avatar_url;
+            }
+            
+            // Load profile
+            await loadProfile(user);
+            
+            // Load progress
+            await loadProgress(user);
+            
+            // Load achievements
+            await loadAchievements(user);
+            
+            // Load recent activity
+            await loadRecentActivity(user);
+            
+            // Profile form submit
+            document.getElementById('profile-form')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await updateProfile(user);
+            });
+            
+            // Avatar upload
+            document.getElementById('avatar-upload')?.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    await uploadAvatar(user, file);
+                }
+            });
+            
+            // Logout
+            const logoutBtns = document.querySelectorAll('#logout-btn, #dropdown-logout');
+            logoutBtns.forEach(btn => {
+                btn?.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    if (confirm('Are you sure you want to sign out?')) {
+                        await CognoSupabase.signOut();
+                        window.location.href = CognoPaths.auth.login();
+                    }
+                });
+            });
+        });
+        
+        async function loadProfile(user) {
+            try {
+                console.log('Loading profile for user:', user.id);
+                const profile = await CognoSupabase.getProfile(user.id);
+                console.log('Profile loaded:', profile);
+                
+                // If profile is null or empty, show default values
+                if (!profile) {
+                    console.warn('Profile not found, using defaults from auth metadata');
+                    document.getElementById('profile-name').textContent = user.user_metadata?.full_name || user.email.split('@')[0];
+                    document.getElementById('full-name').value = user.user_metadata?.full_name || '';
+                    document.getElementById('email').value = user.email;
+                    return;
+                }
+                
+                // Update header
+                document.getElementById('profile-name').textContent = profile.full_name || profile.display_name || user.email.split('@')[0];
+                
+                const initials = (profile.full_name || user.email).split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                document.getElementById('avatar-initials').textContent = initials;
+                
+                // Show avatar image if exists
+                if (profile.avatar_url) {
+                    const avatarEl = document.getElementById('profile-avatar');
+                    avatarEl.innerHTML = `<img src="${profile.avatar_url}" alt="Avatar">`;
+                }
+                
+                // Role badge
+                const roleBadge = document.getElementById('profile-role');
+                const roles = { child: '👦 Child', parent: '👨‍👩‍👧 Parent', doctor: '👨‍⚕️ Doctor', admin: '⚙️ Admin' };
+                roleBadge.innerHTML = `<i class="fa-solid fa-user"></i><span>${roles[profile.role] || 'Member'}</span>`;
+                
+                // Member since
+                const created = new Date(user.created_at);
+                document.getElementById('member-since').textContent = created.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                
+                // Stats
+                document.getElementById('stat-streak').textContent = profile.streak_days || 0;
+                document.getElementById('stat-points').textContent = CognoUtils?.NumberUtils?.format(profile.total_points || 0) || '0';
+                document.getElementById('stat-achievements').textContent = profile.achievement_count || 0;
+                document.getElementById('stat-activities').textContent = profile.activities_completed || 0;
+                
+                // Form fields
+                document.getElementById('full-name').value = profile.full_name || '';
+                document.getElementById('display-name').value = profile.display_name || '';
+                document.getElementById('email').value = user.email;
+                document.getElementById('phone').value = profile.phone || '';
+                document.getElementById('date-of-birth').value = profile.date_of_birth || '';
+                document.getElementById('bio').value = profile.bio || '';
+                
+            } catch (error) {
+                console.error('Failed to load profile:', error);
+                // Set fallback values from auth data
+                document.getElementById('profile-name').textContent = user.user_metadata?.full_name || user.email.split('@')[0];
+                document.getElementById('full-name').value = user.user_metadata?.full_name || '';
+                document.getElementById('email').value = user.email;
+            }
+        }
+        
+        async function loadProgress(user) {
+            try {
+                const modules = [
+                    { id: 'dyslexia', name: 'Reading & Words', icon: 'book-open' },
+                    { id: 'dyscalculia', name: 'Numbers & Math', icon: 'calculator' },
+                    { id: 'dysgraphia', name: 'Writing Practice', icon: 'pen' },
+                    { id: 'dyspraxia', name: 'Movement Games', icon: 'person-running' }
+                ];
+                
+                const container = document.getElementById('module-progress');
+                if (!container) return;
+                
+                const progressItems = [];
+                
+                for (const mod of modules) {
+                    const { data } = await CognoSupabase.query(
+                        'student_progress',
+                        'score, max_score',
+                        [
+                            { column: 'student_id', value: user.id },
+                            { column: 'module_type', value: mod.id }
+                        ],
+                        null,
+                        100
+                    );
+                    
+                    // Skip modules with no progress
+                    if (!data?.length) continue;
+                    
+                    // Calculate percentage correctly
+                    const percentages = data.map(p => {
+                        if (!p.max_score || p.max_score === 0) return 0;
+                        return (p.score / p.max_score) * 100;
+                    });
+                    const percentage = Math.round(percentages.reduce((sum, p) => sum + p, 0) / percentages.length);
+                    
+                    progressItems.push({
+                        ...mod,
+                        percentage,
+                        activitiesCount: data.length
+                    });
+                }
+                
+                // Render only modules with progress
+                if (progressItems.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: var(--space-6); color: var(--color-text-secondary);">
+                            <i class="fa-solid fa-book-open" style="font-size: 2rem; margin-bottom: var(--space-3); display: block;"></i>
+                            <p>No learning progress yet. Start an activity to track your progress!</p>
+                            <a href="../learning-hub/" class="btn btn-primary" style="margin-top: var(--space-3);">Start Learning</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = progressItems.map(mod => `
+                    <div class="module-progress-item">
+                        <div class="module-progress-icon ${mod.id}">
+                            <i class="fa-solid fa-${mod.icon}"></i>
+                        </div>
+                        <div class="module-progress-info">
+                            <div class="module-progress-name">${mod.name}</div>
+                            <div class="module-progress-bar-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${mod.percentage}%; background: var(--color-${mod.id});"></div>
+                                </div>
+                                <span class="module-progress-percentage">${mod.percentage}%</span>
+                            </div>
+                            <span style="font-size: 0.75rem; color: var(--color-text-secondary);">${mod.activitiesCount} activities completed</span>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Failed to load progress:', error);
+            }
+        }
+        
+        async function loadAchievements(user) {
+            try {
+                const { data: achievements } = await CognoSupabase.query(
+                    'user_achievements',
+                    '*',
+                    [{ column: 'user_id', value: user.id }],
+                    { column: 'unlocked_at', ascending: false },
+                    20
+                );
+                
+                const grid = document.getElementById('achievements-grid');
+                if (!grid) return;
+                
+                // Define all possible achievements
+                const allAchievements = [
+                    { id: 'first_activity', icon: '🌟', name: 'First Steps' },
+                    { id: '7_day_streak', icon: '🔥', name: '7 Day Streak' },
+                    { id: 'perfect_dyslexia', icon: '💯', name: 'Perfect Score' },
+                    { id: 'mastery_dyslexia', icon: '📚', name: 'Bookworm' },
+                    { id: 'mastery_dyscalculia', icon: '🧮', name: 'Math Whiz' },
+                    { id: 'mastery_dysgraphia', icon: '✍️', name: 'Writer' },
+                    { id: 'mastery_dyspraxia', icon: '🏃', name: 'Athlete' },
+                    { id: 'sharpshooter', icon: '🎯', name: 'Sharpshooter' }
+                ];
+                
+                // Get list of earned achievement IDs
+                const earnedIds = new Set(achievements?.map(a => a.achievement_id) || []);
+                
+                // Render achievements grid
+                grid.innerHTML = allAchievements.map(a => {
+                    const isEarned = earnedIds.has(a.id);
+                    return `
+                        <div class="achievement-item ${isEarned ? 'earned' : 'locked'}">
+                            <div class="achievement-icon ${isEarned ? '' : 'locked'}">${a.icon}</div>
+                            <div class="achievement-name">${a.name}</div>
+                        </div>
+                    `;
+                }).join('');
+                
+                // Update stat count
+                const statEl = document.getElementById('stat-achievements');
+                if (statEl) statEl.textContent = achievements?.length || 0;
+                
+            } catch (error) {
+                console.error('Failed to load achievements:', error);
+            }
+        }
+        
+        async function loadRecentActivity(user) {
+            const feed = document.getElementById('activity-feed');
+            if (!feed) return;
+            
+            try {
+                const { data } = await CognoSupabase.query(
+                    'student_progress',
+                    '*',
+                    [{ column: 'student_id', value: user.id }],
+                    { column: 'updated_at', ascending: false },
+                    10
+                );
+                
+                if (!data?.length) {
+                    feed.innerHTML = `
+                        <div class="activity-empty" style="text-align: center; padding: var(--space-6); color: var(--color-text-secondary);">
+                            <i class="fa-solid fa-sparkles" style="font-size: 2rem; margin-bottom: var(--space-3); display: block;"></i>
+                            <p>No recent activity yet. Start learning to track your progress!</p>
+                            <a href="../learning-hub/" class="btn btn-primary" style="margin-top: var(--space-3);">Start Learning</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Update activities stat
+                const statEl = document.getElementById('stat-activities');
+                if (statEl) statEl.textContent = data.length;
+                
+                const moduleColors = {
+                    dyslexia: '#3b82f6',
+                    dyscalculia: '#10b981',
+                    dysgraphia: '#f59e0b',
+                    dyspraxia: '#8b5cf6'
+                };
+                
+                const moduleIcons = {
+                    dyslexia: 'book-open',
+                    dyscalculia: 'calculator',
+                    dysgraphia: 'pen',
+                    dyspraxia: 'person-running'
+                };
+                
+                const moduleNames = {
+                    dyslexia: 'Reading & Words',
+                    dyscalculia: 'Numbers & Math',
+                    dysgraphia: 'Writing Practice',
+                    dyspraxia: 'Movement Games'
+                };
+                
+                feed.innerHTML = data.map(a => {
+                    const percentage = a.max_score > 0 ? Math.round((a.score / a.max_score) * 100) : 0;
+                    const color = moduleColors[a.module_type] || '#6b7280';
+                    const icon = moduleIcons[a.module_type] || 'circle';
+                    const modName = moduleNames[a.module_type] || a.module_type;
+                    const timeAgo = getTimeAgo(a.updated_at);
+                    
+                    return `
+                        <div class="activity-item" style="display: flex; align-items: center; gap: var(--space-4); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border);">
+                            <div class="activity-icon" style="width: 40px; height: 40px; border-radius: 50%; background: ${color}22; color: ${color}; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa-solid fa-${icon}"></i>
+                            </div>
+                            <div class="activity-content" style="flex: 1;">
+                                <p style="margin: 0; font-weight: 500;">${a.activity_type || a.activity_id}</p>
+                                <span style="font-size: 0.875rem; color: var(--color-text-secondary);">${modName} • ${timeAgo}</span>
+                            </div>
+                            <div class="activity-score" style="text-align: right;">
+                                <span style="font-weight: 600; color: ${percentage >= 80 ? '#10b981' : percentage >= 50 ? '#f59e0b' : '#ef4444'};">${percentage}%</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Failed to load recent activity:', error);
+            }
+        }
+        
+        function getTimeAgo(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+            if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
+            return date.toLocaleDateString();
+        }
+        
+        async function updateProfile(user) {
+            const btn = event.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            
+            try {
+                // Get form values
+                let data = {
+                    full_name: document.getElementById('full-name').value?.trim() || '',
+                    display_name: document.getElementById('display-name').value?.trim() || '',
+                    phone: document.getElementById('phone').value?.trim() || '',
+                    date_of_birth: document.getElementById('date-of-birth').value?.trim() || null, // Convert to NULL if empty
+                    bio: document.getElementById('bio').value?.trim() || ''
+                };
+                
+                // Convert empty string dates to NULL to avoid PostgreSQL date parsing errors
+                if (!data.date_of_birth || data.date_of_birth === '') {
+                    data.date_of_birth = null;
+                }
+                if (!data.phone || data.phone === '') {
+                    data.phone = null;
+                }
+                
+                console.log('Updating profile with data:', data);
+                
+                const result = await CognoSupabase.updateProfile(user.id, data);
+                
+                if (result.success) {
+                    CognoNotifications?.toast?.success('Profile updated successfully!');
+                    // Reload profile to show updated data
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    const errorMsg = result.error || 'Failed to update profile';
+                    console.error('Profile update failed:', errorMsg);
+                    CognoNotifications?.toast?.error(`Error: ${errorMsg}`);
+                }
+                
+            } catch (error) {
+                console.error('Failed to update profile:', error);
+                CognoNotifications?.toast?.error(`Error: ${error.message || 'Failed to update profile'}`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-save"></i> Save Changes';
+            }
+        }
+        
+        async function uploadAvatar(user, file) {
+            try {
+                // Validate file
+                if (!file) {
+                    throw new Error('No file selected');
+                }
+                
+                // Validate file type (images only)
+                if (!file.type.startsWith('image/')) {
+                    throw new Error('Please select an image file');
+                }
+                
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    throw new Error('Image must be less than 5MB');
+                }
+                
+                console.log('Uploading avatar:', { fileName: file.name, size: file.size });
+                
+                // Upload to Supabase Storage
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+                
+                const { data, error } = await CognoSupabase.client.storage
+                    .from('avatars')
+                    .upload(fileName, file, { upsert: true });
+                
+                if (error) throw error;
+                
+                console.log('Avatar uploaded successfully:', data);
+                
+                // Get public URL
+                const { data: urlData } = await CognoSupabase.client.storage
+                    .from('avatars')
+                    .getPublicUrl(fileName);
+                
+                // Update profile
+                await CognoSupabase.updateProfile(user.id, {
+                    avatar_url: urlData.publicUrl
+                });
+                
+                // Update UI
+                const avatarEl = document.getElementById('profile-avatar');
+                avatarEl.innerHTML = `<img src="${urlData.publicUrl}" alt="Avatar">`;
+                
+                CognoNotifications?.toast?.success('Avatar updated!');
+                
+            } catch (error) {
+                console.error('Failed to upload avatar:', error);
+                CognoNotifications?.toast?.error('Failed to upload avatar');
+            }
+        }
+    </script>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../learn/index.html" class="nav-item">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="index.html" class="nav-item active">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

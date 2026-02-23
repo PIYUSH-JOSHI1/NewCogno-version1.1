@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Operations - Dyscalculia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 1024px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 0 !important; }
+            .activity-content { padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+
+        .activity-navbar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @media (max-width: 1024px) {
+            .activity-navbar { display: flex; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+            #num1, #operator, #num2, .answer-slot { font-size: 2rem !important; }
+            .number-btn { width: 50px !important; height: 50px !important; font-size: 1.25rem !important; }
+        }
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; }
+        .operation-btn {
+            transition: all 0.3s;
+        }
+        .operation-btn:hover {
+            transform: scale(1.05);
+        }
+        .operation-btn.active {
+            box-shadow: 0 0 0 4px currentColor;
+            transform: scale(1.05);
+        }
+        .visual-object {
+            animation: pop 0.3s ease-out;
+        }
+        @keyframes pop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        .number-btn {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            transition: all 0.2s;
+        }
+        .number-btn:hover {
+            transform: scale(1.1);
+        }
+        .answer-slot {
+            min-width: 80px;
+            border-bottom: 4px solid #8b5cf6;
+        }
+        .correct-animation {
+            animation: celebrate 0.5s ease-out;
+        }
+        @keyframes celebrate {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2) rotate(-5deg); }
+            75% { transform: scale(1.2) rotate(5deg); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 via-white to-blue-50 min-h-screen">
+    <!-- New Activity Navbar (Mobile) -->
+    <header class="activity-navbar">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <div class="activity-title-group">
+            <span class="activity-category">Dyscalculia</span>
+            <h1 class="activity-name">Math Operations</h1>
+        </div>
+        <div class="activity-actions">
+            <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform lg:translate-x-0 -translate-x-full hide-xs" id="sidebar">
+        <div class="p-6 border-b border-gray-100">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-xl flex items-center justify-center">
+                    <span class="text-white font-bold text-lg">C</span>
+                </div>
+                <span class="text-xl font-bold text-gray-800">Cogno</span>
+            </div>
+        </div>
+        
+        <nav class="p-4 space-y-2">
+            <a href="../../dashboard/index.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-green-50 hover:text-green-600 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="index.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-green-100 text-green-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                <span>Dyscalculia Module</span>
+            </a>
+            <a href="../../progress/index.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-green-50 hover:text-green-600 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                <span>My Progress</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 p-6 main-content">
+        <div class="activity-content">
+            <!-- Mobile Header -->
+            <div class="lg:hidden flex items-center justify-between mb-6 hide-xs">
+                <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')" class="p-2 rounded-lg bg-white shadow">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+                <span class="font-semibold text-gray-800">Math Operations</span>
+                <div class="w-10"></div>
+            </div>
+
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 hide-xs">
+                <div>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <a href="index.html" class="text-green-600 hover:text-green-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        </a>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Math Operations</h1>
+                    </div>
+                    <p class="text-gray-600">Practice addition, subtraction, multiplication & division</p>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-4 gap-4 mb-8 stats-grid">
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <div class="text-2xl font-bold text-green-600" id="score">0</div>
+                <div class="text-xs text-gray-500">Score</div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <div class="text-2xl font-bold text-blue-600" id="streak">0</div>
+                <div class="text-xs text-gray-500">Streak</div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <div class="text-2xl font-bold text-purple-600" id="correct">0</div>
+                <div class="text-xs text-gray-500">Correct</div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <div class="text-2xl font-bold text-orange-600" id="total">0</div>
+                <div class="text-xs text-gray-500">Total</div>
+            </div>
+        </div>
+
+        <!-- Operation Selector -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">Choose Operation</h3>
+            <div class="flex flex-wrap gap-3">
+                <button onclick="setOperation('+')" class="operation-btn px-6 py-3 bg-blue-100 text-blue-600 rounded-xl font-bold text-xl hover:bg-blue-200" data-op="+">
+                    ➕ Addition
+                </button>
+                <button onclick="setOperation('-')" class="operation-btn px-6 py-3 bg-red-100 text-red-600 rounded-xl font-bold text-xl hover:bg-red-200" data-op="-">
+                    ➖ Subtraction
+                </button>
+                <button onclick="setOperation('×')" class="operation-btn px-6 py-3 bg-green-100 text-green-600 rounded-xl font-bold text-xl hover:bg-green-200" data-op="×">
+                    ✖️ Multiplication
+                </button>
+                <button onclick="setOperation('÷')" class="operation-btn px-6 py-3 bg-purple-100 text-purple-600 rounded-xl font-bold text-xl hover:bg-purple-200" data-op="÷">
+                    ➗ Division
+                </button>
+            </div>
+            
+            <!-- Difficulty -->
+            <div class="mt-4">
+                <label class="text-sm text-gray-600">Difficulty:</label>
+                <div class="flex gap-2 mt-2">
+                    <button onclick="setDifficulty('easy')" class="px-4 py-2 bg-green-100 text-green-700 rounded-lg text-sm difficulty-btn" data-level="easy">Easy (1-10)</button>
+                    <button onclick="setDifficulty('medium')" class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg text-sm difficulty-btn" data-level="medium">Medium (1-20)</button>
+                    <button onclick="setDifficulty('hard')" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg text-sm difficulty-btn" data-level="hard">Hard (1-50)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problem Display -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <!-- Visual Representation -->
+            <div class="mb-8 p-6 bg-gradient-to-r from-green-50 to-blue-50 rounded-xl">
+                <div class="flex items-center justify-center gap-8 flex-wrap" id="visualArea">
+                    <!-- Visual objects rendered here -->
+                </div>
+            </div>
+
+            <!-- Math Problem -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center gap-4 text-5xl font-bold">
+                    <span id="num1" class="text-green-600">5</span>
+                    <span id="operator" class="text-gray-400">+</span>
+                    <span id="num2" class="text-blue-600">3</span>
+                    <span class="text-gray-400">=</span>
+                    <div class="answer-slot text-center px-4" id="answerDisplay">?</div>
+                </div>
+            </div>
+
+            <!-- Number Pad -->
+            <div class="max-w-xs mx-auto">
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <button onclick="inputNumber(1)" class="number-btn bg-gray-100 rounded-xl font-bold hover:bg-gray-200">1</button>
+                    <button onclick="inputNumber(2)" class="number-btn bg-gray-100 rounded-xl font-bold hover:bg-gray-200">2</button>
+                    <button onclick="inputNumber(3)" class="number-btn bg-gray-100 rounded-xl font-bold hover:bg-gray-200">3</button>
+                    <button onclick="inputNumber(4)" class="number-btn bg-gray-100 rounded-xl font-bold hover:bg-gray-200">4</button>
+                    <button onclick="inputNumber(5)" class="number-btn bg-gray-100 rounded-xl font-bold hover:bg-gray-200">5</button>
+                    <button onclick="inputNumber(6)" class="number-btn bg-gray-100 rounded-xl font-bold hover:bg-gray-200">6</button>
+                    <button onclick="inputNumber(7)" class="number-btn bg-gray-100 rounded-xl font-bold hover:bg-gray-200">7</button>
+                    <button onclick="inputNumber(8)" class="number-btn bg-gray-100 rounded-xl font-bold hover:bg-gray-200">8</button>
+                    <button onclick="inputNumber(9)" class="number-btn bg-gray-100 rounded-xl font-bold hover:bg-gray-200">9</button>
+                    <button onclick="clearAnswer()" class="number-btn bg-red-100 text-red-600 rounded-xl font-bold hover:bg-red-200">C</button>
+                    <button onclick="inputNumber(0)" class="number-btn bg-gray-100 rounded-xl font-bold hover:bg-gray-200">0</button>
+                    <button onclick="checkAnswer()" class="number-btn bg-green-500 text-white rounded-xl font-bold hover:bg-green-600">✓</button>
+                </div>
+            </div>
+
+            <!-- Hint Button -->
+            <div class="text-center">
+                <button onclick="showHint()" class="text-purple-600 hover:text-purple-700 underline text-sm">Need help? Show visual hint</button>
+            </div>
+        </div>
+
+        <!-- Feedback Area -->
+        <div id="feedback" class="bg-white rounded-2xl shadow-lg p-6 text-center hidden">
+            <div class="text-4xl mb-2" id="feedbackEmoji">🎉</div>
+            <p class="text-xl font-semibold" id="feedbackText">Great job!</p>
+        </div>
+    </div>
+</main>
+
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        let currentOperation = '+';
+        let difficulty = 'easy';
+        let num1 = 0;
+        let num2 = 0;
+        let correctAnswer = 0;
+        let userAnswer = '';
+        let score = 0;
+        let streak = 0;
+        let totalQuestions = 0;
+        let correctQuestions = 0;
+
+        const difficultyRanges = {
+            easy: { min: 1, max: 10 },
+            medium: { min: 1, max: 20 },
+            hard: { min: 1, max: 50 }
+        };
+
+        const visualEmojis = ['🔵', '🟢', '🟡', '🔴', '🟣', '⭐', '🍎', '🍊'];
+
+        function init() {
+            setOperation('+');
+            setDifficulty('easy');
+            generateProblem();
+        }
+
+        function setOperation(op) {
+            currentOperation = op;
+            
+            // Update UI
+            document.querySelectorAll('.operation-btn').forEach(btn => {
+                btn.classList.remove('ring-4');
+                if (btn.dataset.op === op) {
+                    btn.classList.add('ring-4');
+                }
+            });
+            
+            generateProblem();
+        }
+
+        function setDifficulty(level) {
+            difficulty = level;
+            
+            // Update UI
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-offset-2');
+                if (btn.dataset.level === level) {
+                    btn.classList.add('ring-2', 'ring-offset-2');
+                }
+            });
+            
+            generateProblem();
+        }
+
+        function generateProblem() {
+            const range = difficultyRanges[difficulty];
+            
+            switch(currentOperation) {
+                case '+':
+                    num1 = randomInt(range.min, range.max);
+                    num2 = randomInt(range.min, range.max);
+                    correctAnswer = num1 + num2;
+                    break;
+                    
+                case '-':
+                    // Ensure positive result
+                    num1 = randomInt(range.min, range.max);
+                    num2 = randomInt(range.min, Math.min(num1, range.max));
+                    correctAnswer = num1 - num2;
+                    break;
+                    
+                case '×':
+                    // Limit multipliers for reasonable visual
+                    const multMax = difficulty === 'easy' ? 5 : (difficulty === 'medium' ? 10 : 12);
+                    num1 = randomInt(1, multMax);
+                    num2 = randomInt(1, multMax);
+                    correctAnswer = num1 * num2;
+                    break;
+                    
+                case '÷':
+                    // Ensure clean division
+                    num2 = randomInt(1, difficulty === 'easy' ? 5 : 10);
+                    correctAnswer = randomInt(1, difficulty === 'easy' ? 10 : 15);
+                    num1 = num2 * correctAnswer;
+                    break;
+            }
+            
+            userAnswer = '';
+            document.getElementById('num1').textContent = num1;
+            document.getElementById('operator').textContent = currentOperation;
+            document.getElementById('num2').textContent = num2;
+            document.getElementById('answerDisplay').textContent = '?';
+            document.getElementById('feedback').classList.add('hidden');
+            
+            renderVisual();
+        }
+
+        function renderVisual() {
+            const container = document.getElementById('visualArea');
+            container.innerHTML = '';
+            
+            const emoji = visualEmojis[Math.floor(Math.random() * visualEmojis.length)];
+            
+            // Limit visual objects for large numbers
+            const maxVisual = 20;
+            
+            if (currentOperation === '+') {
+                // Show two groups
+                const group1 = document.createElement('div');
+                group1.className = 'flex flex-wrap gap-1 justify-center max-w-32';
+                const count1 = Math.min(num1, maxVisual);
+                for (let i = 0; i < count1; i++) {
+                    const obj = document.createElement('span');
+                    obj.className = 'text-2xl visual-object';
+                    obj.textContent = emoji;
+                    obj.style.animationDelay = `${i * 50}ms`;
+                    group1.appendChild(obj);
+                }
+                if (num1 > maxVisual) {
+                    const more = document.createElement('span');
+                    more.className = 'text-sm text-gray-500';
+                    more.textContent = `+${num1 - maxVisual} more`;
+                    group1.appendChild(more);
+                }
+                
+                const plus = document.createElement('span');
+                plus.className = 'text-4xl font-bold text-gray-400';
+                plus.textContent = '+';
+                
+                const group2 = document.createElement('div');
+                group2.className = 'flex flex-wrap gap-1 justify-center max-w-32';
+                const count2 = Math.min(num2, maxVisual);
+                for (let i = 0; i < count2; i++) {
+                    const obj = document.createElement('span');
+                    obj.className = 'text-2xl visual-object';
+                    obj.textContent = emoji;
+                    obj.style.animationDelay = `${(count1 + i) * 50}ms`;
+                    group2.appendChild(obj);
+                }
+                if (num2 > maxVisual) {
+                    const more = document.createElement('span');
+                    more.className = 'text-sm text-gray-500';
+                    more.textContent = `+${num2 - maxVisual} more`;
+                    group2.appendChild(more);
+                }
+                
+                container.appendChild(group1);
+                container.appendChild(plus);
+                container.appendChild(group2);
+                
+            } else if (currentOperation === '-') {
+                // Show crossed out items
+                const group = document.createElement('div');
+                group.className = 'flex flex-wrap gap-1 justify-center max-w-64';
+                const total = Math.min(num1, maxVisual);
+                for (let i = 0; i < total; i++) {
+                    const obj = document.createElement('span');
+                    obj.className = 'text-2xl visual-object';
+                    obj.textContent = emoji;
+                    if (i >= num1 - num2 && i < num1) {
+                        obj.style.opacity = '0.3';
+                        obj.style.textDecoration = 'line-through';
+                    }
+                    group.appendChild(obj);
+                }
+                container.appendChild(group);
+                
+            } else if (currentOperation === '×') {
+                // Show groups
+                const wrapper = document.createElement('div');
+                wrapper.className = 'flex flex-wrap gap-4 justify-center';
+                
+                const groupCount = Math.min(num1, 5);
+                const itemsPerGroup = Math.min(num2, maxVisual / groupCount);
+                
+                for (let g = 0; g < groupCount; g++) {
+                    const group = document.createElement('div');
+                    group.className = 'flex flex-wrap gap-1 p-2 bg-white rounded-lg shadow-sm max-w-16';
+                    for (let i = 0; i < itemsPerGroup; i++) {
+                        const obj = document.createElement('span');
+                        obj.className = 'text-xl visual-object';
+                        obj.textContent = emoji;
+                        group.appendChild(obj);
+                    }
+                    wrapper.appendChild(group);
+                }
+                
+                if (num1 > 5) {
+                    const more = document.createElement('span');
+                    more.className = 'text-gray-500 self-center';
+                    more.textContent = `... ${num1 - 5} more groups`;
+                    wrapper.appendChild(more);
+                }
+                
+                container.appendChild(wrapper);
+                
+            } else if (currentOperation === '÷') {
+                // Show items being split
+                const total = Math.min(num1, maxVisual);
+                const wrapper = document.createElement('div');
+                wrapper.className = 'text-center';
+                
+                const allItems = document.createElement('div');
+                allItems.className = 'flex flex-wrap gap-1 justify-center mb-4';
+                for (let i = 0; i < total; i++) {
+                    const obj = document.createElement('span');
+                    obj.className = 'text-2xl visual-object';
+                    obj.textContent = emoji;
+                    allItems.appendChild(obj);
+                }
+                
+                const arrow = document.createElement('div');
+                arrow.className = 'text-2xl text-gray-400 my-2';
+                arrow.textContent = `÷ ${num2} = ?`;
+                
+                wrapper.appendChild(allItems);
+                wrapper.appendChild(arrow);
+                container.appendChild(wrapper);
+            }
+        }
+
+        function inputNumber(n) {
+            if (userAnswer.length < 4) {
+                userAnswer += n;
+                document.getElementById('answerDisplay').textContent = userAnswer;
+            }
+        }
+
+        function clearAnswer() {
+            userAnswer = '';
+            document.getElementById('answerDisplay').textContent = '?';
+        }
+
+        function checkAnswer() {
+            if (!userAnswer) return;
+            
+            totalQuestions++;
+            const isCorrect = parseInt(userAnswer) === correctAnswer;
+            
+            const feedback = document.getElementById('feedback');
+            const feedbackEmoji = document.getElementById('feedbackEmoji');
+            const feedbackText = document.getElementById('feedbackText');
+            
+            feedback.classList.remove('hidden');
+            
+            if (isCorrect) {
+                correctQuestions++;
+                streak++;
+                score += (10 * streak);
+                
+                feedbackEmoji.textContent = ['🎉', '⭐', '🌟', '👏', '🏆'][Math.min(streak - 1, 4)];
+                feedbackText.textContent = streak > 1 ? `Correct! ${streak} in a row!` : 'Correct! Great job!';
+                feedback.className = 'bg-green-100 rounded-2xl shadow-lg p-6 text-center text-green-700';
+                
+                document.getElementById('answerDisplay').classList.add('correct-animation');
+                setTimeout(() => {
+                    document.getElementById('answerDisplay').classList.remove('correct-animation');
+                    generateProblem();
+                }, 1500);
+                
+            } else {
+                streak = 0;
+                
+                feedbackEmoji.textContent = '💪';
+                feedbackText.textContent = `Not quite. The answer is ${correctAnswer}. Try again!`;
+                feedback.className = 'bg-red-100 rounded-2xl shadow-lg p-6 text-center text-red-700';
+                
+                setTimeout(() => {
+                    generateProblem();
+                }, 2500);
+            }
+            
+            updateStats();
+        }
+
+        function showHint() {
+            // Highlight visual area
+            const visual = document.getElementById('visualArea');
+            visual.classList.add('ring-4', 'ring-purple-400');
+            setTimeout(() => visual.classList.remove('ring-4', 'ring-purple-400'), 2000);
+            
+            // For addition/subtraction, count out loud
+            if ('speechSynthesis' in window) {
+                let hint = '';
+                if (currentOperation === '+') {
+                    hint = `${num1} plus ${num2}. Count from ${num1}: `;
+                    for (let i = 1; i <= Math.min(num2, 5); i++) {
+                        hint += `${num1 + i}, `;
+                    }
+                } else if (currentOperation === '-') {
+                    hint = `${num1} minus ${num2}. Count back from ${num1}: `;
+                    for (let i = 1; i <= Math.min(num2, 5); i++) {
+                        hint += `${num1 - i}, `;
+                    }
+                } else if (currentOperation === '×') {
+                    hint = `${num1} times ${num2} means ${num1} groups of ${num2}.`;
+                } else {
+                    hint = `${num1} divided by ${num2} means splitting ${num1} into ${num2} equal groups.`;
+                }
+                
+                const utterance = new SpeechSynthesisUtterance(hint);
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('streak').textContent = streak;
+            document.getElementById('correct').textContent = correctQuestions;
+            document.getElementById('total').textContent = totalQuestions;
+        }
+
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Initialize
+        init();
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

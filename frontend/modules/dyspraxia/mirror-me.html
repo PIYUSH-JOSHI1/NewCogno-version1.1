@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirror Me - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        
+        .game-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .pose-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        .pose-panel {
+            background: var(--color-background);
+            border-radius: var(--radius-xl);
+            padding: 16px;
+            border: 2px solid var(--color-border);
+        }
+        
+        .pose-panel.your-pose { border-color: var(--color-primary); }
+        .pose-panel.target-pose { border-color: var(--color-warning); }
+        
+        .panel-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 700; font-size: 1.1rem; }
+        
+        .pose-display { 
+            background: var(--color-surface); 
+            border-radius: var(--radius-lg); 
+            padding: 20px;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed var(--color-border);
+        }
+        
+        .pose-display .pose-emoji { font-size: 5rem; margin-bottom: 12px; animation: pulse 2s infinite; }
+        .pose-display img { max-height: 280px; max-width: 100% !important; border-radius: var(--radius-lg); }
+        
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        
+        video { width: 100%; height: 320px; object-fit: cover; border-radius: var(--radius-lg); background: #000; }
+        .video-container { position: relative; border-radius: var(--radius-lg); overflow: hidden; }
+        #skeletonCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        
+        .stability-indicator {
+            position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+            background: var(--color-surface); color: var(--color-text-primary);
+            padding: 8px 20px; border-radius: 25px; font-size: 14px; font-weight: bold;
+            box-shadow: var(--shadow-md); border: 1px solid var(--color-border);
+        }
+        .stability-indicator.stable { border-color: var(--color-success); color: var(--color-success); }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr) !important; gap: 12px; }
+        @media (min-width: 768px) { .stats-grid { grid-template-columns: repeat(4, 1fr) !important; } }
+        
+        .start-btn { box-shadow: 0 10px 30px rgba(var(--color-primary-rgb), 0.4); }
+        
+        @media (max-width: 768px) {
+            .pose-container { grid-template-columns: 1fr; }
+            video { height: 260px; }
+            .pose-display { min-height: 260px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Mirror Me</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">🪞 Mirror Me</h1>
+                </div>
+                <p class="text-gray-500">Copy the poses shown on screen! Your skeleton shows how stable you are.</p>
+            </div>
+
+            <div class="max-w-5xl mx-auto game-card p-6 md:p-8">
+                <!-- Camera Notice -->
+                <div class="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 mb-6 flex items-center gap-3">
+                    <span class="text-xl">📸</span>
+                    <p class="text-amber-600 font-medium text-sm">Camera Required - Make sure you're visible and have space to move!</p>
+                </div>
+
+                <div class="pose-container mb-6">
+                    <div class="pose-panel your-pose">
+                        <div class="panel-header text-primary">
+                            <i class="fa-solid fa-user"></i> Your Pose
+                        </div>
+                        <div class="video-container">
+                            <video id="videoElement" autoplay playsinline style="transform: scaleX(-1);"></video>
+                            <canvas id="skeletonCanvas"></canvas>
+                            <div id="stabilityIndicator" class="stability-indicator" style="display: none;">
+                                Checking stability...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pose-panel target-pose">
+                        <div class="panel-header text-warning">
+                            <i class="fa-solid fa-bullseye"></i> Target Pose
+                        </div>
+                        <div class="pose-display" id="targetPose">
+                            <img id="poseImage" src="" alt="Target pose" style="display: none;">
+                            <div id="poseEmoji" class="pose-emoji">🙋</div>
+                            <div id="poseName" class="pose-name bg-warning text-white px-3 py-1 rounded-lg mt-2 font-bold">Hands Up</div>
+                        </div>
+                        <p id="poseInstructions" class="text-center opacity-70 text-sm font-medium mt-3">Raise both arms above your head</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid mb-6">
+                    <div class="card p-4 text-center border-primary/20 bg-primary/5">
+                        <div class="text-2xl font-bold text-primary" id="poseScore">0</div>
+                        <div class="text-xs opacity-60 uppercase">Correct</div>
+                    </div>
+                    <div class="card p-4 text-center border-blue-500/20 bg-blue-500/5">
+                        <div class="text-2xl font-bold text-blue-500" id="accuracy">0%</div>
+                        <div class="text-xs opacity-60 uppercase">Accuracy</div>
+                    </div>
+                    <div class="card p-4 text-center border-green-500/20 bg-green-500/5">
+                        <div class="text-2xl font-bold text-green-500" id="round">1</div>
+                        <div class="text-xs opacity-60 uppercase">Round</div>
+                    </div>
+                    <div class="card p-4 text-center border-warning/20 bg-warning/5">
+                        <div class="text-2xl font-bold text-warning" id="stabilityScore">--</div>
+                        <div class="text-xs opacity-60 uppercase">Stability</div>
+                    </div>
+                </div>
+
+                <div id="connectionStatus" class="text-center mb-4">
+                    <span class="text-warning font-semibold text-sm">⏳ Connecting to camera...</span>
+                </div>
+
+                <div class="flex gap-4 justify-center">
+                    <button id="startBtn" class="btn btn-primary btn-lg px-12">🎮 Start Game</button>
+                    <button id="resetBtn" class="btn btn-ghost btn-lg px-12 hidden">🔄 Reset</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const BACKEND_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000'
+            : '';
+
+        const video = document.getElementById('videoElement');
+        const skeletonCanvas = document.getElementById('skeletonCanvas');
+        const skeletonCtx = skeletonCanvas.getContext('2d');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const scoreDisplay = document.getElementById('poseScore');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const roundDisplay = document.getElementById('round');
+        const poseImage = document.getElementById('poseImage');
+        const poseEmoji = document.getElementById('poseEmoji');
+        const poseInstructions = document.getElementById('poseInstructions');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const stabilityIndicator = document.getElementById('stabilityIndicator');
+        const stabilityScoreDisplay = document.getElementById('stabilityScore');
+        const poseName = document.getElementById('poseName');
+
+        let gameActive = false;
+        let currentRound = 1;
+        let score = 0;
+        let poseMatches = 0;
+        let poseLandmarks = [];
+        let currentTargetPose = 0;
+        let isAnalyzing = false;
+        let lastFrameTime = 0;
+        const FRAME_THROTTLE_MS = 100;
+
+        const POSE_CONNECTIONS = [
+            [0, 1], [1, 2], [2, 3], [3, 7], [0, 4], [4, 5], [5, 6], [6, 8],
+            [11, 12], [11, 23], [12, 24], [23, 24],
+            [11, 13], [13, 15], [15, 17], [12, 14], [14, 16], [16, 18]
+        ];
+
+        const poses = [
+            { emoji: '🙋', name: 'Hands Up', desc: 'Raise both arms above your head', image: '../../assets/poses/hands-up.png' },
+            { emoji: '🚶', name: 'Standing', desc: 'Stand naturally with arms down', image: '../../assets/poses/standing.png' }
+        ];
+
+        function setupSkeletonCanvas() {
+            if (video.videoWidth > 0) {
+                skeletonCanvas.width = video.offsetWidth;
+                skeletonCanvas.height = video.offsetHeight;
+            }
+        }
+
+        function drawSkeleton() {
+            if (!poseLandmarks || poseLandmarks.length === 0) return;
+            setupSkeletonCanvas();
+            skeletonCtx.clearRect(0, 0, skeletonCanvas.width, skeletonCanvas.height);
+
+            const score = calculateStability();
+            updateStabilityIndicator(score);
+
+            const color = score >= 80 ? '#22c55e' : (score >= 50 ? '#f59e0b' : '#ef4444');
+            skeletonCtx.strokeStyle = color;
+            skeletonCtx.lineWidth = 4;
+            skeletonCtx.lineCap = 'round';
+
+            POSE_CONNECTIONS.forEach(([startIdx, endIdx]) => {
+                const start = poseLandmarks[startIdx];
+                const end = poseLandmarks[endIdx];
+                if (start && end && start.visibility > 0.5 && end.visibility > 0.5) {
+                    skeletonCtx.beginPath();
+                    skeletonCtx.moveTo((1 - start.x) * skeletonCanvas.width, start.y * skeletonCanvas.height);
+                    skeletonCtx.lineTo((1 - end.x) * skeletonCanvas.width, end.y * skeletonCanvas.height);
+                    skeletonCtx.stroke();
+                }
+            });
+        }
+
+        function calculateStability() {
+            if (!poseLandmarks || poseLandmarks.length < 25) return 0;
+            const lS = poseLandmarks[11], rS = poseLandmarks[12];
+            if (!lS || !rS) return 0;
+            const diff = Math.abs(lS.y - rS.y);
+            return Math.max(0, 100 - (diff * 500));
+        }
+
+        function updateStabilityIndicator(score) {
+            stabilityIndicator.style.display = 'block';
+            stabilityScoreDisplay.textContent = Math.round(score) + '%';
+            stabilityIndicator.className = 'stability-indicator ' + (score >= 80 ? 'stable' : '');
+            stabilityIndicator.textContent = score >= 80 ? '✓ Stable' : '⚖️ Balancing...';
+        }
+
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
+                video.srcObject = stream;
+                connectionStatus.innerHTML = '<span class="text-success font-semibold text-sm">✅ Camera Connected</span>';
+                requestAnimationFrame(continuousTracking);
+            } catch (err) {
+                connectionStatus.innerHTML = '<span class="text-danger font-semibold text-sm">❌ Camera Access Denied</span>';
+            }
+        }
+
+        function continuousTracking() {
+            analyzeFrame();
+            requestAnimationFrame(continuousTracking);
+        }
+
+        async function analyzeFrame() {
+            if (!video.srcObject || video.videoWidth === 0 || isAnalyzing) return;
+            const now = Date.now();
+            if (now - lastFrameTime < FRAME_THROTTLE_MS) return;
+            lastFrameTime = now;
+            isAnalyzing = true;
+
+            try {
+                const canvas_temp = document.createElement('canvas');
+                canvas_temp.width = video.videoWidth;
+                canvas_temp.height = video.videoHeight;
+                const ctx = canvas_temp.getContext('2d');
+                ctx.scale(-1, 1);
+                ctx.drawImage(video, -canvas_temp.width, 0);
+                
+                const base64Data = canvas_temp.toDataURL('image/jpeg', 0.6).split(',')[1];
+                const response = await fetch(`${BACKEND_URL}/api/dyspraxia/analyze-frame`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ frame_data: base64Data, exercise_type: 'body' })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    poseLandmarks = data.landmarks || [];
+                    drawSkeleton();
+                    if (gameActive) checkPoseMatch();
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                isAnalyzing = false;
+            }
+        }
+
+        function checkPoseMatch() {
+            if (!poseLandmarks || poseLandmarks.length === 0) return;
+            const lE = poseLandmarks[13], rE = poseLandmarks[14];
+            const lS = poseLandmarks[11], rS = poseLandmarks[12];
+            
+            let matched = false;
+            if (currentTargetPose === 0) matched = (lE.y < lS.y && rE.y < rS.y);
+            else matched = (lE.y > lS.y && rE.y > rS.y);
+
+            if (matched) {
+                poseMatches++;
+                accuracyDisplay.textContent = Math.round(poseMatches * 5) + '%';
+                if (poseMatches >= 20) completePose();
+            }
+        }
+
+        function completePose() {
+            score++;
+            scoreDisplay.textContent = score;
+            poseMatches = 0;
+            currentRound++;
+            roundDisplay.textContent = Math.min(2, currentRound);
+
+            if (currentRound > 2) {
+                gameActive = false;
+                CognoNotifications?.toast?.success(`Game Complete! Matched ${score}/2 poses.`);
+                CognoTracker?.saveActivity({
+                    moduleId: 'dyspraxia', activityId: 'mirror-me', score, maxScore: 2, duration: 0
+                });
+                startBtn.classList.remove('hidden');
+                resetBtn.classList.add('hidden');
+            } else {
+                currentTargetPose = 1;
+                updateTargetPose(1);
+            }
+        }
+
+        function updateTargetPose(idx) {
+            const p = poses[idx];
+            poseName.textContent = p.name;
+            poseImage.src = p.image;
+            poseImage.style.display = 'block';
+            poseEmoji.style.display = 'none';
+            poseInstructions.textContent = p.desc;
+        }
+
+        startBtn.addEventListener('click', () => {
+            gameActive = true;
+            score = 0;
+            currentRound = 1;
+            currentTargetPose = 0;
+            poseMatches = 0;
+            scoreDisplay.textContent = '0';
+            roundDisplay.textContent = '1';
+            accuracyDisplay.textContent = '0%';
+            updateTargetPose(0);
+            startBtn.classList.add('hidden');
+            resetBtn.classList.remove('hidden');
+        });
+
+        resetBtn.addEventListener('click', () => location.reload());
+
+        initCamera();
+    </script>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

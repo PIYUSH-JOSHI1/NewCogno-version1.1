@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Games - Dyscalculia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 1024px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 0 !important; }
+            .activity-content { padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+
+        .activity-navbar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-title-group { text-align: center; }
+        .activity-category { font-size: 0.7rem; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+        .activity-name { font-size: 0.9rem; font-weight: 700; color: #111827; margin: 0; }
+        .back-btn, .action-btn { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #111827; }
+
+        @media (max-width: 1024px) {
+            .activity-navbar { display: flex !important; }
+        }
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; }
+        .game-card {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        .bubble {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .pattern-item {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .pattern-item:hover { transform: scale(1.1); }
+        .comparison-card {
+            min-width: 120px;
+            padding: 2rem;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .comparison-card:hover {
+            transform: scale(1.05);
+        }
+        .comparison-card.selected {
+            box-shadow: 0 0 0 4px #8b5cf6;
+        }
+        .memory-card {
+            width: 80px;
+            height: 80px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .memory-card-inner {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+        .memory-card.flipped .memory-card-inner {
+            transform: rotateY(180deg);
+        }
+        .memory-card-front, .memory-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        .memory-card-front {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: white;
+        }
+        .memory-card-back {
+            background: white;
+            border: 2px solid #e5e7eb;
+            transform: rotateY(180deg);
+        }
+        .memory-card.matched {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 via-white to-blue-50 min-h-screen">
+    <!-- New Activity Navbar (Mobile) -->
+    <header class="activity-navbar">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <div class="activity-title-group">
+            <span class="activity-category">Dyscalculia</span>
+            <h1 class="activity-name">Math Games</h1>
+        </div>
+        <div class="activity-actions">
+            <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform lg:translate-x-0 -translate-x-full hide-xs" id="sidebar">
+        <div class="p-6 border-b border-gray-100">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-xl flex items-center justify-center">
+                    <span class="text-white font-bold text-lg">C</span>
+                </div>
+                <span class="text-xl font-bold text-gray-800">Cogno</span>
+            </div>
+        </div>
+        
+        <nav class="p-4 space-y-2">
+            <a href="../../dashboard/index.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-green-50 hover:text-green-600 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="index.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-green-100 text-green-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                <span>Dyscalculia Module</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 p-6 main-content">
+        <div class="activity-content">
+            <!-- Mobile Header -->
+            <div class="lg:hidden flex items-center justify-between mb-6 hide-xs">
+                <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')" class="p-2 rounded-lg bg-white shadow">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+                <span class="font-semibold text-gray-800">Math Games</span>
+                <div class="w-10"></div>
+            </div>
+
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 hide-xs">
+                <div>
+                    <div class="flex items-center space-x-3 mb-2">
+                        <a href="index.html" class="text-green-600 hover:text-green-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        </a>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Math Games</h1>
+                    </div>
+                    <p class="text-gray-600">Fun games to build number sense and math skills</p>
+                </div>
+            </div>
+
+        <!-- Game Selection -->
+        <div id="gameSelection" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div onclick="startGame('bubbles')" class="game-card bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl p-6 text-white shadow-lg">
+                <div class="text-4xl mb-4">🫧</div>
+                <h3 class="text-xl font-bold mb-2">Number Bubbles</h3>
+                <p class="text-blue-100 text-sm">Pop bubbles in order from smallest to largest</p>
+            </div>
+            
+            <div onclick="startGame('patterns')" class="game-card bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-6 text-white shadow-lg">
+                <div class="text-4xl mb-4">🔢</div>
+                <h3 class="text-xl font-bold mb-2">Pattern Finder</h3>
+                <p class="text-purple-100 text-sm">Find the missing number in the pattern</p>
+            </div>
+            
+            <div onclick="startGame('comparison')" class="game-card bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-6 text-white shadow-lg">
+                <div class="text-4xl mb-4">⚖️</div>
+                <h3 class="text-xl font-bold mb-2">Greater or Less</h3>
+                <p class="text-orange-100 text-sm">Compare numbers and pick the bigger one</p>
+            </div>
+            
+            <div onclick="startGame('memory')" class="game-card bg-gradient-to-br from-green-500 to-teal-500 rounded-2xl p-6 text-white shadow-lg">
+                <div class="text-4xl mb-4">🧠</div>
+                <h3 class="text-xl font-bold mb-2">Math Memory</h3>
+                <p class="text-green-100 text-sm">Match equations with their answers</p>
+            </div>
+            
+            <div onclick="startGame('estimation')" class="game-card bg-gradient-to-br from-indigo-500 to-blue-500 rounded-2xl p-6 text-white shadow-lg">
+                <div class="text-4xl mb-4">🎯</div>
+                <h3 class="text-xl font-bold mb-2">Estimation Station</h3>
+                <p class="text-indigo-100 text-sm">Guess how many objects are shown</p>
+            </div>
+            
+            <div onclick="startGame('speed')" class="game-card bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl p-6 text-white shadow-lg">
+                <div class="text-4xl mb-4">⚡</div>
+                <h3 class="text-xl font-bold mb-2">Speed Math</h3>
+                <p class="text-yellow-100 text-sm">Answer as many questions as you can in 60 seconds</p>
+            </div>
+        </div>
+
+        <!-- Game Area (hidden by default) -->
+        <div id="gameArea" class="hidden">
+            <!-- Game Header -->
+            <div class="flex items-center justify-between mb-6">
+                <button onclick="exitGame()" class="flex items-center gap-2 text-gray-600 hover:text-gray-800">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    Back to Games
+                </button>
+                <div class="flex gap-4">
+                    <div class="bg-white px-4 py-2 rounded-lg shadow">
+                        <span class="text-gray-500 text-sm">Score:</span>
+                        <span class="font-bold text-green-600" id="gameScore">0</span>
+                    </div>
+                    <div class="bg-white px-4 py-2 rounded-lg shadow" id="timerDisplay">
+                        <span class="text-gray-500 text-sm">Time:</span>
+                        <span class="font-bold text-blue-600" id="gameTimer">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Content -->
+            <div id="gameContent" class="bg-white rounded-2xl shadow-lg p-8">
+                <!-- Dynamic game content -->
+            </div>
+
+            <!-- Game Feedback -->
+            <div id="gameFeedback" class="mt-6 text-center hidden">
+                <div class="inline-block bg-white rounded-2xl shadow-lg p-8">
+                    <div class="text-6xl mb-4" id="gameFeedbackEmoji">🎉</div>
+                    <h3 class="text-2xl font-bold mb-2" id="gameFeedbackTitle">Great!</h3>
+                    <p class="text-gray-600 mb-4" id="gameFeedbackMessage">You got it right!</p>
+                    <button onclick="nextRound()" class="px-6 py-3 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-xl font-semibold">
+                        Continue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        let currentGame = null;
+        let gameScore = 0;
+        let gameTimer = null;
+        let timeLeft = 0;
+        let gameData = {};
+
+        function startGame(game) {
+            currentGame = game;
+            gameScore = 0;
+            document.getElementById('gameScore').textContent = '0';
+            document.getElementById('gameSelection').classList.add('hidden');
+            document.getElementById('gameArea').classList.remove('hidden');
+            document.getElementById('gameFeedback').classList.add('hidden');
+            
+            switch(game) {
+                case 'bubbles': initBubbles(); break;
+                case 'patterns': initPatterns(); break;
+                case 'comparison': initComparison(); break;
+                case 'memory': initMemory(); break;
+                case 'estimation': initEstimation(); break;
+                case 'speed': initSpeed(); break;
+            }
+        }
+
+        function exitGame() {
+            if (gameTimer) clearInterval(gameTimer);
+            document.getElementById('gameSelection').classList.remove('hidden');
+            document.getElementById('gameArea').classList.add('hidden');
+            currentGame = null;
+        }
+
+        // === NUMBER BUBBLES ===
+        function initBubbles() {
+            document.getElementById('timerDisplay').classList.add('hidden');
+            const content = document.getElementById('gameContent');
+            
+            // Generate random numbers
+            const numbers = [];
+            while (numbers.length < 8) {
+                const n = Math.floor(Math.random() * 50) + 1;
+                if (!numbers.includes(n)) numbers.push(n);
+            }
+            
+            gameData.numbers = [...numbers].sort((a, b) => a - b);
+            gameData.currentIndex = 0;
+            
+            content.innerHTML = `
+                <div class="text-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">Pop the bubbles from smallest to largest!</h3>
+                    <p class="text-gray-500">Next number to pop: <span class="font-bold text-purple-600" id="nextTarget">${gameData.numbers[0]}</span></p>
+                </div>
+                <div class="flex flex-wrap justify-center gap-6" id="bubblesContainer">
+                    ${numbers.map((n, i) => `
+                        <div onclick="popBubble(${n}, this)" class="bubble w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-white font-bold text-xl cursor-pointer shadow-lg hover:scale-110 transition-transform" style="animation-delay: ${i * 0.2}s">
+                            ${n}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function popBubble(num, element) {
+            if (num === gameData.numbers[gameData.currentIndex]) {
+                element.classList.add('opacity-50', 'scale-0');
+                element.style.pointerEvents = 'none';
+                gameData.currentIndex++;
+                gameScore += 10;
+                document.getElementById('gameScore').textContent = gameScore;
+                
+                if (gameData.currentIndex < gameData.numbers.length) {
+                    document.getElementById('nextTarget').textContent = gameData.numbers[gameData.currentIndex];
+                } else {
+                    showGameFeedback('🎉', 'Level Complete!', 'Great job ordering the numbers!');
+                }
+            } else {
+                element.classList.add('animate-pulse', 'bg-red-400');
+                setTimeout(() => element.classList.remove('animate-pulse', 'bg-red-400'), 500);
+            }
+        }
+
+        // === PATTERN FINDER ===
+        function initPatterns() {
+            document.getElementById('timerDisplay').classList.add('hidden');
+            generatePattern();
+        }
+
+        function generatePattern() {
+            const content = document.getElementById('gameContent');
+            
+            // Different pattern types
+            const patternTypes = [
+                { name: 'add', generate: () => { const start = Math.floor(Math.random() * 10) + 1; const step = Math.floor(Math.random() * 5) + 2; return [start, start+step, start+step*2, start+step*3, start+step*4]; }},
+                { name: 'multiply', generate: () => { const base = Math.floor(Math.random() * 5) + 2; return [base, base*2, base*3, base*4, base*5]; }},
+                { name: 'subtract', generate: () => { const start = Math.floor(Math.random() * 20) + 30; const step = Math.floor(Math.random() * 4) + 2; return [start, start-step, start-step*2, start-step*3, start-step*4]; }}
+            ];
+            
+            const pattern = patternTypes[Math.floor(Math.random() * patternTypes.length)].generate();
+            const missingIndex = Math.floor(Math.random() * 3) + 1; // Middle positions
+            gameData.answer = pattern[missingIndex];
+            
+            // Generate wrong answers
+            const options = [gameData.answer];
+            while (options.length < 4) {
+                const wrong = gameData.answer + (Math.floor(Math.random() * 10) - 5);
+                if (!options.includes(wrong) && wrong > 0) options.push(wrong);
+            }
+            options.sort(() => Math.random() - 0.5);
+            
+            content.innerHTML = `
+                <div class="text-center mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Find the missing number!</h3>
+                    <p class="text-gray-500">What comes in the pattern?</p>
+                </div>
+                <div class="flex justify-center gap-4 mb-8">
+                    ${pattern.map((n, i) => `
+                        <div class="pattern-item ${i === missingIndex ? 'bg-purple-100 border-2 border-dashed border-purple-400 text-purple-400' : 'bg-gray-100 text-gray-700'}">
+                            ${i === missingIndex ? '?' : n}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="flex justify-center gap-4">
+                    ${options.map(opt => `
+                        <button onclick="checkPattern(${opt})" class="px-6 py-4 bg-white border-2 border-gray-200 rounded-xl font-bold text-xl hover:border-purple-400 hover:bg-purple-50 transition-all">
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function checkPattern(answer) {
+            if (answer === gameData.answer) {
+                gameScore += 15;
+                document.getElementById('gameScore').textContent = gameScore;
+                showGameFeedback('🎉', 'Correct!', 'You found the pattern!');
+            } else {
+                showGameFeedback('💪', 'Not quite', `The answer was ${gameData.answer}. Try the next one!`);
+            }
+        }
+
+        // === GREATER OR LESS ===
+        function initComparison() {
+            document.getElementById('timerDisplay').classList.add('hidden');
+            generateComparison();
+        }
+
+        function generateComparison() {
+            const content = document.getElementById('gameContent');
+            
+            const num1 = Math.floor(Math.random() * 100) + 1;
+            let num2 = Math.floor(Math.random() * 100) + 1;
+            while (num2 === num1) num2 = Math.floor(Math.random() * 100) + 1;
+            
+            gameData.larger = Math.max(num1, num2);
+            
+            content.innerHTML = `
+                <div class="text-center mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Which number is BIGGER?</h3>
+                    <p class="text-gray-500">Tap the larger number</p>
+                </div>
+                <div class="flex justify-center gap-8">
+                    <div onclick="checkComparison(${num1})" class="comparison-card bg-gradient-to-br from-blue-100 to-blue-200 text-blue-700 text-4xl font-bold hover:ring-4 hover:ring-blue-300">
+                        ${num1}
+                    </div>
+                    <div class="self-center text-3xl text-gray-400">VS</div>
+                    <div onclick="checkComparison(${num2})" class="comparison-card bg-gradient-to-br from-green-100 to-green-200 text-green-700 text-4xl font-bold hover:ring-4 hover:ring-green-300">
+                        ${num2}
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkComparison(chosen) {
+            if (chosen === gameData.larger) {
+                gameScore += 10;
+                document.getElementById('gameScore').textContent = gameScore;
+                showGameFeedback('🎉', 'Correct!', `${chosen} is bigger!`);
+            } else {
+                showGameFeedback('💪', 'Oops!', `${gameData.larger} is the bigger number.`);
+            }
+        }
+
+        // === MATH MEMORY ===
+        function initMemory() {
+            document.getElementById('timerDisplay').classList.add('hidden');
+            const content = document.getElementById('gameContent');
+            
+            // Generate equation-answer pairs
+            const pairs = [];
+            for (let i = 0; i < 6; i++) {
+                const a = Math.floor(Math.random() * 10) + 1;
+                const b = Math.floor(Math.random() * 10) + 1;
+                pairs.push({ equation: `${a} + ${b}`, answer: a + b });
+            }
+            
+            // Create cards array with both equations and answers
+            const cards = [];
+            pairs.forEach((p, i) => {
+                cards.push({ id: i, type: 'equation', value: p.equation, pairId: i });
+                cards.push({ id: i + 6, type: 'answer', value: p.answer, pairId: i });
+            });
+            
+            // Shuffle
+            cards.sort(() => Math.random() - 0.5);
+            gameData.cards = cards;
+            gameData.flipped = [];
+            gameData.matched = [];
+            
+            content.innerHTML = `
+                <div class="text-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Match the equations with answers!</h3>
+                    <p class="text-gray-500">Find all pairs</p>
+                </div>
+                <div class="grid grid-cols-4 gap-4 max-w-md mx-auto">
+                    ${cards.map((card, index) => `
+                        <div onclick="flipCard(${index})" class="memory-card" data-index="${index}" data-pair="${card.pairId}">
+                            <div class="memory-card-inner">
+                                <div class="memory-card-front">?</div>
+                                <div class="memory-card-back">${card.value}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function flipCard(index) {
+            const card = document.querySelector(`.memory-card[data-index="${index}"]`);
+            
+            if (card.classList.contains('flipped') || card.classList.contains('matched') || gameData.flipped.length >= 2) return;
+            
+            card.classList.add('flipped');
+            gameData.flipped.push(index);
+            
+            if (gameData.flipped.length === 2) {
+                const card1 = document.querySelector(`.memory-card[data-index="${gameData.flipped[0]}"]`);
+                const card2 = document.querySelector(`.memory-card[data-index="${gameData.flipped[1]}"]`);
+                
+                if (card1.dataset.pair === card2.dataset.pair) {
+                    // Match!
+                    setTimeout(() => {
+                        card1.classList.add('matched');
+                        card2.classList.add('matched');
+                        gameData.matched.push(card1.dataset.pair);
+                        gameScore += 20;
+                        document.getElementById('gameScore').textContent = gameScore;
+                        
+                        if (gameData.matched.length === 6) {
+                            setTimeout(() => showGameFeedback('🏆', 'All Matched!', 'You found all the pairs!'), 500);
+                        }
+                    }, 500);
+                } else {
+                    // No match
+                    setTimeout(() => {
+                        card1.classList.remove('flipped');
+                        card2.classList.remove('flipped');
+                    }, 1000);
+                }
+                
+                setTimeout(() => gameData.flipped = [], 1000);
+            }
+        }
+
+        // === ESTIMATION ===
+        function initEstimation() {
+            document.getElementById('timerDisplay').classList.add('hidden');
+            generateEstimation();
+        }
+
+        function generateEstimation() {
+            const content = document.getElementById('gameContent');
+            
+            const count = Math.floor(Math.random() * 30) + 10;
+            const emojis = ['🔵', '⭐', '🍎', '🟢', '🔴'];
+            const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            gameData.answer = count;
+            
+            // Generate options around the correct answer
+            const options = [count];
+            const offsets = [-8, -4, 4, 8];
+            offsets.forEach(off => {
+                const opt = count + off;
+                if (opt > 0) options.push(opt);
+            });
+            options.sort(() => Math.random() - 0.5);
+            
+            content.innerHTML = `
+                <div class="text-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">How many do you see?</h3>
+                    <p class="text-gray-500">Don't count - estimate!</p>
+                </div>
+                <div class="bg-gray-100 rounded-xl p-8 mb-8 flex flex-wrap justify-center gap-2 max-w-md mx-auto">
+                    ${Array(count).fill(emoji).map(() => `<span class="text-2xl">${emoji}</span>`).join('')}
+                </div>
+                <div class="flex justify-center gap-4 flex-wrap">
+                    ${options.slice(0, 4).map(opt => `
+                        <button onclick="checkEstimation(${opt})" class="px-8 py-4 bg-white border-2 border-gray-200 rounded-xl font-bold text-2xl hover:border-purple-400 hover:bg-purple-50 transition-all">
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function checkEstimation(guess) {
+            const diff = Math.abs(guess - gameData.answer);
+            if (diff === 0) {
+                gameScore += 25;
+                showGameFeedback('🎯', 'Perfect!', `Exactly ${gameData.answer}!`);
+            } else if (diff <= 3) {
+                gameScore += 15;
+                showGameFeedback('👏', 'Very Close!', `It was ${gameData.answer}. Great estimation!`);
+            } else {
+                showGameFeedback('💪', 'Keep practicing!', `It was ${gameData.answer}.`);
+            }
+            document.getElementById('gameScore').textContent = gameScore;
+        }
+
+        // === SPEED MATH ===
+        function initSpeed() {
+            document.getElementById('timerDisplay').classList.remove('hidden');
+            timeLeft = 60;
+            gameData.questionsAnswered = 0;
+            document.getElementById('gameTimer').textContent = timeLeft;
+            
+            generateSpeedQuestion();
+            
+            gameTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('gameTimer').textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(gameTimer);
+                    showGameFeedback('⏱️', 'Time\'s Up!', `You answered ${gameData.questionsAnswered} questions and scored ${gameScore} points!`);
+                }
+            }, 1000);
+        }
+
+        function generateSpeedQuestion() {
+            const content = document.getElementById('gameContent');
+            
+            const a = Math.floor(Math.random() * 12) + 1;
+            const b = Math.floor(Math.random() * 12) + 1;
+            const ops = ['+', '-', '×'];
+            const op = ops[Math.floor(Math.random() * ops.length)];
+            
+            let answer;
+            switch(op) {
+                case '+': answer = a + b; break;
+                case '-': answer = Math.max(a, b) - Math.min(a, b); break;
+                case '×': answer = a * b; break;
+            }
+            
+            gameData.speedAnswer = answer;
+            
+            const options = [answer];
+            while (options.length < 4) {
+                const wrong = answer + (Math.floor(Math.random() * 10) - 5);
+                if (!options.includes(wrong) && wrong >= 0) options.push(wrong);
+            }
+            options.sort(() => Math.random() - 0.5);
+            
+            content.innerHTML = `
+                <div class="text-center">
+                    <div class="text-5xl font-bold mb-8 text-gray-800">
+                        ${op === '-' ? Math.max(a, b) : a} ${op} ${op === '-' ? Math.min(a, b) : b} = ?
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 max-w-sm mx-auto">
+                        ${options.map(opt => `
+                            <button onclick="checkSpeed(${opt})" class="px-6 py-6 bg-gradient-to-br from-purple-500 to-blue-500 text-white rounded-xl font-bold text-2xl hover:from-purple-600 hover:to-blue-600 transition-all">
+                                ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkSpeed(answer) {
+            if (answer === gameData.speedAnswer) {
+                gameScore += 10;
+                document.getElementById('gameScore').textContent = gameScore;
+            }
+            gameData.questionsAnswered++;
+            if (timeLeft > 0) generateSpeedQuestion();
+        }
+
+        // === FEEDBACK & UTILITIES ===
+        function showGameFeedback(emoji, title, message) {
+            document.getElementById('gameFeedbackEmoji').textContent = emoji;
+            document.getElementById('gameFeedbackTitle').textContent = title;
+            document.getElementById('gameFeedbackMessage').textContent = message;
+            document.getElementById('gameFeedback').classList.remove('hidden');
+            document.getElementById('gameContent').classList.add('opacity-50');
+        }
+
+        function nextRound() {
+            document.getElementById('gameFeedback').classList.add('hidden');
+            document.getElementById('gameContent').classList.remove('opacity-50');
+            
+            switch(currentGame) {
+                case 'bubbles': initBubbles(); break;
+                case 'patterns': generatePattern(); break;
+                case 'comparison': generateComparison(); break;
+                case 'memory': initMemory(); break;
+                case 'estimation': generateEstimation(); break;
+                case 'speed': initSpeed(); break;
+            }
+        }
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

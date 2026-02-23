@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Consultations - Meet with specialists">
+    <title>Consultations - Cogno Solution</title>
+    
+    <!-- Favicons -->
+    <link rel="icon" href="../assets/images/icons/favicon.svg">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/cognitive-friendly.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <link rel="stylesheet" href="../css/mobile-nav.css">
+    
+    <style>
+        /* Sidebar hidden globally, main-content full width - see style.css */
+        /* bottom-nav visible on all screens */
+        .consultations-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+        }
+        
+        .consultations-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: var(--space-1);
+            background: var(--color-surface);
+            padding: var(--space-1);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-6);
+            border: 1px solid var(--color-border);
+        }
+        
+        .tab {
+            padding: var(--space-3) var(--space-5);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            background: var(--color-background);
+        }
+        
+        .tab.active {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .tab-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            background: var(--color-danger);
+            color: white;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: var(--space-2);
+        }
+        
+        .tab.active .tab-badge {
+            background: white;
+            color: var(--color-primary);
+        }
+        
+        .consultation-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            margin-bottom: var(--space-4);
+            border: 1px solid var(--color-border);
+            display: flex;
+            gap: var(--space-4);
+        }
+        
+        .consultation-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+        
+        .consultation-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .consultation-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .consultation-info {
+            flex: 1;
+        }
+        
+        .consultation-doctor {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: var(--space-1);
+        }
+        
+        .consultation-specialty {
+            color: var(--color-text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: var(--space-3);
+        }
+        
+        .consultation-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-4);
+            margin-bottom: var(--space-3);
+        }
+        
+        .consultation-meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+        
+        .consultation-meta-item i {
+            color: var(--color-primary);
+        }
+        
+        .consultation-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .consultation-status.upcoming {
+            background: var(--color-primary-100);
+            color: var(--color-primary);
+        }
+        
+        .consultation-status.live {
+            background: var(--color-success-100);
+            color: var(--color-success);
+        }
+        
+        .consultation-status.completed {
+            background: var(--color-text-100);
+            color: var(--color-text-secondary);
+        }
+        
+        .consultation-status.cancelled {
+            background: var(--color-danger-100);
+            color: var(--color-danger);
+        }
+        
+        .consultation-actions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            justify-content: center;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--space-12);
+            color: var(--color-text-secondary);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: var(--space-4);
+            color: var(--color-border);
+        }
+        
+        .empty-state h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+            color: var(--color-text);
+        }
+        
+        /* Schedule Modal */
+        .doctor-select-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+        
+        .doctor-option {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .doctor-option:hover {
+            border-color: var(--color-primary);
+        }
+        
+        .doctor-option.selected {
+            border-color: var(--color-primary);
+            background: var(--color-primary-100);
+        }
+        
+        .doctor-option-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: var(--space-2);
+        }
+        
+        .time-slot {
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .time-slot:hover:not(.unavailable) {
+            border-color: var(--color-primary);
+        }
+        
+        .time-slot.selected {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+        
+        .time-slot.unavailable {
+            background: var(--color-border);
+            color: var(--color-text-tertiary);
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+        
+        /* Inline Booking Card Styles */
+        .booking-section {
+            display: none;
+            margin-top: var(--space-4);
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--color-border);
+            animation: slideDown 0.3s ease;
+        }
+        
+        .booking-section.active {
+            display: block;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .booking-step {
+            display: none;
+        }
+        
+        .booking-step.active {
+            display: block;
+        }
+        
+        .booking-step h4 {
+            margin-bottom: var(--space-3);
+            font-size: 1rem;
+            color: var(--color-text);
+        }
+        
+        .booking-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--space-4);
+            padding-top: var(--space-3);
+            border-top: 1px dashed var(--color-border);
+        }
+        
+        .confirm-details {
+            background: var(--color-background);
+            padding: var(--space-3);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-3);
+        }
+        
+        .confirm-details p {
+            margin: var(--space-1) 0;
+            font-size: 0.9375rem;
+        }
+        
+        .confirm-details strong {
+            color: var(--color-text);
+        }
+        
+        @media (max-width: 768px) {
+            .consultation-card {
+                flex-direction: column;
+            }
+            
+            .consultation-actions {
+                flex-direction: row;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+            }
+            
+            .booking-footer {
+                flex-direction: column;
+                gap: var(--space-2);
+            }
+            
+            .booking-footer .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="has-sidebar">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../assets/images/icons/logo.svg" alt="Cogno" class="sidebar-logo">
+            <span class="sidebar-brand">Cogno Solution</span>
+            <button class="sidebar-close" id="sidebar-close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="../dashboard/child-dashboard.html" class="sidebar-link">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Talk to Experts</li>
+                
+                <li class="sidebar-item active">
+                    <a href="./" class="sidebar-link">
+                        <i class="fa-solid fa-user-doctor" style="color: var(--color-success);"></i>
+                        <span>Our Doctors</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./my-appointments.html" class="sidebar-link">
+                        <i class="fa-solid fa-calendar-check" style="color: var(--color-primary);"></i>
+                        <span>My Appointments</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./messages.html" class="sidebar-link">
+                        <i class="fa-solid fa-comments" style="color: var(--color-warning);"></i>
+                        <span>Messages</span>
+                        <span class="sidebar-badge" id="unread-messages-badge" style="display: none;">0</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="./my-reports.html" class="sidebar-link">
+                        <i class="fa-solid fa-file-medical" style="color: var(--color-info);"></i>
+                        <span>My Reports</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">Learning Modules</li>
+                
+                <li class="sidebar-item">
+                    <a href="../modules/dyslexia/" class="sidebar-link">
+                        <i class="fa-solid fa-book-open" style="color: var(--color-dyslexia);"></i>
+                        <span>Reading & Words</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dyscalculia/" class="sidebar-link">
+                        <i class="fa-solid fa-calculator" style="color: var(--color-dyscalculia);"></i>
+                        <span>Numbers & Math</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dysgraphia/" class="sidebar-link">
+                        <i class="fa-solid fa-pen" style="color: var(--color-dysgraphia);"></i>
+                        <span>Writing Practice</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../modules/dyspraxia/" class="sidebar-link">
+                        <i class="fa-solid fa-person-running" style="color: var(--color-dyspraxia);"></i>
+                        <span>Movement Games</span>
+                    </a>
+                </li>
+                
+                <li class="sidebar-section">More</li>
+                
+                <li class="sidebar-item">
+                    <a href="../learning-hub/" class="sidebar-link">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Learning Hub</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../progress/" class="sidebar-link">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>My Progress</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../profile/" class="sidebar-link">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="../settings/" class="sidebar-link">
+                        <i class="fa-solid fa-gear"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-link" id="tts-toggle">
+                <i class="fa-solid fa-volume-high"></i>
+                <span>Read Aloud</span>
+            </button>
+            <button class="sidebar-link" id="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sign Out</span>
+            </button>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Navigation -->
+        <header class="navbar">
+            <div class="navbar-left">
+                <button class="btn btn-ghost btn-icon sidebar-toggle" id="sidebar-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <nav class="breadcrumb">
+                    <a href="../dashboard/">Dashboard</a>
+                    <span>/</span>
+                    <span>Consultations</span>
+                </nav>
+            </div>
+            
+            <div class="navbar-right">
+                <button class="btn btn-ghost btn-icon" id="dark-mode-toggle">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Consultations Content -->
+        <div class="content-area">
+            <header class="consultations-header">
+                <h1>Our Specialists</h1>
+                <p style="color: var(--color-text-secondary); margin-top: var(--space-2);">Book a consultation with our expert doctors</p>
+            </header>
+            
+            <!-- Platform Doctors Grid -->
+            <div id="doctors-grid" class="doctor-select-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); margin-bottom: var(--space-6);">
+                <!-- Loading state -->
+                <div class="loading-state" style="grid-column: 1/-1; text-align: center; padding: var(--space-8);">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--color-primary);"></i>
+                    <p style="margin-top: var(--space-4);">Loading doctors...</p>
+                </div>
+            </div>
+            
+            <!-- Upcoming Appointments Section -->
+            <section style="margin-top: var(--space-8);">
+                <h2 style="font-size: 1.25rem; margin-bottom: var(--space-4);">
+                    <i class="fa-solid fa-calendar-check" style="color: var(--color-primary);"></i>
+                    Upcoming Appointments
+                </h2>
+                <div id="upcoming-appointments">
+                    <div class="empty-state" style="padding: var(--space-6); background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
+                        <i class="fa-solid fa-calendar" style="font-size: 2rem; color: var(--color-border);"></i>
+                        <p style="margin-top: var(--space-2); color: var(--color-text-secondary);">No upcoming appointments</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-client.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/notifications.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize sidebar
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarClose = document.getElementById('sidebar-close');
+            
+            sidebarToggle?.addEventListener('click', () => sidebar?.classList.toggle('open'));
+            sidebarClose?.addEventListener('click', () => sidebar?.classList.remove('open'));
+            
+            // Dark mode
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            if (localStorage.getItem('cogno-theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            }
+            
+            darkModeToggle?.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                localStorage.setItem('cogno-theme', isDark ? 'dark' : 'light');
+                darkModeToggle.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+            });
+            
+            // Check auth
+            const session = await CognoSupabase.getSession();
+            if (!session) {
+                window.location.href = CognoPaths.auth.login();
+                return;
+            }
+            
+            // State
+            let platformDoctors = [];
+            let selectedDoctor = null;
+            let selectedDate = null;
+            let selectedTime = null;
+            
+            // Load platform doctors
+            async function loadPlatformDoctors() {
+                const doctorsGrid = document.getElementById('doctors-grid');
+                
+                try {
+                    // Try to get doctors using the function
+                    let doctors = [];
+                    
+                    // First try the RPC function
+                    const { data: rpcData, error: rpcError } = await CognoSupabase.client
+                        .rpc('get_platform_doctors');
+                    
+                    if (!rpcError && rpcData && rpcData.length > 0) {
+                        doctors = rpcData;
+                    } else {
+                        // Fallback: query profiles directly for doctors
+                        const { data: profileData, error: profileError } = await CognoSupabase.client
+                            .from('profiles')
+                            .select('*')
+                            .eq('role', 'doctor')
+                            .eq('is_active', true);
+                        
+                        if (!profileError && profileData) {
+                            doctors = profileData;
+                        }
+                    }
+                    
+                    platformDoctors = doctors;
+                    
+                    if (doctors.length === 0) {
+                        doctorsGrid.innerHTML = `
+                            <div style="grid-column: 1/-1; text-align: center; padding: var(--space-8); background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border);">
+                                <i class="fa-solid fa-user-doctor" style="font-size: 3rem; color: var(--color-border); margin-bottom: var(--space-4);"></i>
+                                <h3 style="font-size: 1.25rem; margin-bottom: var(--space-2);">No Doctors Available</h3>
+                                <p style="color: var(--color-text-secondary);">Please check back later. Our doctors are setting up their profiles.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    // Render doctor cards with inline booking
+                    doctorsGrid.innerHTML = doctors.map(doctor => {
+                        const rawName = doctor.full_name || doctor.display_name || 'Doctor';
+                        const name = rawName.startsWith('Dr.') ? rawName : 'Dr. ' + rawName;
+                        const initials = rawName.replace('Dr. ', '').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                        
+                        const avatarHtml = doctor.avatar_url 
+                            ? `<img src="${doctor.avatar_url}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`
+                            : `<div class="consultation-avatar">${initials}</div>`;
+                        
+                        const today = new Date().toISOString().split('T')[0];
+                        
+                        return `
+                            <div class="doctor-card" data-doctor-id="${doctor.id}" style="background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-5); border: 1px solid var(--color-border); transition: transform 0.2s, box-shadow 0.2s;">
+                                <div style="display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-4);">
+                                    <div style="width: 64px; height: 64px; min-width: 64px; border-radius: 50%; overflow: hidden;">
+                                        ${doctor.avatar_url ? avatarHtml : `<div class="consultation-avatar" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: var(--color-primary-100); color: var(--color-primary); font-weight: 700;">${initials}</div>`}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 700; font-size: 1.125rem;">${name}</div>
+                                        <div style="color: var(--color-primary); font-size: 0.875rem; font-weight: 500;">${doctor.specialization || 'Specialist'}</div>
+                                    </div>
+                                </div>
+                                
+                                <p style="font-size: 0.875rem; color: var(--color-text-secondary); margin-bottom: var(--space-4); min-height: 60px;">
+                                    ${doctor.bio || 'Experienced specialist dedicated to helping children with learning disabilities.'}
+                                </p>
+                                
+                                <div style="display: flex; gap: var(--space-4); margin-bottom: var(--space-4); font-size: 0.875rem; color: var(--color-text-secondary);">
+                                    ${doctor.years_experience ? `
+                                        <div style="display: flex; align-items: center; gap: var(--space-1);">
+                                            <i class="fa-solid fa-award" style="color: var(--color-warning);"></i>
+                                            ${doctor.years_experience} years exp.
+                                        </div>
+                                    ` : ''}
+                                    <div style="display: flex; align-items: center; gap: var(--space-1);">
+                                        <i class="fa-solid fa-circle ${doctor.is_available ? 'fa-beat' : ''}" style="color: ${doctor.is_available ? 'var(--color-success)' : 'var(--color-text-tertiary)'}; font-size: 0.5rem;"></i>
+                                        ${doctor.is_available ? 'Available' : 'Busy'}
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: var(--space-2);">
+                                    <button class="btn btn-primary btn-sm book-btn" data-doctor-id="${doctor.id}" ${!doctor.is_available ? 'disabled' : ''}>
+                                        <i class="fa-solid fa-calendar-plus"></i>
+                                        Book Appointment
+                                    </button>
+                                    <button class="btn btn-ghost btn-sm message-btn" data-doctor-id="${doctor.id}">
+                                        <i class="fa-solid fa-comment"></i>
+                                        Message
+                                    </button>
+                                </div>
+                                
+                                <!-- Inline Booking Section -->
+                                <div class="booking-section" id="booking-${doctor.id}">
+                                    <!-- Step 1: Date -->
+                                    <div class="booking-step active" id="step-date-${doctor.id}">
+                                        <h4><i class="fa-solid fa-calendar" style="color: var(--color-primary);"></i> Select a Date</h4>
+                                        <input type="date" class="form-input booking-date" data-doctor-id="${doctor.id}" min="${today}" value="${today}" style="max-width: 250px;">
+                                    </div>
+                                    
+                                    <!-- Step 2: Time -->
+                                    <div class="booking-step" id="step-time-${doctor.id}">
+                                        <h4><i class="fa-solid fa-clock" style="color: var(--color-primary);"></i> Select a Time Slot</h4>
+                                        <div class="time-slots" id="slots-${doctor.id}"></div>
+                                    </div>
+                                    
+                                    <!-- Step 3: Confirm -->
+                                    <div class="booking-step" id="step-confirm-${doctor.id}">
+                                        <h4><i class="fa-solid fa-check-circle" style="color: var(--color-success);"></i> Confirm Booking</h4>
+                                        <div class="confirm-details">
+                                            <p><strong>Doctor:</strong> ${name}</p>
+                                            <p><strong>Date:</strong> <span class="confirm-date-${doctor.id}">-</span></p>
+                                            <p><strong>Time:</strong> <span class="confirm-time-${doctor.id}">-</span></p>
+                                            <p><strong>Duration:</strong> 30 minutes | <strong>Type:</strong> Video Call</p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Reason for consultation</label>
+                                            <textarea class="form-textarea booking-reason" data-doctor-id="${doctor.id}" rows="2" placeholder="Briefly describe why you want to consult..."></textarea>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="booking-footer">
+                                        <button class="btn btn-ghost btn-sm booking-back" data-doctor-id="${doctor.id}" style="display: none;">
+                                            <i class="fa-solid fa-arrow-left"></i> Back
+                                        </button>
+                                        <button class="btn btn-primary btn-sm booking-next" data-doctor-id="${doctor.id}">
+                                            Next <i class="fa-solid fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    // Inline Booking State Management
+                    const bookingState = {};
+                    
+                    // Initialize booking state for each doctor
+                    doctors.forEach(doctor => {
+                        bookingState[doctor.id] = {
+                            step: 1,
+                            date: new Date().toISOString().split('T')[0],
+                            time: null,
+                            doctor: doctor
+                        };
+                    });
+                    
+                    // Toggle booking section
+                    function toggleBooking(doctorId) {
+                        // Close all other bookings
+                        document.querySelectorAll('.booking-section.active').forEach(section => {
+                            if (section.id !== `booking-${doctorId}`) {
+                                section.classList.remove('active');
+                                // Reset button text
+                                const otherDoctorId = section.id.replace('booking-', '');
+                                const otherBtn = document.querySelector(`.book-btn[data-doctor-id="${otherDoctorId}"]`);
+                                if (otherBtn) otherBtn.innerHTML = '<i class="fa-solid fa-calendar-plus"></i> Book Appointment';
+                            }
+                        });
+                        
+                        const section = document.getElementById(`booking-${doctorId}`);
+                        const btn = document.querySelector(`.book-btn[data-doctor-id="${doctorId}"]`);
+                        
+                        if (section.classList.contains('active')) {
+                            section.classList.remove('active');
+                            btn.innerHTML = '<i class="fa-solid fa-calendar-plus"></i> Book Appointment';
+                            // Reset state
+                            bookingState[doctorId].step = 1;
+                            showBookingStep(doctorId, 1);
+                        } else {
+                            section.classList.add('active');
+                            btn.innerHTML = '<i class="fa-solid fa-times"></i> Cancel';
+                            // Load time slots for default date
+                            loadTimeSlotsInline(doctorId, bookingState[doctorId].date);
+                        }
+                    }
+                    
+                    // Show specific step
+                    function showBookingStep(doctorId, step) {
+                        const steps = ['date', 'time', 'confirm'];
+                        steps.forEach((s, i) => {
+                            const el = document.getElementById(`step-${s}-${doctorId}`);
+                            if (el) el.classList.toggle('active', i === step - 1);
+                        });
+                        
+                        const backBtn = document.querySelector(`.booking-back[data-doctor-id="${doctorId}"]`);
+                        const nextBtn = document.querySelector(`.booking-next[data-doctor-id="${doctorId}"]`);
+                        
+                        backBtn.style.display = step > 1 ? 'inline-flex' : 'none';
+                        nextBtn.innerHTML = step === 3 ? '<i class="fa-solid fa-check"></i> Confirm Booking' : 'Next <i class="fa-solid fa-arrow-right"></i>';
+                    }
+                    
+                    // Load time slots inline
+                    async function loadTimeSlotsInline(doctorId, date) {
+                        const slotsContainer = document.getElementById(`slots-${doctorId}`);
+                        slotsContainer.innerHTML = '<div style="text-align: center; padding: var(--space-4);"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>';
+                        
+                        try {
+                            const { data: slots, error } = await CognoSupabase.client
+                                .rpc('get_doctor_available_slots', {
+                                    p_doctor_id: doctorId,
+                                    p_date: date
+                                });
+                            
+                            let slotData = slots || [];
+                            if (error || slotData.length === 0) {
+                                // Default slots
+                                slotData = [];
+                                for (let h = 9; h < 18; h++) {
+                                    slotData.push({ slot_time: `${h.toString().padStart(2, '0')}:00:00`, is_available: true });
+                                    slotData.push({ slot_time: `${h.toString().padStart(2, '0')}:30:00`, is_available: true });
+                                }
+                            }
+                            
+                            slotsContainer.innerHTML = slotData.map(slot => {
+                                const time = slot.slot_time.slice(0, 5);
+                                const hour = parseInt(time.split(':')[0]);
+                                const minute = time.split(':')[1];
+                                const ampm = hour >= 12 ? 'PM' : 'AM';
+                                const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+                                return `<div class="time-slot ${slot.is_available ? '' : 'unavailable'}" data-time="${time}" data-doctor-id="${doctorId}">${displayHour}:${minute} ${ampm}</div>`;
+                            }).join('');
+                            
+                            // Time slot click handlers
+                            slotsContainer.querySelectorAll('.time-slot:not(.unavailable)').forEach(slot => {
+                                slot.addEventListener('click', () => {
+                                    slotsContainer.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                                    slot.classList.add('selected');
+                                    bookingState[doctorId].time = slot.dataset.time;
+                                });
+                            });
+                        } catch (e) {
+                            console.error('Failed to load slots:', e);
+                            slotsContainer.innerHTML = '<div style="color: var(--color-danger);">Failed to load time slots</div>';
+                        }
+                    }
+                    
+                    // Book Button Handlers
+                    document.querySelectorAll('.book-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            toggleBooking(btn.dataset.doctorId);
+                        });
+                    });
+                    
+                    // Date change handlers
+                    document.querySelectorAll('.booking-date').forEach(input => {
+                        input.addEventListener('change', (e) => {
+                            const doctorId = e.target.dataset.doctorId;
+                            bookingState[doctorId].date = e.target.value;
+                            loadTimeSlotsInline(doctorId, e.target.value);
+                        });
+                    });
+                    
+                    // Next button handlers
+                    document.querySelectorAll('.booking-next').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            const doctorId = btn.dataset.doctorId;
+                            const state = bookingState[doctorId];
+                            
+                            if (state.step === 1) {
+                                if (!state.date) {
+                                    CognoNotifications?.toast?.warning('Please select a date');
+                                    return;
+                                }
+                                state.step = 2;
+                                showBookingStep(doctorId, 2);
+                                await loadTimeSlotsInline(doctorId, state.date);
+                            } else if (state.step === 2) {
+                                if (!state.time) {
+                                    CognoNotifications?.toast?.warning('Please select a time slot');
+                                    return;
+                                }
+                                // Update confirmation
+                                const dateStr = new Date(state.date).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+                                const hour = parseInt(state.time.split(':')[0]);
+                                const minute = state.time.split(':')[1];
+                                const ampm = hour >= 12 ? 'PM' : 'AM';
+                                const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+                                
+                                document.querySelector(`.confirm-date-${doctorId}`).textContent = dateStr;
+                                document.querySelector(`.confirm-time-${doctorId}`).textContent = `${displayHour}:${minute} ${ampm}`;
+                                
+                                state.step = 3;
+                                showBookingStep(doctorId, 3);
+                            } else if (state.step === 3) {
+                                // Book the consultation
+                                btn.disabled = true;
+                                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Booking...';
+
+                                // Null/undefined checks
+                                if (!doctorId) {
+                                    console.error('Booking failed: doctorId is missing', doctorId);
+                                    CognoNotifications?.toast?.error('Booking failed: Doctor information missing.');
+                                    btn.disabled = false;
+                                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Confirm Booking';
+                                    return;
+                                }
+                                if (!state.date) {
+                                    console.error('Booking failed: date is missing', state.date);
+                                    CognoNotifications?.toast?.error('Booking failed: Date missing.');
+                                    btn.disabled = false;
+                                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Confirm Booking';
+                                    return;
+                                }
+                                if (!state.time) {
+                                    console.error('Booking failed: time is missing', state.time);
+                                    CognoNotifications?.toast?.error('Booking failed: Time missing.');
+                                    btn.disabled = false;
+                                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Confirm Booking';
+                                    return;
+                                }
+                                // Fix session handling: session is { success, session }
+                                if (!session || !session.session || !session.session.user || !session.session.user.id) {
+                                    console.error('Booking failed: user session missing', session);
+                                    CognoNotifications?.toast?.error('Booking failed: User session missing.');
+                                    btn.disabled = false;
+                                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Confirm Booking';
+                                    return;
+                                }
+
+                                try {
+                                    const reason = document.querySelector(`.booking-reason[data-doctor-id="${doctorId}"]`)?.value || '';
+                                    const scheduledAt = new Date(`${state.date}T${state.time}:00`);
+                                    const meetingId = 'cogno-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                                    console.log('Booking consultation:', {
+                                        patient_id: session.session.user.id,
+                                        doctor_id: doctorId,
+                                        scheduled_at: scheduledAt.toISOString(),
+                                        reason,
+                                        meeting_id: meetingId
+                                    });
+                                    const { error } = await CognoSupabase.client
+                                        .from('consultations')
+                                        .insert({
+                                            patient_id: session.session.user.id,
+                                            doctor_id: doctorId,
+                                            scheduled_at: scheduledAt.toISOString(),
+                                            reason: reason || null,
+                                            meeting_id: meetingId,
+                                            meeting_url: 'https://meet.jit.si/' + meetingId,
+                                            status: 'pending'
+                                        });
+
+                                    if (error) throw error;
+
+                                    CognoNotifications?.toast?.success('Consultation booked successfully!');
+                                    toggleBooking(doctorId);
+                                    await loadUpcomingAppointments();
+                                } catch (error) {
+                                    console.error('Booking failed:', error);
+                                    CognoNotifications?.toast?.error('Failed to book. Please try again.');
+                                } finally {
+                                    btn.disabled = false;
+                                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Confirm Booking';
+                                }
+                            }
+                        });
+                    });
+                    
+                    // Back button handlers
+                    document.querySelectorAll('.booking-back').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const doctorId = btn.dataset.doctorId;
+                            const state = bookingState[doctorId];
+                            state.step = Math.max(1, state.step - 1);
+                            showBookingStep(doctorId, state.step);
+                        });
+                    });
+                    
+                    // Message button handlers
+                    document.querySelectorAll('.message-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const doctorId = btn.dataset.doctorId;
+                            window.location.href = `./messages.html?doctor=${doctorId}`;
+                        });
+                    });
+                    
+                } catch (error) {
+                    console.error('Failed to load doctors:', error);
+                    doctorsGrid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: var(--space-8); color: var(--color-danger);">
+                            <i class="fa-solid fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: var(--space-4);"></i>
+                            <p>Failed to load doctors. Please try again later.</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Load upcoming appointments
+            async function loadUpcomingAppointments() {
+                const container = document.getElementById('upcoming-appointments');
+                
+                try {
+                    const { data: appointments, error } = await CognoSupabase.client
+                        .from('consultations')
+                        .select(`
+                            *,
+                            doctor:profiles!consultations_doctor_id_fkey(id, full_name, display_name, avatar_url, specialization)
+                        `)
+                        .eq('patient_id', session.user.id)
+                        .in('status', ['pending', 'confirmed'])
+                        .gte('scheduled_at', new Date().toISOString())
+                        .order('scheduled_at', { ascending: true })
+                        .limit(3);
+                    
+                    if (error) throw error;
+                    
+                    if (!appointments || appointments.length === 0) {
+                        container.innerHTML = `
+                            <div class="empty-state" style="padding: var(--space-6); background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); text-align: center;">
+                                <i class="fa-solid fa-calendar" style="font-size: 2rem; color: var(--color-border);"></i>
+                                <p style="margin-top: var(--space-2); color: var(--color-text-secondary);">No upcoming appointments. Book a consultation with one of our doctors above!</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    container.innerHTML = appointments.map(apt => {
+                        const doctor = apt.doctor;
+                        const initials = (doctor?.full_name || doctor?.display_name || 'DR').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                        const date = new Date(apt.scheduled_at);
+                        const isToday = date.toDateString() === new Date().toDateString();
+                        const isTomorrow = date.toDateString() === new Date(Date.now() + 86400000).toDateString();
+                        const dateStr = isToday ? 'Today' : isTomorrow ? 'Tomorrow' : date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                        const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                        
+                        // Check if within 15 minutes of appointment
+                        const canJoin = (date.getTime() - Date.now()) <= 15 * 60 * 1000 && date.getTime() > Date.now();
+                        
+                        return `
+                            <div class="consultation-card" style="background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--space-4); border: 1px solid var(--color-border); display: flex; gap: var(--space-4); margin-bottom: var(--space-3);">
+                                <div class="consultation-avatar" style="width: 50px; height: 50px; flex-shrink: 0;">
+                                    ${initials}
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600;">${doctor?.full_name || doctor?.display_name}</div>
+                                    <div style="font-size: 0.875rem; color: var(--color-primary);">${doctor?.specialization || 'Specialist'}</div>
+                                    <div style="display: flex; gap: var(--space-4); margin-top: var(--space-2); font-size: 0.875rem; color: var(--color-text-secondary);">
+                                        <span><i class="fa-solid fa-calendar" style="color: var(--color-primary);"></i> ${dateStr}</span>
+                                        <span><i class="fa-solid fa-clock" style="color: var(--color-primary);"></i> ${timeStr}</span>
+                                    </div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+                                    <button class="btn btn-primary btn-sm join-btn" data-meeting="${apt.meeting_url}" ${canJoin ? '' : 'disabled'}>
+                                        <i class="fa-solid fa-video"></i>
+                                        ${canJoin ? 'Join Now' : 'Join Call'}
+                                    </button>
+                                    <button class="btn btn-ghost btn-sm cancel-apt-btn" data-id="${apt.id}">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    
+                    // Event listeners
+                    document.querySelectorAll('.join-btn:not([disabled])').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            window.open(btn.dataset.meeting, '_blank');
+                        });
+                    });
+                    
+                    document.querySelectorAll('.cancel-apt-btn').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            if (confirm('Are you sure you want to cancel this appointment?')) {
+                                await cancelAppointment(btn.dataset.id);
+                            }
+                        });
+                    });
+                    
+                } catch (error) {
+                    console.error('Failed to load appointments:', error);
+                }
+            }
+            
+            // Cancel appointment
+            async function cancelAppointment(id) {
+                try {
+                    const { error } = await CognoSupabase.client
+                        .from('consultations')
+                        .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
+                        .eq('id', id);
+                    
+                    if (error) throw error;
+                    
+                    CognoNotifications?.toast?.success('Appointment cancelled');
+                    loadUpcomingAppointments();
+                } catch (error) {
+                    CognoNotifications?.toast?.error('Failed to cancel appointment');
+                }
+            }
+            
+            // Initialize
+            await loadPlatformDoctors();
+            await loadUpcomingAppointments();
+            await loadUnreadMessagesCount();
+            
+            // Load unread messages count for sidebar badge
+            async function loadUnreadMessagesCount() {
+                const badge = document.getElementById('unread-messages-badge');
+                if (!badge) return;
+                
+                try {
+                    const { data, error, count } = await CognoSupabase.client
+                        .from('messages')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('receiver_id', session.user.id)
+                        .eq('is_read', false);
+                    
+                    if (!error) {
+                        const unreadCount = count || 0;
+                        if (unreadCount > 0) {
+                            badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                            badge.style.display = 'flex';
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Failed to load unread messages:', error);
+                }
+            }
+            
+            // Logout
+            document.getElementById('logout-btn')?.addEventListener('click', async () => {
+                await CognoSupabase.signOut();
+                window.location.href = CognoPaths.auth.login();
+            });
+        });
+    </script>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../learn/index.html" class="nav-item">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../doctors/index.html" class="nav-item active">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

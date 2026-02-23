@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Body Movement - Dyspraxia Module">
+    <title>Body Movement - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .activity-header { margin-bottom: var(--space-6); }
+        .activity-header h1 { font-size: 1.5rem; margin-bottom: var(--space-1); }
+        .activity-header p { color: var(--color-text-secondary); }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+        .category-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .category-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-3);
+            font-size: 1.5rem;
+        }
+        .category-icon.warmup { background: #fee2e2; color: #dc2626; }
+        .category-icon.coordination { background: #dcfce7; color: #16a34a; }
+        .category-icon.balance { background: #dbeafe; color: #2563eb; }
+        .category-icon.rhythm { background: #f3e8ff; color: #9333ea; }
+        .category-card h3 { font-size: 1rem; margin-bottom: var(--space-1); }
+        .category-card p { font-size: 0.8rem; color: var(--color-text-secondary); margin-bottom: var(--space-2); }
+        
+        .exercise-card { margin-bottom: var(--space-6); background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: var(--space-6); }
+        .exercise-controls { display: flex; align-items: center; gap: var(--space-2); }
+        
+        .exercise-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-6);
+            align-items: center;
+        }
+        
+        .exercise-animation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 250px;
+            background: var(--color-background);
+            border-radius: var(--radius-lg);
+            position: relative;
+        }
+        
+        .stick-figure {
+            position: relative;
+            width: 100px;
+            height: 180px;
+        }
+        .stick-figure .head {
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .stick-figure .body {
+            width: 6px;
+            height: 70px;
+            background: var(--color-primary);
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .stick-figure .arm {
+            width: 60px;
+            height: 6px;
+            background: var(--color-primary);
+            position: absolute;
+            top: 50px;
+            border-radius: 3px;
+        }
+        .stick-figure .arm.left { left: -35px; transform-origin: right; animation: armCircle 2s infinite; }
+        .stick-figure .arm.right { right: -35px; transform-origin: left; animation: armCircle 2s infinite reverse; }
+        .stick-figure .leg {
+            width: 6px;
+            height: 60px;
+            background: var(--color-primary);
+            position: absolute;
+            top: 110px;
+            border-radius: 3px;
+        }
+        .stick-figure .leg.left { left: 35px; transform: rotate(-15deg); }
+        .stick-figure .leg.right { right: 35px; transform: rotate(15deg); }
+        
+        @keyframes armCircle {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(45deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        .exercise-instructions h3 { margin-bottom: var(--space-3); }
+        .exercise-instructions ol { padding-left: var(--space-5); color: var(--color-text-primary); }
+        .exercise-instructions li { margin-bottom: var(--space-2); line-height: 1.6; }
+        
+        .timer-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-6);
+            margin-top: var(--space-6);
+        }
+        .timer-display {
+            text-align: center;
+        }
+        #timer-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            display: block;
+        }
+        .timer-label { color: var(--color-text-secondary); }
+        
+        .progress-card { margin-bottom: var(--space-6); background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); padding: var(--space-6); }
+        .exercise-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            border-radius: var(--radius-md);
+            transition: background 0.2s;
+        }
+        .checklist-item.completed {
+            background: var(--color-success-100);
+            color: var(--color-success-dark);
+        }
+        .checklist-item.completed i { color: var(--color-success); }
+        .checklist-item i { font-size: 1.25rem; color: var(--color-border); }
+        
+        .progress-summary {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--color-border);
+        }
+        .progress-summary .progress-bar { flex: 1; height: 8px; background: var(--color-border); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--color-success); transition: width 0.3s ease; }
+        
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--space-4);
+        }
+        .tip-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            background: var(--color-background);
+            border-radius: var(--radius-md);
+        }
+        .tip-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary-100);
+            color: var(--color-primary);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .tip-item p { margin: 0; font-size: 0.85rem; color: var(--color-text-secondary); }
+        
+        @media (max-width: 768px) {
+            .exercise-display { grid-template-columns: 1fr; }
+            .timer-controls { flex-direction: column; gap: var(--space-4); }
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Body Movement</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs">
+                <h1><i class="fa-solid fa-person-running"></i> Body Movement Exercises</h1>
+                <p>Improve coordination and body awareness with guided exercises</p>
+                <button class="btn btn-ghost mt-4" onclick="window.history.back()">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Back
+                </button>
+            </div>
+            
+            <div class="content-area">
+                <!-- Current Exercise -->
+                <div class="exercise-card">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 id="exercise-title" class="text-xl font-bold">Today's Exercise: Arm Circles</h2>
+                        <div class="exercise-controls">
+                            <button class="btn btn-ghost btn-sm" id="prev-exercise"><i class="fa-solid fa-chevron-left"></i></button>
+                            <span id="exercise-counter" class="font-medium">1 of 5</span>
+                            <button class="btn btn-ghost btn-sm" id="next-exercise"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="exercise-display">
+                        <div class="exercise-animation" id="exercise-animation">
+                            <div class="stick-figure" id="stick-figure">
+                                <div class="head"></div>
+                                <div class="body"></div>
+                                <div class="arm left"></div>
+                                <div class="arm right"></div>
+                                <div class="leg left"></div>
+                                <div class="leg right"></div>
+                            </div>
+                        </div>
+                        <div class="exercise-instructions">
+                            <h3 class="font-bold">Instructions:</h3>
+                            <ol id="instructions-list" class="list-decimal ml-4 mt-2">
+                                <li>Stand with your feet shoulder-width apart</li>
+                                <li>Extend your arms out to the sides</li>
+                                <li>Start making small circles forward</li>
+                                <li>Gradually make the circles bigger</li>
+                                <li>After 10 circles, reverse direction</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="timer-controls">
+                        <div class="timer-display">
+                            <span id="timer-value">30</span>
+                            <span class="timer-label text-sm uppercase tracking-wider">seconds</span>
+                        </div>
+                        <button class="btn btn-primary btn-lg px-8" id="start-timer">
+                            <i class="fa-solid fa-play mr-2"></i> Start Exercise
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Progress Tracker -->
+                <div class="progress-card">
+                    <h2 class="text-xl font-bold mb-6"><i class="fa-solid fa-check-double mr-2 text-success"></i> Today's Progress</h2>
+                    <div class="exercise-checklist" id="exercise-checklist">
+                        <div class="checklist-item completed">
+                            <i class="fa-solid fa-check-circle"></i>
+                            <span>Arm Circles</span>
+                        </div>
+                        <div class="checklist-item">
+                            <i class="fa-regular fa-circle"></i>
+                            <span>Marching in Place</span>
+                        </div>
+                        <div class="checklist-item">
+                            <i class="fa-regular fa-circle"></i>
+                            <span>Touch Toes</span>
+                        </div>
+                        <div class="checklist-item">
+                            <i class="fa-regular fa-circle"></i>
+                            <span>Side Bends</span>
+                        </div>
+                        <div class="checklist-item">
+                            <i class="fa-regular fa-circle"></i>
+                            <span>Cross Crawl</span>
+                        </div>
+                    </div>
+                    <div class="progress-summary">
+                        <span>Completed: <strong id="completed-count">1</strong> of 5</span>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 20%"></div></div>
+                    </div>
+                </div>
+                
+                <!-- Tips Section -->
+                <div class="tips-card card p-6">
+                    <h2 class="text-xl font-bold mb-6"><i class="fa-solid fa-lightbulb mr-2 text-warning"></i> Movement Tips</h2>
+                    <div class="tips-grid">
+                        <div class="tip-item">
+                            <div class="tip-icon"><i class="fa-solid fa-person-walking"></i></div>
+                            <p>Start slowly and focus on form</p>
+                        </div>
+                        <div class="tip-item">
+                            <div class="tip-icon"><i class="fa-solid fa-eye"></i></div>
+                            <p>Watch yourself in a mirror if possible</p>
+                        </div>
+                        <div class="tip-item">
+                            <div class="tip-icon"><i class="fa-solid fa-heart"></i></div>
+                            <p>Take breaks when you need them</p>
+                        </div>
+                        <div class="tip-item">
+                            <div class="tip-icon"><i class="fa-solid fa-star"></i></div>
+                            <p>Celebrate your progress!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+            updateExercise();
+        });
+
+        const exercises = [
+            { name: 'Arm Circles', duration: 30, instructions: ['Stand with your feet shoulder-width apart', 'Extend your arms out to the sides', 'Start making small circles forward', 'Gradually make the circles bigger', 'After 10 circles, reverse direction'] },
+            { name: 'Marching in Place', duration: 45, instructions: ['Stand tall with arms at your sides', 'Lift your left knee high while swinging your right arm', 'Lower and repeat with the opposite side', 'Keep a steady rhythm', 'Count to 20 on each side'] },
+            { name: 'Touch Toes', duration: 30, instructions: ['Stand with feet together', 'Slowly bend forward at the waist', 'Reach towards your toes', 'Hold for 5 seconds', 'Slowly come back up'] },
+            { name: 'Side Bends', duration: 30, instructions: ['Stand with feet shoulder-width apart', 'Place one hand on your hip', 'Raise the other arm overhead', 'Slowly lean to one side', 'Return and repeat on the other side'] },
+            { name: 'Cross Crawl', duration: 45, instructions: ['Stand with feet apart', 'Touch your right elbow to your left knee', 'Return to standing', 'Touch your left elbow to your right knee', 'Repeat 10 times each side'] }
+        ];
+        
+        let currentExercise = 0;
+        let timerInterval = null;
+        let timeLeft = 30;
+        
+        function updateExercise() {
+            const ex = exercises[currentExercise];
+            if(!ex) return;
+            document.getElementById('exercise-title').textContent = `Today's Exercise: ${ex.name}`;
+            document.getElementById('exercise-counter').textContent = `${currentExercise + 1} of ${exercises.length}`;
+            document.getElementById('timer-value').textContent = ex.duration;
+            timeLeft = ex.duration;
+            const list = document.getElementById('instructions-list');
+            list.innerHTML = ex.instructions.map(i => `<li>${i}</li>`).join('');
+        }
+        
+        document.getElementById('prev-exercise')?.addEventListener('click', () => {
+            currentExercise = (currentExercise - 1 + exercises.length) % exercises.length;
+            updateExercise();
+        });
+        
+        document.getElementById('next-exercise')?.addEventListener('click', () => {
+            currentExercise = (currentExercise + 1) % exercises.length;
+            updateExercise();
+        });
+        
+        document.getElementById('start-timer')?.addEventListener('click', function() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                this.innerHTML = '<i class="fa-solid fa-play mr-2"></i> Start Exercise';
+                return;
+            }
+            
+            this.innerHTML = '<i class="fa-solid fa-pause mr-2"></i> Pause';
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-value').textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    document.getElementById('start-timer').innerHTML = '<i class="fa-solid fa-play mr-2"></i> Start Exercise';
+                    
+                    const checklistItems = document.querySelectorAll('.checklist-item');
+                    if (checklistItems[currentExercise]) {
+                        checklistItems[currentExercise].classList.add('completed');
+                        checklistItems[currentExercise].querySelector('i').className = 'fa-solid fa-check-circle';
+                    }
+                    
+                    const completed = document.querySelectorAll('.checklist-item.completed').length;
+                    document.getElementById('completed-count').textContent = completed;
+                    document.querySelector('.progress-fill').style.width = `${completed / exercises.length * 100}%`;
+                    
+                    CognoNotifications?.toast?.success(`Great job on ${exercises[currentExercise].name}!`);
+
+                    if (currentExercise < exercises.length - 1) {
+                        currentExercise++;
+                        updateExercise();
+                    } else {
+                        // All exercises completed - save activity
+                        const totalDuration = exercises.reduce((sum, ex) => sum + ex.duration, 0);
+                        CognoTracker?.saveActivity({
+                            moduleId: 'dyspraxia',
+                            activityId: 'body-movement',
+                            score: completed,
+                            maxScore: exercises.length,
+                            duration: totalDuration,
+                            metadata: { exercisesCompleted: completed, totalExercises: exercises.length }
+                        }).catch(console.error);
+                        CognoNotifications?.toast?.success('All exercises completed! Workout saved.');
+                    }
+                }
+            }, 1000);
+        });
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

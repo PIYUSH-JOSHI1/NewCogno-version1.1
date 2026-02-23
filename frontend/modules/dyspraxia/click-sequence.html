@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click Sequence - Dyspraxia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/dark-mode.css">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; padding: 1rem !important; }
+            .hide-xs { display: none !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; background: var(--color-background); color: var(--color-text-primary); transition: background-color 0.3s; }
+        .game-area { background: var(--color-surface); border-radius: var(--radius-2xl); border: 2px solid var(--color-border); box-shadow: var(--shadow-xl); padding: 40px; max-width: 700px; width: 100%; margin: 0 auto; }
+        .game-canvas { width: 100%; height: 400px; background: rgba(var(--color-primary-rgb), 0.03); border: 2px solid var(--color-border); border-radius: var(--radius-lg); position: relative; overflow: hidden; margin: 24px 0; }
+        .clickable-object {
+            position: absolute; width: 60px; height: 60px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-primary), #3b82f6);
+            color: white; font-weight: 700; font-size: 1.5rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(var(--color-primary-rgb), 0.2);
+            user-select: none;
+        }
+        .clickable-object:hover { transform: scale(1.1); box-shadow: 0 8px 25px rgba(var(--color-primary-rgb), 0.3); }
+        .clickable-object.clicked { background: #94a3b8 !important; opacity: 0.5; cursor: default; transform: scale(0.9); }
+        .clickable-object.next { animation: highlight-pulse 1.2s infinite; border: 3px solid white; box-shadow: 0 0 20px var(--color-primary); }
+        
+        @keyframes highlight-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        
+        @media (max-width: 768px) {
+            .game-canvas { height: 300px; }
+            .clickable-object { width: 50px; height: 50px; font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="activity-container">
+        <!-- New Activity Navbar (Mobile) -->
+        <header class="activity-navbar">
+            <button class="back-btn" onclick="window.history.back()">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="activity-title-group">
+                <span class="activity-category">Dyspraxia</span>
+                <h1 class="activity-name">Click Sequence</h1>
+            </div>
+            <div class="activity-actions">
+                <button class="action-btn" id="dark-mode-toggle"><i class="fa-solid fa-moon"></i></button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="activity-header hide-xs mb-8">
+                <div class="flex items-center gap-4 mb-2">
+                    <button onclick="window.history.back()" class="text-primary hover:text-primary-dark transition text-2xl">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <h1 class="text-3xl font-bold">🎯 Click Sequence</h1>
+                </div>
+                <p class="text-gray-500">Tap the circles in the correct numerical order as fast as you can!</p>
+            </div>
+
+            <div class="game-area">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="card p-4 text-center bg-primary/5 border-primary/20">
+                        <div class="text-2xl font-bold text-primary" id="progress">0/8</div>
+                        <div class="text-xs opacity-60 uppercase">Progress</div>
+                    </div>
+                    <div class="card p-4 text-center bg-danger/5 border-danger/20">
+                        <div class="text-2xl font-bold text-danger" id="errors">0</div>
+                        <div class="text-xs opacity-60 uppercase">Errors</div>
+                    </div>
+                </div>
+
+                <div class="text-center italic opacity-70 mb-2" id="instruction">Click "Start" to begin</div>
+                
+                <div class="game-canvas" id="gameCanvas"></div>
+                
+                <button id="startBtn" class="btn btn-primary btn-lg w-full">🎮 Start Sequence</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <script src="../../js/notifications.js"></script>
+    <script src="../../js/utils.js"></script>
+    <script src="../../modules/modules.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            CognoModules.initDarkMode();
+        });
+
+        const gameCanvas = document.getElementById('gameCanvas');
+        const progressDisplay = document.getElementById('progress');
+        const errorsDisplay = document.getElementById('errors');
+        const instruction = document.getElementById('instruction');
+        const startBtn = document.getElementById('startBtn');
+        
+        let gameObjects = [];
+        let nextIndex = 0;
+        let errors = 0;
+        let gameActive = false;
+        let startTime = 0;
+
+        function createGameObjects() {
+            gameCanvas.innerHTML = '';
+            gameObjects = [];
+            const count = 8;
+            for (let i = 1; i <= count; i++) {
+                const el = document.createElement('div');
+                el.className = 'clickable-object';
+                el.textContent = i;
+                el.dataset.num = i;
+                const x = Math.random() * (gameCanvas.offsetWidth - 70);
+                const y = Math.random() * (gameCanvas.offsetHeight - 70);
+                el.style.left = x + 'px';
+                el.style.top = y + 'px';
+                el.addEventListener('click', () => clickObject(el));
+                gameCanvas.appendChild(el);
+                gameObjects.push(el);
+            }
+            gameObjects[0].classList.add('next');
+        }
+
+        function clickObject(el) {
+            if (!gameActive) return;
+            const num = parseInt(el.dataset.num);
+            if (num === nextIndex + 1) {
+                el.classList.add('clicked');
+                el.classList.remove('next');
+                nextIndex++;
+                progressDisplay.textContent = `${nextIndex}/8`;
+                if (nextIndex < 8) gameObjects[nextIndex].classList.add('next');
+                else finishGame();
+            } else if (!el.classList.contains('clicked')) {
+                errors++;
+                errorsDisplay.textContent = errors;
+                CognoNotifications?.toast?.error('Wrong number!');
+            }
+        }
+
+        function finishGame() {
+            gameActive = false;
+            const duration = Math.floor((Date.now() - startTime) / 1000);
+            instruction.textContent = 'Sequence complete! Well done.';
+            startBtn.disabled = false;
+            CognoNotifications?.toast?.success(`Done in ${duration}s with ${errors} errors!`);
+            CognoTracker?.saveActivity({
+                moduleId: 'dyspraxia', activityId: 'click-sequence',
+                score: Math.max(0, 8 - errors), maxScore: 8, duration
+            });
+        }
+
+        startBtn.addEventListener('click', () => {
+            gameActive = true; nextIndex = 0; errors = 0; startTime = Date.now();
+            startBtn.disabled = true;
+            progressDisplay.textContent = '0/8';
+            errorsDisplay.textContent = '0';
+            instruction.textContent = 'Find and click the numbers in order!';
+            createGameObjects();
+        });
+    </script>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

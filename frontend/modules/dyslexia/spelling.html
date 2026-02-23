@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spelling Practice - Dyslexia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../js/supabase-client.js"></script>
+    <script src="../../js/activity-tracker.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=OpenDyslexic&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; }
+        .dyslexic-font { font-family: 'OpenDyslexic', sans-serif; }
+        .letter-tile {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .letter-tile:hover { transform: scale(1.05); }
+        .letter-tile.dragging { opacity: 0.5; cursor: grabbing; }
+        .drop-zone {
+            min-width: 60px;
+            height: 60px;
+            border: 3px dashed #cbd5e1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .drop-zone.over { border-color: #8b5cf6; background: #f3e8ff; }
+        .drop-zone.filled { border-style: solid; border-color: #8b5cf6; }
+        .word-image {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            border-radius: 16px;
+        }
+        .hint-letter { 
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Spelling Practice</h1>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform lg:translate-x-0 -translate-x-full" id="sidebar">
+        <div class="p-6 border-b border-gray-100">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
+                    <span class="text-white font-bold text-lg">C</span>
+                </div>
+                <span class="text-xl font-bold text-gray-800">Cogno</span>
+            </div>
+        </div>
+        
+        <nav class="p-4 space-y-2">
+            <a href="../../dashboard/index.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-purple-50 hover:text-purple-600 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="index.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-purple-100 text-purple-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                <span>Dyslexia Module</span>
+            </a>
+            <a href="../../progress/index.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-purple-50 hover:text-purple-600 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                <span>My Progress</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 p-6">
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <div>
+                <div class="flex items-center space-x-3 mb-2">
+                    <a href="index.html" class="text-purple-600 hover:text-purple-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    </a>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Spelling Practice</h1>
+                </div>
+                <p class="text-gray-600">Build words letter by letter with visual cues</p>
+            </div>
+            
+            <div class="flex items-center space-x-3 mt-4 md:mt-0">
+                <button onclick="toggleDyslexicFont()" class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 transition-colors text-sm">
+                    Aa Font
+                </button>
+                <button onclick="speakWord()" class="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors" title="Hear the word">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <div class="text-3xl font-bold text-purple-600" id="score">0</div>
+                <div class="text-sm text-gray-500">Score</div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <div class="text-3xl font-bold text-green-600" id="streak">0</div>
+                <div class="text-sm text-gray-500">Streak</div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <div class="text-3xl font-bold text-blue-600" id="level">1</div>
+                <div class="text-sm text-gray-500">Level</div>
+            </div>
+        </div>
+
+        <!-- Main Game Area -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+            <!-- Word Image/Hint -->
+            <div class="text-center mb-8">
+                <div class="inline-block p-6 bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl mb-4">
+                    <div class="text-8xl" id="wordEmoji">🍎</div>
+                </div>
+                <p class="text-lg text-gray-600">Spell the word for this picture:</p>
+                <button onclick="giveHint()" class="mt-2 text-sm text-purple-600 hover:text-purple-700 underline">Need a hint?</button>
+            </div>
+
+            <!-- Drop Zones (where letters go) -->
+            <div class="flex justify-center gap-3 mb-8" id="dropZones">
+                <!-- Dynamically filled -->
+            </div>
+
+            <!-- Available Letters -->
+            <div class="flex justify-center flex-wrap gap-3 mb-8" id="letterBank">
+                <!-- Dynamically filled -->
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-center gap-4">
+                <button onclick="checkSpelling()" class="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all shadow-lg">
+                    Check Answer
+                </button>
+                <button onclick="resetWord()" class="px-8 py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-all">
+                    Reset
+                </button>
+                <button onclick="skipWord()" class="px-8 py-3 bg-yellow-100 text-yellow-700 rounded-xl font-semibold hover:bg-yellow-200 transition-all">
+                    Skip
+                </button>
+            </div>
+        </div>
+
+        <!-- Feedback Modal -->
+        <div id="feedbackModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center transform transition-all">
+                <div class="text-6xl mb-4" id="feedbackEmoji">🎉</div>
+                <h3 class="text-2xl font-bold mb-2" id="feedbackTitle">Great Job!</h3>
+                <p class="text-gray-600 mb-6" id="feedbackMessage">You spelled the word correctly!</p>
+                <button onclick="nextWord()" class="px-8 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl font-semibold hover:from-purple-600 hover:to-blue-600 transition-all">
+                    Next Word
+                </button>
+            </div>
+        </div>
+
+        <!-- Word List Preview -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h3 class="font-semibold text-gray-800 mb-4">Words in This Level</h3>
+            <div class="flex flex-wrap gap-2" id="wordList">
+                <!-- Dynamically filled -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Word lists by difficulty level
+        const wordLevels = {
+            1: [
+                { word: 'apple', emoji: '🍎' },
+                { word: 'ball', emoji: '⚽' },
+                { word: 'cat', emoji: '🐱' },
+                { word: 'dog', emoji: '🐕' },
+                { word: 'egg', emoji: '🥚' },
+                { word: 'fish', emoji: '🐟' },
+                { word: 'hat', emoji: '🎩' },
+                { word: 'sun', emoji: '☀️' }
+            ],
+            2: [
+                { word: 'house', emoji: '🏠' },
+                { word: 'water', emoji: '💧' },
+                { word: 'happy', emoji: '😊' },
+                { word: 'green', emoji: '💚' },
+                { word: 'tiger', emoji: '🐯' },
+                { word: 'music', emoji: '🎵' },
+                { word: 'plant', emoji: '🌱' },
+                { word: 'cloud', emoji: '☁️' }
+            ],
+            3: [
+                { word: 'elephant', emoji: '🐘' },
+                { word: 'rainbow', emoji: '🌈' },
+                { word: 'butterfly', emoji: '🦋' },
+                { word: 'computer', emoji: '💻' },
+                { word: 'birthday', emoji: '🎂' },
+                { word: 'dinosaur', emoji: '🦕' },
+                { word: 'princess', emoji: '👸' },
+                { word: 'treasure', emoji: '💎' }
+            ]
+        };
+
+        let currentLevel = 1;
+        let score = 0;
+        let streak = 0;
+        let currentWordIndex = 0;
+        let currentWord = null;
+        let hintsUsed = 0;
+        let completedWords = [];
+        let isDyslexicFont = false;
+        const gameStartTime = Date.now();
+
+        function init() {
+            loadWord();
+            updateWordList();
+        }
+
+        function loadWord() {
+            const words = wordLevels[currentLevel];
+            
+            // Find next uncompleted word
+            let availableWords = words.filter((_, i) => !completedWords.includes(i));
+            if (availableWords.length === 0) {
+                // Level complete, advance
+                if (currentLevel < 3) {
+                    // Save level completion
+                    saveSpellingProgress();
+                    currentLevel++;
+                    completedWords = [];
+                    document.getElementById('level').textContent = currentLevel;
+                    showFeedback('🌟', 'Level Up!', `You've advanced to Level ${currentLevel}!`);
+                    return;
+                } else {
+                    // Save final game completion
+                    saveSpellingProgress(true);
+                    showFeedback('🏆', 'All Complete!', 'You\'ve mastered all spelling levels!');
+                    return;
+                }
+            }
+            
+            // Pick random word from available
+            currentWordIndex = words.findIndex((w, i) => !completedWords.includes(i));
+            currentWord = words[currentWordIndex];
+            hintsUsed = 0;
+            
+            document.getElementById('wordEmoji').textContent = currentWord.emoji;
+            createDropZones();
+            createLetterBank();
+            updateWordList();
+        }
+
+        function createDropZones() {
+            const container = document.getElementById('dropZones');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < currentWord.word.length; i++) {
+                const zone = document.createElement('div');
+                zone.className = 'drop-zone';
+                zone.dataset.index = i;
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('drop', handleDrop);
+                zone.addEventListener('dragleave', handleDragLeave);
+                container.appendChild(zone);
+            }
+        }
+
+        function createLetterBank() {
+            const container = document.getElementById('letterBank');
+            container.innerHTML = '';
+            
+            // Scramble letters and add some extra decoy letters
+            let letters = currentWord.word.toUpperCase().split('');
+            const decoys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+                .filter(l => !letters.includes(l))
+                .sort(() => Math.random() - 0.5)
+                .slice(0, Math.min(3, Math.floor(currentWord.word.length / 2)));
+            
+            letters = [...letters, ...decoys].sort(() => Math.random() - 0.5);
+            
+            letters.forEach((letter, index) => {
+                const tile = document.createElement('div');
+                tile.className = 'letter-tile bg-gradient-to-br from-purple-500 to-blue-500 text-white shadow-lg';
+                tile.textContent = letter;
+                tile.draggable = true;
+                tile.dataset.letter = letter;
+                tile.addEventListener('dragstart', handleDragStart);
+                tile.addEventListener('dragend', handleDragEnd);
+                tile.addEventListener('click', handleLetterClick);
+                container.appendChild(tile);
+            });
+        }
+
+        function handleDragStart(e) {
+            e.target.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', e.target.dataset.letter);
+            e.dataTransfer.setData('element-id', e.target.id || Date.now());
+            e.target.id = e.target.id || `tile-${Date.now()}`;
+            e.dataTransfer.setData('element-id', e.target.id);
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.target.classList.add('over');
+        }
+
+        function handleDragLeave(e) {
+            e.target.classList.remove('over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.target.classList.remove('over');
+            
+            const letter = e.dataTransfer.getData('text/plain');
+            const tileId = e.dataTransfer.getData('element-id');
+            
+            if (!e.target.querySelector('.letter-tile') && e.target.classList.contains('drop-zone')) {
+                const tile = document.getElementById(tileId);
+                if (tile) {
+                    const clone = tile.cloneNode(true);
+                    clone.classList.remove('dragging');
+                    clone.addEventListener('click', () => returnLetter(clone, tile));
+                    e.target.appendChild(clone);
+                    e.target.classList.add('filled');
+                    tile.style.visibility = 'hidden';
+                }
+            }
+        }
+
+        function handleLetterClick(e) {
+            const tile = e.target;
+            if (tile.style.visibility === 'hidden') return;
+            
+            // Find first empty drop zone
+            const zones = document.querySelectorAll('.drop-zone');
+            for (let zone of zones) {
+                if (!zone.querySelector('.letter-tile')) {
+                    const clone = tile.cloneNode(true);
+                    clone.addEventListener('click', () => returnLetter(clone, tile));
+                    zone.appendChild(clone);
+                    zone.classList.add('filled');
+                    tile.style.visibility = 'hidden';
+                    break;
+                }
+            }
+        }
+
+        function returnLetter(clone, original) {
+            clone.parentElement.classList.remove('filled');
+            clone.remove();
+            original.style.visibility = 'visible';
+        }
+
+        function checkSpelling() {
+            const zones = document.querySelectorAll('.drop-zone');
+            let attempt = '';
+            
+            zones.forEach(zone => {
+                const tile = zone.querySelector('.letter-tile');
+                if (tile) {
+                    attempt += tile.dataset.letter;
+                }
+            });
+            
+            if (attempt.length !== currentWord.word.length) {
+                showFeedback('🤔', 'Not Complete', 'Fill in all the letters first!');
+                return;
+            }
+            
+            if (attempt.toLowerCase() === currentWord.word.toLowerCase()) {
+                // Correct!
+                const points = Math.max(10 - hintsUsed * 2, 5);
+                score += points;
+                streak++;
+                completedWords.push(currentWordIndex);
+                
+                document.getElementById('score').textContent = score;
+                document.getElementById('streak').textContent = streak;
+                
+                showFeedback('🎉', 'Correct!', `Great spelling! +${points} points`);
+            } else {
+                // Incorrect
+                streak = 0;
+                document.getElementById('streak').textContent = streak;
+                
+                showFeedback('💪', 'Try Again', `That's not quite right. The word is "${currentWord.word.toUpperCase()}"`);
+            }
+        }
+
+        function giveHint() {
+            const zones = document.querySelectorAll('.drop-zone');
+            let hintGiven = false;
+            
+            zones.forEach((zone, index) => {
+                if (!hintGiven && !zone.querySelector('.letter-tile')) {
+                    const correctLetter = currentWord.word[index].toUpperCase();
+                    
+                    // Find the letter in the bank
+                    const tiles = document.querySelectorAll('#letterBank .letter-tile');
+                    tiles.forEach(tile => {
+                        if (tile.dataset.letter === correctLetter && tile.style.visibility !== 'hidden') {
+                            tile.classList.add('hint-letter');
+                            setTimeout(() => tile.classList.remove('hint-letter'), 2000);
+                            hintGiven = true;
+                        }
+                    });
+                    
+                    hintsUsed++;
+                }
+            });
+            
+            if (!hintGiven) {
+                speakWord();
+            }
+        }
+
+        function resetWord() {
+            const zones = document.querySelectorAll('.drop-zone');
+            zones.forEach(zone => {
+                const tile = zone.querySelector('.letter-tile');
+                if (tile) {
+                    tile.remove();
+                    zone.classList.remove('filled');
+                }
+            });
+            
+            const tiles = document.querySelectorAll('#letterBank .letter-tile');
+            tiles.forEach(tile => tile.style.visibility = 'visible');
+        }
+
+        function skipWord() {
+            streak = 0;
+            document.getElementById('streak').textContent = streak;
+            loadWord();
+        }
+
+        function nextWord() {
+            document.getElementById('feedbackModal').classList.add('hidden');
+            loadWord();
+        }
+
+        function showFeedback(emoji, title, message) {
+            document.getElementById('feedbackEmoji').textContent = emoji;
+            document.getElementById('feedbackTitle').textContent = title;
+            document.getElementById('feedbackMessage').textContent = message;
+            document.getElementById('feedbackModal').classList.remove('hidden');
+        }
+
+        function updateWordList() {
+            const container = document.getElementById('wordList');
+            container.innerHTML = '';
+            
+            wordLevels[currentLevel].forEach((item, index) => {
+                const badge = document.createElement('span');
+                badge.className = completedWords.includes(index) 
+                    ? 'px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm'
+                    : 'px-3 py-1 bg-gray-100 text-gray-500 rounded-full text-sm';
+                badge.textContent = item.emoji + ' ' + (completedWords.includes(index) ? item.word : '???');
+                container.appendChild(badge);
+            });
+        }
+
+        function speakWord() {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(currentWord.word);
+                utterance.rate = 0.7;
+                utterance.pitch = 1;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function toggleDyslexicFont() {
+            isDyslexicFont = !isDyslexicFont;
+            document.body.classList.toggle('dyslexic-font', isDyslexicFont);
+        }
+        
+        async function saveSpellingProgress(isComplete = false) {
+            const duration = Math.floor((Date.now() - gameStartTime) / 1000);
+            const totalWordsInLevel = wordLevels[currentLevel].length;
+            const maxPossibleScore = totalWordsInLevel * 10;
+            
+            try {
+                await CognoTracker.saveActivity({
+                    moduleId: 'dyslexia',
+                    activityId: 'spelling-practice',
+                    score: score,
+                    maxScore: isComplete ? 240 : maxPossibleScore, // 240 = all 3 levels max
+                    duration: duration,
+                    metadata: {
+                        level: currentLevel,
+                        streak: streak,
+                        wordsCompleted: completedWords.length,
+                        hintsUsed: hintsUsed,
+                        isComplete: isComplete
+                    }
+                });
+            } catch (err) {
+                console.error('Failed to save activity:', err);
+            }
+        }
+
+        // Initialize on load
+        init();
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Writing - Dysgraphia Module | Cogno Solution</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        body { font-family: 'Lexend', sans-serif; }
+        #writingCanvas {
+            touch-action: none;
+            cursor: crosshair;
+        }
+        .word-card {
+            transition: all 0.3s;
+        }
+        .word-card:hover {
+            transform: scale(1.02);
+        }
+        .word-card.active {
+            box-shadow: 0 0 0 4px #f97316;
+        }
+        .guide-line {
+            position: absolute;
+            background: #e5e7eb;
+            height: 2px;
+            width: 100%;
+        }
+        .baseline { bottom: 25%; background: #94a3b8; }
+        .midline { bottom: 50%; background: #e5e7eb; border-style: dashed; }
+        .topline { bottom: 75%; background: #e5e7eb; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-white to-yellow-50 min-h-screen">
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Word Writing</h1>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-white shadow-xl z-50 transform transition-transform lg:translate-x-0 -translate-x-full" id="sidebar">
+        <div class="p-6 border-b border-gray-100">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-xl flex items-center justify-center">
+                    <span class="text-white font-bold text-lg">C</span>
+                </div>
+                <span class="text-xl font-bold text-gray-800">Cogno</span>
+            </div>
+        </div>
+        
+        <nav class="p-4 space-y-2">
+            <a href="../../dashboard/index.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="index.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-orange-100 text-orange-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                <span>Dysgraphia Module</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 p-6">
+        <!-- Mobile Header -->
+        <div class="lg:hidden hidden items-center justify-between mb-6">
+            <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')" class="p-2 rounded-lg bg-white shadow">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <span class="font-semibold text-gray-800">Word Writing</span>
+            <div class="w-10"></div>
+        </div>
+
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <div>
+                <div class="flex items-center space-x-3 mb-2">
+                    <a href="index.html" class="text-orange-600 hover:text-orange-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    </a>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Word Writing Practice</h1>
+                </div>
+                <p class="text-gray-600">Practice writing complete words with guided lines</p>
+            </div>
+        </div>
+
+        <!-- Progress Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <div class="text-2xl font-bold text-orange-600" id="wordsCompleted">0</div>
+                <div class="text-xs text-gray-500">Words</div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <div class="text-2xl font-bold text-green-600" id="currentStreak">0</div>
+                <div class="text-xs text-gray-500">Streak</div>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm text-center">
+                <div class="text-2xl font-bold text-blue-600" id="totalPoints">0</div>
+                <div class="text-xs text-gray-500">Points</div>
+            </div>
+        </div>
+
+        <!-- Word Selection -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">Choose a Word Category</h3>
+            <div class="flex flex-wrap gap-3 mb-6">
+                <button onclick="setCategory('animals')" class="category-btn px-4 py-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200" data-cat="animals">🐾 Animals</button>
+                <button onclick="setCategory('food')" class="category-btn px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200" data-cat="food">🍎 Food</button>
+                <button onclick="setCategory('colors')" class="category-btn px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200" data-cat="colors">🌈 Colors</button>
+                <button onclick="setCategory('nature')" class="category-btn px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200" data-cat="nature">🌳 Nature</button>
+                <button onclick="setCategory('objects')" class="category-btn px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200" data-cat="objects">📦 Objects</button>
+            </div>
+            
+            <!-- Word Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="wordCards">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+
+        <!-- Writing Area -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <!-- Current Word Display -->
+            <div class="text-center mb-6">
+                <div class="flex items-center justify-center gap-4 mb-4">
+                    <span class="text-4xl" id="wordEmoji">🐱</span>
+                    <span class="text-4xl font-bold text-gray-800" id="currentWord">cat</span>
+                    <button onclick="speakWord()" class="p-2 bg-orange-100 text-orange-600 rounded-lg hover:bg-orange-200" title="Hear the word">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+                    </button>
+                </div>
+                <p class="text-gray-500">Write the word below. Take your time!</p>
+            </div>
+
+            <!-- Canvas with Guide Lines -->
+            <div class="relative bg-gradient-to-b from-blue-50 to-white rounded-xl overflow-hidden mb-6" style="height: 200px;">
+                <!-- Guide Lines -->
+                <div class="absolute inset-0 pointer-events-none">
+                    <div class="guide-line topline"></div>
+                    <div class="guide-line midline" style="border-top: 2px dashed #e5e7eb; background: transparent;"></div>
+                    <div class="guide-line baseline"></div>
+                </div>
+                
+                <!-- Ghost Text Guide -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <span id="ghostText" class="text-6xl font-bold text-gray-200 tracking-widest" style="opacity: 0.3;">cat</span>
+                </div>
+                
+                <canvas id="writingCanvas" class="absolute inset-0 w-full h-full"></canvas>
+            </div>
+
+            <!-- Tools -->
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <label class="text-sm text-gray-600">Pen Size:</label>
+                    <input type="range" id="penSize" min="2" max="12" value="4" class="w-24" onchange="updatePenSize()">
+                    
+                    <label class="text-sm text-gray-600 ml-4">Color:</label>
+                    <div class="flex gap-2">
+                        <button onclick="setPenColor('#1e293b')" class="w-8 h-8 rounded-full bg-gray-800 ring-2 ring-offset-2 ring-transparent hover:ring-gray-400 pen-color" data-color="#1e293b"></button>
+                        <button onclick="setPenColor('#2563eb')" class="w-8 h-8 rounded-full bg-blue-600 ring-2 ring-offset-2 ring-transparent hover:ring-blue-400 pen-color" data-color="#2563eb"></button>
+                        <button onclick="setPenColor('#16a34a')" class="w-8 h-8 rounded-full bg-green-600 ring-2 ring-offset-2 ring-transparent hover:ring-green-400 pen-color" data-color="#16a34a"></button>
+                        <button onclick="setPenColor('#dc2626')" class="w-8 h-8 rounded-full bg-red-600 ring-2 ring-offset-2 ring-transparent hover:ring-red-400 pen-color" data-color="#dc2626"></button>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button onclick="toggleGuide()" class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200" id="guideBtn">
+                        Hide Guide
+                    </button>
+                    <button onclick="clearCanvas()" class="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200">
+                        Clear
+                    </button>
+                    <button onclick="undoStroke()" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">
+                        Undo
+                    </button>
+                    <button onclick="submitWord()" class="px-6 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-lg hover:from-orange-600 hover:to-yellow-600 font-semibold">
+                        Done ✓
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="bg-gradient-to-r from-orange-100 to-yellow-100 rounded-2xl p-6">
+            <h3 class="font-semibold text-orange-800 mb-4">✨ Writing Tips</h3>
+            <div class="grid md:grid-cols-3 gap-4 text-sm text-orange-700">
+                <div class="flex items-start gap-2">
+                    <span class="text-lg">1️⃣</span>
+                    <p>Start at the baseline (the solid line at the bottom)</p>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-lg">2️⃣</span>
+                    <p>Lowercase letters usually reach the midline (dashed)</p>
+                </div>
+                <div class="flex items-start gap-2">
+                    <span class="text-lg">3️⃣</span>
+                    <p>Capital letters and tall letters reach the top line</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Word categories
+        const wordCategories = {
+            animals: [
+                { word: 'cat', emoji: '🐱' },
+                { word: 'dog', emoji: '🐕' },
+                { word: 'bird', emoji: '🐦' },
+                { word: 'fish', emoji: '🐟' },
+                { word: 'bear', emoji: '🐻' },
+                { word: 'lion', emoji: '🦁' },
+                { word: 'frog', emoji: '🐸' },
+                { word: 'duck', emoji: '🦆' }
+            ],
+            food: [
+                { word: 'apple', emoji: '🍎' },
+                { word: 'bread', emoji: '🍞' },
+                { word: 'cake', emoji: '🎂' },
+                { word: 'milk', emoji: '🥛' },
+                { word: 'rice', emoji: '🍚' },
+                { word: 'pizza', emoji: '🍕' },
+                { word: 'soup', emoji: '🍲' },
+                { word: 'egg', emoji: '🥚' }
+            ],
+            colors: [
+                { word: 'red', emoji: '🔴' },
+                { word: 'blue', emoji: '🔵' },
+                { word: 'green', emoji: '🟢' },
+                { word: 'yellow', emoji: '🟡' },
+                { word: 'pink', emoji: '💗' },
+                { word: 'orange', emoji: '🟠' },
+                { word: 'purple', emoji: '🟣' },
+                { word: 'black', emoji: '⚫' }
+            ],
+            nature: [
+                { word: 'tree', emoji: '🌳' },
+                { word: 'flower', emoji: '🌸' },
+                { word: 'sun', emoji: '☀️' },
+                { word: 'moon', emoji: '🌙' },
+                { word: 'star', emoji: '⭐' },
+                { word: 'rain', emoji: '🌧️' },
+                { word: 'cloud', emoji: '☁️' },
+                { word: 'leaf', emoji: '🍃' }
+            ],
+            objects: [
+                { word: 'book', emoji: '📕' },
+                { word: 'pen', emoji: '🖊️' },
+                { word: 'cup', emoji: '☕' },
+                { word: 'hat', emoji: '🎩' },
+                { word: 'ball', emoji: '⚽' },
+                { word: 'key', emoji: '🔑' },
+                { word: 'phone', emoji: '📱' },
+                { word: 'clock', emoji: '🕐' }
+            ]
+        };
+
+        let canvas, ctx;
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let strokes = [];
+        let currentStroke = [];
+        let penColor = '#1e293b';
+        let penSize = 4;
+        let currentCategory = 'animals';
+        let currentWordData = wordCategories.animals[0];
+        let wordsCompleted = 0;
+        let currentStreak = 0;
+        let totalPoints = 0;
+        let showGuide = true;
+
+        function init() {
+            canvas = document.getElementById('writingCanvas');
+            ctx = canvas.getContext('2d');
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+            
+            // Touch events
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
+            canvas.addEventListener('touchend', stopDrawing);
+            
+            setCategory('animals');
+            setPenColor('#1e293b');
+        }
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            redrawStrokes();
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            [lastX, lastY] = getCoordinates(e);
+            currentStroke = [{ x: lastX, y: lastY, color: penColor, size: penSize }];
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            const [x, y] = getCoordinates(e);
+            
+            ctx.beginPath();
+            ctx.strokeStyle = penColor;
+            ctx.lineWidth = penSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            
+            currentStroke.push({ x, y, color: penColor, size: penSize });
+            [lastX, lastY] = [x, y];
+        }
+
+        function stopDrawing() {
+            if (isDrawing && currentStroke.length > 0) {
+                strokes.push([...currentStroke]);
+            }
+            isDrawing = false;
+            currentStroke = [];
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            isDrawing = true;
+            [lastX, lastY] = [x, y];
+            currentStroke = [{ x, y, color: penColor, size: penSize }];
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (!isDrawing) return;
+            
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            ctx.beginPath();
+            ctx.strokeStyle = penColor;
+            ctx.lineWidth = penSize;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            
+            currentStroke.push({ x, y, color: penColor, size: penSize });
+            [lastX, lastY] = [x, y];
+        }
+
+        function getCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            return [e.clientX - rect.left, e.clientY - rect.top];
+        }
+
+        function redrawStrokes() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            strokes.forEach(stroke => {
+                if (stroke.length < 2) return;
+                
+                ctx.beginPath();
+                ctx.strokeStyle = stroke[0].color;
+                ctx.lineWidth = stroke[0].size;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.moveTo(stroke[0].x, stroke[0].y);
+                
+                stroke.forEach(point => {
+                    ctx.lineTo(point.x, point.y);
+                });
+                ctx.stroke();
+            });
+        }
+
+        function clearCanvas() {
+            strokes = [];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function undoStroke() {
+            if (strokes.length > 0) {
+                strokes.pop();
+                redrawStrokes();
+            }
+        }
+
+        function setPenColor(color) {
+            penColor = color;
+            document.querySelectorAll('.pen-color').forEach(btn => {
+                btn.classList.remove('ring-gray-400', 'ring-blue-400', 'ring-green-400', 'ring-red-400');
+                if (btn.dataset.color === color) {
+                    btn.classList.add('ring-gray-400');
+                }
+            });
+        }
+
+        function updatePenSize() {
+            penSize = parseInt(document.getElementById('penSize').value);
+        }
+
+        function toggleGuide() {
+            showGuide = !showGuide;
+            document.getElementById('ghostText').style.display = showGuide ? 'block' : 'none';
+            document.getElementById('guideBtn').textContent = showGuide ? 'Hide Guide' : 'Show Guide';
+        }
+
+        function setCategory(category) {
+            currentCategory = category;
+            
+            // Update category buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('ring-2', 'ring-offset-2');
+                if (btn.dataset.cat === category) {
+                    btn.classList.add('ring-2', 'ring-offset-2');
+                }
+            });
+            
+            // Populate word cards
+            const container = document.getElementById('wordCards');
+            const words = wordCategories[category];
+            
+            container.innerHTML = words.map((item, index) => `
+                <div onclick="selectWord(${index})" class="word-card bg-gray-50 rounded-xl p-4 cursor-pointer hover:bg-orange-50 border-2 border-transparent" data-index="${index}">
+                    <div class="text-center">
+                        <span class="text-3xl">${item.emoji}</span>
+                        <p class="mt-2 font-medium text-gray-700">${item.word}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            selectWord(0);
+        }
+
+        function selectWord(index) {
+            currentWordData = wordCategories[currentCategory][index];
+            
+            // Update word cards highlight
+            document.querySelectorAll('.word-card').forEach((card, i) => {
+                card.classList.remove('border-orange-400', 'bg-orange-50');
+                if (i === index) {
+                    card.classList.add('border-orange-400', 'bg-orange-50');
+                }
+            });
+            
+            // Update display
+            document.getElementById('currentWord').textContent = currentWordData.word;
+            document.getElementById('wordEmoji').textContent = currentWordData.emoji;
+            document.getElementById('ghostText').textContent = currentWordData.word;
+            
+            clearCanvas();
+        }
+
+        function speakWord() {
+            if ('speechSynthesis' in window) {
+                // Speak the word slowly, letter by letter
+                const word = currentWordData.word;
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.rate = 0.7;
+                speechSynthesis.speak(utterance);
+                
+                // Then spell it out
+                setTimeout(() => {
+                    const spelling = word.split('').join(', ');
+                    const spellUtterance = new SpeechSynthesisUtterance(spelling);
+                    spellUtterance.rate = 0.5;
+                    speechSynthesis.speak(spellUtterance);
+                }, 1000);
+            }
+        }
+
+        function submitWord() {
+            if (strokes.length === 0) {
+                alert('Please write the word first!');
+                return;
+            }
+            
+            // In a real app, this would analyze the writing
+            // For now, we'll give points for completing the exercise
+            wordsCompleted++;
+            currentStreak++;
+            totalPoints += 10 + (currentStreak * 2);
+            
+            document.getElementById('wordsCompleted').textContent = wordsCompleted;
+            document.getElementById('currentStreak').textContent = currentStreak;
+            document.getElementById('totalPoints').textContent = totalPoints;
+            
+            // Show feedback
+            showFeedback();
+            
+            // Move to next word
+            const words = wordCategories[currentCategory];
+            const currentIndex = words.findIndex(w => w.word === currentWordData.word);
+            const nextIndex = (currentIndex + 1) % words.length;
+            
+            setTimeout(() => {
+                selectWord(nextIndex);
+            }, 1500);
+        }
+
+        function showFeedback() {
+            const feedback = document.createElement('div');
+            feedback.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
+            feedback.innerHTML = `
+                <div class="bg-white rounded-2xl p-8 text-center transform scale-0 transition-transform" id="feedbackBox">
+                    <div class="text-6xl mb-4">🌟</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Great Writing!</h3>
+                    <p class="text-gray-600">+${10 + (currentStreak * 2)} points</p>
+                </div>
+            `;
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                document.getElementById('feedbackBox').style.transform = 'scale(1)';
+            }, 50);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 1500);
+        }
+
+        // Initialize on load
+        window.addEventListener('load', init);
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>

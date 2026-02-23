@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Word Games - Dyslexia Module">
+    <title>Word Games - Cogno Solution</title>
+    
+    <link rel="icon" href="../../assets/images/icons/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+<body>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="back-btn" onclick="window.history.back()">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h1 class="page-title">Word Games</h1>
+    </header>
+
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="../../index.html" class="logo"><i class="fa-solid fa-brain"></i><span>Cogno</span></a>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="../../dashboard/"><i class="fa-solid fa-home"></i><span>Dashboard</span></a></li>
+                    <li class="active"><a href="../../modules/dyslexia/"><i class="fa-solid fa-book-reader"></i><span>Dyslexia</span></a></li>
+                    <li><a href="../../progress/"><i class="fa-solid fa-chart-line"></i><span>Progress</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <header class="topbar">
+                <button class="sidebar-toggle" id="sidebar-toggle"><i class="fa-solid fa-bars"></i></button>
+                <nav class="breadcrumb">
+                    <a href="../../modules/dyslexia/">Dyslexia</a><span>/</span><span>Word Games</span>
+                </nav>
+            </header>
+            
+            <div class="content-area">
+                <div class="activity-header">
+                    <div class="activity-info">
+                        <h1><i class="fa-solid fa-gamepad"></i> Word Games</h1>
+                        <p>Fun games to improve vocabulary and word recognition</p>
+                    </div>
+                </div>
+                
+                <!-- Game Selection -->
+                <div class="games-grid">
+                    <div class="game-card" onclick="startGame('matching')">
+                        <div class="game-icon"><i class="fa-solid fa-clone"></i></div>
+                        <h3>Word Matching</h3>
+                        <p>Match words with their pictures</p>
+                        <span class="badge badge-primary">Level 2</span>
+                    </div>
+                    <div class="game-card" onclick="startGame('scramble')">
+                        <div class="game-icon"><i class="fa-solid fa-shuffle"></i></div>
+                        <h3>Word Scramble</h3>
+                        <p>Unscramble letters to form words</p>
+                        <span class="badge badge-success">Level 1</span>
+                    </div>
+                    <div class="game-card" onclick="startGame('rhyme')">
+                        <div class="game-icon"><i class="fa-solid fa-music"></i></div>
+                        <h3>Rhyme Time</h3>
+                        <p>Find words that rhyme</p>
+                        <span class="badge badge-warning">Level 3</span>
+                    </div>
+                    <div class="game-card" onclick="startGame('fill')">
+                        <div class="game-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+                        <h3>Fill the Blank</h3>
+                        <p>Complete sentences with correct words</p>
+                        <span class="badge badge-info">Level 2</span>
+                    </div>
+                </div>
+                
+                <!-- Active Game Area -->
+                <div class="game-area card" id="game-area" style="display: none;">
+                    <div class="card-header">
+                        <h2 id="game-title">Word Scramble</h2>
+                        <div class="game-stats">
+                            <span><i class="fa-solid fa-star"></i> Score: <span id="score">0</span></span>
+                            <span><i class="fa-solid fa-clock"></i> Time: <span id="timer">60</span>s</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="game-content">
+                            <!-- Word Scramble Game -->
+                            <div class="scramble-game" id="scramble-game">
+                                <div class="scrambled-word" id="scrambled-word">TACB</div>
+                                <div class="hint"><i class="fa-solid fa-lightbulb"></i> Hint: A furry pet</div>
+                                <input type="text" id="answer-input" placeholder="Type your answer..." class="game-input" autofocus>
+                                <div class="game-buttons">
+                                    <button class="btn btn-ghost" onclick="getHint()"><i class="fa-solid fa-lightbulb"></i> Hint</button>
+                                    <button class="btn btn-primary" onclick="checkAnswer()">Submit</button>
+                                    <button class="btn btn-outline" onclick="skipWord()">Skip</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="progress-indicator">
+                            <span>Question <span id="current-q">1</span> of <span id="total-q">10</span></span>
+                            <div class="progress-bar"><div class="progress-fill" style="width: 10%"></div></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results -->
+                <div class="results-card card" id="results" style="display: none;">
+                    <div class="card-body">
+                        <div class="results-content">
+                            <div class="results-icon"><i class="fa-solid fa-trophy"></i></div>
+                            <h2>Great Job!</h2>
+                            <p>You scored <span id="final-score">80</span> points!</p>
+                            <div class="results-stats">
+                                <div class="stat"><span class="stat-value" id="correct-answers">8</span><span class="stat-label">Correct</span></div>
+                                <div class="stat"><span class="stat-value" id="time-taken">45s</span><span class="stat-label">Time</span></div>
+                            </div>
+                            <div class="results-actions">
+                                <button class="btn btn-outline" onclick="location.reload()">Play Again</button>
+                                <a href="../../modules/dyslexia/" class="btn btn-primary">Back to Module</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <link rel="stylesheet" href="../../css/mobile-nav.css">
+    <link rel="stylesheet" href="../../css/modules-responsive.css">
+    <style>
+        /* Mobile Navigation Styles */
+        @media (max-width: 768px) {
+            body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 16px); }
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0 !important; width: 100% !important; }
+        }
+        /* bottom-nav visible on all screens */
+    </style>
+
+    <style>
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+        .game-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .game-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-primary);
+        }
+        .game-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--color-primary-100);
+            color: var(--color-primary);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-3);
+            font-size: 1.5rem;
+        }
+        .game-card h3 { font-size: 1rem; margin-bottom: var(--space-2); }
+        .game-card p { font-size: 0.8rem; color: var(--color-text-secondary); margin-bottom: var(--space-3); }
+        .game-stats { display: flex; gap: var(--space-4); }
+        .scramble-game { text-align: center; padding: var(--space-6); }
+        .scrambled-word {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 0.5rem;
+            color: var(--color-primary);
+            margin-bottom: var(--space-4);
+        }
+        .hint { color: var(--color-text-secondary); margin-bottom: var(--space-4); }
+        .game-input {
+            font-size: 1.5rem;
+            text-align: center;
+            text-transform: uppercase;
+            padding: var(--space-4);
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: var(--space-4);
+        }
+        .game-buttons { display: flex; justify-content: center; gap: var(--space-3); }
+        .results-content { text-align: center; padding: var(--space-6); }
+        .results-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #ffd700, #ffb700);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-4);
+            font-size: 3rem;
+            color: white;
+        }
+        .results-stats { display: flex; justify-content: center; gap: var(--space-8); margin: var(--space-6) 0; }
+        .results-stats .stat { text-align: center; }
+        .results-stats .stat-value { display: block; font-size: 2rem; font-weight: 700; color: var(--color-primary); }
+        .results-stats .stat-label { font-size: 0.8rem; color: var(--color-text-secondary); }
+        .results-actions { display: flex; justify-content: center; gap: var(--space-3); }
+    </style>
+    
+    <script>
+        const words = [
+            { scrambled: 'TAC', answer: 'CAT', hint: 'A furry pet that meows' },
+            { scrambled: 'GOD', answer: 'DOG', hint: 'A pet that barks' },
+            { scrambled: 'NUS', answer: 'SUN', hint: 'Shines in the sky' },
+            { scrambled: 'OOK', answer: 'BOOK', hint: 'You read it' },
+            { scrambled: 'BALLF', answer: 'BALL', hint: 'Round toy' }
+        ];
+        let currentWord = 0, score = 0, timeLeft = 60, timer;
+        
+        function startGame(type) {
+            document.querySelector('.games-grid').style.display = 'none';
+            document.getElementById('game-area').style.display = 'block';
+            currentWord = 0; score = 0; timeLeft = 60;
+            loadWord();
+            startTimer();
+        }
+        
+        function loadWord() {
+            if (currentWord >= words.length) return endGame();
+            const w = words[currentWord];
+            document.getElementById('scrambled-word').textContent = w.scrambled;
+            document.querySelector('.hint').innerHTML = `<i class="fa-solid fa-lightbulb"></i> Hint: ${w.hint}`;
+            document.getElementById('answer-input').value = '';
+            document.getElementById('current-q').textContent = currentWord + 1;
+            document.querySelector('.progress-fill').style.width = `${(currentWord + 1) / words.length * 100}%`;
+        }
+        
+        function checkAnswer() {
+            const answer = document.getElementById('answer-input').value.toUpperCase();
+            if (answer === words[currentWord].answer) {
+                score += 10;
+                document.getElementById('score').textContent = score;
+                CognoNotifications?.toast?.success('Correct!');
+            } else {
+                CognoNotifications?.toast?.error(`The answer was: ${words[currentWord].answer}`);
+            }
+            currentWord++;
+            loadWord();
+        }
+        
+        function skipWord() { currentWord++; loadWord(); }
+        
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                if (timeLeft <= 0) endGame();
+            }, 1000);
+        }
+        
+        function endGame() {
+            clearInterval(timer);
+            document.getElementById('game-area').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('correct-answers').textContent = Math.floor(score / 10);
+            document.getElementById('time-taken').textContent = `${60 - timeLeft}s`;
+        }
+        
+        document.getElementById('answer-input')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkAnswer();
+        });
+        
+        document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar')?.classList.toggle('collapsed');
+        });
+    </script>
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="../../dashboard/child-dashboard.html" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </a>
+        <a href="../../learn/index.html" class="nav-item active">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Learn</span>
+        </a>
+        <a href="../../doctors/index.html" class="nav-item">
+            <i class="fa-solid fa-user-doctor"></i>
+            <span>Doctors</span>
+        </a>
+        <a href="../../learning-hub/index.html" class="nav-item">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Hub</span>
+        </a>
+        <a href="../../progress/index.html" class="nav-item">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="../../profile/index.html" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </nav>
+</body>
+</html>
