@@ -9,7 +9,7 @@
 // =========================================================
 const API_BASE_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:5000/api'
-    : '/api';
+    : 'https://new-cogno-version-1-1-backend.onrender.com/api';
 
 const API_TIMEOUT = 30000; // 30 seconds
 
@@ -522,3 +522,4 @@ window.CognoAPI = {
 
 // Log initialization
 console.log('🌐 Cogno API Client initialized');
+
